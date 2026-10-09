@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Logo } from '../../../components/Logo'
 import { UserProfileBadge } from '../../../components/UserProfileBadge'
-import { BarChart3, ClipboardList, Fish, LayoutDashboard, Link2, MapPin, ShieldCheck, Ship, Users } from 'lucide-react'
+import { BarChart3, ClipboardList, Fish, LayoutDashboard, Link2, MapPin, ShieldCheck, Ship, UserRound, Users } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 
 const navItems = [
   { label: 'Ringkasan', to: '/admin', end: true, Icon: LayoutDashboard },
   { label: 'Kapal', to: '/admin/ships', Icon: Ship },
-  { label: 'Pemilik dan Nahkoda', to: '/admin/owners', Icon: Users },
+  { label: 'Pemilik', to: '/admin/owners', Icon: Users },
+  { label: 'Nahkoda', to: '/admin/captains', Icon: UserRound },
   { label: 'Laporan Tangkapan', to: '/admin/catches', Icon: ClipboardList },
   { label: 'Spesies Ikan', to: '/admin/species', Icon: Fish },
   { label: 'Wilayah (WPP)', to: '/admin/areas', Icon: MapPin },

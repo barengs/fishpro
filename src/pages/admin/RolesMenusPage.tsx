@@ -1,17 +1,20 @@
 import { useState } from 'react'
-import { PageHeader } from '../../components/PageHeader'
+import { PageToolbar } from '../../components/PageToolbar'
 import { DataTable, type Column } from '../../components/DataTable'
 import { CrudActions, FormField, inputCls } from '../../components/FormField'
+import { CrudModal } from '../../components/CrudModal'
+import { useCrudModal } from '../../components/useCrudModal'
 
 // Role: name (unique), description, permissions (M2M)
 // UserRole: user (FK), role (FK) — unique (user, role)
 // Menu: name, url, icon, parent (self FK), order, is_active
 // RoleMenu: role (FK), menu (FK), can_view/create/edit/delete — unique (role, menu)
-// AdminProfile/AdminUser: username, email, first_name, last_name, is_active + full_name, phone, department, position
+// AdminProfile/AdminUser: username, email, full_name, phone, department, position
 interface RoleRow { id: number; name: string; desc: string }
 interface MenuRow { id: number; name: string; url: string; order: string }
 
 export function RolesMenusPage() {
+  const [tab, setTab] = useState<'roles' | 'menus' | 'admins'>('roles')
   const [roles, setRoles] = useState<RoleRow[]>([
     { id: 1, name: 'admin', desc: 'Administrator KKP penuh' },
     { id: 2, name: 'regulator', desc: 'Pengawas & override kuota' },
@@ -26,6 +29,9 @@ export function RolesMenusPage() {
   const [rForm, setRForm] = useState({ name: '', description: '' })
   const [mForm, setMForm] = useState({ name: '', url: '', icon: '', parent: '', order: '0', is_active: true })
   const [uForm, setUForm] = useState({ username: '', email: '', full_name: '', phone: '', department: '', position: '' })
+  const roleModal = useCrudModal()
+  const menuModal = useCrudModal()
+  const adminModal = useCrudModal()
 
   const roleCols: Column<RoleRow>[] = [
     { key: 'name', header: 'Peran', flex: 2, render: (r) => <span className="text-sm font-bold">{r.name}</span> },
@@ -38,60 +44,67 @@ export function RolesMenusPage() {
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setMenus((p) => p.filter((x) => x.id !== r.id))} /> }
   ]
 
+  const tabMeta = {
+    roles: { title: 'Peran', desc: 'Role + UserRole + RoleMenu (can_view/create/edit/delete).', add: 'Tambah peran', modal: roleModal },
+    menus: { title: 'Menu', desc: 'Menu: name, url, icon, parent, order, is_active.', add: 'Tambah menu', modal: menuModal },
+    admins: { title: 'Admin', desc: 'AdminUser + AdminProfile: username, email, full_name, phone, department, position.', add: 'Tambah admin', modal: adminModal }
+  } as const
+  const meta = tabMeta[tab]
+
   return (
     <div>
-      <PageHeader title="Peran & Menu" desc="Role, UserRole, Menu (name, url, icon, parent, order, is_active), RoleMenu (can_view/create/edit/delete), AdminUser + AdminProfile." />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start mb-4">
+      <PageToolbar
+        title={meta.title}
+        desc={meta.desc}
+        searchPlaceholder="Cari..."
+        tabs={[{ key: 'roles', label: 'Peran (Role)' }, { key: 'menus', label: 'Menu' }, { key: 'admins', label: 'Admin' }]}
+        activeTab={tab}
+        onTabChange={(k) => setTab(k as typeof tab)}
+        addLabel={meta.add}
+        onAdd={meta.modal.openModal}
+      />
+      {tab === 'roles' && (
         <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Daftar peran</h2>
           <DataTable columns={roleCols} rows={roles} rowKey={(r) => String(r.id)} />
         </section>
+      )}
+      {tab === 'menus' && (
         <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Daftar menu</h2>
           <DataTable columns={menuCols} rows={menus} rowKey={(r) => String(r.id)} />
         </section>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+      )}
+      {tab === 'admins' && (
         <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Tambah peran</h2>
-          <form onSubmit={(e) => { e.preventDefault(); if (!rForm.name) return; setRoles((p) => [...p, { id: Date.now(), name: rForm.name, desc: rForm.description }]); setRForm({ name: '', description: '' }) }} className="flex flex-col gap-4">
-            <FormField label="Nama peran (unik)" htmlFor="rl-name"><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
-            <FormField label="Deskripsi" htmlFor="rl-desc"><textarea id="rl-desc" rows={2} value={rForm.description} onChange={(e) => setRForm({ ...rForm, description: e.target.value })} className="w-full border border-fco-border rounded-xl p-3 text-fco-md focus:outline-none focus:border-fco-blue" /></FormField>
-            <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer">Simpan peran</button>
-          </form>
+          <p className="m-0 text-sm text-soft">Daftar admin dikelola via tabel UserRole di backend. Gunakan tombol di atas untuk menambah akun admin baru.</p>
         </section>
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Tambah menu</h2>
-          <form onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]) }} className="flex flex-col gap-4">
-            <FormField label="Nama menu" htmlFor="mn-name"><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormField label="URL" htmlFor="mn-url"><input id="mn-url" value={mForm.url} onChange={(e) => setMForm({ ...mForm, url: e.target.value })} placeholder="/admin/..." className={inputCls} /></FormField>
-              <FormField label="Ikon" htmlFor="mn-icon"><input id="mn-icon" value={mForm.icon} onChange={(e) => setMForm({ ...mForm, icon: e.target.value })} className={inputCls} /></FormField>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormField label="Menu induk (parent id)" htmlFor="mn-parent"><input id="mn-parent" value={mForm.parent} onChange={(e) => setMForm({ ...mForm, parent: e.target.value })} className={inputCls} /></FormField>
-              <FormField label="Urutan" htmlFor="mn-order"><input id="mn-order" type="number" value={mForm.order} onChange={(e) => setMForm({ ...mForm, order: e.target.value })} className={inputCls} /></FormField>
-            </div>
-            <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer">Simpan menu</button>
-          </form>
-        </section>
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Tambah admin (AdminUser)</h2>
-          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormField label="Username" htmlFor="au-user"><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
-              <FormField label="Email" htmlFor="au-email"><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
-            </div>
-            <FormField label="Nama lengkap" htmlFor="au-name"><input id="au-name" value={uForm.full_name} onChange={(e) => setUForm({ ...uForm, full_name: e.target.value })} className={inputCls} /></FormField>
-            <FormField label="Telepon" htmlFor="au-phone"><input id="au-phone" value={uForm.phone} onChange={(e) => setUForm({ ...uForm, phone: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormField label="Departemen" htmlFor="au-dept"><input id="au-dept" value={uForm.department} onChange={(e) => setUForm({ ...uForm, department: e.target.value })} className={inputCls} /></FormField>
-              <FormField label="Posisi" htmlFor="au-pos"><input id="au-pos" value={uForm.position} onChange={(e) => setUForm({ ...uForm, position: e.target.value })} className={inputCls} /></FormField>
-            </div>
-            <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer">Simpan admin</button>
-          </form>
-        </section>
-      </div>
+      )}
+      <CrudModal open={roleModal.open} title="Tambah peran" subtitle="Role baru dengan deskripsi dan permission default." onClose={roleModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!rForm.name) return; setRoles((p) => [...p, { id: Date.now(), name: rForm.name, desc: rForm.description }]); setRForm({ name: '', description: '' }); roleModal.closeModal() }} submitLabel="Simpan peran">
+        <FormField label="Nama peran (unik)" htmlFor="rl-name"><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Deskripsi" htmlFor="rl-desc"><textarea id="rl-desc" rows={2} value={rForm.description} onChange={(e) => setRForm({ ...rForm, description: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
+      </CrudModal>
+      <CrudModal open={menuModal.open} title="Tambah menu" subtitle="Menu navigasi dinamis dengan parent dan urutan." onClose={menuModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]); menuModal.closeModal() }} submitLabel="Simpan menu">
+        <FormField label="Nama menu" htmlFor="mn-name"><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="URL" htmlFor="mn-url"><input id="mn-url" value={mForm.url} onChange={(e) => setMForm({ ...mForm, url: e.target.value })} placeholder="/admin/..." className={inputCls} /></FormField>
+          <FormField label="Ikon" htmlFor="mn-icon"><input id="mn-icon" value={mForm.icon} onChange={(e) => setMForm({ ...mForm, icon: e.target.value })} className={inputCls} /></FormField>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="Menu induk (parent id)" htmlFor="mn-parent"><input id="mn-parent" value={mForm.parent} onChange={(e) => setMForm({ ...mForm, parent: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Urutan" htmlFor="mn-order"><input id="mn-order" type="number" value={mForm.order} onChange={(e) => setMForm({ ...mForm, order: e.target.value })} className={inputCls} /></FormField>
+        </div>
+      </CrudModal>
+      <CrudModal open={adminModal.open} title="Tambah admin" subtitle="AdminUser + AdminProfile baru." onClose={adminModal.closeModal} onSubmit={(e) => { e.preventDefault(); adminModal.closeModal() }} submitLabel="Simpan admin">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="Username" htmlFor="au-user"><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Email" htmlFor="au-email"><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
+        </div>
+        <FormField label="Nama lengkap" htmlFor="au-name"><input id="au-name" value={uForm.full_name} onChange={(e) => setUForm({ ...uForm, full_name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Telepon" htmlFor="au-phone"><input id="au-phone" value={uForm.phone} onChange={(e) => setUForm({ ...uForm, phone: e.target.value })} className={inputCls} /></FormField>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="Departemen" htmlFor="au-dept"><input id="au-dept" value={uForm.department} onChange={(e) => setUForm({ ...uForm, department: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Posisi" htmlFor="au-pos"><input id="au-pos" value={uForm.position} onChange={(e) => setUForm({ ...uForm, position: e.target.value })} className={inputCls} /></FormField>
+        </div>
+      </CrudModal>
     </div>
   )
 }

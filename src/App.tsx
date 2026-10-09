@@ -7,7 +7,8 @@ import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 import { AdminLayout } from "./pages/admin/components/AdminSidebar";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { ShipsPage } from "./pages/admin/ShipsPage";
-import { OwnersCaptainsPage } from "./pages/admin/OwnersCaptainsPage";
+import { OwnersTab } from "./pages/admin/OwnersTab";
+import { CaptainsTab } from "./pages/admin/CaptainsTab";
 import { CatchesPage } from "./pages/admin/CatchesPage";
 import { SpeciesPage } from "./pages/admin/SpeciesPage";
 import { AreasPage } from "./pages/admin/AreasPage";
@@ -44,7 +45,8 @@ export default function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="ships" element={<ShipsPage />} />
-          <Route path="owners" element={<OwnersCaptainsPage />} />
+          <Route path="owners" element={<OwnersTab />} />
+          <Route path="captains" element={<CaptainsTab />} />
           <Route path="catches" element={<CatchesPage />} />
           <Route path="species" element={<SpeciesPage />} />
           <Route path="areas" element={<AreasPage />} />
