@@ -17,7 +17,7 @@ export function PemilikDashboard() {
   const [activeNav, setActiveNav] = useState('Beranda')
 
   return (
-    <div className="min-h-screen flex bg-[#F6F9FE] text-[#0F1F3D]">
+    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
       <PemilikSidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
       <main className="flex-1 min-w-0 p-7 lg:p-10">
@@ -25,14 +25,14 @@ export function PemilikDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
             <h1 className="m-0 text-3xl font-extrabold tracking-tight">Armada Anda</h1>
-            <div className="text-sm text-[#5B6B86] mt-1">Pantau kapal, nahkoda, kuota, dan PNBP dalam satu layar.</div>
+            <div className="text-sm text-fco-muted mt-1">Pantau kapal, nahkoda, kuota, dan PNBP dalam satu layar.</div>
           </div>
 
           <div className="flex items-center gap-3">
             <NotificationBell count={1} />
             <button
               type="button"
-              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-[10px] bg-[#1A56DB] hover:bg-[#123FA8] text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-[10px] bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
             >
               <svg className="w-4 h-4 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />

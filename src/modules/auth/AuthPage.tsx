@@ -12,61 +12,58 @@ interface AuthPageProps {
 
 export function AuthPage({ mode }: AuthPageProps) {
   return (
-    <div className="min-h-screen flex flex-wrap bg-[#F6F9FE]">
-      {/* Left Blue Brand Hero */}
-      <div className="flex-1 basis-[440px] bg-[#0F2A63] text-white p-10 lg:p-14 flex flex-col justify-between relative overflow-hidden">
+    <div className="min-h-screen flex flex-wrap bg-white">
+      {/* Left Blue Brand Hero (Minimalis Elegan) */}
+      <div className="flex-1 basis-[440px] bg-fco-navy text-white p-10 lg:p-14 flex flex-col justify-between relative overflow-hidden">
+        {/* Subtle decorative circles */}
         <div className="absolute w-[560px] h-[560px] rounded-full border border-white/12 -right-[200px] -bottom-[180px] pointer-events-none" />
-        <div className="absolute w-[380px] h-[380px] rounded-full border border-white/12 -right-[100px] -bottom-[90px] pointer-events-none" />
+        <div className="absolute w-[380px] h-[380px] rounded-full border border-white/12 -right-[110px] -bottom-[90px] pointer-events-none" />
 
+        {/* Top: Logo */}
         <div className="relative z-10">
-          <div className="flex items-center justify-between">
-            <Link to="/onboard" className="no-underline">
-              <Logo size={42} variant="dark" />
-            </Link>
-            <Link
-              to="/onboard"
-              className="text-xs font-semibold text-[#BCD3F8] hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg no-underline transition-colors"
-            >
-              Lihat Onboarding
-            </Link>
-          </div>
-          <div className="mt-12 max-w-[420px]">
-            <h1 className="text-3xl font-extrabold leading-tight tracking-tight mb-4 text-white">
-              Ekosistem Manajemen Tangkapan Ikan Cerdas & Transparan
-            </h1>
-            <p className="text-[15px] text-[#D6E4FF] leading-relaxed m-0">
-              Pencatatan hasil laut otomatis terverifikasi ledger blockchain, audit kepatuhan kuota, dan optimalisasi PNBP nasional.
-            </p>
-          </div>
+          <Link to="/onboard" className="no-underline inline-block">
+            <Logo size={36} variant="dark" />
+          </Link>
         </div>
 
-        <div className="relative z-10 flex flex-col gap-3.5 my-8">
-          {[
-            { title: 'Immutabilitas Ledger Blockchain', desc: 'Setiap laporan penangkapan tersimpan secara permanen dan bebas manipulasi.' },
-            { title: 'Perhitungan Otomatis PNBP', desc: 'Tarif dihitung langsung berdasarkan GT kapal dan indeks harga acuan resmi.' },
-            { title: 'Prediksi Kuota AI (LSTM + NSGA-III)', desc: 'Rekomendasi kuota optimal berbasis tren musim penangkapan dan data historis.' }
-          ].map((item, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <div className="w-5.5 h-5.5 rounded-md bg-white/15 flex items-center justify-center shrink-0 mt-0.5">
-                <svg className="w-3.5 h-3.5 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M5 13l4 4L19 7" />
+        {/* Middle: Clean Headline & Simple 1-line checkmarks */}
+        <div className="relative z-10 max-w-[440px] my-10">
+          <h2 className="text-3xl lg:text-[38px] font-extrabold leading-[1.15] tracking-tight mb-7 text-white">
+            Laporan, kuota, dan PNBP di satu tempat.
+          </h2>
+
+          <div className="flex flex-col gap-3.5">
+            {[
+              'Pelaporan tangkapan langsung dari kapal',
+              'Prediksi kuota dan PNBP berbasis AI',
+              'Data tercatat permanen di blockchain'
+            ].map((text, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm lg:text-[15px] text-[#C9D8F5]">
+                <svg
+                  className="w-4.5 h-4.5 stroke-[#7FB0FF] shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12.5l4.5 4.5L19 7" />
                 </svg>
+                <span>{text}</span>
               </div>
-              <div>
-                <div className="text-sm font-bold text-white">{item.title}</div>
-                <div className="text-xs text-[#BCD3F8]">{item.desc}</div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="relative z-10 text-xs text-[#7D9CD6]">
-          © 2026 Kementerian Kelautan dan Perikanan Republik Indonesia.
+        {/* Bottom: Subtitle footer */}
+        <div className="relative z-10 text-[13px] text-[#9FB6E6]">
+          Sistem Manajemen Tangkapan Ikan FCO
         </div>
       </div>
 
       {/* Right Form Area */}
-      <div className="flex-1 basis-[500px] flex items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto">
+      <div className="flex-1 basis-[500px] flex items-center justify-center p-6 sm:p-10 lg:p-14 overflow-y-auto bg-white">
         {mode === 'login' && <LoginForm />}
         {mode === 'register' && <RegisterStepWizard />}
         {mode === 'reset-password' && <ResetPasswordWizard />}

@@ -9,7 +9,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
     <div className="flex items-center gap-2.5">
       <div
         className={`flex items-center justify-center rounded-[10px] shrink-0 ${
-          isDark ? 'bg-white' : 'bg-[#1A56DB]'
+          isDark ? 'bg-white' : 'bg-fco-blue'
         }`}
         style={{ width: `${size}px`, height: `${size}px` }}
       >
@@ -29,7 +29,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
       </div>
       <span
         className={`font-extrabold text-xl tracking-tight ${
-          isDark ? 'text-white' : 'text-[#0F1F3D]'
+          isDark ? 'text-white' : 'text-fco-dark'
         }`}
       >
         FCO

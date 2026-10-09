@@ -23,17 +23,17 @@ export function LoginForm() {
   return (
     <div className="max-w-[420px] w-full mx-auto">
       <div className="mb-8">
-        <h2 className="text-2xl font-extrabold text-[#0F1F3D] mb-1.5 tracking-tight">
+        <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
           Masuk ke FCO
         </h2>
-        <p className="text-sm text-[#5B6B86] m-0">
+        <p className="text-sm text-fco-muted m-0">
           Gunakan nama pengguna atau nomor registrasi kapal Anda.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
         <div>
-          <label htmlFor="login-identifier" className="block text-[13px] font-semibold text-[#0F1F3D] mb-2">
+          <label htmlFor="login-identifier" className="block text-[13px] font-semibold text-fco-dark mb-2">
             Nama pengguna atau nomor registrasi
           </label>
           <input
@@ -43,18 +43,18 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="Contoh: REG-0412 atau admin_kkp"
-            className="w-full h-11.5 border border-[#DCE6F5] rounded-[10px] px-3.5 text-sm text-[#0F1F3D] bg-white focus:outline-none focus:border-[#1A56DB] transition-colors"
+            className="w-full h-11.5 border border-fco-border rounded-[10px] px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label htmlFor="login-password" className="text-[13px] font-semibold text-[#0F1F3D]">
+            <label htmlFor="login-password" className="text-[13px] font-semibold text-fco-dark">
               Kata sandi
             </label>
             <Link
               to="/reset-password"
-              className="text-[13px] font-semibold text-[#1A56DB] hover:text-[#123FA8] no-underline"
+              className="text-[13px] font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
             >
               Lupa kata sandi?
             </Link>
@@ -66,23 +66,23 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-11.5 border border-[#DCE6F5] rounded-[10px] px-3.5 text-sm text-[#0F1F3D] bg-white focus:outline-none focus:border-[#1A56DB] transition-colors"
+            className="w-full h-11.5 border border-fco-border rounded-[10px] px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
         <button
           type="submit"
-          className="h-12 rounded-[10px] border-none bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[15px] font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
+          className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
         >
           Masuk
         </button>
       </form>
 
-      <div className="mt-7 text-center text-sm text-[#5B6B86]">
+      <div className="mt-7 text-center text-sm text-fco-muted">
         Belum punya akun?{' '}
         <Link
           to="/register"
-          className="text-[#1A56DB] hover:text-[#123FA8] font-semibold no-underline"
+          className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
         >
           Daftar sekarang
         </Link>

@@ -18,7 +18,7 @@ export function AdminDashboard() {
   const [activeNav, setActiveNav] = useState('Ringkasan')
 
   return (
-    <div className="min-h-screen flex bg-[#F6F9FE] text-[#0F1F3D]">
+    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
       <AdminSidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
       <main className="flex-1 min-w-0 p-7 lg:p-10">
@@ -26,13 +26,13 @@ export function AdminDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
             <h1 className="m-0 text-3xl font-extrabold tracking-tight">Ringkasan nasional</h1>
-            <div className="text-sm text-[#5B6B86] mt-1">Tangkapan, PNBP, dan kuota seluruh kapal.</div>
+            <div className="text-sm text-fco-muted mt-1">Tangkapan, PNBP, dan kuota seluruh kapal.</div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="relative">
               <svg
-                className="w-4.5 h-4.5 stroke-[#5B6B86] absolute left-3 top-2.5 pointer-events-none"
+                className="w-4.5 h-4.5 stroke-fco-muted absolute left-3 top-2.5 pointer-events-none"
                 viewBox="0 0 24 24"
                 fill="none"
                 strokeWidth="1.8"
@@ -46,7 +46,7 @@ export function AdminDashboard() {
               <input
                 type="search"
                 placeholder="Cari kapal atau pemilik"
-                className="w-65 h-10 border border-[#DCE6F5] rounded-[10px] pl-9.5 pr-3 text-sm bg-white text-[#0F1F3D] focus:outline-none focus:border-[#1A56DB] transition-colors"
+                className="w-65 h-10 border border-fco-border rounded-[10px] pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors"
               />
             </div>
             <NotificationBell count={3} />

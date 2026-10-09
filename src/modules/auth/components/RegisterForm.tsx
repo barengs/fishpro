@@ -23,16 +23,16 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
   return (
     <div className="max-w-[480px] w-full mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-extrabold text-[#0F1F3D] mb-1.5 tracking-tight">
+        <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
           Daftar akun FCO
         </h2>
-        <p className="text-sm text-[#5B6B86] m-0">
+        <p className="text-sm text-fco-muted m-0">
           Pilih peran Anda untuk memulai pendaftaran sistem.
         </p>
       </div>
 
       {/* Role Picker */}
-      <div className="flex gap-2 p-1 bg-[#E8F0FE] rounded-xl mb-5">
+      <div className="flex gap-2 p-1 bg-fco-blue-light rounded-xl mb-5">
         {[
           { key: 'owner', label: 'Pemilik Kapal' },
           { key: 'captain', label: 'Nahkoda' },
@@ -45,7 +45,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               type="button"
               onClick={() => setRole(item.key as typeof role)}
               className={`flex-1 h-9.5 rounded-lg text-[13px] font-semibold cursor-pointer border-none transition-all ${
-                isSelected ? 'bg-[#1A56DB] text-white shadow-xs' : 'bg-transparent text-[#5B6B86] hover:text-[#0F1F3D]'
+                isSelected ? 'bg-fco-blue text-white shadow-xs' : 'bg-transparent text-fco-muted hover:text-fco-dark'
               }`}
             >
               {item.label}
@@ -56,7 +56,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
       {role === 'owner' && (
         <div className="mb-4.5">
-          <label className="block text-[13px] font-semibold text-[#0F1F3D] mb-2">
+          <label className="block text-[13px] font-semibold text-fco-dark mb-2">
             Tipe Pemilik
           </label>
           <div className="flex gap-2.5">
@@ -72,8 +72,8 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                   onClick={() => setOwnerType(type.key as typeof ownerType)}
                   className={`flex-1 h-10 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors border ${
                     isSelected
-                      ? 'border-[#1A56DB] bg-[#E8F0FE] text-[#1A56DB]'
-                      : 'border-[#DCE6F5] bg-white text-[#0F1F3D] hover:bg-[#F6F9FE]'
+                      ? 'border-fco-blue bg-fco-blue-light text-fco-blue'
+                      : 'border-fco-border bg-white text-fco-dark hover:bg-fco-bg'
                   }`}
                 >
                   {type.label}
@@ -86,7 +86,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         <div>
-          <label htmlFor="reg-fullname" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+          <label htmlFor="reg-fullname" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
             Nama lengkap
           </label>
           <input
@@ -96,13 +96,13 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Nama sesuai identitas"
-            className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+            className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="reg-username" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+            <label htmlFor="reg-username" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
               Nama pengguna
             </label>
             <input
@@ -112,11 +112,11 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Contoh: budi.h"
-              className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+              className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
             />
           </div>
           <div>
-            <label htmlFor="reg-email" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+            <label htmlFor="reg-email" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
               Email
             </label>
             <input
@@ -126,14 +126,14 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@email.com"
-              className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+              className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="reg-phone" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+            <label htmlFor="reg-phone" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
               Nomor telepon
             </label>
             <input
@@ -143,12 +143,12 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="08xxxxxxxxxx"
-              className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+              className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
             />
           </div>
           {role !== 'admin' && (
             <div>
-              <label htmlFor="reg-ship" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+              <label htmlFor="reg-ship" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
                 No. Registrasi Kapal
               </label>
               <input
@@ -157,14 +157,14 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                 value={shipReg}
                 onChange={(e) => setShipReg(e.target.value)}
                 placeholder="REG-0412"
-                className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+                className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
           )}
         </div>
 
         <div>
-          <label htmlFor="reg-pass" className="block text-[13px] font-semibold text-[#0F1F3D] mb-1.5">
+          <label htmlFor="reg-pass" className="block text-[13px] font-semibold text-fco-dark mb-1.5">
             Kata sandi
           </label>
           <input
@@ -174,24 +174,24 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Minimal 8 karakter"
-            className="w-full h-11 border border-[#DCE6F5] rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-[#1A56DB]"
+            className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
           />
         </div>
 
         <button
           type="submit"
-          className="h-12 rounded-[10px] border-none bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[15px] font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
+          className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
         >
           Daftar Akun
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-[#5B6B86]">
+      <div className="mt-6 text-center text-sm text-fco-muted">
         Sudah memiliki akun?{' '}
         <button
           type="button"
           onClick={onSwitchToLogin}
-          className="bg-transparent border-none text-[#1A56DB] hover:text-[#123FA8] font-semibold cursor-pointer p-0"
+          className="bg-transparent border-none text-fco-blue hover:text-fco-blue-hover font-semibold cursor-pointer p-0"
         >
           Masuk di sini
         </button>

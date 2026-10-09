@@ -26,7 +26,7 @@ export function NahkodaDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F9FE] text-[#0F1F3D]">
+    <div className="min-h-screen bg-fco-bg text-fco-dark">
       <NahkodaNavbar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="max-w-[1280px] mx-auto p-7 sm:p-10">
@@ -34,7 +34,7 @@ export function NahkodaDashboard() {
           <h1 className="m-0 mb-1.5 text-3xl font-extrabold tracking-tight">
             Selamat siang, Budi
           </h1>
-          <div className="text-sm text-[#5B6B86]">
+          <div className="text-sm text-fco-muted">
             KM Samudra Jaya · REG-0412 · Pelabuhan asal Benoa
           </div>
         </div>

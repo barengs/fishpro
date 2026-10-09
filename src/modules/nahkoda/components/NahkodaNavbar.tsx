@@ -14,7 +14,7 @@ export function NahkodaNavbar({ activeTab, onTabChange }: NahkodaNavbarProps) {
   const navigate = useNavigate()
 
   return (
-    <header className="bg-white border-b border-[#DCE6F5] sticky top-0 z-40">
+    <header className="bg-white border-b border-fco-border sticky top-0 z-40">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-10 min-h-[72px] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-10 flex-wrap">
           <Link to="/nahkoda" className="no-underline">
@@ -31,8 +31,8 @@ export function NahkodaNavbar({ activeTab, onTabChange }: NahkodaNavbarProps) {
                   onClick={() => onTabChange(tab)}
                   className={`inline-flex items-center h-10 px-4 rounded-[10px] text-sm font-semibold border-none cursor-pointer transition-colors ${
                     isActive
-                      ? 'bg-[#E8F0FE] text-[#1A56DB]'
-                      : 'bg-transparent text-[#5B6B86] hover:bg-[#F6F9FE] hover:text-[#0F1F3D]'
+                      ? 'bg-fco-blue-light text-fco-blue'
+                      : 'bg-transparent text-fco-muted hover:bg-fco-bg hover:text-fco-dark'
                   }`}
                 >
                   {tab}

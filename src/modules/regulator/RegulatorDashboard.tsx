@@ -45,7 +45,7 @@ export function RegulatorDashboard() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#F6F9FE] text-[#0F1F3D]">
+    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
       <RegulatorSidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
       <main className="flex-1 min-w-0 p-7 lg:p-10">
@@ -53,7 +53,7 @@ export function RegulatorDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
             <h1 className="m-0 text-3xl font-extrabold tracking-tight">Portal Pengawas & Regulator</h1>
-            <div className="text-sm text-[#5B6B86] mt-1">
+            <div className="text-sm text-fco-muted mt-1">
               Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen penyesuaian manual kuota KKP.
             </div>
           </div>
@@ -65,7 +65,7 @@ export function RegulatorDashboard() {
                 setSelectedShip(null)
                 setIsModalOpen(true)
               }}
-              className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-[10px] bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[13px] font-semibold cursor-pointer transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-[10px] bg-fco-blue hover:bg-fco-blue-hover text-white text-[13px] font-semibold cursor-pointer transition-colors shadow-xs"
             >
               + Override Kuota Manual
             </button>
@@ -74,7 +74,7 @@ export function RegulatorDashboard() {
         </div>
 
         {toastMessage && (
-          <div className="p-3.5 px-4.5 rounded-xl bg-[#E8F0FE] text-[#1A56DB] text-sm font-semibold mb-5 border border-[#BCD3F8]">
+          <div className="p-3.5 px-4.5 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-5 border border-fco-blue-border">
             ✓ {toastMessage}
           </div>
         )}

@@ -25,7 +25,7 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
   return (
     <nav
       aria-label="Menu utama Admin"
-      className="basis-[248px] shrink-0 bg-white border-r border-[#DCE6F5] p-4 flex flex-col justify-between"
+      className="basis-[248px] shrink-0 bg-white border-r border-fco-border p-4 flex flex-col justify-between"
     >
       <div>
         <div className="px-2 pb-7">
@@ -44,8 +44,8 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
                 onClick={() => onNavChange(n.label)}
                 className={`flex items-center gap-3 h-[42px] px-3 rounded-[10px] text-sm font-semibold border-none cursor-pointer text-left transition-all ${
                   isActive
-                    ? 'bg-[#E8F0FE] text-[#1A56DB]'
-                    : 'bg-transparent text-[#5B6B86] hover:bg-[#F6F9FE] hover:text-[#0F1F3D]'
+                    ? 'bg-fco-blue-light text-fco-blue'
+                    : 'bg-transparent text-fco-muted hover:bg-fco-bg hover:text-fco-dark'
                 }`}
               >
                 <svg
@@ -66,7 +66,7 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
         </div>
       </div>
 
-      <div className="p-3 rounded-xl bg-[#F6F9FE]">
+      <div className="p-3 rounded-xl bg-fco-bg">
         <UserProfileBadge
           initials="AD"
           name="Administrator"

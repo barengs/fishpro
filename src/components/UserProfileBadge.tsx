@@ -23,8 +23,8 @@ export function UserProfileBadge({
           {initials}
         </div>
         <div className="min-w-0">
-          <div className="text-sm font-semibold text-[#0F1F3D] truncate">{name}</div>
-          <div className="text-xs text-[#5B6B86] whitespace-nowrap">{role}</div>
+          <div className="text-sm font-semibold text-fco-dark truncate">{name}</div>
+          <div className="text-xs text-fco-muted whitespace-nowrap">{role}</div>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ export function UserProfileBadge({
           type="button"
           onClick={onLogout}
           title="Keluar / Logout"
-          className="p-1.5 rounded-lg text-[#5B6B86] hover:text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
+          className="p-1.5 rounded-lg text-fco-muted hover:text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
         >
           <svg className="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
