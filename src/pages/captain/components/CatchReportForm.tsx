@@ -77,7 +77,7 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label htmlFor="lat" className="block text-fco-sm font-semibold text-fco-dark mb-2">Latitude</label>
             <input

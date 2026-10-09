@@ -64,11 +64,11 @@ export function RolesMenusPage() {
           <h2 className="m-0 mb-4 text-base font-bold">Tambah menu</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]) }} className="flex flex-col gap-4">
             <FormField label="Nama menu" htmlFor="mn-name"><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="URL" htmlFor="mn-url"><input id="mn-url" value={mForm.url} onChange={(e) => setMForm({ ...mForm, url: e.target.value })} placeholder="/admin/..." className={inputCls} /></FormField>
               <FormField label="Ikon" htmlFor="mn-icon"><input id="mn-icon" value={mForm.icon} onChange={(e) => setMForm({ ...mForm, icon: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Menu induk (parent id)" htmlFor="mn-parent"><input id="mn-parent" value={mForm.parent} onChange={(e) => setMForm({ ...mForm, parent: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Urutan" htmlFor="mn-order"><input id="mn-order" type="number" value={mForm.order} onChange={(e) => setMForm({ ...mForm, order: e.target.value })} className={inputCls} /></FormField>
             </div>
@@ -78,13 +78,13 @@ export function RolesMenusPage() {
         <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah admin (AdminUser)</h2>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Username" htmlFor="au-user"><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Email" htmlFor="au-email"><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
             </div>
             <FormField label="Nama lengkap" htmlFor="au-name"><input id="au-name" value={uForm.full_name} onChange={(e) => setUForm({ ...uForm, full_name: e.target.value })} className={inputCls} /></FormField>
             <FormField label="Telepon" htmlFor="au-phone"><input id="au-phone" value={uForm.phone} onChange={(e) => setUForm({ ...uForm, phone: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Departemen" htmlFor="au-dept"><input id="au-dept" value={uForm.department} onChange={(e) => setUForm({ ...uForm, department: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Posisi" htmlFor="au-pos"><input id="au-pos" value={uForm.position} onChange={(e) => setUForm({ ...uForm, position: e.target.value })} className={inputCls} /></FormField>
             </div>

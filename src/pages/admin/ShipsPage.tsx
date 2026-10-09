@@ -55,16 +55,16 @@ export function ShipsPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <FormField label="Nama kapal" htmlFor="ship-name"><input id="ship-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="KM ..." className={inputCls} /></FormField>
             <FormField label="Nomor registrasi" htmlFor="ship-reg"><input id="ship-reg" required value={form.registration_number} onChange={(e) => setForm({ ...form, registration_number: e.target.value })} placeholder="REG-...." className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Pemilik (owner id)" htmlFor="ship-owner"><input id="ship-owner" value={form.owner} onChange={(e) => setForm({ ...form, owner: e.target.value })} placeholder="Nama pemilik" className={inputCls} /></FormField>
               <FormField label="Nahkoda (captain id)" htmlFor="ship-captain"><input id="ship-captain" value={form.captain} onChange={(e) => setForm({ ...form, captain: e.target.value })} placeholder="Nama nahkoda" className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <FormField label="Panjang (m)" htmlFor="ship-length"><input id="ship-length" type="number" step="0.01" value={form.length} onChange={(e) => setForm({ ...form, length: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Lebar (m)" htmlFor="ship-width"><input id="ship-width" type="number" step="0.01" value={form.width} onChange={(e) => setForm({ ...form, width: e.target.value })} className={inputCls} /></FormField>
               <FormField label="GT" htmlFor="ship-gt"><input id="ship-gt" type="number" step="0.01" value={form.gross_tonnage} onChange={(e) => setForm({ ...form, gross_tonnage: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tahun dibuat" htmlFor="ship-year"><input id="ship-year" type="number" value={form.year_built} onChange={(e) => setForm({ ...form, year_built: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Pelabuhan asal" htmlFor="ship-port"><input id="ship-port" value={form.home_port} onChange={(e) => setForm({ ...form, home_port: e.target.value })} placeholder="Benoa" className={inputCls} /></FormField>
             </div>

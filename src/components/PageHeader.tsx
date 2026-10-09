@@ -22,7 +22,7 @@ export function PageHeader({ title, desc, actions, showSearch, searchPlaceholder
               <circle cx="11" cy="11" r="7" />
               <path d="M21 21l-4.3-4.3" />
             </svg>
-            <input type="search" placeholder={searchPlaceholder ?? 'Cari...'} className="w-65 h-10 border border-fco-border rounded-fco pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors" />
+            <input type="search" placeholder={searchPlaceholder ?? 'Cari...'} className="w-full sm:w-65 h-10 border border-fco-border rounded-fco pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors" />
           </div>
         )}
         {actions}

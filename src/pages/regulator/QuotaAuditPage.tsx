@@ -39,7 +39,7 @@ export function QuotaAuditPage() {
           <p className="m-0 mb-4 text-sm text-fco-muted">Hak regulator: ship + year + quota baru + alasan.</p>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.registration_number || !f.new_quota) return; setToast(`Kuota ${f.registration_number} tahun ${f.year} → ${Number(f.new_quota).toLocaleString('id-ID')} kg`); setTimeout(() => setToast(null), 4000) }} className="flex flex-col gap-4">
             <FormField label="Nomor registrasi kapal" htmlFor="ov-reg"><input id="ov-reg" required value={f.registration_number} onChange={(e) => setF({ ...f, registration_number: e.target.value })} placeholder="REG-0087" className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tahun" htmlFor="ov-year"><input id="ov-year" type="number" required value={f.year} onChange={(e) => setF({ ...f, year: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Kuota baru (kg)" htmlFor="ov-q"><input id="ov-q" type="number" step="0.01" required value={f.new_quota} onChange={(e) => setF({ ...f, new_quota: e.target.value })} className={inputCls} /></FormField>
             </div>

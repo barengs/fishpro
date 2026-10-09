@@ -18,7 +18,7 @@ export function CaptainDashboard() {
   }
 
   return (
-    <main className="max-w-360 mx-auto p-7 sm:p-10">
+    <main className="max-w-360 mx-auto p-4 sm:p-7 lg:p-10">
       <div className="mb-7">
         <h1 className="m-0 mb-1.5 text-3xl font-extrabold tracking-tight">Selamat siang, Budi</h1>
         <div className="text-sm text-fco-muted">KM Samudra Jaya · REG-0412 · Pelabuhan asal Benoa</div>

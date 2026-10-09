@@ -33,19 +33,19 @@ export function MyCatchesPage() {
         <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Lapor cepat</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.fish_species || !f.quantity) return; setRows((p) => [{ id: Date.now(), date: f.catch_date, type: f.catch_type, species: f.fish_species, qty: `${f.quantity} ${f.unit}`, wpp: f.wpp }, ...p]) }} className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tanggal" htmlFor="mc-date"><input id="mc-date" type="date" required value={f.catch_date} onChange={(e) => setF({ ...f, catch_date: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Jenis" htmlFor="mc-type"><select id="mc-type" value={f.catch_type} onChange={(e) => setF({ ...f, catch_type: e.target.value })} className={inputCls}><option value="pelagic">Pelagis</option><option value="demersal">Demersal</option><option value="reef">Terumbu</option></select></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Latitude" htmlFor="mc-lat"><input id="mc-lat" value={f.location_latitude} onChange={(e) => setF({ ...f, location_latitude: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Longitude" htmlFor="mc-lng"><input id="mc-lng" value={f.location_longitude} onChange={(e) => setF({ ...f, location_longitude: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Spesies" htmlFor="mc-sp"><input id="mc-sp" required value={f.fish_species} onChange={(e) => setF({ ...f, fish_species: e.target.value })} className={inputCls} /></FormField>
               <FormField label="WPP" htmlFor="mc-wpp"><input id="mc-wpp" value={f.wpp} onChange={(e) => setF({ ...f, wpp: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <FormField label="Jumlah" htmlFor="mc-q"><input id="mc-q" type="number" step="0.01" required value={f.quantity} onChange={(e) => setF({ ...f, quantity: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Satuan" htmlFor="mc-u"><select id="mc-u" value={f.unit} onChange={(e) => setF({ ...f, unit: e.target.value })} className={inputCls}><option value="kg">kg</option><option value="ton">ton</option></select></FormField>
               <FormField label="Nilai" htmlFor="mc-v"><input id="mc-v" type="number" step="0.01" value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} className={inputCls} /></FormField>

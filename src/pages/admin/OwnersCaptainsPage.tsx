@@ -52,7 +52,7 @@ export function OwnersCaptainsPage() {
           <form onSubmit={(e) => { e.preventDefault(); if (!oForm.full_name) return; setOwners((p) => [...p, { id: Date.now(), full_name: oForm.full_name, owner_type: oForm.owner_type, email: oForm.email, phone: oForm.phone }]); setOForm({ full_name: '', owner_type: 'individual', contact_info: '', email: '', phone: '', address: '' }) }} className="flex flex-col gap-4">
             <FormField label="Nama lengkap" htmlFor="o-name"><input id="o-name" required value={oForm.full_name} onChange={(e) => setOForm({ ...oForm, full_name: e.target.value })} className={inputCls} /></FormField>
             <FormField label="Tipe pemilik" htmlFor="o-type"><select id="o-type" value={oForm.owner_type} onChange={(e) => setOForm({ ...oForm, owner_type: e.target.value })} className={inputCls}><option value="individual">Perorangan</option><option value="company">Perusahaan</option></select></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Email" htmlFor="o-email"><input id="o-email" type="email" value={oForm.email} onChange={(e) => setOForm({ ...oForm, email: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Telepon" htmlFor="o-phone"><input id="o-phone" value={oForm.phone} onChange={(e) => setOForm({ ...oForm, phone: e.target.value })} className={inputCls} /></FormField>
             </div>
@@ -64,19 +64,19 @@ export function OwnersCaptainsPage() {
         <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah nahkoda</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!cForm.full_name || !cForm.license_number) return; setCaptains((p) => [...p, { id: Date.now(), full_name: cForm.full_name, license_number: cForm.license_number, owner_name: cForm.owner || '-', years_of_experience: cForm.years_of_experience || '-' }]); setCForm({ full_name: '', license_number: '', owner: '', date_of_birth: '', contact_info: '', email: '', phone: '', address: '', years_of_experience: '' }) }} className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Nama nahkoda" htmlFor="c-name"><input id="c-name" required value={cForm.full_name} onChange={(e) => setCForm({ ...cForm, full_name: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Nomor lisensi (unik)" htmlFor="c-lic"><input id="c-lic" required value={cForm.license_number} onChange={(e) => setCForm({ ...cForm, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Pemilik (owner FK)" htmlFor="c-owner"><input id="c-owner" value={cForm.owner} onChange={(e) => setCForm({ ...cForm, owner: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Tanggal lahir" htmlFor="c-dob"><input id="c-dob" type="date" value={cForm.date_of_birth} onChange={(e) => setCForm({ ...cForm, date_of_birth: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Email" htmlFor="c-email"><input id="c-email" type="email" value={cForm.email} onChange={(e) => setCForm({ ...cForm, email: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Telepon" htmlFor="c-phone"><input id="c-phone" value={cForm.phone} onChange={(e) => setCForm({ ...cForm, phone: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Kontak tambahan" htmlFor="c-contact"><input id="c-contact" value={cForm.contact_info} onChange={(e) => setCForm({ ...cForm, contact_info: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Tahun pengalaman" htmlFor="c-exp"><input id="c-exp" type="number" value={cForm.years_of_experience} onChange={(e) => setCForm({ ...cForm, years_of_experience: e.target.value })} className={inputCls} /></FormField>
             </div>

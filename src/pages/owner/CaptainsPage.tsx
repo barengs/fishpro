@@ -33,11 +33,11 @@ export function CaptainsPage() {
           <form onSubmit={(e) => { e.preventDefault(); if (!f.full_name || !f.license_number) return; setRows((p) => [...p, { id: Date.now(), name: f.full_name, license: f.license_number, exp: f.years_of_experience ? `${f.years_of_experience} th` : '-', ship: '-' }]) }} className="flex flex-col gap-4">
             <FormField label="Nama nahkoda" htmlFor="cp-name"><input id="cp-name" required value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} className={inputCls} /></FormField>
             <FormField label="Nomor lisensi (unik)" htmlFor="cp-lic"><input id="cp-lic" required value={f.license_number} onChange={(e) => setF({ ...f, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tanggal lahir" htmlFor="cp-dob"><input id="cp-dob" type="date" value={f.date_of_birth} onChange={(e) => setF({ ...f, date_of_birth: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Pengalaman (th)" htmlFor="cp-exp"><input id="cp-exp" type="number" value={f.years_of_experience} onChange={(e) => setF({ ...f, years_of_experience: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Email" htmlFor="cp-email"><input id="cp-email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Telepon" htmlFor="cp-phone"><input id="cp-phone" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} className={inputCls} /></FormField>
             </div>

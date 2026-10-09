@@ -39,7 +39,7 @@ export function AdminDashboard() {
               <input
                 type="search"
                 placeholder="Cari kapal atau pemilik"
-                className="w-65 h-10 border border-fco-border rounded-fco pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors"
+                className="w-full sm:w-65 h-10 border border-fco-border rounded-fco pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors"
               />
             </div>
             <NotificationBell count={3} />

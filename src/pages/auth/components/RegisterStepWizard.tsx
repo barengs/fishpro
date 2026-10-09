@@ -154,7 +154,7 @@ export function RegisterStepWizard() {
             {role === 'owner' && (
               <div className="mb-4">
                 <label className="block text-sm font-semibold text-fco-dark mb-2">Tipe Pemilik</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { key: 'individual', label: 'Perorangan' },
                     { key: 'company', label: 'Badan Usaha / PT' }
@@ -214,7 +214,7 @@ export function RegisterStepWizard() {
             <p className="text-sm text-fco-muted mb-5">Digunakan untuk login dan verifikasi multi-faktor.</p>
 
             <div className="flex flex-col gap-3.5">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nama Pengguna (Username)</label>
                   <input
@@ -251,7 +251,7 @@ export function RegisterStepWizard() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-fco-dark mb-1.5">Kata Sandi</label>
                   <input
@@ -287,7 +287,7 @@ export function RegisterStepWizard() {
 
             {role === 'captain' && (
               <div className="flex flex-col gap-3.5">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nomor Lisensi Nahkoda</label>
                     <input
@@ -326,7 +326,7 @@ export function RegisterStepWizard() {
 
             {role === 'owner' && (
               <div className="flex flex-col gap-3.5">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nama Kapal Utama</label>
                     <input
@@ -349,7 +349,7 @@ export function RegisterStepWizard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-semibold text-fco-dark mb-1.5">Pelabuhan Pangkalan</label>
                     <input

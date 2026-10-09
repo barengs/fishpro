@@ -38,12 +38,12 @@ export function FleetPage() {
             <FormField label="Nama kapal" htmlFor="fl-name"><input id="fl-name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={inputCls} /></FormField>
             <FormField label="Nomor registrasi" htmlFor="fl-reg"><input id="fl-reg" required value={f.registration_number} onChange={(e) => setF({ ...f, registration_number: e.target.value })} placeholder="REG-...." className={inputCls} /></FormField>
             <FormField label="Nahkoda" htmlFor="fl-cap"><input id="fl-cap" value={f.captain} onChange={(e) => setF({ ...f, captain: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <FormField label="Panjang" htmlFor="fl-l"><input id="fl-l" type="number" step="0.01" value={f.length} onChange={(e) => setF({ ...f, length: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Lebar" htmlFor="fl-w"><input id="fl-w" type="number" step="0.01" value={f.width} onChange={(e) => setF({ ...f, width: e.target.value })} className={inputCls} /></FormField>
               <FormField label="GT" htmlFor="fl-gt"><input id="fl-gt" type="number" step="0.01" value={f.gross_tonnage} onChange={(e) => setF({ ...f, gross_tonnage: e.target.value })} className={inputCls} /></FormField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tahun" htmlFor="fl-y"><input id="fl-y" type="number" value={f.year_built} onChange={(e) => setF({ ...f, year_built: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Pelabuhan" htmlFor="fl-h"><input id="fl-h" value={f.home_port} onChange={(e) => setF({ ...f, home_port: e.target.value })} className={inputCls} /></FormField>
             </div>

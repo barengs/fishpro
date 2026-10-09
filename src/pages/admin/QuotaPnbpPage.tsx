@@ -38,7 +38,7 @@ export function QuotaPnbpPage() {
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
             <FormField label="Nama tarif (unik)" htmlFor="tf-name"><input id="tf-name" value={t.name} onChange={(e) => setT({ ...t, name: e.target.value })} className={inputCls} /></FormField>
             <FormField label="Batas GT" htmlFor="tf-gt"><input id="tf-gt" type="number" step="0.01" value={t.gt_threshold} onChange={(e) => setT({ ...t, gt_threshold: e.target.value })} className={inputCls} /></FormField>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Tarif GT kecil" htmlFor="tf-s"><input id="tf-s" type="number" step="0.0001" value={t.rate_small} onChange={(e) => setT({ ...t, rate_small: e.target.value })} className={inputCls} /></FormField>
               <FormField label="Tarif GT besar" htmlFor="tf-l"><input id="tf-l" type="number" step="0.0001" value={t.rate_large} onChange={(e) => setT({ ...t, rate_large: e.target.value })} className={inputCls} /></FormField>
             </div>
