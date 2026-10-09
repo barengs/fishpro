@@ -71,8 +71,8 @@ export function RegisterStepWizard() {
       setErrorMsg('Harap setujui syarat & ketentuan sebelum mengirimkan pendaftaran')
       return
     }
-    if (role === 'captain') navigate('/nahkoda')
-    else if (role === 'owner') navigate('/pemilik')
+    if (role === 'captain') navigate('/captain')
+    else if (role === 'owner') navigate('/owner')
     else navigate('/regulator')
   }
 

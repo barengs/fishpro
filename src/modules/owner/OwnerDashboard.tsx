@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { KpiCard } from '../../components/KpiCard'
 import { NotificationBell } from '../../components/NotificationBell'
-import { PemilikSidebar } from './components/PemilikSidebar'
+import { OwnerSidebar } from './components/OwnerSidebar'
 import { FleetTable } from './components/FleetTable'
 import { PnbpPredictionBars } from './components/PnbpPredictionBars'
 import { AiAdviceCard } from './components/AiAdviceCard'
@@ -13,12 +13,12 @@ const kpis = [
   { label: 'Sisa kuota gabungan', value: '49%', note: 'Rata-rata lima kapal' }
 ]
 
-export function PemilikDashboard() {
+export function OwnerDashboard() {
   const [activeNav, setActiveNav] = useState('Beranda')
 
   return (
     <div className="min-h-screen flex bg-fco-bg text-fco-dark">
-      <PemilikSidebar activeNav={activeNav} onNavChange={setActiveNav} />
+      <OwnerSidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
       <main className="flex-1 min-w-0 p-7 lg:p-10">
         {/* Header */}

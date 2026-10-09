@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Logo } from '../../../components/Logo'
 import { UserProfileBadge } from '../../../components/UserProfileBadge'
 
-interface PemilikSidebarProps {
+interface OwnerSidebarProps {
   activeNav: string
   onNavChange: (nav: string) => void
 }
@@ -16,7 +16,7 @@ const navItems = [
   { label: 'Profil Perusahaan', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z' }
 ]
 
-export function PemilikSidebar({ activeNav, onNavChange }: PemilikSidebarProps) {
+export function OwnerSidebar({ activeNav, onNavChange }: OwnerSidebarProps) {
   const navigate = useNavigate()
 
   return (
@@ -26,7 +26,7 @@ export function PemilikSidebar({ activeNav, onNavChange }: PemilikSidebarProps) 
     >
       <div>
         <div className="px-2 pb-7">
-          <Link to="/pemilik" className="no-underline">
+          <Link to="/owner" className="no-underline">
             <Logo />
           </Link>
         </div>

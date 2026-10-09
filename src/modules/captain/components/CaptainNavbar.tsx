@@ -3,21 +3,21 @@ import { Logo } from '../../../components/Logo'
 import { NotificationBell } from '../../../components/NotificationBell'
 import { UserProfileBadge } from '../../../components/UserProfileBadge'
 
-interface NahkodaNavbarProps {
+interface CaptainNavbarProps {
   activeTab: string
   onTabChange: (tab: string) => void
 }
 
 const tabs = ['Beranda', 'Lapor Tangkapan', 'Riwayat', 'Kapal Saya']
 
-export function NahkodaNavbar({ activeTab, onTabChange }: NahkodaNavbarProps) {
+export function CaptainNavbar({ activeTab, onTabChange }: CaptainNavbarProps) {
   const navigate = useNavigate()
 
   return (
     <header className="bg-white border-b border-fco-border sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 min-h-18 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-10 flex-wrap">
-          <Link to="/nahkoda" className="no-underline">
+          <Link to="/captain" className="no-underline">
             <Logo />
           </Link>
 

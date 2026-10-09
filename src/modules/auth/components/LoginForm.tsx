@@ -14,9 +14,9 @@ export function LoginForm() {
     } else if (id.includes('regulator') || id.includes('was')) {
       navigate('/regulator')
     } else if (id.includes('reg') || id.includes('kapten') || id.includes('nahkoda')) {
-      navigate('/nahkoda')
+      navigate('/captain')
     } else {
-      navigate('/pemilik')
+      navigate('/owner')
     }
   }
 

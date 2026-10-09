@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { NahkodaNavbar } from './components/NahkodaNavbar'
+import { CaptainNavbar } from './components/CaptainNavbar'
 import { QuotaHeroCard } from './components/QuotaHeroCard'
 import { ShipSpecsCard } from './components/ShipSpecsCard'
 import { RecentCatchesTable, type CatchReport } from './components/RecentCatchesTable'
 import { CatchReportForm } from './components/CatchReportForm'
 
-export function NahkodaDashboard() {
+export function CaptainDashboard() {
   const [activeTab, setActiveTab] = useState('Beranda')
   const [reports, setReports] = useState<CatchReport[]>([
     { date: '08 Okt 2026', species: 'Tongkol', qty: '120 kg', pnbp: 'Rp 120.000' },
@@ -27,7 +27,7 @@ export function NahkodaDashboard() {
 
   return (
     <div className="min-h-screen bg-fco-bg text-fco-dark">
-      <NahkodaNavbar activeTab={activeTab} onTabChange={setActiveTab} />
+      <CaptainNavbar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="max-w-7xl mx-auto p-7 sm:p-10">
         <div className="mb-7">

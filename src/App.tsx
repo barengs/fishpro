@@ -3,8 +3,8 @@ import { OnboardingPage } from './modules/auth/OnboardingPage'
 import { AuthPage } from './modules/auth/AuthPage'
 import { AdminDashboard } from './modules/admin/AdminDashboard'
 import { RegulatorDashboard } from './modules/regulator/RegulatorDashboard'
-import { PemilikDashboard } from './modules/pemilik/PemilikDashboard'
-import { NahkodaDashboard } from './modules/nahkoda/NahkodaDashboard'
+import { OwnerDashboard } from './modules/owner/OwnerDashboard'
+import { CaptainDashboard } from './modules/captain/CaptainDashboard'
 
 export default function App() {
   return (
@@ -22,8 +22,8 @@ export default function App() {
         {/* Role-based Dashboard Routes */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/regulator" element={<RegulatorDashboard />} />
-        <Route path="/pemilik" element={<PemilikDashboard />} />
-        <Route path="/nahkoda" element={<NahkodaDashboard />} />
+        <Route path="/owner" element={<OwnerDashboard />} />
+        <Route path="/captain" element={<CaptainDashboard />} />
 
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/onboard" replace />} />
