@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { OnboardingPage } from './modules/auth/OnboardingPage'
-import { AuthPage } from './modules/auth/AuthPage'
-import { AdminDashboard } from './modules/admin/AdminDashboard'
-import { RegulatorDashboard } from './modules/regulator/RegulatorDashboard'
-import { OwnerDashboard } from './modules/owner/OwnerDashboard'
-import { CaptainDashboard } from './modules/captain/CaptainDashboard'
+import { OnboardingPage } from './pages/auth/OnboardingPage'
+import { AuthPage } from './pages/auth/AuthPage'
+import { AdminDashboard } from './pages/admin/AdminDashboard'
+import { RegulatorDashboard } from './pages/regulator/RegulatorDashboard'
+import { OwnerDashboard } from './pages/owner/OwnerDashboard'
+import { CaptainDashboard } from './pages/captain/CaptainDashboard'
 
 export default function App() {
   return (
