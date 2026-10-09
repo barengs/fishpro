@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ChevronDown, LogOut, User } from 'lucide-react'
 
 interface UserProfileBadgeProps {
   initials: string
@@ -56,9 +57,7 @@ export function UserProfileBadge({
           <div className="text-sm font-semibold text-fco-dark truncate max-w-40">{name}</div>
           <div className="text-xs text-fco-muted whitespace-nowrap">{role}</div>
         </div>
-        <svg className={`w-4 h-4 stroke-fco-muted transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M6 9l6 6 6-6" />
-        </svg>
+        <ChevronDown size={16} className={`text-fco-muted transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} strokeWidth={2} aria-hidden="true" />
       </button>
 
       {dropdownOpen && (
@@ -68,10 +67,7 @@ export function UserProfileBadge({
             <div className="text-xs text-fco-muted">{role}</div>
           </div>
           <a href="#profil" role="menuitem" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-fco-dark hover:bg-fco-bg no-underline transition-colors">
-            <svg className="w-4 h-4 stroke-fco-muted" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+            <User size={16} className="text-fco-muted" strokeWidth={1.8} aria-hidden="true" />
             Profil saya
           </a>
           {onLogout && (
@@ -81,11 +77,7 @@ export function UserProfileBadge({
               onClick={() => { setDropdownOpen(false); onLogout() }}
               className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
             >
-              <svg className="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
+              <LogOut size={16} strokeWidth={1.8} aria-hidden="true" />
               Keluar
             </button>
           )}

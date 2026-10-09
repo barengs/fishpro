@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
 import { PageHeader } from '../../components/PageHeader'
 import { DataTable, type Column } from '../../components/DataTable'
 import { CrudActions, FormField, inputCls } from '../../components/FormField'
@@ -34,9 +35,7 @@ export function FleetPage() {
         searchPlaceholder="Cari armada"
         actions={
           <a href="#fl-name" className="inline-flex items-center gap-2 h-10 px-4.5 rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors shadow-xs">
-            <svg className="w-4 h-4 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
+            <Plus size={16} className="text-white" strokeWidth={2.2} aria-hidden="true" />
             Tambah kapal
           </a>
         }

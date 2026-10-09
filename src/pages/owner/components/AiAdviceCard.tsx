@@ -1,3 +1,5 @@
+import { BarChart3 } from 'lucide-react'
+
 const tips = [
   { title: 'Kuota KM Bahari Satu menipis', text: 'Dengan laju tangkapan sekarang, kuota diperkirakan habis dalam beberapa minggu.' },
   { title: 'Tunjuk nahkoda untuk KM Tirta Mas', text: 'Kapal belum bisa mengirim laporan tangkapan tanpa nahkoda.' },
@@ -12,9 +14,7 @@ export function AiAdviceCard() {
         {tips.map((t) => (
           <div key={t.title} className="flex gap-3">
             <div className="w-8 h-8 rounded-fco bg-fco-blue-light flex items-center justify-center shrink-0">
-              <svg className="w-4 h-4 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
-              </svg>
+              <BarChart3 size={16} className="text-fco-blue" strokeWidth={2} aria-hidden="true" />
             </div>
             <div>
               <div className="text-sm font-semibold mb-0.5 text-fco-dark">{t.title}</div>

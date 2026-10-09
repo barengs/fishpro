@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { StatusChip } from '../../../components/StatusChip'
 
 export interface CatchReport {
@@ -51,9 +52,7 @@ export function RecentCatchesTable({ reports = defaultReports }: RecentCatchesTa
                   bg="#E8F0FE"
                   color="#1A56DB"
                   icon={
-                    <svg className="w-3.5 h-3.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 12.5l4.5 4.5L19 7" />
-                    </svg>
+                    <Check size={13} className="text-fco-blue" strokeWidth={2.6} aria-hidden="true" />
                   }
                 />
               </div>

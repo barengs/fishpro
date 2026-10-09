@@ -2,20 +2,22 @@ import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Logo } from '../../../components/Logo'
 import { UserProfileBadge } from '../../../components/UserProfileBadge'
+import { FileCheck, LayoutDashboard, Link2 } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 
 const navItems = [
-  { label: 'Ringkasan', to: '/regulator', end: true, d: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
-  { label: 'Audit Kuota', to: '/regulator/audit', d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
-  { label: 'Verifikasi Blockchain', to: '/regulator/verify', d: 'M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1' }
+  { label: 'Ringkasan', to: '/regulator', end: true, Icon: LayoutDashboard },
+  { label: 'Audit Kuota', to: '/regulator/audit', Icon: FileCheck },
+  { label: 'Verifikasi Blockchain', to: '/regulator/verify', Icon: Link2 }
 ]
+
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex flex-col gap-1">
       {navItems.map((n) => (
         <NavLink key={n.label} to={n.to} end={n.end} onClick={onNavigate} className={({ isActive }) => `flex items-center gap-3 h-10.5 px-3 rounded-fco text-sm font-semibold no-underline transition-all ${isActive ? 'bg-fco-blue-light text-fco-blue' : 'bg-transparent text-fco-muted hover:bg-fco-bg hover:text-fco-dark'}`}>
-          <svg className="w-5 h-5 shrink-0 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={n.d} /></svg>
+          {<n.Icon size={20} className="shrink-0" strokeWidth={1.8} aria-hidden="true" />}
           {n.label}
         </NavLink>
       ))}

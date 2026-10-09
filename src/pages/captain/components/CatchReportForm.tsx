@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { MapPin, Plus } from 'lucide-react'
 
 interface CatchReportFormProps {
   onSuccess?: () => void
@@ -107,10 +108,7 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
           onClick={handleGetCurrentLocation}
           className="inline-flex items-center gap-2 self-start text-fco-sm font-semibold text-fco-blue hover:text-fco-blue-hover"
         >
-          <svg className="w-4 h-4 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z" />
-            <circle cx="12" cy="10" r="2.5" />
-          </svg>
+          <MapPin size={16} className="text-fco-blue" strokeWidth={1.9} aria-hidden="true" />
           Gunakan lokasi saat ini
         </a>
 
@@ -161,9 +159,7 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
         </div>
 
         <a href="#tambah" className="inline-flex items-center gap-2 self-start text-fco-sm font-semibold text-fco-blue hover:text-fco-blue-hover">
-          <svg className="w-4 h-4 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
+          <Plus size={16} className="text-fco-blue" strokeWidth={2} aria-hidden="true" />
           Tambah spesies lain
         </a>
 

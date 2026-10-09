@@ -1,3 +1,5 @@
+import { Waves } from 'lucide-react'
+
 interface LogoProps {
   size?: number
   variant?: 'light' | 'dark'
@@ -13,19 +15,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
         }`}
         style={{ width: `${size}px`, height: `${size}px` }}
       >
-        <svg
-          width={Math.round(size * 0.55)}
-          height={Math.round(size * 0.55)}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={isDark ? '#0F2A63' : '#FFFFFF'}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M2 9c3-3 5-3 8 0s5 3 8 0M2 15c3-3 5-3 8 0s5 3 8 0" />
-        </svg>
+        <Waves size={Math.round(size * 0.55)} color={isDark ? '#0F2A63' : '#FFFFFF'} strokeWidth={2} aria-hidden="true" />
       </div>
       <span
         className={`font-extrabold text-xl tracking-tight ${

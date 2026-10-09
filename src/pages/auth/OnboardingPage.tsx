@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { BarChart3, Check, ClipboardList, Link2, ShieldCheck, Ship, Wallet } from 'lucide-react'
 import { Logo } from '../../components/Logo'
 
 const navLinks = [
@@ -12,32 +13,32 @@ const features = [
   {
     title: 'Pelaporan Tangkapan Digital',
     desc: 'Nahkoda mencatat spesies, volume, koordinat, dan WPP langsung dari kapal melalui formulir mobile-friendly. Data terstruktur otomatis masuk ke laporan resmi KKP.',
-    icon: 'M9 4h6v3H9zM7 5H5v16h14V5h-2M8 12h8M8 16h5'
+    Icon: ClipboardList
   },
   {
     title: 'Kuota Berbasis AI',
     desc: 'Model LSTM membaca tren historis tangkapan, lalu NSGA-III mengoptimasi rekomendasi kuota dengan mempertimbangkan keberlanjutan stok dan musim penangkapan.',
-    icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2'
+    Icon: BarChart3
   },
   {
     title: 'PNBP Otomatis & Transparan',
     desc: 'Tarif dihitung dari GT kapal dan harga acuan resmi. Setiap detail tangkapan menghasilkan nilai PNKP dan PNBP yang dapat diaudit per transaksi.',
-    icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    Icon: Wallet
   },
   {
     title: 'Ledger Blockchain Immutabel',
     desc: 'Setiap laporan di-hash SHA-256 dan dirangkai ke blok sebelumnya. Regulator memverifikasi integritas rantai kapan saja tanpa bergantung pada satu server.',
-    icon: 'M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1'
+    Icon: Link2
   },
   {
     title: 'Manajemen Armada & Awak',
     desc: 'Pemilik mengelola kapal, menunjuk nahkoda, dan memantau sisa kuota per armada. Satu kapal tanpa nahkoda otomatis ditandai agar tidak bisa melapor.',
-    icon: 'M12 3v11M12 4l6 9h-6M3 17h18l-2 3H5z'
+    Icon: Ship
   },
   {
     title: 'Pengawasan Regulator',
     desc: 'Pengawas KKP mengaudit kepatuhan WPP, memverifikasi blockchain, dan melakukan override kuota manual dengan jejak alasan yang tercatat.',
-    icon: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'
+    Icon: ShieldCheck
   }
 ]
 
@@ -180,9 +181,7 @@ export function OnboardingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="font-bold text-base text-fco-dark">Laporan tangkapan</div>
                 <span className="inline-flex items-center gap-1.5 h-6.5 px-2.5 rounded-full bg-fco-blue-light text-fco-blue text-xs font-bold">
-                  <svg className="w-3.5 h-3.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M5 12.5l4.5 4.5L19 7" />
-                  </svg>
+                  <Check size={14} className="text-fco-blue" strokeWidth={2.6} aria-hidden="true" />
                   Tercatat Blockchain
                 </span>
               </div>
@@ -233,9 +232,7 @@ export function OnboardingPage() {
             {features.map((f) => (
               <article key={f.title} className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="w-11 h-11 rounded-xl bg-fco-blue-light flex items-center justify-center mb-4">
-                  <svg className="w-5.5 h-5.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d={f.icon} />
-                  </svg>
+                  <f.Icon size={22} className="text-fco-blue" strokeWidth={1.8} aria-hidden="true" />
                 </div>
                 <h3 className="m-0 mb-2 text-base font-bold">{f.title}</h3>
                 <p className="m-0 text-sm leading-relaxed text-fco-muted">{f.desc}</p>

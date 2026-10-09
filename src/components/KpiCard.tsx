@@ -6,6 +6,8 @@ interface KpiCardProps {
   trendUp?: boolean
 }
 
+import { TrendingUp } from 'lucide-react'
+
 export function KpiCard({ label, value, delta, note, trendUp = true }: KpiCardProps) {
   return (
     <div className="bg-white border border-fco-border rounded-2xl p-5 flex flex-col justify-between shadow-xs">
@@ -15,19 +17,7 @@ export function KpiCard({ label, value, delta, note, trendUp = true }: KpiCardPr
       </div>
       {delta && (
         <div className="flex items-center gap-1.5 text-xs text-fco-muted">
-          {trendUp && (
-            <svg
-              className="w-3.5 h-3.5 stroke-fco-blue shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
-          )}
+          {trendUp && <TrendingUp size={14} className="text-fco-blue shrink-0" strokeWidth={2.4} aria-hidden="true" />}
           <span>{delta}</span>
         </div>
       )}

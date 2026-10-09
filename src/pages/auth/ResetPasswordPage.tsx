@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ShieldCheck } from 'lucide-react'
 import { Logo } from '../../components/Logo'
 import { ResetPasswordWizard } from './components/ResetPasswordWizard'
 
@@ -52,9 +53,7 @@ export function ResetPasswordPage() {
         </div>
 
         <div className="p-5 rounded-2xl bg-fco-blue-light/50 border border-fco-blue-border text-fco-md text-fco-dark leading-relaxed flex gap-3">
-          <svg className="w-5.5 h-5.5 stroke-fco-blue shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
+          <ShieldCheck size={22} className="text-fco-blue shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
           <span>
             Tidak menerima OTP? Periksa folder spam, pastikan nomor terdaftar aktif, atau hubungi admin KKP dengan menyertakan nomor registrasi kapal Anda.
           </span>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { LogOut, X } from 'lucide-react'
 
 interface Profile {
   initials: string
@@ -73,9 +74,7 @@ export function MobileTopbar({ open, onToggle, onClose, profile, onLogout, child
               <div className="text-xs text-fco-muted">{profile.role}</div>
             </div>
             <button type="button" onClick={onClose} aria-label="Tutup menu" className="w-9 h-9 rounded-fco border border-fco-border bg-white flex items-center justify-center cursor-pointer hover:bg-fco-bg transition-colors shrink-0">
-              <svg className="w-4.5 h-4.5 stroke-fco-dark" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
+              <X size={18} className="text-fco-dark" strokeWidth={2} aria-hidden="true" />
             </button>
           </div>
           {children}
@@ -85,11 +84,7 @@ export function MobileTopbar({ open, onToggle, onClose, profile, onLogout, child
               onClick={() => { onClose(); onLogout() }}
               className="mt-4 w-full flex items-center justify-center gap-2.5 px-3 py-3 rounded-xl text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 border-none cursor-pointer transition-colors"
             >
-              <svg className="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
+              <LogOut size={16} strokeWidth={1.8} aria-hidden="true" />
               Keluar
             </button>
           )}
