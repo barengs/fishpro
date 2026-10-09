@@ -87,7 +87,7 @@ export function ResetPasswordWizard() {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 
@@ -169,7 +169,7 @@ export function ResetPasswordWizard() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 
@@ -184,7 +184,7 @@ export function ResetPasswordWizard() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi kata sandi baru"
-                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 

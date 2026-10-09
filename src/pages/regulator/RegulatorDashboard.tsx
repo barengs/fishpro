@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { KpiCard } from '../../components/KpiCard'
 import { NotificationBell } from '../../components/NotificationBell'
-import { RegulatorSidebar } from './components/RegulatorSidebar'
 import { QuotaAuditTable, type ShipQuotaItem } from './components/QuotaAuditTable'
 import { ManualQuotaModal } from './components/ManualQuotaModal'
 import { ComplianceOverview } from './components/ComplianceOverview'
@@ -15,7 +14,6 @@ const initialShips: ShipQuotaItem[] = [
 ]
 
 export function RegulatorDashboard() {
-  const [activeNav, setActiveNav] = useState('Audit Kuota')
   const [ships, setShips] = useState<ShipQuotaItem[]>(initialShips)
   const [selectedShip, setSelectedShip] = useState<ShipQuotaItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -45,10 +43,7 @@ export function RegulatorDashboard() {
   }
 
   return (
-    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
-      <RegulatorSidebar activeNav={activeNav} onNavChange={setActiveNav} />
-
-      <main className="flex-1 min-w-0 p-7 lg:p-10">
+    <div>
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
@@ -97,7 +92,6 @@ export function RegulatorDashboard() {
           <ComplianceOverview />
           <BlockchainCard />
         </div>
-      </main>
 
       <ManualQuotaModal
         isOpen={isModalOpen}

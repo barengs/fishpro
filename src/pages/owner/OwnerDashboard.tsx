@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { KpiCard } from '../../components/KpiCard'
 import { NotificationBell } from '../../components/NotificationBell'
-import { OwnerSidebar } from './components/OwnerSidebar'
 import { FleetTable } from './components/FleetTable'
 import { PnbpPredictionBars } from './components/PnbpPredictionBars'
 import { AiAdviceCard } from './components/AiAdviceCard'
@@ -14,13 +13,8 @@ const kpis = [
 ]
 
 export function OwnerDashboard() {
-  const [activeNav, setActiveNav] = useState('Beranda')
-
   return (
-    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
-      <OwnerSidebar activeNav={activeNav} onNavChange={setActiveNav} />
-
-      <main className="flex-1 min-w-0 p-7 lg:p-10">
+    <div>
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
@@ -30,15 +24,15 @@ export function OwnerDashboard() {
 
           <div className="flex items-center gap-3">
             <NotificationBell count={1} />
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+            <Link
+              to="/owner/fleet"
+              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline cursor-pointer transition-colors shadow-xs"
             >
               <svg className="w-4 h-4 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />
               </svg>
               Tambah kapal
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -59,7 +53,6 @@ export function OwnerDashboard() {
             <AiAdviceCard />
           </div>
         </div>
-      </main>
     </div>
   )
 }

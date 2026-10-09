@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { KpiCard } from '../../components/KpiCard'
 import { NotificationBell } from '../../components/NotificationBell'
-import { AdminSidebar } from './components/AdminSidebar'
 import { PnbpChart } from './components/PnbpChart'
 import { BlockchainCard } from './components/BlockchainCard'
 import { CriticalQuotaTable } from './components/CriticalQuotaTable'
@@ -15,13 +13,8 @@ const kpis = [
 ]
 
 export function AdminDashboard() {
-  const [activeNav, setActiveNav] = useState('Ringkasan')
-
   return (
-    <div className="min-h-screen flex bg-fco-bg text-fco-dark">
-      <AdminSidebar activeNav={activeNav} onNavChange={setActiveNav} />
-
-      <main className="flex-1 min-w-0 p-7 lg:p-10">
+    <div>
         {/* Top Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
@@ -79,7 +72,6 @@ export function AdminDashboard() {
             <WppBarChart />
           </div>
         </div>
-      </main>
     </div>
   )
 }

@@ -43,7 +43,7 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="Contoh: REG-0412 atau admin_kkp"
-            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
@@ -66,7 +66,7 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 

@@ -456,7 +456,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handlePrev}
-              className="h-13 px-6 rounded-xl text-fco-md border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-sm font-semibold cursor-pointer transition-colors"
+              className="h-13 px-6 rounded-xl text-fco-md border border-fco-border bg-white hover:bg-fco-bg text-fco-dark font-semibold cursor-pointer transition-colors"
             >
               Kembali
             </button>
@@ -466,7 +466,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handleNext}
-              className="flex-1 h-13 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="flex-1 h-13 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Lanjut ke Langkah {currentStep + 1}
             </button>
@@ -474,7 +474,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 h-13 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="flex-1 h-13 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Selesaikan Pendaftaran
             </button>
