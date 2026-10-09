@@ -1,11 +1,8 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-interface ResetPasswordWizardProps {
-  onSuccess?: () => void
-  onCancel?: () => void
-}
-
-export function ResetPasswordWizard({ onSuccess, onCancel }: ResetPasswordWizardProps) {
+export function ResetPasswordWizard() {
+  const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [identifier, setIdentifier] = useState('')
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
@@ -214,7 +211,7 @@ export function ResetPasswordWizard({ onSuccess, onCancel }: ResetPasswordWizard
             </p>
             <button
               type="button"
-              onClick={onSuccess || onCancel}
+              onClick={() => navigate('/login')}
               className="w-full h-12 rounded-[10px] border-none bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Masuk Sekarang
@@ -226,13 +223,12 @@ export function ResetPasswordWizard({ onSuccess, onCancel }: ResetPasswordWizard
       {step !== 4 && (
         <div className="mt-6 text-center text-sm text-[#5B6B86]">
           Ingat kata sandi Anda?{' '}
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-transparent border-none text-[#1A56DB] hover:text-[#123FA8] font-semibold cursor-pointer p-0"
+          <Link
+            to="/login"
+            className="text-[#1A56DB] hover:text-[#123FA8] font-semibold no-underline"
           >
             Kembali ke halaman masuk
-          </button>
+          </Link>
         </div>
       )}
     </div>

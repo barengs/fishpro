@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router-dom'
 import { Logo } from '../../../components/Logo'
 import { UserProfileBadge } from '../../../components/UserProfileBadge'
 
@@ -19,6 +20,8 @@ const navItems = [
 ]
 
 export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
+  const navigate = useNavigate()
+
   return (
     <nav
       aria-label="Menu utama Admin"
@@ -26,7 +29,9 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
     >
       <div>
         <div className="px-2 pb-7">
-          <Logo />
+          <Link to="/admin" className="no-underline">
+            <Logo />
+          </Link>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -62,7 +67,12 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
       </div>
 
       <div className="p-3 rounded-xl bg-[#F6F9FE]">
-        <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" />
+        <UserProfileBadge
+          initials="AD"
+          name="Administrator"
+          role="Admin KKP"
+          onLogout={() => navigate('/login')}
+        />
       </div>
     </nav>
   )

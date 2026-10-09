@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Logo } from '../../components/Logo'
 import { LoginForm } from './components/LoginForm'
 import { RegisterStepWizard } from './components/RegisterStepWizard'
@@ -7,14 +7,10 @@ import { ResetPasswordWizard } from './components/ResetPasswordWizard'
 export type AuthMode = 'login' | 'register' | 'reset-password'
 
 interface AuthPageProps {
-  initialMode?: AuthMode
-  onLoginSuccess?: (role: string) => void
-  onGoToOnboarding?: () => void
+  mode: AuthMode
 }
 
-export function AuthPage({ initialMode = 'login', onLoginSuccess, onGoToOnboarding }: AuthPageProps) {
-  const [mode, setMode] = useState<AuthMode>(initialMode)
-
+export function AuthPage({ mode }: AuthPageProps) {
   return (
     <div className="min-h-screen flex flex-wrap bg-[#F6F9FE]">
       {/* Left Blue Brand Hero */}
@@ -24,16 +20,15 @@ export function AuthPage({ initialMode = 'login', onLoginSuccess, onGoToOnboardi
 
         <div className="relative z-10">
           <div className="flex items-center justify-between">
-            <Logo size={42} variant="dark" />
-            {onGoToOnboarding && (
-              <button
-                type="button"
-                onClick={onGoToOnboarding}
-                className="text-xs font-semibold text-[#BCD3F8] hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg border-none cursor-pointer transition-colors"
-              >
-                Lihat Onboarding
-              </button>
-            )}
+            <Link to="/onboard" className="no-underline">
+              <Logo size={42} variant="dark" />
+            </Link>
+            <Link
+              to="/onboard"
+              className="text-xs font-semibold text-[#BCD3F8] hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg no-underline transition-colors"
+            >
+              Lihat Onboarding
+            </Link>
           </div>
           <div className="mt-12 max-w-[420px]">
             <h1 className="text-3xl font-extrabold leading-tight tracking-tight mb-4 text-white">
@@ -48,7 +43,7 @@ export function AuthPage({ initialMode = 'login', onLoginSuccess, onGoToOnboardi
         <div className="relative z-10 flex flex-col gap-3.5 my-8">
           {[
             { title: 'Immutabilitas Ledger Blockchain', desc: 'Setiap laporan penangkapan tersimpan secara permanen dan bebas manipulasi.' },
-            { title: 'Perhitungan Otomatis PNBP', desc: 'Tarif dihitung langsung berdasarkan GT kapal dan indeks harga acuan acuan resmi.' },
+            { title: 'Perhitungan Otomatis PNBP', desc: 'Tarif dihitung langsung berdasarkan GT kapal dan indeks harga acuan resmi.' },
             { title: 'Prediksi Kuota AI (LSTM + NSGA-III)', desc: 'Rekomendasi kuota optimal berbasis tren musim penangkapan dan data historis.' }
           ].map((item, i) => (
             <div key={i} className="flex gap-3 items-start">
@@ -72,27 +67,9 @@ export function AuthPage({ initialMode = 'login', onLoginSuccess, onGoToOnboardi
 
       {/* Right Form Area */}
       <div className="flex-1 basis-[500px] flex items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto">
-        {mode === 'login' && (
-          <LoginForm
-            onSuccess={onLoginSuccess}
-            onSwitchToRegister={() => setMode('register')}
-            onForgotPassword={() => setMode('reset-password')}
-          />
-        )}
-
-        {mode === 'register' && (
-          <RegisterStepWizard
-            onSuccess={onLoginSuccess}
-            onSwitchToLogin={() => setMode('login')}
-          />
-        )}
-
-        {mode === 'reset-password' && (
-          <ResetPasswordWizard
-            onSuccess={() => setMode('login')}
-            onCancel={() => setMode('login')}
-          />
-        )}
+        {mode === 'login' && <LoginForm />}
+        {mode === 'register' && <RegisterStepWizard />}
+        {mode === 'reset-password' && <ResetPasswordWizard />}
       </div>
     </div>
   )

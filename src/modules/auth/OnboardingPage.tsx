@@ -1,36 +1,38 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Logo } from '../../components/Logo'
 
-interface OnboardingPageProps {
-  onFinish?: () => void
-  onLogin?: () => void
-  onRegister?: () => void
-}
-
-export function OnboardingPage({ onFinish, onLogin, onRegister }: OnboardingPageProps) {
+export function OnboardingPage() {
   const [step, setStep] = useState(1)
+  const navigate = useNavigate()
 
   const handleNext = () => {
-    if (step < 3) setStep(step + 1)
-    else onRegister ? onRegister() : onFinish?.()
+    if (step < 3) {
+      setStep(step + 1)
+    } else {
+      navigate('/register')
+    }
   }
 
   const handlePrev = () => {
-    if (step > 1) setStep(step - 1)
+    if (step > 1) {
+      setStep(step - 1)
+    }
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#F6F9FE] text-[#0F1F3D]">
       {/* Top bar */}
       <div className="flex items-center justify-between px-8 sm:px-14 py-7">
-        <Logo />
-        <button
-          type="button"
-          onClick={onLogin || onFinish}
-          className="text-[15px] font-semibold text-[#5B6B86] hover:text-[#0F1F3D] bg-transparent border-none cursor-pointer transition-colors"
+        <Link to="/onboard" className="no-underline">
+          <Logo />
+        </Link>
+        <Link
+          to="/login"
+          className="text-[15px] font-semibold text-[#5B6B86] hover:text-[#0F1F3D] no-underline transition-colors"
         >
           Lewati
-        </button>
+        </Link>
       </div>
 
       {/* Main content grid */}
@@ -93,20 +95,18 @@ export function OnboardingPage({ onFinish, onLogin, onRegister }: OnboardingPage
               </button>
             ) : (
               <>
-                <button
-                  type="button"
-                  onClick={onRegister || handleNext}
-                  className="h-12 px-7 rounded-xl border-none bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs"
+                <Link
+                  to="/register"
+                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#1A56DB] hover:bg-[#123FA8] text-white text-[15px] font-semibold no-underline transition-colors shadow-xs"
                 >
                   Buat akun
-                </button>
-                <button
-                  type="button"
-                  onClick={onLogin || onFinish}
-                  className="h-12 px-5 rounded-xl border-none bg-transparent hover:bg-[#E8F0FE] text-[#1A56DB] text-[15px] font-semibold cursor-pointer transition-colors"
+                </Link>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center justify-center h-12 px-5 rounded-xl bg-transparent hover:bg-[#E8F0FE] text-[#1A56DB] text-[15px] font-semibold no-underline transition-colors"
                 >
                   Saya sudah punya akun
-                </button>
+                </Link>
               </>
             )}
 

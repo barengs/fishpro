@@ -1,25 +1,22 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-interface LoginFormProps {
-  onSuccess?: (role: string) => void
-  onSwitchToRegister?: () => void
-  onForgotPassword?: () => void
-}
-
-export function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFormProps) {
+export function LoginForm() {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (identifier.toLowerCase().includes('admin')) {
-      onSuccess?.('admin')
-    } else if (identifier.toLowerCase().includes('reg')) {
-      onSuccess?.('nahkoda')
-    } else if (identifier.toLowerCase().includes('regulator')) {
-      onSuccess?.('regulator')
+    const id = identifier.toLowerCase()
+    if (id.includes('admin')) {
+      navigate('/admin')
+    } else if (id.includes('regulator') || id.includes('was')) {
+      navigate('/regulator')
+    } else if (id.includes('reg') || id.includes('kapten') || id.includes('nahkoda')) {
+      navigate('/nahkoda')
     } else {
-      onSuccess?.('pemilik')
+      navigate('/pemilik')
     }
   }
 
@@ -55,13 +52,12 @@ export function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }: L
             <label htmlFor="login-password" className="text-[13px] font-semibold text-[#0F1F3D]">
               Kata sandi
             </label>
-            <button
-              type="button"
-              onClick={onForgotPassword}
-              className="bg-transparent border-none text-[13px] font-semibold text-[#1A56DB] hover:text-[#123FA8] cursor-pointer p-0"
+            <Link
+              to="/reset-password"
+              className="text-[13px] font-semibold text-[#1A56DB] hover:text-[#123FA8] no-underline"
             >
               Lupa kata sandi?
-            </button>
+            </Link>
           </div>
           <input
             id="login-password"
@@ -84,13 +80,12 @@ export function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }: L
 
       <div className="mt-7 text-center text-sm text-[#5B6B86]">
         Belum punya akun?{' '}
-        <button
-          type="button"
-          onClick={onSwitchToRegister}
-          className="bg-transparent border-none text-[#1A56DB] hover:text-[#123FA8] font-semibold cursor-pointer p-0"
+        <Link
+          to="/register"
+          className="text-[#1A56DB] hover:text-[#123FA8] font-semibold no-underline"
         >
           Daftar sekarang
-        </button>
+        </Link>
       </div>
     </div>
   )

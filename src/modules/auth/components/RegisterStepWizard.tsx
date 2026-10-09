@@ -1,11 +1,8 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-interface RegisterStepWizardProps {
-  onSuccess?: (role: string) => void
-  onSwitchToLogin?: () => void
-}
-
-export function RegisterStepWizard({ onSuccess, onSwitchToLogin }: RegisterStepWizardProps) {
+export function RegisterStepWizard() {
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
 
   // Form State
@@ -74,7 +71,9 @@ export function RegisterStepWizard({ onSuccess, onSwitchToLogin }: RegisterStepW
       setErrorMsg('Harap setujui syarat & ketentuan sebelum mengirimkan pendaftaran')
       return
     }
-    onSuccess?.(role === 'captain' ? 'nahkoda' : role === 'owner' ? 'pemilik' : 'regulator')
+    if (role === 'captain') navigate('/nahkoda')
+    else if (role === 'owner') navigate('/pemilik')
+    else navigate('/regulator')
   }
 
   return (
@@ -485,13 +484,12 @@ export function RegisterStepWizard({ onSuccess, onSwitchToLogin }: RegisterStepW
 
       <div className="mt-6 text-center text-sm text-[#5B6B86]">
         Sudah memiliki akun terdaftar?{' '}
-        <button
-          type="button"
-          onClick={onSwitchToLogin}
-          className="bg-transparent border-none text-[#1A56DB] hover:text-[#123FA8] font-semibold cursor-pointer p-0"
+        <Link
+          to="/login"
+          className="text-[#1A56DB] hover:text-[#123FA8] font-semibold no-underline"
         >
           Masuk di sini
-        </button>
+        </Link>
       </div>
     </div>
   )
