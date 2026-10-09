@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export function RegisterStepWizard() {
   const navigate = useNavigate()
@@ -92,7 +92,7 @@ export function RegisterStepWizard() {
             const isPassed = currentStep > s.num
             const isCurrent = currentStep === s.num
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 bg-fco-bg px-2">
+              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 bg-white px-2">
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
                     isCurrent
@@ -117,7 +117,7 @@ export function RegisterStepWizard() {
         </div>
       </div>
 
-      <div className="bg-white border border-fco-border rounded-3xl p-8 sm:p-10 shadow-sm">
+      <div>
         {errorMsg && (
           <div className="p-3 px-4 rounded-xl bg-red-50 text-red-700 text-sm font-semibold mb-5 border border-red-200">
             ⚠ {errorMsg}
@@ -480,16 +480,6 @@ export function RegisterStepWizard() {
             </button>
           )}
         </div>
-      </div>
-
-      <div className="mt-6 text-center text-sm text-fco-muted">
-        Sudah memiliki akun terdaftar?{' '}
-        <Link
-          to="/login"
-          className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
-        >
-          Masuk di sini
-        </Link>
       </div>
     </div>
   )

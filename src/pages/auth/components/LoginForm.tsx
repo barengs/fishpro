@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff, Lock, User } from 'lucide-react'
 
 export function LoginForm() {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,72 +23,64 @@ export function LoginForm() {
   }
 
   return (
-    <div className="max-w-full w-full">
-      <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-          Masuk ke FCO
-        </h2>
-        <p className="text-sm text-fco-muted m-0">
-          Gunakan nama pengguna atau nomor registrasi kapal Anda.
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
-        <div>
-          <label htmlFor="login-identifier" className="block text-fco-sm font-semibold text-fco-dark mb-2">
-            Nama pengguna atau nomor registrasi
-          </label>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <div>
+        <label htmlFor="login-identifier" className="block text-sm font-semibold text-fco-dark mb-2">
+          Nama pengguna atau nomor registrasi
+        </label>
+        <div className="relative">
+          <User size={18} className="text-fco-placeholder absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
           <input
             id="login-identifier"
             type="text"
             required
+            autoComplete="username"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
-            placeholder="Contoh: REG-0412 atau admin_kkp"
-            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            placeholder="REG-0412 atau admin_kkp"
+            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md text-fco-dark bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
           />
         </div>
+      </div>
 
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <label htmlFor="login-password" className="text-fco-sm font-semibold text-fco-dark">
-              Kata sandi
-            </label>
-            <Link
-              to="/reset-password"
-              className="text-fco-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
-            >
-              Lupa kata sandi?
-            </Link>
-          </div>
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <label htmlFor="login-password" className="text-sm font-semibold text-fco-dark">
+            Kata sandi
+          </label>
+          <Link to="/reset-password" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
+            Lupa kata sandi?
+          </Link>
+        </div>
+        <div className="relative">
+          <Lock size={18} className="text-fco-placeholder absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
           <input
             id="login-password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             required
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-12 text-fco-md text-fco-dark bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? 'Sembunyikan sandi' : 'Tampilkan sandi'}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-fco-placeholder hover:text-fco-dark hover:bg-fco-bg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+          </button>
         </div>
-
-        <button
-          type="submit"
-          className="h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
-        >
-          Masuk
-        </button>
-      </form>
-
-      <div className="mt-7 text-center text-sm text-fco-muted">
-        Belum punya akun?{' '}
-        <Link
-          to="/register"
-          className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
-        >
-          Daftar sekarang
-        </Link>
       </div>
-    </div>
+
+      <button
+        type="submit"
+        className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors"
+      >
+        Masuk
+      </button>
+    </form>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Check, ChevronLeft, Mail } from 'lucide-react'
 
 export function ResetPasswordWizard() {
   const navigate = useNavigate()
@@ -50,186 +51,150 @@ export function ResetPasswordWizard() {
     nextOtp[index] = val
     setOtp(nextOtp)
     if (val && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`)
-      nextInput?.focus()
+      document.getElementById(`otp-${index + 1}`)?.focus()
+    }
+  }
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`)?.focus()
     }
   }
 
   return (
-    <div className="max-w-full w-full">
-      <div className="bg-white border border-fco-border rounded-3xl p-8 sm:p-10 shadow-sm">
-        {error && (
-          <div className="p-3 px-4 rounded-xl bg-red-50 text-red-700 text-xs font-semibold mb-4 border border-red-200">
-            ⚠ {error}
-          </div>
-        )}
+    <div>
+      {error && (
+        <div className="px-4 py-3 rounded-xl bg-red-50 text-red-700 text-sm font-semibold mb-5 border border-red-200">
+          {error}
+        </div>
+      )}
 
-        {/* STEP 1: REQUEST EMAIL/REG */}
-        {step === 1 && (
-          <form onSubmit={handleSendOtp} className="flex flex-col gap-4">
-            <div>
-              <h2 className="text-3xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-                Reset Kata Sandi
-              </h2>
-              <p className="text-sm text-fco-muted m-0">
-                Masukkan email atau nomor registrasi kapal terdaftar untuk menerima kode verifikasi OTP.
-              </p>
-            </div>
+      <p className="m-0 mb-6 text-center text-sm font-semibold text-fco-blue" aria-live="polite">
+        {step === 1 && 'Langkah 1 dari 3 — minta kode verifikasi'}
+        {step === 2 && 'Langkah 2 dari 3 — masukkan kode OTP'}
+        {step === 3 && 'Langkah 3 dari 3 — buat sandi baru'}
+      </p>
 
-            <div>
-              <label htmlFor="reset-id" className="block text-xs font-semibold text-fco-dark mb-2">
-                Email atau Nomor Registrasi Kapal
-              </label>
+      {step === 1 && (
+        <form onSubmit={handleSendOtp} className="flex flex-col gap-5">
+          <div>
+            <label htmlFor="reset-id" className="block text-sm font-semibold text-fco-dark mb-2">
+              Email atau nomor registrasi
+            </label>
+            <div className="relative">
+              <Mail size={18} className="text-fco-placeholder absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
               <input
                 id="reset-id"
                 type="text"
                 required
+                autoComplete="email"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
               />
             </div>
+          </div>
+          <button type="submit" className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+            Kirim kode verifikasi
+          </button>
+        </form>
+      )}
 
-            <button
-              type="submit"
-              className="h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
-            >
-              Kirim Kode Verifikasi
-            </button>
-          </form>
-        )}
-
-        {/* STEP 2: ENTER OTP */}
-        {step === 2 && (
-          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-4">
-            <div>
-              <h2 className="text-3xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-                Masukkan Kode OTP
-              </h2>
-              <p className="text-sm text-fco-muted m-0">
-                Kode 6 digit telah dikirimkan ke <span className="font-semibold text-fco-dark">{identifier}</span>.
-              </p>
-            </div>
-
-            <div className="flex gap-2 justify-between my-2">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  id={`otp-${i}`}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleOtpChange(i, e.target.value)}
-                  className="w-14 h-15 border text-2xl border-fco-border rounded-xl text-center text-xl font-bold text-fco-dark bg-white focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10"
-                />
-              ))}
-            </div>
-
-            <div className="text-xs text-fco-muted flex justify-between items-center">
-              <span>Tidak menerima kode?</span>
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="bg-transparent border-none text-fco-blue font-semibold cursor-pointer"
-              >
-                Kirim ulang
-              </button>
-            </div>
-
-            <button
-              type="submit"
-              className="h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
-            >
-              Verifikasi Kode
-            </button>
-          </form>
-        )}
-
-        {/* STEP 3: NEW PASSWORD */}
-        {step === 3 && (
-          <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
-            <div>
-              <h2 className="text-3xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-                Buat Sandi Baru
-              </h2>
-              <p className="text-sm text-fco-muted m-0">
-                Pilih kata sandi yang kuat dan aman untuk akun FCO Anda.
-              </p>
-            </div>
-
-            <div>
-              <label htmlFor="new-pass" className="block text-xs font-semibold text-fco-dark mb-1.5">
-                Kata Sandi Baru
-              </label>
+      {step === 2 && (
+        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-5">
+          <p className="m-0 text-sm text-fco-muted text-center">
+            Kode 6 digit terkirim ke <span className="font-semibold text-fco-dark">{identifier}</span>
+          </p>
+          <div className="flex gap-2 justify-center">
+            {otp.map((digit, i) => (
               <input
-                id="new-pass"
-                type="password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 8 karakter"
-                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
+                key={i}
+                id={`otp-${i}`}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleOtpChange(i, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                aria-label={`Digit ${i + 1}`}
+                className="w-12 h-14 border border-fco-border rounded-xl text-center text-xl font-bold text-fco-dark bg-white focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
               />
-            </div>
-
-            <div>
-              <label htmlFor="confirm-pass" className="block text-xs font-semibold text-fco-dark mb-1.5">
-                Konfirmasi Sandi Baru
-              </label>
-              <input
-                id="confirm-pass"
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi kata sandi baru"
-                className="w-full h-13 border border-fco-border text-fco-md rounded-fco px-3.5 bg-white focus:outline-none focus:border-fco-blue"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
-            >
-              Simpan Kata Sandi
+            ))}
+          </div>
+          <button type="submit" className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+            Verifikasi
+          </button>
+          <div className="flex items-center justify-between text-sm">
+            <button type="button" onClick={() => setStep(1)} className="inline-flex items-center gap-1.5 bg-transparent border-none text-fco-muted hover:text-fco-dark font-semibold cursor-pointer p-0">
+              <ChevronLeft size={16} aria-hidden="true" /> Ubah email
             </button>
-          </form>
-        )}
-
-        {/* STEP 4: SUCCESS */}
-        {step === 4 && (
-          <div className="flex flex-col items-center text-center py-4">
-            <div className="w-16 h-16 rounded-full bg-fco-blue-light text-fco-blue flex items-center justify-center text-3xl font-extrabold mb-4">
-              ✓
-            </div>
-            <h2 className="text-3xl font-extrabold text-fco-dark mb-2 tracking-tight">
-              Sandi Berhasil Diperbarui
-            </h2>
-            <p className="text-sm text-fco-muted mb-6">
-              Kata sandi akun FCO Anda telah diperbarui. Silakan masuk kembali dengan kata sandi baru.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate('/login')}
-              className="w-full h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs"
-            >
-              Masuk Sekarang
+            <button type="button" onClick={() => setStep(1)} className="bg-transparent border-none text-fco-blue font-semibold cursor-pointer p-0">
+              Kirim ulang
             </button>
           </div>
-        )}
-      </div>
+        </form>
+      )}
 
-      {step !== 4 && (
-        <div className="mt-6 text-center text-sm text-fco-muted">
-          Ingat kata sandi Anda?{' '}
-          <Link
-            to="/login"
-            className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
+      {step === 3 && (
+        <form onSubmit={handleSavePassword} className="flex flex-col gap-5">
+          <div>
+            <label htmlFor="new-pass" className="block text-sm font-semibold text-fco-dark mb-2">
+              Kata sandi baru
+            </label>
+            <input
+              id="new-pass"
+              type="password"
+              required
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Minimal 8 karakter"
+              className="w-full h-13 border border-fco-border rounded-xl px-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            />
+          </div>
+          <div>
+            <label htmlFor="confirm-pass" className="block text-sm font-semibold text-fco-dark mb-2">
+              Konfirmasi sandi baru
+            </label>
+            <input
+              id="confirm-pass"
+              type="password"
+              required
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Ulangi kata sandi baru"
+              className="w-full h-13 border border-fco-border rounded-xl px-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            />
+          </div>
+          <button type="submit" className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+            Simpan kata sandi
+          </button>
+        </form>
+      )}
+
+      {step === 4 && (
+        <div className="flex flex-col items-center text-center py-2">
+          <div className="w-14 h-14 rounded-full bg-fco-blue-light flex items-center justify-center mb-4">
+            <Check size={26} className="text-fco-blue" strokeWidth={2.5} aria-hidden="true" />
+          </div>
+          <h2 className="m-0 mb-2 text-xl font-extrabold tracking-tight">Sandi diperbarui</h2>
+          <p className="m-0 mb-6 text-sm text-fco-muted">Silakan masuk kembali dengan kata sandi baru Anda.</p>
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className="w-full h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors"
           >
-            Kembali ke halaman masuk
-          </Link>
+            Masuk sekarang
+          </button>
         </div>
+      )}
+
+      {step === 2 && (
+        <button type="button" onClick={() => setStep(1)} className="mt-5 inline-flex items-center gap-1.5 text-sm text-fco-muted hover:text-fco-dark font-semibold bg-transparent border-none cursor-pointer p-0">
+          <ArrowLeft size={16} aria-hidden="true" /> Kembali
+        </button>
       )}
     </div>
   )
