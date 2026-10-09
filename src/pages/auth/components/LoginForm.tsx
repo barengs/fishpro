@@ -21,9 +21,9 @@ export function LoginForm() {
   }
 
   return (
-    <div className="max-w-105 w-full mx-auto">
+    <div className="max-w-full w-full">
       <div className="mb-8">
-        <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
+        <h2 className="text-3xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
           Masuk ke FCO
         </h2>
         <p className="text-sm text-fco-muted m-0">
@@ -43,7 +43,7 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="Contoh: REG-0412 atau admin_kkp"
-            className="w-full h-11.5 border border-fco-border rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
@@ -66,13 +66,13 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-11.5 border border-fco-border rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-13.5 border border-fco-border text-fco-md rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
         <button
           type="submit"
-          className="h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
+          className="h-13.5 rounded-xl text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
         >
           Masuk
         </button>
