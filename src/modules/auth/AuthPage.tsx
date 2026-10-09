@@ -1,25 +1,41 @@
 import { useState } from 'react'
 import { Logo } from '../../components/Logo'
 import { LoginForm } from './components/LoginForm'
-import { RegisterForm } from './components/RegisterForm'
+import { RegisterStepWizard } from './components/RegisterStepWizard'
+import { ResetPasswordWizard } from './components/ResetPasswordWizard'
+
+export type AuthMode = 'login' | 'register' | 'reset-password'
 
 interface AuthPageProps {
+  initialMode?: AuthMode
   onLoginSuccess?: (role: string) => void
+  onGoToOnboarding?: () => void
 }
 
-export function AuthPage({ onLoginSuccess }: AuthPageProps) {
-  const [mode, setMode] = useState<'login' | 'register'>('login')
+export function AuthPage({ initialMode = 'login', onLoginSuccess, onGoToOnboarding }: AuthPageProps) {
+  const [mode, setMode] = useState<AuthMode>(initialMode)
 
   return (
     <div className="min-h-screen flex flex-wrap bg-[#F6F9FE]">
       {/* Left Blue Brand Hero */}
-      <div className="flex-1 basis-[440px] bg-[#0F2A63] text-white p-12 lg:p-14 flex flex-col justify-between relative overflow-hidden">
+      <div className="flex-1 basis-[440px] bg-[#0F2A63] text-white p-10 lg:p-14 flex flex-col justify-between relative overflow-hidden">
         <div className="absolute w-[560px] h-[560px] rounded-full border border-white/12 -right-[200px] -bottom-[180px] pointer-events-none" />
         <div className="absolute w-[380px] h-[380px] rounded-full border border-white/12 -right-[100px] -bottom-[90px] pointer-events-none" />
 
         <div className="relative z-10">
-          <Logo size={42} variant="dark" />
-          <div className="mt-14 max-w-[420px]">
+          <div className="flex items-center justify-between">
+            <Logo size={42} variant="dark" />
+            {onGoToOnboarding && (
+              <button
+                type="button"
+                onClick={onGoToOnboarding}
+                className="text-xs font-semibold text-[#BCD3F8] hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg border-none cursor-pointer transition-colors"
+              >
+                Lihat Onboarding
+              </button>
+            )}
+          </div>
+          <div className="mt-12 max-w-[420px]">
             <h1 className="text-3xl font-extrabold leading-tight tracking-tight mb-4 text-white">
               Ekosistem Manajemen Tangkapan Ikan Cerdas & Transparan
             </h1>
@@ -29,7 +45,7 @@ export function AuthPage({ onLoginSuccess }: AuthPageProps) {
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col gap-3.5 my-10">
+        <div className="relative z-10 flex flex-col gap-3.5 my-8">
           {[
             { title: 'Immutabilitas Ledger Blockchain', desc: 'Setiap laporan penangkapan tersimpan secara permanen dan bebas manipulasi.' },
             { title: 'Perhitungan Otomatis PNBP', desc: 'Tarif dihitung langsung berdasarkan GT kapal dan indeks harga acuan acuan resmi.' },
@@ -55,16 +71,26 @@ export function AuthPage({ onLoginSuccess }: AuthPageProps) {
       </div>
 
       {/* Right Form Area */}
-      <div className="flex-1 basis-[480px] flex items-center justify-center p-8 lg:p-12">
-        {mode === 'login' ? (
+      <div className="flex-1 basis-[500px] flex items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto">
+        {mode === 'login' && (
           <LoginForm
             onSuccess={onLoginSuccess}
             onSwitchToRegister={() => setMode('register')}
+            onForgotPassword={() => setMode('reset-password')}
           />
-        ) : (
-          <RegisterForm
+        )}
+
+        {mode === 'register' && (
+          <RegisterStepWizard
             onSuccess={onLoginSuccess}
             onSwitchToLogin={() => setMode('login')}
+          />
+        )}
+
+        {mode === 'reset-password' && (
+          <ResetPasswordWizard
+            onSuccess={() => setMode('login')}
+            onCancel={() => setMode('login')}
           />
         )}
       </div>

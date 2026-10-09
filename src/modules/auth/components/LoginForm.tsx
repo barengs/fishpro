@@ -3,9 +3,10 @@ import { useState } from 'react'
 interface LoginFormProps {
   onSuccess?: (role: string) => void
   onSwitchToRegister?: () => void
+  onForgotPassword?: () => void
 }
 
-export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
+export function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFormProps) {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
 
@@ -54,9 +55,13 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
             <label htmlFor="login-password" className="text-[13px] font-semibold text-[#0F1F3D]">
               Kata sandi
             </label>
-            <a href="#forgot" className="text-[13px] font-semibold text-[#1A56DB] hover:text-[#123FA8]">
+            <button
+              type="button"
+              onClick={onForgotPassword}
+              className="bg-transparent border-none text-[13px] font-semibold text-[#1A56DB] hover:text-[#123FA8] cursor-pointer p-0"
+            >
               Lupa kata sandi?
-            </a>
+            </button>
           </div>
           <input
             id="login-password"
