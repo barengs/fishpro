@@ -1,5 +1,4 @@
 import { KpiCard } from '../../components/KpiCard'
-import { NotificationBell } from '../../components/NotificationBell'
 import { PnbpChart } from './components/PnbpChart'
 import { BlockchainCard } from './components/BlockchainCard'
 import { CriticalQuotaTable } from './components/CriticalQuotaTable'
@@ -42,7 +41,6 @@ export function AdminDashboard() {
                 className="w-full sm:w-65 h-10 border border-fco-border rounded-fco pl-9.5 pr-3 text-sm bg-white text-fco-dark focus:outline-none focus:border-fco-blue transition-colors"
               />
             </div>
-            <NotificationBell count={3} />
           </div>
         </div>
 

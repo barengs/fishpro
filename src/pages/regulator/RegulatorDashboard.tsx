@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { KpiCard } from '../../components/KpiCard'
-import { NotificationBell } from '../../components/NotificationBell'
 import { QuotaAuditTable, type ShipQuotaItem } from './components/QuotaAuditTable'
 import { ManualQuotaModal } from './components/ManualQuotaModal'
 import { ComplianceOverview } from './components/ComplianceOverview'
@@ -64,7 +63,6 @@ export function RegulatorDashboard() {
             >
               + Override Kuota Manual
             </button>
-            <NotificationBell count={2} />
           </div>
         </div>
 

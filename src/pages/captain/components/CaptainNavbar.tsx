@@ -24,18 +24,9 @@ export function CaptainNavbar() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3.5">
+        <div className="flex items-center gap-2 sm:gap-3.5 ml-auto">
           <NotificationBell />
-          <div className="hidden sm:block">
-            <UserProfileBadge initials="BH" name="Budi Hartono" role="Nahkoda KM Samudra Jaya" onLogout={() => navigate('/login')} />
-          </div>
-          <button type="button" onClick={() => navigate('/login')} aria-label="Keluar" className="sm:hidden w-10 h-10 rounded-fco border border-fco-border bg-white flex items-center justify-center cursor-pointer">
-            <svg className="w-4 h-4 stroke-fco-muted" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-          </button>
+          <UserProfileBadge initials="BH" name="Budi Hartono" role="Nahkoda KM Samudra Jaya" onLogout={() => navigate('/login')} />
         </div>
       </div>
     </header>

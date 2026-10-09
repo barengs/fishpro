@@ -27,7 +27,20 @@ export function FleetPage() {
 
   return (
     <div>
-      <PageHeader title="Armada Kapal" desc="Kapal milik owner: name, registration_number (unik), captain, length, width, gross_tonnage, year_built, home_port, active." showSearch searchPlaceholder="Cari armada" />
+      <PageHeader
+        title="Armada Kapal"
+        desc="Kapal milik owner: name, registration_number (unik), captain, length, width, gross_tonnage, year_built, home_port, active."
+        showSearch
+        searchPlaceholder="Cari armada"
+        actions={
+          <a href="#fl-name" className="inline-flex items-center gap-2 h-10 px-4.5 rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors shadow-xs">
+            <svg className="w-4 h-4 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Tambah kapal
+          </a>
+        }
+      />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
         <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />

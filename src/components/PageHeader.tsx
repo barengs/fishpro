@@ -1,5 +1,3 @@
-import { NotificationBell } from './NotificationBell'
-
 interface PageHeaderProps {
   title: string
   desc: string
@@ -26,7 +24,6 @@ export function PageHeader({ title, desc, actions, showSearch, searchPlaceholder
           </div>
         )}
         {actions}
-        <NotificationBell />
       </div>
     </div>
   )

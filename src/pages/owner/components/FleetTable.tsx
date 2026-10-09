@@ -18,9 +18,9 @@ export function FleetTable() {
   return (
     <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="m-0 text-base font-bold text-fco-dark">Armada kapal</h2>
-        <a href="#captain" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover">
-          Kelola nahkoda
+        <h2 className="m-0 text-base font-bold text-fco-dark">Armada kapal (5)</h2>
+        <a href="/owner/captains" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
+          Kelola nahkoda →
         </a>
       </div>
 
