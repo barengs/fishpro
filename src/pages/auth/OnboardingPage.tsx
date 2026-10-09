@@ -1,216 +1,371 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Logo } from '../../components/Logo'
 
+const navLinks = [
+  { label: 'Fitur', href: '#fitur' },
+  { label: 'Alur Kerja', href: '#alur' },
+  { label: 'Peran', href: '#peran' },
+  { label: 'Keamanan', href: '#keamanan' }
+]
+
+const features = [
+  {
+    title: 'Pelaporan Tangkapan Digital',
+    desc: 'Nahkoda mencatat spesies, volume, koordinat, dan WPP langsung dari kapal melalui formulir mobile-friendly. Data terstruktur otomatis masuk ke laporan resmi KKP.',
+    icon: 'M9 4h6v3H9zM7 5H5v16h14V5h-2M8 12h8M8 16h5'
+  },
+  {
+    title: 'Kuota Berbasis AI',
+    desc: 'Model LSTM membaca tren historis tangkapan, lalu NSGA-III mengoptimasi rekomendasi kuota dengan mempertimbangkan keberlanjutan stok dan musim penangkapan.',
+    icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2'
+  },
+  {
+    title: 'PNBP Otomatis & Transparan',
+    desc: 'Tarif dihitung dari GT kapal dan harga acuan resmi. Setiap detail tangkapan menghasilkan nilai PNKP dan PNBP yang dapat diaudit per transaksi.',
+    icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+  },
+  {
+    title: 'Ledger Blockchain Immutabel',
+    desc: 'Setiap laporan di-hash SHA-256 dan dirangkai ke blok sebelumnya. Regulator memverifikasi integritas rantai kapan saja tanpa bergantung pada satu server.',
+    icon: 'M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1'
+  },
+  {
+    title: 'Manajemen Armada & Awak',
+    desc: 'Pemilik mengelola kapal, menunjuk nahkoda, dan memantau sisa kuota per armada. Satu kapal tanpa nahkoda otomatis ditandai agar tidak bisa melapor.',
+    icon: 'M12 3v11M12 4l6 9h-6M3 17h18l-2 3H5z'
+  },
+  {
+    title: 'Pengawasan Regulator',
+    desc: 'Pengawas KKP mengaudit kepatuhan WPP, memverifikasi blockchain, dan melakukan override kuota manual dengan jejak alasan yang tercatat.',
+    icon: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'
+  }
+]
+
+const steps = [
+  {
+    num: '01',
+    title: 'Nahkoda melapor dari kapal',
+    desc: 'Isi tanggal, jenis penangkapan, lokasi GPS, WPP, spesies, dan volume. Laporan terkirim dalam hitungan detik dan langsung menghitung estimasi PNBP.'
+  },
+  {
+    num: '02',
+    title: 'Sistem mencatat & menghitung',
+    desc: 'Backend menyimpan laporan, menghitung tarif PNBP dari GT kapal, lalu menulis transaksi ke blockchain dengan hash yang saling terhubung.'
+  },
+  {
+    num: '03',
+    title: 'Pemilik memantau armada',
+    desc: 'Dashboard pemilik menampilkan sisa kuota per kapal, prediksi PNBP 3 bulan ke depan, dan rekomendasi AI seperti penunjukan nahkoda atau pengajuan kuota.'
+  },
+  {
+    num: '04',
+    title: 'Regulator mengawasi & menyesuaikan',
+    desc: 'Regulator memverifikasi rantai blok, meninjau kepatuhan WPP, dan menyesuaikan kuota manual bila rekomendasi AI menunjukkan kebutuhan penyesuaian.'
+  }
+]
+
+const roles = [
+  {
+    name: 'Nahkoda',
+    tag: 'Operasional Lapangan',
+    desc: 'Fokus pada satu hal: melapor cepat dan akurat. Kartu sisa kuota, detail kapal, dan riwayat laporan selalu terlihat sebelum mengirim laporan baru.',
+    cta: 'Masuk sebagai Nahkoda',
+    to: '/login'
+  },
+  {
+    name: 'Pemilik Kapal',
+    tag: 'Manajemen Armada',
+    desc: 'Kelola seluruh kapal, pantau nahkoda, sisa kuota gabungan, dan proyeksi PNBP. Terima rekomendasi AI untuk keputusan bisnis armada.',
+    cta: 'Masuk sebagai Pemilik',
+    to: '/login'
+  },
+  {
+    name: 'Regulator KKP',
+    tag: 'Pengawasan & Audit',
+    desc: 'Audit kuota nasional, verifikasi blockchain, pantau kepatuhan WPP, dan lakukan override kuota manual dengan alasan yang terdokumentasi.',
+    cta: 'Masuk sebagai Regulator',
+    to: '/login'
+  },
+  {
+    name: 'Admin KKP',
+    tag: 'Administrasi Nasional',
+    desc: 'Kelola master kapal, spesies, WPP, peran pengguna, dan menu navigasi. Pantau ringkasan nasional tangkapan dan PNBP seluruh Indonesia.',
+    cta: 'Masuk sebagai Admin',
+    to: '/login'
+  }
+]
+
+const stats = [
+  { value: '1.284', label: 'Kapal aktif terdaftar' },
+  { value: '3.472', label: 'Laporan bulan berjalan' },
+  { value: '842 ton', label: 'Total tangkapan tercatat' },
+  { value: 'Rp 4,4 M', label: 'PNBP terhitung otomatis' }
+]
+
 export function OnboardingPage() {
-  const [step, setStep] = useState(1)
-  const navigate = useNavigate()
-
-  const handleNext = () => {
-    if (step < 3) {
-      setStep(step + 1)
-    } else {
-      navigate('/register')
-    }
-  }
-
-  const handlePrev = () => {
-    if (step > 1) {
-      setStep(step - 1)
-    }
-  }
-
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-fco-bg text-fco-dark">
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-8 sm:px-14 py-7">
-        <Link to="/onboard" className="no-underline">
-          <Logo />
-        </Link>
-        <Link
-          to="/login"
-          className="text-fco-md font-semibold text-fco-muted hover:text-fco-dark no-underline transition-colors"
-        >
-          Lewati
-        </Link>
-      </div>
+    <div className="min-h-screen flex flex-col bg-fco-bg text-fco-dark">
+      {/* ── Navbar ── */}
+      <header className="bg-white border-b border-fco-border sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 min-h-18 flex flex-wrap items-center justify-between gap-3">
+          <Link to="/onboard" className="no-underline">
+            <Logo />
+          </Link>
 
-      {/* Main content grid */}
-      <div className="flex-1 flex flex-wrap items-center gap-10 sm:gap-14 px-8 sm:px-14 pb-14">
-        {/* Left: Text & Step Controls */}
-        <div className="flex-1 basis-105 max-w-130 min-w-0">
-          {/* Progress pill bars */}
-          <div className="flex gap-2 w-45 mb-7" aria-hidden="true">
-            <div className={`h-1 flex-1 rounded-full transition-colors duration-300 ${step >= 1 ? 'bg-fco-blue' : 'bg-fco-ice'}`} />
-            <div className={`h-1 flex-1 rounded-full transition-colors duration-300 ${step >= 2 ? 'bg-fco-blue' : 'bg-fco-ice'}`} />
-            <div className={`h-1 flex-1 rounded-full transition-colors duration-300 ${step >= 3 ? 'bg-fco-blue' : 'bg-fco-ice'}`} />
-          </div>
-
-          <div className="text-sm font-semibold text-fco-blue mb-3.5">
-            Langkah {step} dari 3
-          </div>
-
-          {step === 1 && (
-            <div className="animate-in fade-in duration-200">
-              <h1 className="m-0 mb-4 text-4xl sm:text-fco-display font-extrabold leading-fco-tight tracking-tight text-fco-dark">
-                Laporan tangkapan, langsung dari kapal
-              </h1>
-              <p className="m-0 text-base sm:text-fco-lg leading-relaxed text-fco-muted">
-                Nahkoda mencatat jenis ikan, jumlah, dan lokasi penangkapan dalam satu formulir. Pemilik kapal dan regulator bisa melihatnya segera.
-              </p>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="animate-in fade-in duration-200">
-              <h1 className="m-0 mb-4 text-4xl sm:text-fco-display font-extrabold leading-fco-tight tracking-tight text-fco-dark">
-                Kuota dan PNBP selalu terpantau
-              </h1>
-              <p className="m-0 text-base sm:text-fco-lg leading-relaxed text-fco-muted">
-                Lihat sisa kuota tiap kapal dan prediksi PNBP beberapa bulan ke depan, supaya keputusan lebih terukur dan ramah lingkungan.
-              </p>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="animate-in fade-in duration-200">
-              <h1 className="m-0 mb-4 text-4xl sm:text-fco-display font-extrabold leading-fco-tight tracking-tight text-fco-dark">
-                Setiap laporan tercatat permanen
-              </h1>
-              <p className="m-0 text-base sm:text-fco-lg leading-relaxed text-fco-muted">
-                Laporan dicatat ke blockchain sehingga tidak bisa diubah diam-diam, dan dapat diverifikasi kapan saja oleh regulator dan auditor.
-              </p>
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex gap-3 mt-9 items-center flex-wrap">
-            {step < 3 ? (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="h-12 px-7 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs"
+          <nav aria-label="Navigasi utama" className="hidden md:flex items-center gap-1">
+            {navLinks.map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                className="px-4 h-10 inline-flex items-center rounded-fco text-sm font-semibold text-fco-muted hover:text-fco-dark hover:bg-fco-bg no-underline transition-colors"
               >
-                Lanjut
-              </button>
-            ) : (
-              <>
+                {l.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2.5">
+            <Link
+              to="/login"
+              className="h-10 px-4 inline-flex items-center rounded-fco border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-sm font-semibold no-underline transition-colors"
+            >
+              Masuk
+            </Link>
+            <Link
+              to="/register"
+              className="h-10 px-4 inline-flex items-center rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors shadow-xs"
+            >
+              Buat Akun
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1">
+        {/* ── Hero ── */}
+        <section className="bg-fco-navy text-white relative overflow-hidden">
+          <div className="absolute w-140 h-140 rounded-full border border-white/10 -right-50 -top-30 pointer-events-none" />
+          <div className="absolute w-95 h-95 rounded-full border border-white/10 right-20 -bottom-45 pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-20 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-fco-mist text-xs font-semibold mb-6">
+                <span className="w-2 h-2 rounded-full bg-fco-sky animate-pulse" />
+                Sistem Manajemen Tangkapan Ikan Nasional
+              </div>
+              <h1 className="m-0 mb-5 text-4xl sm:text-fco-display font-extrabold leading-fco-tight tracking-tight text-white">
+                Laporan tangkapan, kuota, dan PNBP dalam satu ekosistem transparan.
+              </h1>
+              <p className="m-0 mb-8 text-base sm:text-fco-lg leading-relaxed text-fco-pale max-w-130">
+                FCO menghubungkan nahkoda, pemilik kapal, dan regulator KKP: pelaporan digital dari kapal, perhitungan PNBP otomatis, prediksi kuota AI, dan pencatatan blockchain yang tidak dapat dimanipulasi.
+              </p>
+              <div className="flex flex-wrap gap-3">
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold no-underline transition-colors shadow-xs"
+                  className="h-12 px-7 inline-flex items-center rounded-xl bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold no-underline transition-colors shadow-xs"
                 >
-                  Buat akun
+                  Mulai Mendaftar
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-xl bg-transparent hover:bg-fco-blue-light text-fco-blue text-fco-md font-semibold no-underline transition-colors"
+                  className="h-12 px-7 inline-flex items-center rounded-xl bg-white/10 hover:bg-white/20 text-white text-fco-md font-semibold no-underline transition-colors"
                 >
-                  Saya sudah punya akun
+                  Masuk ke Dashboard
                 </Link>
-              </>
-            )}
-
-            {step > 1 && (
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="h-12 px-5 rounded-xl border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-fco-md font-semibold cursor-pointer transition-colors"
-              >
-                Kembali
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Right: Graphic Card Simulation */}
-        <div className="basis-110 min-w-0 h-120 sm:h-135 rounded-fco-xl bg-fco-blue-light relative overflow-hidden flex items-center justify-center p-6 shadow-xs" style={{ flexGrow: 1.2 }}>
-          <div className="absolute w-130 h-130 rounded-full border border-fco-ice -right-35 -top-35 pointer-events-none" />
-          <div className="absolute w-90 h-90 rounded-full border border-fco-ice -left-30 -bottom-30 pointer-events-none" />
-
-          {/* Card Mockup for Step 1 */}
-          {step === 1 && (
-            <div className="w-90 max-w-full bg-white border border-fco-border rounded-fco-lg p-6 shadow-2xl shadow-fco-blue/10 relative z-10 animate-in zoom-in-95 duration-200">
-              <div className="font-bold text-base mb-4.5 text-fco-dark">Laporan tangkapan</div>
-              <div className="text-xs font-semibold text-fco-muted mb-1.5">Tanggal</div>
-              <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm mb-3.5 bg-white text-fco-dark">
-                09 Okt 2026
-              </div>
-              <div className="text-xs font-semibold text-fco-muted mb-1.5">Spesies ikan</div>
-              <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm mb-3.5 bg-white text-fco-dark">
-                Tongkol
-              </div>
-              <div className="text-xs font-semibold text-fco-muted mb-1.5">Jumlah (kg)</div>
-              <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm mb-4.5 bg-white text-fco-dark">
-                120
-              </div>
-              <div className="h-11 rounded-fco bg-fco-blue text-white text-sm font-semibold flex items-center justify-center shadow-xs">
-                Kirim laporan
               </div>
             </div>
-          )}
 
-          {/* Card Mockup for Step 2 */}
-          {step === 2 && (
-            <div className="w-95 max-w-full bg-white border border-fco-border rounded-fco-lg p-6 shadow-2xl shadow-fco-blue/10 relative z-10 animate-in zoom-in-95 duration-200">
-              <div className="text-fco-sm font-semibold text-fco-muted">Sisa kuota tahun ini</div>
-              <div className="flex items-baseline gap-1.5 my-1.5 mb-3">
-                <span className="text-4xl font-extrabold tracking-tight text-fco-dark">68%</span>
-                <span className="text-sm text-fco-muted">dari kuota</span>
-              </div>
-              <div className="h-2 rounded-full bg-fco-blue-light mb-6 overflow-hidden">
-                <div className="h-full rounded-full bg-fco-blue" style={{ width: '68%' }} />
-              </div>
-              <div className="text-fco-sm font-semibold text-fco-muted mb-3">PNBP per bulan dan prediksi</div>
-              <div className="flex items-end gap-2.5 h-27.5">
-                <div className="flex-1 rounded-t-md bg-fco-blue" style={{ height: '50%' }} />
-                <div className="flex-1 rounded-t-md bg-fco-blue" style={{ height: '62%' }} />
-                <div className="flex-1 rounded-t-md bg-fco-blue" style={{ height: '56%' }} />
-                <div className="flex-1 rounded-t-md bg-fco-blue" style={{ height: '74%' }} />
-                <div className="flex-1 rounded-t-md bg-fco-blue-border" style={{ height: '82%' }} />
-                <div className="flex-1 rounded-t-md bg-fco-blue-border" style={{ height: '90%' }} />
-              </div>
-              <div className="flex gap-4 mt-3.5 text-xs text-fco-muted">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue" />
-                  Aktual
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue-border" />
-                  Prediksi
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Card Mockup for Step 3 */}
-          {step === 3 && (
-            <div className="w-95 max-w-full flex flex-col items-stretch relative z-10 animate-in zoom-in-95 duration-200">
-              <div className="bg-white border border-fco-border rounded-2xl p-4 sm:px-5 shadow-lg shadow-fco-blue/5">
-                <div className="text-xs font-semibold text-fco-muted">Blok 1</div>
-                <div className="text-sm font-semibold mt-1 tabular-nums text-fco-dark">a3f9…c21e</div>
-              </div>
-              <div className="w-0.5 h-5 bg-fco-blue mx-auto" />
-              <div className="bg-white border border-fco-border rounded-2xl p-4 sm:px-5 shadow-lg shadow-fco-blue/5">
-                <div className="text-xs font-semibold text-fco-muted">Blok 2</div>
-                <div className="text-sm font-semibold mt-1 tabular-nums text-fco-dark">7be0…19d4</div>
-              </div>
-              <div className="w-0.5 h-5 bg-fco-blue mx-auto" />
-              <div className="bg-white border-2 border-fco-blue rounded-2xl p-4 sm:px-5 flex items-center justify-between shadow-xl shadow-fco-blue/10">
-                <div>
-                  <div className="text-xs font-semibold text-fco-muted">Blok 3</div>
-                  <div className="text-sm font-semibold mt-1 tabular-nums text-fco-dark">c04d…88a7</div>
-                </div>
-                <div className="flex items-center gap-1.5 text-fco-sm font-semibold text-fco-blue">
-                  <svg className="w-4.5 h-4.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            {/* Hero mockup: laporan + kuota */}
+            <div className="bg-white rounded-fco-lg p-6 shadow-2xl relative z-10 max-w-120 w-full mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <div className="font-bold text-base text-fco-dark">Laporan tangkapan</div>
+                <span className="inline-flex items-center gap-1.5 h-6.5 px-2.5 rounded-full bg-fco-blue-light text-fco-blue text-xs font-bold">
+                  <svg className="w-3.5 h-3.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M5 12.5l4.5 4.5L19 7" />
                   </svg>
-                  Terverifikasi
+                  Tercatat Blockchain
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <div className="text-xs font-semibold text-fco-muted mb-1.5">KM Samudra Jaya · REG-0412</div>
+                  <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm text-fco-dark">Tongkol · 120 kg</div>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-fco-muted mb-1.5">WPP 573 · PNBP</div>
+                  <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm font-semibold text-fco-blue">Rp 120.000</div>
                 </div>
               </div>
+              <div className="text-fco-sm font-semibold text-fco-muted mb-2">Sisa kuota 2026 · 70%</div>
+              <div className="h-2 rounded-full bg-fco-blue-light overflow-hidden mb-5">
+                <div className="h-full rounded-full bg-fco-blue" style={{ width: '70%' }} />
+              </div>
+              <div className="h-11 rounded-fco bg-fco-blue text-white text-sm font-semibold flex items-center justify-center">
+                Kirim laporan berikutnya
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Stats strip */}
+          <div className="relative z-10 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-6 sm:px-10 py-6 grid grid-cols-2 lg:grid-cols-4 gap-6">
+              {stats.map((s) => (
+                <div key={s.label}>
+                  <div className="text-2xl font-extrabold tabular-nums text-white">{s.value}</div>
+                  <div className="text-xs text-fco-pale mt-1">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Fitur ── */}
+        <section id="fitur" className="max-w-7xl mx-auto px-6 sm:px-10 py-16 scroll-mt-20">
+          <div className="max-w-130 mb-10">
+            <div className="text-sm font-semibold text-fco-blue mb-2">Fitur Utama</div>
+            <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Semua kebutuhan perikanan dalam satu platform.</h2>
+            <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+              Dari pencatatan di atas kapal hingga audit nasional — setiap peran mendapat alat yang dirancang khusus untuk pekerjaannya.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {features.map((f) => (
+              <article key={f.title} className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div className="w-11 h-11 rounded-xl bg-fco-blue-light flex items-center justify-center mb-4">
+                  <svg className="w-5.5 h-5.5 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d={f.icon} />
+                  </svg>
+                </div>
+                <h3 className="m-0 mb-2 text-base font-bold">{f.title}</h3>
+                <p className="m-0 text-sm leading-relaxed text-fco-muted">{f.desc}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Alur Kerja ── */}
+        <section id="alur" className="bg-white border-y border-fco-border scroll-mt-20">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16">
+            <div className="max-w-130 mb-10">
+              <div className="text-sm font-semibold text-fco-blue mb-2">Alur Kerja</div>
+              <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Dari kapal hingga kebijakan nasional.</h2>
+              <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+                Empat langkah yang menghubungkan seluruh rantai pelaporan perikanan Indonesia.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {steps.map((s) => (
+                <article key={s.num} className="bg-fco-bg border border-fco-border-subtle rounded-2xl p-6 relative overflow-hidden">
+                  <div className="text-4xl font-extrabold text-fco-ice mb-4 tabular-nums">{s.num}</div>
+                  <h3 className="m-0 mb-2 text-base font-bold">{s.title}</h3>
+                  <p className="m-0 text-sm leading-relaxed text-fco-muted">{s.desc}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Peran ── */}
+        <section id="peran" className="max-w-7xl mx-auto px-6 sm:px-10 py-16 scroll-mt-20">
+          <div className="max-w-130 mb-10">
+            <div className="text-sm font-semibold text-fco-blue mb-2">Akses Peran</div>
+            <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Dashboard untuk setiap peran.</h2>
+            <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+              Masuk sesuai peran Anda — setiap dashboard menampilkan data dan aksi yang relevan dengan tanggung jawabnya.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {roles.map((r) => (
+              <article key={r.name} className="bg-white border border-fco-border rounded-2xl p-7 shadow-xs flex flex-col">
+                <div className="inline-flex self-start px-2.5 py-1 rounded-md bg-fco-blue-light text-fco-blue text-xs font-bold mb-3">
+                  {r.tag}
+                </div>
+                <h3 className="m-0 mb-2 text-xl font-extrabold">{r.name}</h3>
+                <p className="m-0 mb-6 text-sm leading-relaxed text-fco-muted flex-1">{r.desc}</p>
+                <Link
+                  to={r.to}
+                  className="inline-flex items-center justify-center h-11 rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors"
+                >
+                  {r.cta}
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Keamanan / CTA ── */}
+        <section id="keamanan" className="max-w-7xl mx-auto px-6 sm:px-10 pb-16 scroll-mt-20">
+          <div className="bg-fco-blue rounded-fco-lg p-8 sm:p-12 text-white relative overflow-hidden">
+            <div className="absolute w-80 h-80 rounded-full border border-white/20 -right-25 -top-30 pointer-events-none" />
+            <div className="absolute w-50 h-50 rounded-full border border-white/20 right-10 -bottom-22.5 pointer-events-none" />
+
+            <div className="relative z-10 max-w-130">
+              <h2 className="m-0 mb-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                Data perikanan yang tidak dapat dimanipulasi.
+              </h2>
+              <p className="m-0 mb-7 text-fco-md text-fco-mist leading-relaxed">
+                Setiap laporan di-hash dan dirangkai secara kriptografis. Regulator, auditor, dan pemilik kapal dapat memverifikasi keaslian data kapan saja — membangun kepercayaan publik terhadap pengelolaan sumber daya laut.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  to="/register"
+                  className="h-12 px-7 inline-flex items-center rounded-xl bg-white hover:bg-fco-blue-light text-fco-blue text-fco-md font-semibold no-underline transition-colors"
+                >
+                  Daftarkan Akun Anda
+                </Link>
+                <Link
+                  to="/login"
+                  className="h-12 px-7 inline-flex items-center rounded-xl bg-white/15 hover:bg-white/25 text-white text-fco-md font-semibold no-underline transition-colors"
+                >
+                  Sudah punya akun? Masuk
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ── Footer ── */}
+      <footer className="bg-fco-dark text-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="md:col-span-2">
+            <Logo variant="dark" />
+            <p className="mt-4 mb-0 text-sm leading-relaxed text-fco-pale max-w-105">
+              Fish Chain Optima (FCO) — ekosistem manajemen tangkapan ikan nasional yang transparan: pelaporan digital, kuota AI, PNBP otomatis, dan ledger blockchain.
+            </p>
+          </div>
+
+          <nav aria-label="Tautan platform">
+            <div className="text-sm font-bold mb-3">Platform</div>
+            <div className="flex flex-col gap-2">
+              <a href="#fitur" className="text-sm text-fco-pale hover:text-white no-underline">Fitur</a>
+              <a href="#alur" className="text-sm text-fco-pale hover:text-white no-underline">Alur Kerja</a>
+              <a href="#peran" className="text-sm text-fco-pale hover:text-white no-underline">Akses Peran</a>
+              <a href="#keamanan" className="text-sm text-fco-pale hover:text-white no-underline">Keamanan Data</a>
+            </div>
+          </nav>
+
+          <nav aria-label="Tautan akun">
+            <div className="text-sm font-bold mb-3">Akun</div>
+            <div className="flex flex-col gap-2">
+              <Link to="/login" className="text-sm text-fco-pale hover:text-white no-underline">Masuk</Link>
+              <Link to="/register" className="text-sm text-fco-pale hover:text-white no-underline">Daftar Akun</Link>
+              <Link to="/reset-password" className="text-sm text-fco-pale hover:text-white no-underline">Reset Kata Sandi</Link>
+              <Link to="/onboard" className="text-sm text-fco-pale hover:text-white no-underline">Tentang FCO</Link>
+            </div>
+          </nav>
         </div>
-      </div>
+
+        <div className="border-t border-white/10">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 py-5 flex flex-wrap items-center justify-between gap-2 text-xs text-fco-faint">
+            <span>© 2026 Kementerian Kelautan dan Perikanan Republik Indonesia.</span>
+            <span>Sistem Manajemen Tangkapan Ikan FCO</span>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
