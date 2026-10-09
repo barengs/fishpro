@@ -16,8 +16,8 @@ export function AreasPage() {
   const [f, setF] = useState({ nama: '', code: '', deskripsi: '' })
 
   const cols: Column<AreaRow>[] = [
-    { key: 'nama', header: 'Nama Wilayah / Kode', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.nama}</div><div className="text-xs text-fco-muted tabular-nums">{r.code}</div></div>) },
-    { key: 'desc', header: 'Deskripsi', flex: 3, render: (r) => <span className="text-sm text-fco-muted">{r.deskripsi}</span> },
+    { key: 'nama', header: 'Nama Wilayah / Kode', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.nama}</div><div className="text-xs text-soft tabular-nums">{r.code}</div></div>) },
+    { key: 'desc', header: 'Deskripsi', flex: 3, render: (r) => <span className="text-sm text-soft">{r.deskripsi}</span> },
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRows((p) => p.filter((x) => x.id !== r.id))} /> }
   ]
 
@@ -25,10 +25,10 @@ export function AreasPage() {
     <div>
       <PageHeader title="Wilayah (WPP)" desc="FishingArea: nama, code (unik, mis. WPP 573), deskripsi." showSearch searchPlaceholder="Cari WPP" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah wilayah</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.nama || !f.code) return; setRows((p) => [...p, { id: Date.now(), ...f }]); setF({ nama: '', code: '', deskripsi: '' }) }} className="flex flex-col gap-4">
             <FormField label="Nama wilayah" htmlFor="ar-nama"><input id="ar-nama" required value={f.nama} onChange={(e) => setF({ ...f, nama: e.target.value })} placeholder="Laut Jawa" className={inputCls} /></FormField>

@@ -8,8 +8,8 @@ const tips = [
 
 export function AiAdviceCard() {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
-      <h2 className="mt-0 mb-4 text-base font-bold text-fco-dark">Rekomendasi AI</h2>
+    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+      <h2 className="mt-0 mb-4 text-base font-bold text-strong">Rekomendasi AI</h2>
       <div className="flex flex-col gap-4">
         {tips.map((t) => (
           <div key={t.title} className="flex gap-3">
@@ -17,8 +17,8 @@ export function AiAdviceCard() {
               <BarChart3 size={16} className="text-fco-blue" strokeWidth={2} aria-hidden="true" />
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5 text-fco-dark">{t.title}</div>
-              <div className="text-fco-sm leading-relaxed text-fco-muted">{t.text}</div>
+              <div className="text-sm font-semibold mb-0.5 text-strong">{t.title}</div>
+              <div className="text-fco-sm leading-relaxed text-soft">{t.text}</div>
             </div>
           </div>
         ))}

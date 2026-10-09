@@ -13,7 +13,7 @@ const rows: Row[] = [
 
 export function VerifyBlockchainPage() {
   const cols: Column<Row>[] = [
-    { key: 'ship', header: 'Kapal / Blok', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.ship}</div><div className="text-xs text-fco-muted">{r.block} · {r.date}</div></div>) },
+    { key: 'ship', header: 'Kapal / Blok', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.ship}</div><div className="text-xs text-soft">{r.block} · {r.date}</div></div>) },
     { key: 'area', header: 'WPP', flex: 1, render: (r) => <span className="text-sm">{r.area}</span> },
     { key: 'fish', header: 'Spesies', flex: 2, render: (r) => <span className="text-sm">{r.fish}</span> },
     { key: 'qty', header: 'Jumlah', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.qty}</span> },
@@ -23,7 +23,7 @@ export function VerifyBlockchainPage() {
   return (
     <div>
       <PageHeader title="Verifikasi Blockchain" desc="FishCatchTransaction: ship_registration_number, fishing_area_code, fish_species_code, quantity, catch_date, tarif_index, pnkp, pnbp, quota FK, block FK." showSearch searchPlaceholder="Cari hash / registrasi" />
-      <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+      <section className="surface-card border rounded-2xl p-6 shadow-xs">
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
     </div>

@@ -45,7 +45,7 @@ export function UserProfileBadge({
         aria-haspopup="menu"
         aria-expanded={dropdownOpen}
         aria-label="Menu profil pengguna"
-        className="flex items-center gap-3 p-1.5 rounded-xl border-none bg-transparent hover:bg-fco-bg cursor-pointer transition-colors"
+        className="flex items-center gap-3 p-1.5 rounded-xl border-none bg-transparent hover:surface-page cursor-pointer transition-colors"
       >
         <div
           className="w-9 h-9 rounded-full text-white text-fco-sm font-bold flex items-center justify-center shrink-0"
@@ -54,20 +54,20 @@ export function UserProfileBadge({
           {initials}
         </div>
         <div className="min-w-0 text-left hidden sm:block">
-          <div className="text-sm font-semibold text-fco-dark truncate max-w-40">{name}</div>
-          <div className="text-xs text-fco-muted whitespace-nowrap">{role}</div>
+          <div className="text-sm font-semibold text-strong truncate max-w-40">{name}</div>
+          <div className="text-xs text-soft whitespace-nowrap">{role}</div>
         </div>
-        <ChevronDown size={16} className={`text-fco-muted transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} strokeWidth={2} aria-hidden="true" />
+        <ChevronDown size={16} className={`text-soft transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} strokeWidth={2} aria-hidden="true" />
       </button>
 
       {dropdownOpen && (
-        <div role="menu" className="absolute right-0 top-full mt-2 w-56 bg-white border border-fco-border rounded-2xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div role="menu" className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-2xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
           <div className="px-3 py-2.5 border-b border-fco-border-subtle mb-1">
-            <div className="text-sm font-bold text-fco-dark truncate">{name}</div>
-            <div className="text-xs text-fco-muted">{role}</div>
+            <div className="text-sm font-bold text-strong truncate">{name}</div>
+            <div className="text-xs text-soft">{role}</div>
           </div>
-          <a href="#profil" role="menuitem" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-fco-dark hover:bg-fco-bg no-underline transition-colors">
-            <User size={16} className="text-fco-muted" strokeWidth={1.8} aria-hidden="true" />
+          <a href="#profil" role="menuitem" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-strong hover:surface-page no-underline transition-colors">
+            <User size={16} className="text-soft" strokeWidth={1.8} aria-hidden="true" />
             Profil saya
           </a>
           {onLogout && (

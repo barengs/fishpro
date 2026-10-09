@@ -25,7 +25,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
-        <label htmlFor="login-identifier" className="block text-sm font-semibold text-fco-dark mb-2">
+        <label htmlFor="login-identifier" className="block text-sm font-semibold text-strong mb-2">
           Nama pengguna atau nomor registrasi
         </label>
         <div className="relative">
@@ -38,14 +38,14 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="REG-0412 atau admin_kkp"
-            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md text-fco-dark bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md text-strong bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
           />
         </div>
       </div>
 
       <div>
         <div className="flex justify-between items-center mb-2">
-          <label htmlFor="login-password" className="text-sm font-semibold text-fco-dark">
+          <label htmlFor="login-password" className="text-sm font-semibold text-strong">
             Kata sandi
           </label>
           <Link to="/reset-password" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
@@ -62,13 +62,13 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-12 text-fco-md text-fco-dark bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-12 text-fco-md text-strong bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? 'Sembunyikan sandi' : 'Tampilkan sandi'}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-fco-placeholder hover:text-fco-dark hover:bg-fco-bg border-none bg-transparent cursor-pointer transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-fco-placeholder hover:text-strong hover:surface-page border-none bg-transparent cursor-pointer transition-colors"
           >
             {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
           </button>

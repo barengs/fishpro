@@ -28,27 +28,27 @@ export function ManualQuotaModal({
 
   return (
     <div className="fixed inset-0 bg-fco-dark/50 backdrop-blur-xs flex items-center justify-center z-50 p-5">
-      <div className="bg-white rounded-fco-lg p-7 sm:p-8 max-w-120 w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+      <div className="surface-card rounded-fco-lg p-7 sm:p-8 max-w-120 w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-extrabold m-0 text-fco-dark">
+          <h2 className="text-xl font-extrabold m-0 text-strong">
             Penyesuaian Manual Kuota
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="bg-transparent border-none text-2xl cursor-pointer text-fco-muted hover:text-fco-dark"
+            className="bg-transparent border-none text-2xl cursor-pointer text-soft hover:text-strong"
           >
             ×
           </button>
         </div>
 
-        <p className="text-fco-sm text-fco-muted mt-0 mb-5 leading-relaxed">
+        <p className="text-fco-sm text-soft mt-0 mb-5 leading-relaxed">
           Hak regulator: Menyesuaikan batas kuota kapal penangkap ikan dengan validasi blockchain terverifikasi.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div>
-            <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
+            <label className="block text-fco-sm font-semibold text-strong mb-1.5">
               Nomor Registrasi Kapal
             </label>
             <input
@@ -63,7 +63,7 @@ export function ManualQuotaModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
+              <label className="block text-fco-sm font-semibold text-strong mb-1.5">
                 Tahun Kuota
               </label>
               <input
@@ -75,7 +75,7 @@ export function ManualQuotaModal({
               />
             </div>
             <div>
-              <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
+              <label className="block text-fco-sm font-semibold text-strong mb-1.5">
                 Kuota Baru (kg)
               </label>
               <input
@@ -89,7 +89,7 @@ export function ManualQuotaModal({
           </div>
 
           <div>
-            <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
+            <label className="block text-fco-sm font-semibold text-strong mb-1.5">
               Alasan Penyesuaian
             </label>
             <textarea
@@ -104,7 +104,7 @@ export function ManualQuotaModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-11 rounded-fco border border-fco-border bg-white text-fco-muted hover:bg-fco-bg font-semibold text-sm cursor-pointer"
+              className="flex-1 h-11 rounded-fco border border-fco-border bg-white text-soft hover:surface-page font-semibold text-sm cursor-pointer"
             >
               Batal
             </button>

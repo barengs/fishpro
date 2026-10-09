@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --color-fco-blue: #1A56DB;
@@ -30,7 +32,41 @@
   --radius-fco: 0.625rem;
   --radius-fco-lg: 1.25rem;
   --radius-fco-xl: 1.75rem;
+  /* Dark surfaces — warm neutral like reference */
+  --color-fco-surface-dark: #17130f;
+  --color-fco-card-dark: #211c17;
+  --color-fco-text-dark: #f5f0e8;
+  --color-fco-muted-dark: #a8a29e;
+  --color-fco-border-dark: #2e2823;
+  --color-fco-track-dark: #3a332c;
 }
+
+.dark body {
+  background-color: #100d0a;
+  color: var(--color-fco-text-dark);
+}
+
+/* Semantic surface tokens: light default, dark override */
+.surface-page { background-color: var(--color-fco-bg); }
+.dark .surface-page { background-color: #100d0a; }
+.surface-card { background-color: #fff; border-color: var(--color-fco-border); }
+.dark .surface-card { background-color: var(--color-fco-card-dark); border-color: var(--color-fco-border-dark); }
+.surface-inset { background-color: var(--color-fco-bg); border-color: var(--color-fco-border-subtle); }
+.dark .surface-inset { background-color: #17130f; border-color: var(--color-fco-border-dark); }
+.surface-topbar { background-color: #fff; border-color: var(--color-fco-border); }
+.dark .surface-topbar { background-color: var(--color-fco-surface-dark); border-color: var(--color-fco-border-dark); }
+.text-strong { color: var(--color-fco-dark); }
+.dark .text-strong { color: var(--color-fco-text-dark); }
+.text-soft { color: var(--color-fco-muted); }
+.dark .text-soft { color: var(--color-fco-muted-dark); }
+.track-bar { background-color: var(--color-fco-blue-light); }
+.dark .track-bar { background-color: var(--color-fco-track-dark); }
+.field-input { background-color: #fff; border-color: var(--color-fco-border); color: var(--color-fco-dark); }
+.dark .field-input { background-color: #17130f; border-color: var(--color-fco-border-dark); color: var(--color-fco-text-dark); }
+.field-input::placeholder { color: var(--color-fco-placeholder); }
+.dark .field-input::placeholder { color: var(--color-fco-muted-dark); }
+.hover-soft:hover { background-color: var(--color-fco-bg); }
+.dark .hover-soft:hover { background-color: rgba(255,255,255,0.06); }
 
 body {
   margin: 0;

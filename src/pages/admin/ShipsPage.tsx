@@ -28,7 +28,7 @@ export function ShipsPage() {
   const [form, setForm] = useState({ name: '', registration_number: '', owner: '', captain: '', length: '', width: '', gross_tonnage: '', year_built: '', home_port: '', active: true })
 
   const columns: Column<ShipRow>[] = [
-    { key: 'name', header: 'Nama / Registrasi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-fco-muted tabular-nums">{r.registration_number}</div></div>) },
+    { key: 'name', header: 'Nama / Registrasi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft tabular-nums">{r.registration_number}</div></div>) },
     { key: 'owner', header: 'Pemilik', flex: 2, render: (r) => <span className="text-sm">{r.owner_name}</span> },
     { key: 'captain', header: 'Nahkoda', flex: 2, render: (r) => <span className="text-sm">{r.captain_name}</span> },
     { key: 'gt', header: 'GT', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.gross_tonnage}</span> },
@@ -47,10 +47,10 @@ export function ShipsPage() {
     <div>
       <PageHeader title="Kapal" desc="CRUD kapal: name, registration_number, owner, captain, length, width, gross_tonnage, year_built, home_port, active." showSearch searchPlaceholder="Cari nama / nomor registrasi" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={columns} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah kapal</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <FormField label="Nama kapal" htmlFor="ship-name"><input id="ship-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="KM ..." className={inputCls} /></FormField>

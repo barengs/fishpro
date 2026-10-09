@@ -29,11 +29,11 @@ export function RolesMenusPage() {
 
   const roleCols: Column<RoleRow>[] = [
     { key: 'name', header: 'Peran', flex: 2, render: (r) => <span className="text-sm font-bold">{r.name}</span> },
-    { key: 'desc', header: 'Deskripsi', flex: 3, render: (r) => <span className="text-sm text-fco-muted">{r.desc}</span> },
+    { key: 'desc', header: 'Deskripsi', flex: 3, render: (r) => <span className="text-sm text-soft">{r.desc}</span> },
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRoles((p) => p.filter((x) => x.id !== r.id))} /> }
   ]
   const menuCols: Column<MenuRow>[] = [
-    { key: 'name', header: 'Menu / URL', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-fco-muted">{r.url}</div></div>) },
+    { key: 'name', header: 'Menu / URL', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft">{r.url}</div></div>) },
     { key: 'order', header: 'Urutan', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.order}</span> },
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setMenus((p) => p.filter((x) => x.id !== r.id))} /> }
   ]
@@ -42,17 +42,17 @@ export function RolesMenusPage() {
     <div>
       <PageHeader title="Peran & Menu" desc="Role, UserRole, Menu (name, url, icon, parent, order, is_active), RoleMenu (can_view/create/edit/delete), AdminUser + AdminProfile." />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start mb-4">
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Daftar peran</h2>
           <DataTable columns={roleCols} rows={roles} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Daftar menu</h2>
           <DataTable columns={menuCols} rows={menus} rowKey={(r) => String(r.id)} />
         </section>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah peran</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!rForm.name) return; setRoles((p) => [...p, { id: Date.now(), name: rForm.name, desc: rForm.description }]); setRForm({ name: '', description: '' }) }} className="flex flex-col gap-4">
             <FormField label="Nama peran (unik)" htmlFor="rl-name"><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
@@ -60,7 +60,7 @@ export function RolesMenusPage() {
             <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer">Simpan peran</button>
           </form>
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah menu</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]) }} className="flex flex-col gap-4">
             <FormField label="Nama menu" htmlFor="mn-name"><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
@@ -75,7 +75,7 @@ export function RolesMenusPage() {
             <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer">Simpan menu</button>
           </form>
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah admin (AdminUser)</h2>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

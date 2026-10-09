@@ -47,7 +47,7 @@ export function RegulatorDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
           <div>
             <h1 className="m-0 text-3xl font-extrabold tracking-tight">Portal Pengawas & Regulator</h1>
-            <div className="text-sm text-fco-muted mt-1">
+            <div className="text-sm text-soft mt-1">
               Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen penyesuaian manual kuota KKP.
             </div>
           </div>

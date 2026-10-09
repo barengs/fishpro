@@ -42,9 +42,9 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
   }
 
   return (
-    <section className="bg-white border border-fco-border rounded-fco-lg p-7 shadow-xl shadow-fco-blue/5">
-      <h2 className="mt-0 mb-1 text-lg font-extrabold tracking-tight text-fco-dark">Lapor tangkapan</h2>
-      <p className="mt-0 mb-5 text-sm text-fco-muted">Isi setelah selesai menangkap. Laporan langsung tercatat.</p>
+    <section className="surface-card border rounded-fco-lg p-7 shadow-xl shadow-fco-blue/5">
+      <h2 className="mt-0 mb-1 text-lg font-extrabold tracking-tight text-strong">Lapor tangkapan</h2>
+      <p className="mt-0 mb-5 text-sm text-soft">Isi setelah selesai menangkap. Laporan langsung tercatat.</p>
 
       {submitted && (
         <div className="p-3 px-4 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-4 border border-fco-blue-border">
@@ -54,23 +54,23 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label htmlFor="tanggal" className="block text-fco-sm font-semibold text-fco-dark mb-2">Tanggal penangkapan</label>
+          <label htmlFor="tanggal" className="block text-fco-sm font-semibold text-strong mb-2">Tanggal penangkapan</label>
           <input
             id="tanggal"
             type="date"
             value={tanggal}
             onChange={(e) => setTanggal(e.target.value)}
-            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
           />
         </div>
 
         <div>
-          <label htmlFor="jenis" className="block text-fco-sm font-semibold text-fco-dark mb-2">Jenis penangkapan</label>
+          <label htmlFor="jenis" className="block text-fco-sm font-semibold text-strong mb-2">Jenis penangkapan</label>
           <select
             id="jenis"
             value={jenis}
             onChange={(e) => setJenis(e.target.value)}
-            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
           >
             <option value="pelagic">Pelagis</option>
             <option value="demersal">Demersal</option>
@@ -80,25 +80,25 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label htmlFor="lat" className="block text-fco-sm font-semibold text-fco-dark mb-2">Latitude</label>
+            <label htmlFor="lat" className="block text-fco-sm font-semibold text-strong mb-2">Latitude</label>
             <input
               id="lat"
               type="text"
               value={latitude}
               onChange={(e) => setLatitude(e.target.value)}
               placeholder="-8.740000"
-              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
             />
           </div>
           <div>
-            <label htmlFor="lng" className="block text-fco-sm font-semibold text-fco-dark mb-2">Longitude</label>
+            <label htmlFor="lng" className="block text-fco-sm font-semibold text-strong mb-2">Longitude</label>
             <input
               id="lng"
               type="text"
               value={longitude}
               onChange={(e) => setLongitude(e.target.value)}
               placeholder="115.200000"
-              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
             />
           </div>
         </div>
@@ -113,12 +113,12 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
         </a>
 
         <div>
-          <label htmlFor="wpp" className="block text-fco-sm font-semibold text-fco-dark mb-2">Wilayah penangkapan (WPP)</label>
+          <label htmlFor="wpp" className="block text-fco-sm font-semibold text-strong mb-2">Wilayah penangkapan (WPP)</label>
           <select
             id="wpp"
             value={wpp}
             onChange={(e) => setWpp(e.target.value)}
-            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+            className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
           >
             <option value="WPP 571">WPP 571 - Selat Malaka</option>
             <option value="WPP 572">WPP 572 - Samudera Hindia Barat Sumatera</option>
@@ -131,12 +131,12 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
 
         <div className="grid grid-cols-5 gap-3">
           <div className="col-span-3">
-            <label htmlFor="spesies" className="block text-fco-sm font-semibold text-fco-dark mb-2">Spesies ikan</label>
+            <label htmlFor="spesies" className="block text-fco-sm font-semibold text-strong mb-2">Spesies ikan</label>
             <select
               id="spesies"
               value={spesies}
               onChange={(e) => setSpesies(e.target.value)}
-              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
             >
               <option value="Tongkol">Tongkol</option>
               <option value="Cakalang">Cakalang</option>
@@ -146,14 +146,14 @@ export function CatchReportForm({ onSuccess }: CatchReportFormProps) {
             </select>
           </div>
           <div className="col-span-2">
-            <label htmlFor="jumlah" className="block text-fco-sm font-semibold text-fco-dark mb-2">Jumlah (kg)</label>
+            <label htmlFor="jumlah" className="block text-fco-sm font-semibold text-strong mb-2">Jumlah (kg)</label>
             <input
               id="jumlah"
               type="number"
               value={jumlah}
               onChange={(e) => setJumlah(e.target.value)}
               placeholder="0"
-              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue"
+              className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
             />
           </div>
         </div>

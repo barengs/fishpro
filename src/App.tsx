@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./components/ThemeContext";
 import { OnboardingPage } from "./pages/auth/OnboardingPage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
@@ -28,6 +29,7 @@ import { MyShipPage } from "./pages/captain/MyShipPage";
 
 export default function App() {
   return (
+    <ThemeProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/onboard" replace />} />
@@ -75,5 +77,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/onboard" replace />} />
       </Routes>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }

@@ -15,7 +15,7 @@ export function CaptainsPage() {
   const [f, setF] = useState({ full_name: '', license_number: '', date_of_birth: '', email: '', phone: '', address: '', years_of_experience: '', contact_info: '' })
 
   const cols: Column<Row>[] = [
-    { key: 'name', header: 'Nahkoda / Lisensi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-fco-muted tabular-nums">{r.license}</div></div>) },
+    { key: 'name', header: 'Nahkoda / Lisensi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft tabular-nums">{r.license}</div></div>) },
     { key: 'exp', header: 'Pengalaman', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.exp}</span> },
     { key: 'ship', header: 'Kapal', flex: 2, render: (r) => <span className="text-sm">{r.ship}</span> },
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRows((p) => p.filter((x) => x.id !== r.id))} /> }
@@ -25,10 +25,10 @@ export function CaptainsPage() {
     <div>
       <PageHeader title="Nahkoda" desc="Captain: full_name, license_number (unik), date_of_birth, contact_info, email, phone, address, years_of_experience." showSearch searchPlaceholder="Cari nahkoda" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tunjuk nahkoda</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.full_name || !f.license_number) return; setRows((p) => [...p, { id: Date.now(), name: f.full_name, license: f.license_number, exp: f.years_of_experience ? `${f.years_of_experience} th` : '-', ship: '-' }]) }} className="flex flex-col gap-4">
             <FormField label="Nama nahkoda" htmlFor="cp-name"><input id="cp-name" required value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} className={inputCls} /></FormField>

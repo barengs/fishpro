@@ -17,7 +17,7 @@ export function SpeciesPage() {
   const [f, setF] = useState({ name: '', scientific_name: '', description: '', price_per_kg: '', is_active: true, fish_name: '', weight: '', notes: '' })
 
   const cols: Column<SpeciesRow>[] = [
-    { key: 'name', header: 'Nama / Ilmiah', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-fco-muted italic">{r.scientific_name}</div></div>) },
+    { key: 'name', header: 'Nama / Ilmiah', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft italic">{r.scientific_name}</div></div>) },
     { key: 'price', header: 'Harga Acuan/kg', flex: 2, align: 'right', render: (r) => <span className="text-sm font-semibold tabular-nums">{r.price}</span> },
     { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRows((p) => p.filter((x) => x.id !== r.id))} /> }
   ]
@@ -26,10 +26,10 @@ export function SpeciesPage() {
     <div>
       <PageHeader title="Spesies Ikan" desc="FishSpecies (name unique, scientific_name, description) + FishPriceReference (price_per_kg, effective_date, is_active) + Fish individu (species FK, name, weight, notes)." showSearch searchPlaceholder="Cari spesies" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah spesies + harga</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.name) return; setRows((p) => [...p, { id: Date.now(), name: f.name, scientific_name: f.scientific_name || '-', price: f.price_per_kg ? `Rp ${Number(f.price_per_kg).toLocaleString('id-ID')}` : '-' }]) }} className="flex flex-col gap-4">
             <FormField label="Nama ikan (unik)" htmlFor="sp-name"><input id="sp-name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={inputCls} /></FormField>

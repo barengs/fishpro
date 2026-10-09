@@ -10,14 +10,14 @@ const wppData = [
 
 export function WppBarChart() {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
-      <h2 className="mt-0 mb-5 text-base font-bold text-fco-dark">Tangkapan per WPP (ton)</h2>
+    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+      <h2 className="mt-0 mb-5 text-base font-bold text-strong">Tangkapan per WPP (ton)</h2>
       <div className="flex flex-col gap-4.5">
         {wppData.map((w) => (
           <div key={w.label}>
             <div className="flex justify-between mb-2 text-fco-sm">
-              <span className="font-semibold text-fco-dark">{w.label}</span>
-              <span className="text-fco-muted tabular-nums">{w.value}</span>
+              <span className="font-semibold text-strong">{w.label}</span>
+              <span className="text-soft tabular-nums">{w.value}</span>
             </div>
             <ProgressBar width={w.width} height={8} />
           </div>

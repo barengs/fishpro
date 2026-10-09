@@ -21,7 +21,7 @@ export function CaptainDashboard() {
     <main className="max-w-360 mx-auto p-4 sm:p-7 lg:p-10">
       <div className="mb-7">
         <h1 className="m-0 mb-1.5 text-3xl font-extrabold tracking-tight">Selamat siang, Budi</h1>
-        <div className="text-sm text-fco-muted">KM Samudra Jaya · REG-0412 · Pelabuhan asal Benoa</div>
+        <div className="text-sm text-soft">KM Samudra Jaya · REG-0412 · Pelabuhan asal Benoa</div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 items-start">
         <div className="lg:col-span-3 flex flex-col gap-4 min-w-0">

@@ -78,7 +78,7 @@ export function ResetPasswordWizard() {
       {step === 1 && (
         <form onSubmit={handleSendOtp} className="flex flex-col gap-5">
           <div>
-            <label htmlFor="reset-id" className="block text-sm font-semibold text-fco-dark mb-2">
+            <label htmlFor="reset-id" className="block text-sm font-semibold text-strong mb-2">
               Email atau nomor registrasi
             </label>
             <div className="relative">
@@ -103,8 +103,8 @@ export function ResetPasswordWizard() {
 
       {step === 2 && (
         <form onSubmit={handleVerifyOtp} className="flex flex-col gap-5">
-          <p className="m-0 text-sm text-fco-muted text-center">
-            Kode 6 digit terkirim ke <span className="font-semibold text-fco-dark">{identifier}</span>
+          <p className="m-0 text-sm text-soft text-center">
+            Kode 6 digit terkirim ke <span className="font-semibold text-strong">{identifier}</span>
           </p>
           <div className="flex gap-2 justify-center">
             {otp.map((digit, i) => (
@@ -118,7 +118,7 @@ export function ResetPasswordWizard() {
                 onChange={(e) => handleOtpChange(i, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                 aria-label={`Digit ${i + 1}`}
-                className="w-12 h-14 border border-fco-border rounded-xl text-center text-xl font-bold text-fco-dark bg-white focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+                className="w-12 h-14 border border-fco-border rounded-xl text-center text-xl font-bold field-input focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
               />
             ))}
           </div>
@@ -126,7 +126,7 @@ export function ResetPasswordWizard() {
             Verifikasi
           </button>
           <div className="flex items-center justify-between text-sm">
-            <button type="button" onClick={() => setStep(1)} className="inline-flex items-center gap-1.5 bg-transparent border-none text-fco-muted hover:text-fco-dark font-semibold cursor-pointer p-0">
+            <button type="button" onClick={() => setStep(1)} className="inline-flex items-center gap-1.5 bg-transparent border-none text-soft hover:text-strong font-semibold cursor-pointer p-0">
               <ChevronLeft size={16} aria-hidden="true" /> Ubah email
             </button>
             <button type="button" onClick={() => setStep(1)} className="bg-transparent border-none text-fco-blue font-semibold cursor-pointer p-0">
@@ -139,7 +139,7 @@ export function ResetPasswordWizard() {
       {step === 3 && (
         <form onSubmit={handleSavePassword} className="flex flex-col gap-5">
           <div>
-            <label htmlFor="new-pass" className="block text-sm font-semibold text-fco-dark mb-2">
+            <label htmlFor="new-pass" className="block text-sm font-semibold text-strong mb-2">
               Kata sandi baru
             </label>
             <input
@@ -154,7 +154,7 @@ export function ResetPasswordWizard() {
             />
           </div>
           <div>
-            <label htmlFor="confirm-pass" className="block text-sm font-semibold text-fco-dark mb-2">
+            <label htmlFor="confirm-pass" className="block text-sm font-semibold text-strong mb-2">
               Konfirmasi sandi baru
             </label>
             <input
@@ -180,7 +180,7 @@ export function ResetPasswordWizard() {
             <Check size={26} className="text-fco-blue" strokeWidth={2.5} aria-hidden="true" />
           </div>
           <h2 className="m-0 mb-2 text-xl font-extrabold tracking-tight">Sandi diperbarui</h2>
-          <p className="m-0 mb-6 text-sm text-fco-muted">Silakan masuk kembali dengan kata sandi baru Anda.</p>
+          <p className="m-0 mb-6 text-sm text-soft">Silakan masuk kembali dengan kata sandi baru Anda.</p>
           <button
             type="button"
             onClick={() => navigate('/login')}
@@ -192,7 +192,7 @@ export function ResetPasswordWizard() {
       )}
 
       {step === 2 && (
-        <button type="button" onClick={() => setStep(1)} className="mt-5 inline-flex items-center gap-1.5 text-sm text-fco-muted hover:text-fco-dark font-semibold bg-transparent border-none cursor-pointer p-0">
+        <button type="button" onClick={() => setStep(1)} className="mt-5 inline-flex items-center gap-1.5 text-sm text-soft hover:text-strong font-semibold bg-transparent border-none cursor-pointer p-0">
           <ArrowLeft size={16} aria-hidden="true" /> Kembali
         </button>
       )}

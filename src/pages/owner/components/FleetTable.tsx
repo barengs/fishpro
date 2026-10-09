@@ -16,9 +16,9 @@ const fleet = [
 
 export function FleetTable() {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="m-0 text-base font-bold text-fco-dark">Armada kapal (5)</h2>
+        <h2 className="m-0 text-base font-bold text-strong">Armada kapal (5)</h2>
         <a href="/owner/captains" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
           Kelola nahkoda →
         </a>
@@ -26,7 +26,7 @@ export function FleetTable() {
 
       <div className="overflow-x-auto">
         <div className="min-w-130">
-          <div className="flex items-center py-2.5 text-xs font-semibold text-fco-muted">
+          <div className="flex items-center py-2.5 text-xs font-semibold text-soft">
             <div className="basis-3/10">Kapal</div>
             <div className="basis-2/10">Nahkoda</div>
             <div className="basis-3/10">Sisa kuota</div>
@@ -36,8 +36,8 @@ export function FleetTable() {
           {fleet.map((s) => (
             <div key={s.reg} className="flex items-center py-4 border-t border-fco-border-subtle">
               <div className="basis-3/10">
-                <div className="text-sm font-semibold text-fco-dark">{s.name}</div>
-                <div className="text-xs text-fco-muted tabular-nums">{s.reg}</div>
+                <div className="text-sm font-semibold text-strong">{s.name}</div>
+                <div className="text-xs text-soft tabular-nums">{s.reg}</div>
               </div>
               <div className="basis-2/10 text-sm" style={{ color: s.captainColor }}>
                 {s.captain}

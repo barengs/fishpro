@@ -19,7 +19,7 @@ export function FleetPage() {
   const [f, setF] = useState({ name: '', registration_number: '', captain: '', length: '', width: '', gross_tonnage: '', year_built: '', home_port: '' })
 
   const cols: Column<FleetRow>[] = [
-    { key: 'ship', header: 'Kapal / Registrasi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-fco-muted tabular-nums">{r.reg}</div></div>) },
+    { key: 'ship', header: 'Kapal / Registrasi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft tabular-nums">{r.reg}</div></div>) },
     { key: 'cap', header: 'Nahkoda', flex: 2, render: (r) => <span className="text-sm">{r.captain}</span> },
     { key: 'q', header: 'Sisa Kuota', flex: 3, render: (r) => <ProgressBar width={r.pct} showText /> },
     { key: 'st', header: 'Status', flex: 1, align: 'center', render: (r) => r.captain === 'Belum ditunjuk' ? <StatusChip label="Tanpa nahkoda" bg="#EEF1F6" color="#4A5872" /> : <StatusChip label="Aktif" /> },
@@ -41,10 +41,10 @@ export function FleetPage() {
         }
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Tambah kapal</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.name || !f.registration_number) return; setRows((p) => [...p, { id: Date.now(), name: f.name, reg: f.registration_number, captain: f.captain || 'Belum ditunjuk', pct: '100%' }]) }} className="flex flex-col gap-4">
             <FormField label="Nama kapal" htmlFor="fl-name"><input id="fl-name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={inputCls} /></FormField>

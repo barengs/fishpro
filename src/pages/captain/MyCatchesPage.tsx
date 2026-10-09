@@ -16,7 +16,7 @@ export function MyCatchesPage() {
   const [f, setF] = useState({ catch_date: '2026-10-09', catch_type: 'pelagic', location_latitude: '-8.740000', location_longitude: '115.200000', description: '', fish_species: '', wpp: 'WPP 573', quantity: '', unit: 'kg', value: '', notes: '' })
 
   const cols: Column<Row>[] = [
-    { key: 'date', header: 'Tanggal / Jenis', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.date}</div><div className="text-xs text-fco-muted">{r.type}</div></div>) },
+    { key: 'date', header: 'Tanggal / Jenis', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.date}</div><div className="text-xs text-soft">{r.type}</div></div>) },
     { key: 'sp', header: 'Spesies', flex: 2, render: (r) => <span className="text-sm font-semibold">{r.species}</span> },
     { key: 'qty', header: 'Jumlah', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.qty}</span> },
     { key: 'wpp', header: 'WPP', flex: 1, render: (r) => <span className="text-sm">{r.wpp}</span> },
@@ -27,10 +27,10 @@ export function MyCatchesPage() {
     <div className="max-w-360 mx-auto">
       <PageHeader title="Riwayat Tangkapan" desc="FishCatch + CatchDetail kapal Anda. Filter ship_id & rentang tanggal tersedia di API BE." showSearch searchPlaceholder="Filter tanggal / spesies" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Lapor cepat</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.fish_species || !f.quantity) return; setRows((p) => [{ id: Date.now(), date: f.catch_date, type: f.catch_type, species: f.fish_species, qty: `${f.quantity} ${f.unit}`, wpp: f.wpp }, ...p]) }} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

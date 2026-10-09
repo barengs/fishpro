@@ -19,7 +19,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
       </div>
       <span
         className={`font-extrabold text-xl tracking-tight ${
-          isDark ? 'text-white' : 'text-fco-dark'
+          isDark ? 'text-white' : 'text-strong'
         }`}
       >
         FCO

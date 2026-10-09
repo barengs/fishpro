@@ -1,9 +1,9 @@
 export function PnbpChart() {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <h2 className="m-0 text-base font-bold text-fco-dark">PNBP bulanan: aktual dan prediksi</h2>
-        <div className="flex gap-4 text-xs text-fco-muted">
+        <h2 className="m-0 text-base font-bold text-strong">PNBP bulanan: aktual dan prediksi</h2>
+        <div className="flex gap-4 text-xs text-soft">
           <span className="flex items-center gap-1.5">
             <svg width="20" height="4" viewBox="0 0 20 4" aria-hidden="true">
               <line x1="0" y1="2" x2="20" y2="2" stroke="#1A56DB" strokeWidth="2.5" strokeLinecap="round" />

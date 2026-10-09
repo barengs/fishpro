@@ -19,7 +19,7 @@ export function QuotaAuditPage() {
   const [toast, setToast] = useState<string | null>(null)
 
   const cols: Column<AuditRow>[] = [
-    { key: 'ship', header: 'Kapal / Reg', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.ship}</div><div className="text-xs text-fco-muted tabular-nums">{r.reg} · {r.year}</div></div>) },
+    { key: 'ship', header: 'Kapal / Reg', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.ship}</div><div className="text-xs text-soft tabular-nums">{r.reg} · {r.year}</div></div>) },
     { key: 'quota', header: 'Kuota (kg)', flex: 2, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.quota}</span> },
     { key: 'rem', header: 'Sisa', flex: 3, render: (r) => <ProgressBar width={r.pct} showText /> },
     { key: 'wpp', header: 'WPP', flex: 1, render: (r) => <span className="text-sm">{r.wpp}</span> },
@@ -31,12 +31,12 @@ export function QuotaAuditPage() {
       <PageHeader title="Audit Kuota" desc="Verifikasi quota (ship, year, quota, remaining_quota) + kepatuhan WPP per kapal. Override manual tercatat dengan alasan." showSearch searchPlaceholder="Cari registrasi kapal" />
       {toast && <div className="p-3.5 px-4.5 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-5 border border-fco-blue-border">✓ {toast}</div>}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-1 text-base font-bold">Override kuota manual</h2>
-          <p className="m-0 mb-4 text-sm text-fco-muted">Hak regulator: ship + year + quota baru + alasan.</p>
+          <p className="m-0 mb-4 text-sm text-soft">Hak regulator: ship + year + quota baru + alasan.</p>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.registration_number || !f.new_quota) return; setToast(`Kuota ${f.registration_number} tahun ${f.year} → ${Number(f.new_quota).toLocaleString('id-ID')} kg`); setTimeout(() => setToast(null), 4000) }} className="flex flex-col gap-4">
             <FormField label="Nomor registrasi kapal" htmlFor="ov-reg"><input id="ov-reg" required value={f.registration_number} onChange={(e) => setF({ ...f, registration_number: e.target.value })} placeholder="REG-0087" className={inputCls} /></FormField>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

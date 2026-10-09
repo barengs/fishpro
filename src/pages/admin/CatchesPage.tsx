@@ -18,7 +18,7 @@ export function CatchesPage() {
   const [f, setF] = useState({ ship: '', catch_date: '2026-10-09', catch_type: 'pelagic', location_latitude: '-8.740000', location_longitude: '115.200000', description: '', fish_species: '', wpp: '', quantity: '', unit: 'kg', value: '', notes: '' })
 
   const cols: Column<CatchRow>[] = [
-    { key: 'ship', header: 'Kapal / Tanggal', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.ship}</div><div className="text-xs text-fco-muted tabular-nums">{r.catch_date} · {r.catch_type}</div></div>) },
+    { key: 'ship', header: 'Kapal / Tanggal', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.ship}</div><div className="text-xs text-soft tabular-nums">{r.catch_date} · {r.catch_type}</div></div>) },
     { key: 'sp', header: 'Spesies', flex: 2, render: (r) => <span className="text-sm font-semibold">{r.species}</span> },
     { key: 'qty', header: 'Jumlah', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.quantity}</span> },
     { key: 'wpp', header: 'WPP', flex: 1, render: (r) => <span className="text-sm">{r.wpp}</span> },
@@ -31,10 +31,10 @@ export function CatchesPage() {
     <div>
       <PageHeader title="Laporan Tangkapan" desc="FishCatch (ship, catch_date, catch_type, lat, lng, description) + CatchDetail (fish_species, wpp, quantity, unit, value, notes) — PNBP dihitung otomatis backend." showSearch searchPlaceholder="Filter ship_id / tanggal" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <section className="lg:col-span-2 bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="lg:col-span-2 surface-card border rounded-2xl p-6 shadow-xs">
           <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Buat laporan</h2>
           <form onSubmit={(e) => { e.preventDefault(); if (!f.ship || !f.fish_species || !f.quantity) return; setRows((p) => [{ id: Date.now(), ship: f.ship, catch_date: f.catch_date, catch_type: f.catch_type, species: f.fish_species, quantity: `${f.quantity} ${f.unit}`, wpp: f.wpp || '-', pnbp: 'Dihitung BE' }, ...p]) }} className="flex flex-col gap-4">
             <FormField label="Kapal (ship FK)" htmlFor="ct-ship"><input id="ct-ship" required value={f.ship} onChange={(e) => setF({ ...f, ship: e.target.value })} placeholder="KM ..." className={inputCls} /></FormField>

@@ -92,21 +92,21 @@ export function RegisterStepWizard() {
             const isPassed = currentStep > s.num
             const isCurrent = currentStep === s.num
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 bg-white px-2">
+              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 bg-white dark:bg-fco-card-dark px-2">
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
                     isCurrent
                       ? 'bg-fco-blue text-white ring-4 ring-fco-blue/15'
                       : isPassed
                       ? 'bg-fco-blue text-white'
-                      : 'bg-white border-2 border-fco-border text-fco-placeholder'
+                      : 'surface-card border-2 text-soft'
                   }`}
                 >
                   {isPassed ? '✓' : s.num}
                 </div>
                 <span
                   className={`text-sm font-semibold ${
-                    isCurrent ? 'text-fco-blue' : isPassed ? 'text-fco-dark' : 'text-fco-placeholder'
+                    isCurrent ? 'text-fco-blue' : isPassed ? 'text-strong' : 'text-fco-placeholder'
                   }`}
                 >
                   {s.title}
@@ -127,8 +127,8 @@ export function RegisterStepWizard() {
         {/* STEP 1: PERAN & IDENTITAS */}
         {currentStep === 1 && (
           <div className="animate-in fade-in duration-200">
-            <h3 className="text-2xl font-extrabold text-fco-dark mb-1">Pilih Peran & Identitas</h3>
-            <p className="text-sm text-fco-muted mb-5">Tentukan jenis akun Anda di ekosistem perikanan FCO.</p>
+            <h3 className="text-2xl font-extrabold text-strong mb-1">Pilih Peran & Identitas</h3>
+            <p className="text-sm text-soft mb-5">Tentukan jenis akun Anda di ekosistem perikanan FCO.</p>
 
             <div className="flex gap-2 p-1 bg-fco-blue-light rounded-xl mb-5">
               {[
@@ -143,7 +143,7 @@ export function RegisterStepWizard() {
                   className={`flex-1 h-12 rounded-xl text-sm sm:text-fco-md font-semibold cursor-pointer border-none transition-all ${
                     role === item.key
                       ? 'bg-fco-blue text-white shadow-xs'
-                      : 'bg-transparent text-fco-muted hover:text-fco-dark'
+                      : 'bg-transparent text-soft hover:text-strong'
                   }`}
                 >
                   {item.label}
@@ -153,7 +153,7 @@ export function RegisterStepWizard() {
 
             {role === 'owner' && (
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-fco-dark mb-2">Tipe Pemilik</label>
+                <label className="block text-sm font-semibold text-strong mb-2">Tipe Pemilik</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { key: 'individual', label: 'Perorangan' },
@@ -166,7 +166,7 @@ export function RegisterStepWizard() {
                       className={`h-12 rounded-xl text-sm sm:text-fco-md font-semibold cursor-pointer border transition-colors ${
                         ownerType === type.key
                           ? 'border-fco-blue bg-fco-blue-light text-fco-blue'
-                          : 'border-fco-border bg-white text-fco-dark hover:bg-fco-bg'
+                          : 'border-fco-border bg-white text-strong hover:surface-page'
                       }`}
                     >
                       {type.label}
@@ -178,7 +178,7 @@ export function RegisterStepWizard() {
 
             <div className="flex flex-col gap-3.5">
               <div>
-                <label className="block text-sm font-semibold text-fco-dark mb-1.5">
+                <label className="block text-sm font-semibold text-strong mb-1.5">
                   {role === 'owner' && ownerType === 'company' ? 'Nama Penanggung Jawab' : 'Nama Lengkap'}
                 </label>
                 <input
@@ -193,7 +193,7 @@ export function RegisterStepWizard() {
 
               {role === 'owner' && ownerType === 'company' && (
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nama Perusahaan / PT</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Nama Perusahaan / PT</label>
                   <input
                     type="text"
                     value={companyName}
@@ -210,13 +210,13 @@ export function RegisterStepWizard() {
         {/* STEP 2: KREDENSIAL & KONTAK */}
         {currentStep === 2 && (
           <div className="animate-in fade-in duration-200">
-            <h3 className="text-2xl font-extrabold text-fco-dark mb-1">Informasi Akun & Akses</h3>
-            <p className="text-sm text-fco-muted mb-5">Digunakan untuk login dan verifikasi multi-faktor.</p>
+            <h3 className="text-2xl font-extrabold text-strong mb-1">Informasi Akun & Akses</h3>
+            <p className="text-sm text-soft mb-5">Digunakan untuk login dan verifikasi multi-faktor.</p>
 
             <div className="flex flex-col gap-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nama Pengguna (Username)</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Nama Pengguna (Username)</label>
                   <input
                     type="text"
                     required
@@ -227,7 +227,7 @@ export function RegisterStepWizard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nomor Telepon / WA</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Nomor Telepon / WA</label>
                   <input
                     type="tel"
                     required
@@ -240,7 +240,7 @@ export function RegisterStepWizard() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-fco-dark mb-1.5">Email Aktif</label>
+                <label className="block text-sm font-semibold text-strong mb-1.5">Email Aktif</label>
                 <input
                   type="email"
                   required
@@ -253,7 +253,7 @@ export function RegisterStepWizard() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Kata Sandi</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Kata Sandi</label>
                   <input
                     type="password"
                     required
@@ -264,7 +264,7 @@ export function RegisterStepWizard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Ulangi Sandi</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Ulangi Sandi</label>
                   <input
                     type="password"
                     required
@@ -282,14 +282,14 @@ export function RegisterStepWizard() {
         {/* STEP 3: OPERASIONAL & KAPAL */}
         {currentStep === 3 && (
           <div className="animate-in fade-in duration-200">
-            <h3 className="text-2xl font-extrabold text-fco-dark mb-1">Informasi Operasional</h3>
-            <p className="text-sm text-fco-muted mb-5">Tautkan nomor izin kapal atau sertifikasi pelaut Anda.</p>
+            <h3 className="text-2xl font-extrabold text-strong mb-1">Informasi Operasional</h3>
+            <p className="text-sm text-soft mb-5">Tautkan nomor izin kapal atau sertifikasi pelaut Anda.</p>
 
             {role === 'captain' && (
               <div className="flex flex-col gap-3.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nomor Lisensi Nahkoda</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">Nomor Lisensi Nahkoda</label>
                     <input
                       type="text"
                       required
@@ -300,7 +300,7 @@ export function RegisterStepWizard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">Pengalaman (Tahun)</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">Pengalaman (Tahun)</label>
                     <input
                       type="number"
                       value={experienceYears}
@@ -311,7 +311,7 @@ export function RegisterStepWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Tautkan No. Registrasi Kapal</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Tautkan No. Registrasi Kapal</label>
                   <input
                     type="text"
                     value={shipReg}
@@ -319,7 +319,7 @@ export function RegisterStepWizard() {
                     placeholder="Contoh: REG-0412"
                     className="w-full h-13 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
-                  <span className="text-fco-xs text-fco-muted mt-1 block">Bisa dihubungkan ke kapal yang sudah terdaftar di KKP.</span>
+                  <span className="text-fco-xs text-soft mt-1 block">Bisa dihubungkan ke kapal yang sudah terdaftar di KKP.</span>
                 </div>
               </div>
             )}
@@ -328,7 +328,7 @@ export function RegisterStepWizard() {
               <div className="flex flex-col gap-3.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">Nama Kapal Utama</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">Nama Kapal Utama</label>
                     <input
                       type="text"
                       value={shipName}
@@ -338,7 +338,7 @@ export function RegisterStepWizard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">No. Registrasi (SIPI)</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">No. Registrasi (SIPI)</label>
                     <input
                       type="text"
                       value={shipReg}
@@ -351,7 +351,7 @@ export function RegisterStepWizard() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">Pelabuhan Pangkalan</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">Pelabuhan Pangkalan</label>
                     <input
                       type="text"
                       value={homePort}
@@ -361,11 +361,11 @@ export function RegisterStepWizard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-fco-dark mb-1.5">Wilayah Tangkapan (WPP)</label>
+                    <label className="block text-sm font-semibold text-strong mb-1.5">Wilayah Tangkapan (WPP)</label>
                     <select
                       value={wpp}
                       onChange={(e) => setWpp(e.target.value)}
-                      className="w-full h-13 border border-fco-border rounded-fco px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                      className="w-full h-13 border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue"
                     >
                       <option value="WPP 573">WPP 573 - Samudera Hindia Selatan</option>
                       <option value="WPP 711">WPP 711 - Selat Karimata & Laut Natuna</option>
@@ -380,7 +380,7 @@ export function RegisterStepWizard() {
             {role === 'regulator' && (
               <div className="flex flex-col gap-3.5">
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">Divisi / Satuan Kerja</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">Divisi / Satuan Kerja</label>
                   <input
                     type="text"
                     value={department}
@@ -389,7 +389,7 @@ export function RegisterStepWizard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-fco-dark mb-1.5">NIP / ID Pengawas KKP</label>
+                  <label className="block text-sm font-semibold text-strong mb-1.5">NIP / ID Pengawas KKP</label>
                   <input
                     type="text"
                     placeholder="1987xxxxxxxxxxxxxx"
@@ -404,39 +404,39 @@ export function RegisterStepWizard() {
         {/* STEP 4: VERIFIKASI & RINGKASAN */}
         {currentStep === 4 && (
           <div className="animate-in fade-in duration-200">
-            <h3 className="text-2xl font-extrabold text-fco-dark mb-1">Konfirmasi & Pendaftaran</h3>
-            <p className="text-sm text-fco-muted mb-5">Tinjau ringkasan data sebelum akun Anda diterbitkan.</p>
+            <h3 className="text-2xl font-extrabold text-strong mb-1">Konfirmasi & Pendaftaran</h3>
+            <p className="text-sm text-soft mb-5">Tinjau ringkasan data sebelum akun Anda diterbitkan.</p>
 
-            <div className="p-6 rounded-2xl bg-fco-bg border border-fco-border-subtle mb-5 text-sm flex flex-col gap-2.5">
+            <div className="p-6 rounded-2xl surface-inset border mb-5 text-sm flex flex-col gap-2.5">
               <div className="flex justify-between py-1 border-b border-fco-border">
-                <span className="text-fco-muted">Peran Akun:</span>
+                <span className="text-soft">Peran Akun:</span>
                 <span className="font-bold text-fco-blue uppercase">
                   {role === 'owner' ? 'Pemilik Kapal' : role === 'captain' ? 'Nahkoda' : 'Regulator KKP'}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-fco-border">
-                <span className="text-fco-muted">Nama Lengkap:</span>
-                <span className="font-semibold text-fco-dark">{fullName}</span>
+                <span className="text-soft">Nama Lengkap:</span>
+                <span className="font-semibold text-strong">{fullName}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-fco-border">
-                <span className="text-fco-muted">Email & Telepon:</span>
-                <span className="text-fco-dark">{email} · {phone}</span>
+                <span className="text-soft">Email & Telepon:</span>
+                <span className="text-strong">{email} · {phone}</span>
               </div>
               {shipReg && (
                 <div className="flex justify-between py-1 border-b border-fco-border">
-                  <span className="text-fco-muted">Kapal Terhubung:</span>
-                  <span className="font-semibold text-fco-dark">{shipReg} {shipName && `(${shipName})`}</span>
+                  <span className="text-soft">Kapal Terhubung:</span>
+                  <span className="font-semibold text-strong">{shipReg} {shipName && `(${shipName})`}</span>
                 </div>
               )}
               {licenseNumber && (
                 <div className="flex justify-between py-1 border-b border-fco-border">
-                  <span className="text-fco-muted">No. Lisensi:</span>
-                  <span className="font-semibold text-fco-dark">{licenseNumber}</span>
+                  <span className="text-soft">No. Lisensi:</span>
+                  <span className="font-semibold text-strong">{licenseNumber}</span>
                 </div>
               )}
             </div>
 
-            <label className="flex items-start gap-2.5 text-sm text-fco-muted cursor-pointer mb-5">
+            <label className="flex items-start gap-2.5 text-sm text-soft cursor-pointer mb-5">
               <input
                 type="checkbox"
                 checked={agreeTerms}
@@ -456,7 +456,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handlePrev}
-              className="h-13 px-6 rounded-xl text-fco-md border border-fco-border bg-white hover:bg-fco-bg text-fco-dark font-semibold cursor-pointer transition-colors"
+              className="h-13 px-6 rounded-xl text-fco-md border border-fco-border bg-white hover:surface-page text-strong font-semibold cursor-pointer transition-colors"
             >
               Kembali
             </button>

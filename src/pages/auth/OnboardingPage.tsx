@@ -105,9 +105,9 @@ const stats = [
 
 export function OnboardingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-fco-bg text-fco-dark">
+    <div className="min-h-screen flex flex-col surface-page text-strong">
       {/* ── Navbar ── */}
-      <header className="bg-white border-b border-fco-border sticky top-0 z-40">
+      <header className="surface-topbar border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 min-h-18 flex flex-wrap items-center justify-between gap-3">
           <Link to="/onboard" className="no-underline">
             <Logo />
@@ -118,7 +118,7 @@ export function OnboardingPage() {
               <a
                 key={l.label}
                 href={l.href}
-                className="px-4 h-10 inline-flex items-center rounded-fco text-sm font-semibold text-fco-muted hover:text-fco-dark hover:bg-fco-bg no-underline transition-colors"
+                className="px-4 h-10 inline-flex items-center rounded-fco text-sm font-semibold text-soft hover:text-strong hover:surface-page no-underline transition-colors"
               >
                 {l.label}
               </a>
@@ -128,7 +128,7 @@ export function OnboardingPage() {
           <div className="flex items-center gap-2.5">
             <Link
               to="/login"
-              className="h-10 px-4 inline-flex items-center rounded-fco border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-sm font-semibold no-underline transition-colors"
+              className="h-10 px-4 inline-flex items-center rounded-fco border border-fco-border bg-white hover:surface-page text-strong text-sm font-semibold no-underline transition-colors"
             >
               Masuk
             </Link>
@@ -179,7 +179,7 @@ export function OnboardingPage() {
             {/* Hero mockup: laporan + kuota */}
             <div className="bg-white rounded-fco-lg p-6 shadow-2xl relative z-10 max-w-120 w-full mx-auto">
               <div className="flex items-center justify-between mb-4">
-                <div className="font-bold text-base text-fco-dark">Laporan tangkapan</div>
+                <div className="font-bold text-base text-strong">Laporan tangkapan</div>
                 <span className="inline-flex items-center gap-1.5 h-6.5 px-2.5 rounded-full bg-fco-blue-light text-fco-blue text-xs font-bold">
                   <Check size={14} className="text-fco-blue" strokeWidth={2.6} aria-hidden="true" />
                   Tercatat Blockchain
@@ -187,15 +187,15 @@ export function OnboardingPage() {
               </div>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                  <div className="text-xs font-semibold text-fco-muted mb-1.5">KM Samudra Jaya · REG-0412</div>
-                  <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm text-fco-dark">Tongkol · 120 kg</div>
+                  <div className="text-xs font-semibold text-soft mb-1.5">KM Samudra Jaya · REG-0412</div>
+                  <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm text-strong">Tongkol · 120 kg</div>
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-fco-muted mb-1.5">WPP 573 · PNBP</div>
+                  <div className="text-xs font-semibold text-soft mb-1.5">WPP 573 · PNBP</div>
                   <div className="h-10 border border-fco-border rounded-fco px-3 flex items-center text-sm font-semibold text-fco-blue">Rp 120.000</div>
                 </div>
               </div>
-              <div className="text-fco-sm font-semibold text-fco-muted mb-2">Sisa kuota 2026 · 70%</div>
+              <div className="text-fco-sm font-semibold text-soft mb-2">Sisa kuota 2026 · 70%</div>
               <div className="h-2 rounded-full bg-fco-blue-light overflow-hidden mb-5">
                 <div className="h-full rounded-full bg-fco-blue" style={{ width: '70%' }} />
               </div>
@@ -223,41 +223,41 @@ export function OnboardingPage() {
           <div className="max-w-130 mb-10">
             <div className="text-sm font-semibold text-fco-blue mb-2">Fitur Utama</div>
             <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Semua kebutuhan perikanan dalam satu platform.</h2>
-            <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+            <p className="m-0 text-fco-md text-soft leading-relaxed">
               Dari pencatatan di atas kapal hingga audit nasional — setiap peran mendapat alat yang dirancang khusus untuk pekerjaannya.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((f) => (
-              <article key={f.title} className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <article key={f.title} className="surface-card border rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="w-11 h-11 rounded-xl bg-fco-blue-light flex items-center justify-center mb-4">
                   <f.Icon size={22} className="text-fco-blue" strokeWidth={1.8} aria-hidden="true" />
                 </div>
                 <h3 className="m-0 mb-2 text-base font-bold">{f.title}</h3>
-                <p className="m-0 text-sm leading-relaxed text-fco-muted">{f.desc}</p>
+                <p className="m-0 text-sm leading-relaxed text-soft">{f.desc}</p>
               </article>
             ))}
           </div>
         </section>
 
         {/* ── Alur Kerja ── */}
-        <section id="alur" className="bg-white border-y border-fco-border scroll-mt-20">
+        <section id="alur" className="surface-card border-y scroll-mt-20">
           <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16">
             <div className="max-w-130 mb-10">
               <div className="text-sm font-semibold text-fco-blue mb-2">Alur Kerja</div>
               <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Dari kapal hingga kebijakan nasional.</h2>
-              <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+              <p className="m-0 text-fco-md text-soft leading-relaxed">
                 Empat langkah yang menghubungkan seluruh rantai pelaporan perikanan Indonesia.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {steps.map((s) => (
-                <article key={s.num} className="bg-fco-bg border border-fco-border-subtle rounded-2xl p-6 relative overflow-hidden">
+                <article key={s.num} className="surface-inset border rounded-2xl p-6 relative overflow-hidden">
                   <div className="text-4xl font-extrabold text-fco-ice mb-4 tabular-nums">{s.num}</div>
                   <h3 className="m-0 mb-2 text-base font-bold">{s.title}</h3>
-                  <p className="m-0 text-sm leading-relaxed text-fco-muted">{s.desc}</p>
+                  <p className="m-0 text-sm leading-relaxed text-soft">{s.desc}</p>
                 </article>
               ))}
             </div>
@@ -269,19 +269,19 @@ export function OnboardingPage() {
           <div className="max-w-130 mb-10">
             <div className="text-sm font-semibold text-fco-blue mb-2">Akses Peran</div>
             <h2 className="m-0 mb-3 text-3xl font-extrabold tracking-tight">Dashboard untuk setiap peran.</h2>
-            <p className="m-0 text-fco-md text-fco-muted leading-relaxed">
+            <p className="m-0 text-fco-md text-soft leading-relaxed">
               Masuk sesuai peran Anda — setiap dashboard menampilkan data dan aksi yang relevan dengan tanggung jawabnya.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {roles.map((r) => (
-              <article key={r.name} className="bg-white border border-fco-border rounded-2xl p-7 shadow-xs flex flex-col">
+              <article key={r.name} className="surface-card border rounded-2xl p-7 shadow-xs flex flex-col">
                 <div className="inline-flex self-start px-2.5 py-1 rounded-md bg-fco-blue-light text-fco-blue text-xs font-bold mb-3">
                   {r.tag}
                 </div>
                 <h3 className="m-0 mb-2 text-xl font-extrabold">{r.name}</h3>
-                <p className="m-0 mb-6 text-sm leading-relaxed text-fco-muted flex-1">{r.desc}</p>
+                <p className="m-0 mb-6 text-sm leading-relaxed text-soft flex-1">{r.desc}</p>
                 <Link
                   to={r.to}
                   className="inline-flex items-center justify-center h-11 rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors"

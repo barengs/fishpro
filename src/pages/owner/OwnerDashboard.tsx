@@ -15,7 +15,7 @@ export function OwnerDashboard() {
     <div>
       <div className="mb-7">
         <h1 className="m-0 text-3xl font-extrabold tracking-tight">Armada Anda</h1>
-        <div className="text-sm text-fco-muted mt-1">Pantau kapal, nahkoda, kuota, dan PNBP dalam satu layar.</div>
+        <div className="text-sm text-soft mt-1">Pantau kapal, nahkoda, kuota, dan PNBP dalam satu layar.</div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">

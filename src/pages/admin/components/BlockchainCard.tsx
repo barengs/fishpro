@@ -10,9 +10,9 @@ const chain = [
 
 export function BlockchainCard() {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 flex flex-col shadow-xs">
+    <section className="surface-card border rounded-2xl p-6 flex flex-col shadow-xs">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="m-0 text-base font-bold text-fco-dark">Status blockchain</h2>
+        <h2 className="m-0 text-base font-bold text-strong">Status blockchain</h2>
         <StatusChip
           label="Terverifikasi"
           bg="#E8F0FE"
@@ -26,8 +26,8 @@ export function BlockchainCard() {
       <div className="flex flex-col flex-1">
         {chain.map((c) => (
           <div key={c.label} className="flex items-center justify-between py-3.5 border-t border-fco-border-subtle">
-            <span className="text-fco-sm text-fco-muted">{c.label}</span>
-            <span className="text-sm font-semibold tabular-nums text-fco-dark">{c.value}</span>
+            <span className="text-fco-sm text-soft">{c.label}</span>
+            <span className="text-sm font-semibold tabular-nums text-strong">{c.value}</span>
           </div>
         ))}
       </div>

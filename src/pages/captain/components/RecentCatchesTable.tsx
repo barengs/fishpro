@@ -22,9 +22,9 @@ const defaultReports: CatchReport[] = [
 
 export function RecentCatchesTable({ reports = defaultReports }: RecentCatchesTableProps) {
   return (
-    <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="m-0 text-base font-bold text-fco-dark">Laporan terakhir</h2>
+        <h2 className="m-0 text-base font-bold text-strong">Laporan terakhir</h2>
         <a href="#riwayat" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover">
           Lihat semua
         </a>
@@ -32,7 +32,7 @@ export function RecentCatchesTable({ reports = defaultReports }: RecentCatchesTa
 
       <div className="overflow-x-auto">
         <div className="min-w-115">
-          <div className="flex items-center py-2.5 text-xs font-semibold text-fco-muted">
+          <div className="flex items-center py-2.5 text-xs font-semibold text-soft">
             <div className="basis-3/12">Tanggal</div>
             <div className="basis-3/12">Spesies</div>
             <div className="basis-2/12 text-right">Jumlah</div>
@@ -42,10 +42,10 @@ export function RecentCatchesTable({ reports = defaultReports }: RecentCatchesTa
 
           {reports.map((r, i) => (
             <div key={i} className="flex items-center py-3.5 border-t border-fco-border-subtle text-sm">
-              <div className="basis-3/12 tabular-nums text-fco-dark">{r.date}</div>
-              <div className="basis-3/12 font-semibold text-fco-dark">{r.species}</div>
-              <div className="basis-2/12 text-right tabular-nums text-fco-dark">{r.qty}</div>
-              <div className="basis-2/12 text-right tabular-nums text-fco-dark">{r.pnbp}</div>
+              <div className="basis-3/12 tabular-nums text-strong">{r.date}</div>
+              <div className="basis-3/12 font-semibold text-strong">{r.species}</div>
+              <div className="basis-2/12 text-right tabular-nums text-strong">{r.qty}</div>
+              <div className="basis-2/12 text-right tabular-nums text-strong">{r.pnbp}</div>
               <div className="basis-2/12 text-right">
                 <StatusChip
                   label="Tercatat"

@@ -19,11 +19,11 @@ export function MyShipPage() {
   return (
     <div className="max-w-220 mx-auto">
       <PageHeader title="Kapal Saya" desc="Detail Ship + Quota tahun berjalan. Read-only untuk nahkoda; perubahan via pemilik / admin." />
-      <section className="bg-white border border-fco-border rounded-2xl p-8 shadow-xs">
+      <section className="surface-card border rounded-2xl p-8 shadow-xs">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
           {specs.map((s) => (
             <div key={s.label} className="pb-4 border-b border-fco-border-subtle">
-              <div className="text-sm text-fco-muted mb-1">{s.label}</div>
+              <div className="text-sm text-soft mb-1">{s.label}</div>
               <div className="text-fco-md font-semibold tabular-nums">{s.value}</div>
             </div>
           ))}

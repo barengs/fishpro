@@ -23,12 +23,12 @@ export function BlockchainPage() {
   const blockCols: Column<BlockRow>[] = [
     { key: 'ix', header: 'Blok', flex: 1, render: (r) => <span className="text-sm font-bold tabular-nums">#{r.index}</span> },
     { key: 'hash', header: 'Hash', flex: 2, render: (r) => <span className="text-sm tabular-nums">{r.hash}</span> },
-    { key: 'prev', header: 'Prev Hash', flex: 2, render: (r) => <span className="text-sm tabular-nums text-fco-muted">{r.prev}</span> },
+    { key: 'prev', header: 'Prev Hash', flex: 2, render: (r) => <span className="text-sm tabular-nums text-soft">{r.prev}</span> },
     { key: 'tx', header: 'TX', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.tx}</span> },
     { key: 'time', header: 'Waktu', flex: 2, align: 'right', render: (r) => <span className="text-sm">{r.time}</span> }
   ]
   const txCols: Column<TxRow>[] = [
-    { key: 'ship', header: 'Kapal / Blok', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.ship}</div><div className="text-xs text-fco-muted">{r.block}</div></div>) },
+    { key: 'ship', header: 'Kapal / Blok', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.ship}</div><div className="text-xs text-soft">{r.block}</div></div>) },
     { key: 'fish', header: 'Ikan', flex: 2, render: (r) => <span className="text-sm">{r.fish}</span> },
     { key: 'qty', header: 'Jumlah', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.qty}</span> },
     { key: 'pnbp', header: 'PNBP', flex: 2, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.pnbp}</span> },
@@ -39,11 +39,11 @@ export function BlockchainPage() {
     <div>
       <PageHeader title="Blockchain" desc="Read-only: BlockchainBlock (index, hash, previous_hash, nonce) + FishCatchTransaction (ship, WPP, spesies, qty, PNBP, kuota). Penulisan otomatis via signal BE." />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Blok terbaru</h2>
           <DataTable columns={blockCols} rows={blocks} rowKey={(r) => String(r.index)} />
         </section>
-        <section className="bg-white border border-fco-border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <h2 className="m-0 mb-4 text-base font-bold">Transaksi tangkapan</h2>
           <DataTable columns={txCols} rows={txs} rowKey={(r) => String(r.id)} />
         </section>

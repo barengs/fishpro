@@ -8,7 +8,7 @@ interface CenteredAuthProps {
 
 export function CenteredAuth({ children, wide = false }: CenteredAuthProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-fco-bg text-fco-dark">
+    <div className="min-h-screen flex flex-col surface-page text-strong">
       <header className="py-6 flex justify-center">
         <Link to="/onboard" className="no-underline" aria-label="Kembali beranda">
           <Logo />
