@@ -60,11 +60,10 @@ export function AdminLayout() {
         <header className="hidden lg:flex items-center justify-end gap-4 px-10 h-18 bg-white border-b border-fco-border sticky top-0 z-30">
           <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" onLogout={() => navigate('/login')} />
         </header>
-        <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)} homeTo="/admin">
+        <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)}
+        profile={{ initials: 'AD', name: 'Administrator', role: 'Admin KKP' }}
+        onLogout={() => navigate('/login')}>
           <SidebarBody onNavigate={() => setOpen(false)} />
-          <div className="mt-4 flex justify-center">
-            <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" onLogout={() => navigate('/login')} />
-          </div>
         </MobileTopbar>
         <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-10 pt-20 lg:pt-7">
           <Outlet />

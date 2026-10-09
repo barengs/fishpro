@@ -49,12 +49,11 @@ export function OwnerLayout() {
           <NotificationBell count={1} />
           <UserProfileBadge initials="PT" name="PT Laut Nusantara" role="Pemilik kapal" onLogout={() => navigate('/login')} />
         </header>
-        <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)} homeTo="/owner">
+        <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)}
+        profile={{ initials: 'PT', name: 'PT Laut Nusantara', role: 'Pemilik kapal' }}
+        onLogout={() => navigate('/login')}>
           <div onClick={() => setOpen(false)}>
             <SidebarBody />
-          </div>
-          <div className="p-3 rounded-xl bg-fco-bg mt-4">
-            <UserProfileBadge initials="PT" name="PT Laut Nusantara" role="Pemilik kapal" onLogout={() => navigate('/login')} />
           </div>
         </MobileTopbar>
         <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-10 pt-20 lg:pt-7"><Outlet /></main>
