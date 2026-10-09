@@ -28,7 +28,7 @@ export function ManualQuotaModal({
 
   return (
     <div className="fixed inset-0 bg-fco-dark/50 backdrop-blur-xs flex items-center justify-center z-50 p-5">
-      <div className="bg-white rounded-[20px] p-7 sm:p-8 max-w-[480px] w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-fco-lg p-7 sm:p-8 max-w-120 w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-extrabold m-0 text-fco-dark">
             Penyesuaian Manual Kuota
@@ -42,13 +42,13 @@ export function ManualQuotaModal({
           </button>
         </div>
 
-        <p className="text-[13px] text-fco-muted mt-0 mb-5 leading-relaxed">
+        <p className="text-fco-sm text-fco-muted mt-0 mb-5 leading-relaxed">
           Hak regulator: Menyesuaikan batas kuota kapal penangkap ikan dengan validasi blockchain terverifikasi.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div>
-            <label className="block text-[13px] font-semibold text-fco-dark mb-1.5">
+            <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
               Nomor Registrasi Kapal
             </label>
             <input
@@ -57,13 +57,13 @@ export function ManualQuotaModal({
               value={shipReg}
               onChange={(e) => setShipReg(e.target.value)}
               placeholder="Contoh: REG-0087"
-              className="w-full h-10.5 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+              className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[13px] font-semibold text-fco-dark mb-1.5">
+              <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
                 Tahun Kuota
               </label>
               <input
@@ -71,11 +71,11 @@ export function ManualQuotaModal({
                 required
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="w-full h-10.5 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
               />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-fco-dark mb-1.5">
+              <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
                 Kuota Baru (kg)
               </label>
               <input
@@ -83,20 +83,20 @@ export function ManualQuotaModal({
                 required
                 value={newQuota}
                 onChange={(e) => setNewQuota(Number(e.target.value))}
-                className="w-full h-10.5 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[13px] font-semibold text-fco-dark mb-1.5">
+            <label className="block text-fco-sm font-semibold text-fco-dark mb-1.5">
               Alasan Penyesuaian
             </label>
             <textarea
               rows={3}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full border border-fco-border rounded-[10px] p-2.5 text-[13px] focus:outline-none focus:border-fco-blue resize-none"
+              className="w-full border border-fco-border rounded-fco p-2.5 text-fco-sm focus:outline-none focus:border-fco-blue resize-none"
             />
           </div>
 
@@ -104,13 +104,13 @@ export function ManualQuotaModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-11 rounded-[10px] border border-fco-border bg-white text-fco-muted hover:bg-fco-bg font-semibold text-sm cursor-pointer"
+              className="flex-1 h-11 rounded-fco border border-fco-border bg-white text-fco-muted hover:bg-fco-bg font-semibold text-sm cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="flex-1 h-11 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold text-sm cursor-pointer shadow-xs"
+              className="flex-1 h-11 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold text-sm cursor-pointer shadow-xs"
             >
               Simpan Kuota
             </button>

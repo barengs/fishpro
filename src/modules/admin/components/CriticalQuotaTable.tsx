@@ -20,7 +20,7 @@ export function CriticalQuotaTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[460px]">
+        <div className="min-w-115">
           <div className="flex items-center py-2.5 text-xs font-semibold text-fco-muted">
             <div className="basis-3/8">Kapal</div>
             <div className="basis-3/8">Sisa kuota</div>

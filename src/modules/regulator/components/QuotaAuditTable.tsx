@@ -25,14 +25,14 @@ export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) 
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="m-0 text-base font-bold text-fco-dark">Audit & Monitoring Kuota Kapal</h2>
-          <div className="text-[13px] text-fco-muted mt-0.5">
+          <div className="text-fco-sm text-fco-muted mt-0.5">
             Data perbandingan alokasi kuota vs rekomendasi optimasi AI
           </div>
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[720px]">
+        <div className="min-w-180">
           <div className="flex items-center py-2.5 text-xs font-semibold text-fco-muted">
             <div className="basis-3/12">Kapal & Pemilik</div>
             <div className="basis-2/12">Alokasi Kuota</div>
@@ -50,8 +50,8 @@ export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) 
                   {s.reg} · {s.owner}
                 </div>
               </div>
-              <div className="basis-2/12 text-[13px] font-semibold text-fco-dark">{s.allocatedQuota}</div>
-              <div className="basis-2/12 text-[13px] font-semibold text-fco-blue">
+              <div className="basis-2/12 text-fco-sm font-semibold text-fco-dark">{s.allocatedQuota}</div>
+              <div className="basis-2/12 text-fco-sm font-semibold text-fco-blue">
                 {s.aiRecommendedQuota}
               </div>
               <div className="basis-3/12 pr-5">

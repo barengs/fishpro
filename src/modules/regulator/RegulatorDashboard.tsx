@@ -65,7 +65,7 @@ export function RegulatorDashboard() {
                 setSelectedShip(null)
                 setIsModalOpen(true)
               }}
-              className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-[10px] bg-fco-blue hover:bg-fco-blue-hover text-white text-[13px] font-semibold cursor-pointer transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-sm font-semibold cursor-pointer transition-colors shadow-xs"
             >
               + Override Kuota Manual
             </button>

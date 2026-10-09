@@ -13,7 +13,7 @@ export function StatusChip({
 }: StatusChipProps) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 h-[26px] px-2.5 rounded-full text-xs font-bold whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 h-6.5 px-2.5 rounded-full text-xs font-bold whitespace-nowrap"
       style={{ backgroundColor: bg, color }}
     >
       {icon}

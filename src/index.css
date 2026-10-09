@@ -13,6 +13,23 @@
   --color-fco-bg: #F6F9FE;
   --color-fco-muted: #5B6B86;
   --color-fco-placeholder: #7D8CA6;
+  --color-fco-ice: #CFE0FA;
+  --color-fco-mist: #D6E4FF;
+  --color-fco-pale: #C9D8F5;
+  --color-fco-faint: #9FB6E6;
+  --color-fco-sky: #7FB0FF;
+  --text-fco-xs: 0.6875rem;
+  --text-fco-sm: 0.8125rem;
+  --text-fco-md: 0.9375rem;
+  --text-fco-lg: 1.0625rem;
+  --text-fco-kpi: 1.75rem;
+  --text-fco-hero: 2.375rem;
+  --text-fco-display: 2.75rem;
+  --leading-fco-tight: 1.1;
+  --leading-fco-snug: 1.15;
+  --radius-fco: 0.625rem;
+  --radius-fco-lg: 1.25rem;
+  --radius-fco-xl: 1.75rem;
 }
 
 body {

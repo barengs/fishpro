@@ -32,7 +32,7 @@ export function PemilikDashboard() {
             <NotificationBell count={1} />
             <button
               type="button"
-              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-[10px] bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 h-10 px-4.5 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
             >
               <svg className="w-4 h-4 stroke-white" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />

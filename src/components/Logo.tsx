@@ -8,7 +8,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
   return (
     <div className="flex items-center gap-2.5">
       <div
-        className={`flex items-center justify-center rounded-[10px] shrink-0 ${
+        className={`flex items-center justify-center rounded-fco shrink-0 ${
           isDark ? 'bg-white' : 'bg-fco-blue'
         }`}
         style={{ width: `${size}px`, height: `${size}px` }}

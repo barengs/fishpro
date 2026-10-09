@@ -56,7 +56,7 @@ export function ResetPasswordWizard() {
   }
 
   return (
-    <div className="max-w-[420px] w-full mx-auto">
+    <div className="max-w-105 w-full mx-auto">
       <div className="bg-white border border-fco-border rounded-2xl p-6 sm:p-8 shadow-xs">
         {error && (
           <div className="p-3 px-4 rounded-xl bg-red-50 text-red-700 text-xs font-semibold mb-4 border border-red-200">
@@ -87,13 +87,13 @@ export function ResetPasswordWizard() {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-11.5 border border-fco-border rounded-[10px] px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-11.5 border border-fco-border rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 
             <button
               type="submit"
-              className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs mt-2"
+              className="h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
             >
               Kirim Kode Verifikasi
             </button>
@@ -139,7 +139,7 @@ export function ResetPasswordWizard() {
 
             <button
               type="submit"
-              className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs mt-2"
+              className="h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
             >
               Verifikasi Kode
             </button>
@@ -169,7 +169,7 @@ export function ResetPasswordWizard() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full h-11 border border-fco-border rounded-[10px] px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-11 border border-fco-border rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 
@@ -184,13 +184,13 @@ export function ResetPasswordWizard() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi kata sandi baru"
-                className="w-full h-11 border border-fco-border rounded-[10px] px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                className="w-full h-11 border border-fco-border rounded-fco px-3.5 text-sm bg-white focus:outline-none focus:border-fco-blue"
               />
             </div>
 
             <button
               type="submit"
-              className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs mt-2"
+              className="h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs mt-2"
             >
               Simpan Kata Sandi
             </button>
@@ -212,7 +212,7 @@ export function ResetPasswordWizard() {
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="w-full h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer transition-colors shadow-xs"
+              className="w-full h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Masuk Sekarang
             </button>

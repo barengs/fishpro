@@ -25,7 +25,7 @@ export function FleetTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[520px]">
+        <div className="min-w-130">
           <div className="flex items-center py-2.5 text-xs font-semibold text-fco-muted">
             <div className="basis-3/10">Kapal</div>
             <div className="basis-2/10">Nahkoda</div>

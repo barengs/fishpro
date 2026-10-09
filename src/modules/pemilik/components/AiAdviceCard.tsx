@@ -11,14 +11,14 @@ export function AiAdviceCard() {
       <div className="flex flex-col gap-4">
         {tips.map((t) => (
           <div key={t.title} className="flex gap-3">
-            <div className="w-8 h-8 rounded-[10px] bg-fco-blue-light flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-fco bg-fco-blue-light flex items-center justify-center shrink-0">
               <svg className="w-4 h-4 stroke-fco-blue" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
               </svg>
             </div>
             <div>
               <div className="text-sm font-semibold mb-0.5 text-fco-dark">{t.title}</div>
-              <div className="text-[13px] leading-relaxed text-fco-muted">{t.text}</div>
+              <div className="text-fco-sm leading-relaxed text-fco-muted">{t.text}</div>
             </div>
           </div>
         ))}

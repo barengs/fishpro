@@ -77,14 +77,14 @@ export function RegisterStepWizard() {
   }
 
   return (
-    <div className="max-w-[540px] w-full mx-auto">
+    <div className="max-w-135 w-full mx-auto">
       {/* Step Tracker Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between relative mb-2">
           {/* Background connect line */}
-          <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border -z-0" />
+          <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border z-0" />
           <div
-            className="absolute left-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-blue -z-0 transition-all duration-300"
+            className="absolute left-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-blue z-0 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
           />
 
@@ -140,7 +140,7 @@ export function RegisterStepWizard() {
                   key={item.key}
                   type="button"
                   onClick={() => setRole(item.key as typeof role)}
-                  className={`flex-1 h-10 rounded-lg text-xs sm:text-[13px] font-semibold cursor-pointer border-none transition-all ${
+                  className={`flex-1 h-10 rounded-lg text-xs sm:text-fco-sm font-semibold cursor-pointer border-none transition-all ${
                     role === item.key
                       ? 'bg-fco-blue text-white shadow-xs'
                       : 'bg-transparent text-fco-muted hover:text-fco-dark'
@@ -163,7 +163,7 @@ export function RegisterStepWizard() {
                       key={type.key}
                       type="button"
                       onClick={() => setOwnerType(type.key as typeof ownerType)}
-                      className={`h-10 rounded-[10px] text-xs sm:text-[13px] font-semibold cursor-pointer border transition-colors ${
+                      className={`h-10 rounded-fco text-xs sm:text-fco-sm font-semibold cursor-pointer border transition-colors ${
                         ownerType === type.key
                           ? 'border-fco-blue bg-fco-blue-light text-fco-blue'
                           : 'border-fco-border bg-white text-fco-dark hover:bg-fco-bg'
@@ -187,7 +187,7 @@ export function RegisterStepWizard() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Nama sesuai KTP / Dokumen Resmi"
-                  className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                  className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                 />
               </div>
 
@@ -199,7 +199,7 @@ export function RegisterStepWizard() {
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="Contoh: PT Laut Nusantara Bahari"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
               )}
@@ -223,7 +223,7 @@ export function RegisterStepWizard() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Contoh: budi_hartono"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
                 <div>
@@ -234,7 +234,7 @@ export function RegisterStepWizard() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="0812xxxxxxxx"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
               </div>
@@ -247,7 +247,7 @@ export function RegisterStepWizard() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="budi@perikanan.id"
-                  className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                  className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export function RegisterStepWizard() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 8 karakter"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
                 <div>
@@ -271,7 +271,7 @@ export function RegisterStepWizard() {
                     value={passwordConfirm}
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                     placeholder="Konfirmasi sandi"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
               </div>
@@ -296,7 +296,7 @@ export function RegisterStepWizard() {
                       value={licenseNumber}
                       onChange={(e) => setLicenseNumber(e.target.value)}
                       placeholder="SKN-9821-2024"
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                     />
                   </div>
                   <div>
@@ -305,7 +305,7 @@ export function RegisterStepWizard() {
                       type="number"
                       value={experienceYears}
                       onChange={(e) => setExperienceYears(e.target.value)}
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                     />
                   </div>
                 </div>
@@ -317,9 +317,9 @@ export function RegisterStepWizard() {
                     value={shipReg}
                     onChange={(e) => setShipReg(e.target.value)}
                     placeholder="Contoh: REG-0412"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
-                  <span className="text-[11px] text-fco-muted mt-1 block">Bisa dihubungkan ke kapal yang sudah terdaftar di KKP.</span>
+                  <span className="text-fco-xs text-fco-muted mt-1 block">Bisa dihubungkan ke kapal yang sudah terdaftar di KKP.</span>
                 </div>
               </div>
             )}
@@ -334,7 +334,7 @@ export function RegisterStepWizard() {
                       value={shipName}
                       onChange={(e) => setShipName(e.target.value)}
                       placeholder="Contoh: KM Samudra Jaya"
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                     />
                   </div>
                   <div>
@@ -344,7 +344,7 @@ export function RegisterStepWizard() {
                       value={shipReg}
                       onChange={(e) => setShipReg(e.target.value)}
                       placeholder="Contoh: REG-0412"
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                     />
                   </div>
                 </div>
@@ -357,7 +357,7 @@ export function RegisterStepWizard() {
                       value={homePort}
                       onChange={(e) => setHomePort(e.target.value)}
                       placeholder="Benoa / Muara Baru"
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                     />
                   </div>
                   <div>
@@ -365,7 +365,7 @@ export function RegisterStepWizard() {
                     <select
                       value={wpp}
                       onChange={(e) => setWpp(e.target.value)}
-                      className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
+                      className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm bg-white focus:outline-none focus:border-fco-blue"
                     >
                       <option value="WPP 573">WPP 573 - Samudera Hindia Selatan</option>
                       <option value="WPP 711">WPP 711 - Selat Karimata & Laut Natuna</option>
@@ -385,7 +385,7 @@ export function RegisterStepWizard() {
                     type="text"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
                 <div>
@@ -393,7 +393,7 @@ export function RegisterStepWizard() {
                   <input
                     type="text"
                     placeholder="1987xxxxxxxxxxxxxx"
-                    className="w-full h-11 border border-fco-border rounded-[10px] px-3 text-sm focus:outline-none focus:border-fco-blue"
+                    className="w-full h-11 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
                   />
                 </div>
               </div>
@@ -456,7 +456,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handlePrev}
-              className="h-11 px-5 rounded-[10px] border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-sm font-semibold cursor-pointer transition-colors"
+              className="h-11 px-5 rounded-fco border border-fco-border bg-white hover:bg-fco-bg text-fco-dark text-sm font-semibold cursor-pointer transition-colors"
             >
               Kembali
             </button>
@@ -466,7 +466,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handleNext}
-              className="flex-1 h-11 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="flex-1 h-11 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Lanjut ke Langkah {currentStep + 1}
             </button>
@@ -474,7 +474,7 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 h-11 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
+              className="flex-1 h-11 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
             >
               Selesaikan Pendaftaran
             </button>

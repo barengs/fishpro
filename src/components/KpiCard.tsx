@@ -9,8 +9,8 @@ interface KpiCardProps {
 export function KpiCard({ label, value, delta, note, trendUp = true }: KpiCardProps) {
   return (
     <div className="bg-white border border-fco-border rounded-2xl p-5 flex flex-col justify-between shadow-xs">
-      <div className="text-[13px] font-semibold text-fco-muted">{label}</div>
-      <div className="text-[28px] font-extrabold tracking-tight my-2 tabular-nums text-fco-dark">
+      <div className="text-fco-sm font-semibold text-fco-muted">{label}</div>
+      <div className="text-fco-kpi font-extrabold tracking-tight my-2 tabular-nums text-fco-dark">
         {value}
       </div>
       {delta && (

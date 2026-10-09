@@ -9,10 +9,10 @@ export function NotificationBell({ count, onClick }: NotificationBellProps) {
       type="button"
       onClick={onClick}
       aria-label="Notifikasi"
-      className="w-10 h-10 border border-fco-border rounded-[10px] bg-white hover:bg-fco-bg transition-colors cursor-pointer flex items-center justify-center relative"
+      className="w-10 h-10 border border-fco-border rounded-fco bg-white hover:bg-fco-bg transition-colors cursor-pointer flex items-center justify-center relative"
     >
       <svg
-        className="w-[18px] h-[18px] stroke-fco-dark"
+        className="w-4.5 h-4.5 stroke-fco-dark"
         viewBox="0 0 24 24"
         fill="none"
         strokeWidth="1.8"

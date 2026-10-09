@@ -17,7 +17,7 @@ export function UserProfileBadge({
     <div className="flex items-center justify-between gap-3 min-w-0 w-full">
       <div className="flex items-center gap-3 min-w-0">
         <div
-          className="w-9 h-9 rounded-full text-white text-[13px] font-bold flex items-center justify-center shrink-0"
+          className="w-9 h-9 rounded-full text-white text-fco-sm font-bold flex items-center justify-center shrink-0"
           style={{ backgroundColor: avatarBg }}
         >
           {initials}

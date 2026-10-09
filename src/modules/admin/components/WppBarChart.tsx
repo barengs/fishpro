@@ -15,7 +15,7 @@ export function WppBarChart() {
       <div className="flex flex-col gap-4.5">
         {wppData.map((w) => (
           <div key={w.label}>
-            <div className="flex justify-between mb-2 text-[13px]">
+            <div className="flex justify-between mb-2 text-fco-sm">
               <span className="font-semibold text-fco-dark">{w.label}</span>
               <span className="text-fco-muted tabular-nums">{w.value}</span>
             </div>

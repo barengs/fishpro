@@ -27,7 +27,7 @@ export function BlockchainCard() {
       <div className="flex flex-col flex-1">
         {chain.map((c) => (
           <div key={c.label} className="flex items-center justify-between py-3.5 border-t border-fco-border-subtle">
-            <span className="text-[13px] text-fco-muted">{c.label}</span>
+            <span className="text-fco-sm text-fco-muted">{c.label}</span>
             <span className="text-sm font-semibold tabular-nums text-fco-dark">{c.value}</span>
           </div>
         ))}

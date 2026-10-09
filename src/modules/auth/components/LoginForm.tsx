@@ -21,7 +21,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="max-w-[420px] w-full mx-auto">
+    <div className="max-w-105 w-full mx-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
           Masuk ke FCO
@@ -33,7 +33,7 @@ export function LoginForm() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
         <div>
-          <label htmlFor="login-identifier" className="block text-[13px] font-semibold text-fco-dark mb-2">
+          <label htmlFor="login-identifier" className="block text-fco-sm font-semibold text-fco-dark mb-2">
             Nama pengguna atau nomor registrasi
           </label>
           <input
@@ -43,18 +43,18 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="Contoh: REG-0412 atau admin_kkp"
-            className="w-full h-11.5 border border-fco-border rounded-[10px] px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-11.5 border border-fco-border rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label htmlFor="login-password" className="text-[13px] font-semibold text-fco-dark">
+            <label htmlFor="login-password" className="text-fco-sm font-semibold text-fco-dark">
               Kata sandi
             </label>
             <Link
               to="/reset-password"
-              className="text-[13px] font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
+              className="text-fco-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
             >
               Lupa kata sandi?
             </Link>
@@ -66,13 +66,13 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-11.5 border border-fco-border rounded-[10px] px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
+            className="w-full h-11.5 border border-fco-border rounded-fco px-3.5 text-sm text-fco-dark bg-white focus:outline-none focus:border-fco-blue transition-colors"
           />
         </div>
 
         <button
           type="submit"
-          className="h-12 rounded-[10px] border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-[15px] font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
+          className="h-12 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer mt-2 transition-colors shadow-xs"
         >
           Masuk
         </button>

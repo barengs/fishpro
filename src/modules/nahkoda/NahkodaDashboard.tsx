@@ -29,7 +29,7 @@ export function NahkodaDashboard() {
     <div className="min-h-screen bg-fco-bg text-fco-dark">
       <NahkodaNavbar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="max-w-[1280px] mx-auto p-7 sm:p-10">
+      <main className="max-w-7xl mx-auto p-7 sm:p-10">
         <div className="mb-7">
           <h1 className="m-0 mb-1.5 text-3xl font-extrabold tracking-tight">
             Selamat siang, Budi

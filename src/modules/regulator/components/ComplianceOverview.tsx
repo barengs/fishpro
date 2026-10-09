@@ -12,7 +12,7 @@ export function ComplianceOverview() {
         {metrics.map((m) => (
           <div key={m.label} className="p-3.5 rounded-xl bg-fco-bg border border-fco-border-subtle">
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[13px] font-semibold text-fco-dark">{m.label}</span>
+              <span className="text-fco-sm font-semibold text-fco-dark">{m.label}</span>
               <span className="text-sm font-extrabold tabular-nums" style={{ color: m.color }}>
                 {m.rate}
               </span>

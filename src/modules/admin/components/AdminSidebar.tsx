@@ -25,7 +25,7 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
   return (
     <nav
       aria-label="Menu utama Admin"
-      className="basis-[248px] shrink-0 bg-white border-r border-fco-border p-4 flex flex-col justify-between"
+      className="basis-62 shrink-0 bg-white border-r border-fco-border p-4 flex flex-col justify-between"
     >
       <div>
         <div className="px-2 pb-7">
@@ -42,7 +42,7 @@ export function AdminSidebar({ activeNav, onNavChange }: AdminSidebarProps) {
                 key={n.label}
                 type="button"
                 onClick={() => onNavChange(n.label)}
-                className={`flex items-center gap-3 h-[42px] px-3 rounded-[10px] text-sm font-semibold border-none cursor-pointer text-left transition-all ${
+                className={`flex items-center gap-3 h-10.5 px-3 rounded-fco text-sm font-semibold border-none cursor-pointer text-left transition-all ${
                   isActive
                     ? 'bg-fco-blue-light text-fco-blue'
                     : 'bg-transparent text-fco-muted hover:bg-fco-bg hover:text-fco-dark'
