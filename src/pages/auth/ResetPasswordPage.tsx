@@ -5,7 +5,7 @@ import { ResetPasswordWizard } from './components/ResetPasswordWizard'
 export function ResetPasswordPage() {
   return (
     <CenteredAuth>
-      <div className="surface-card border rounded-3xl p-6 sm:p-10 shadow-sm">
+      <div className="surface-card border rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm">
         <ResetPasswordWizard />
         <p className="m-0 mt-7 text-center text-sm text-soft">
           Ingat kata sandi Anda?{' '}

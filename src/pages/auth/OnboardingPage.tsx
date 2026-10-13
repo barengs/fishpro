@@ -99,8 +99,8 @@ export function OnboardingPage() {
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle compact />
-            <Link to="/login" className="h-9.5 px-4 hidden sm:inline-flex items-center rounded-fco text-sm font-semibold text-soft hover:text-strong no-underline">Masuk</Link>
-            <Link to="/register" className="h-9.5 px-4 inline-flex items-center rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors">Mulai gratis <ArrowRight size={15} className="ml-1.5" aria-hidden="true" /></Link>
+            <Link to="/login" className="h-9.5 px-4 inline-flex items-center rounded-fco border border-fco-border surface-card text-sm font-semibold no-underline transition-colors">Masuk</Link>
+            <Link to="/register" className="h-9.5 px-4 inline-flex items-center rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors">Daftar</Link>
           </div>
         </div>
       </header>
