@@ -2,13 +2,19 @@ interface FormFieldProps {
   label: string
   htmlFor: string
   hint?: string
+  required?: boolean
   children: React.ReactNode
 }
 
-export function FormField({ label, htmlFor, hint, children }: FormFieldProps) {
+export function FormField({ label, htmlFor, hint, required, children }: FormFieldProps) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="block text-sm font-semibold text-strong mb-2">{label}</label>
+      <label htmlFor={htmlFor} className="block text-sm font-semibold text-strong mb-2">
+        {label}
+        {required && (
+          <span className="text-red-500 ml-1" aria-label="wajib diisi" title="Wajib diisi">*</span>
+        )}
+      </label>
       {children}
       {hint && <span className="text-xs text-soft mt-1 block">{hint}</span>}
     </div>
@@ -16,6 +22,40 @@ export function FormField({ label, htmlFor, hint, children }: FormFieldProps) {
 }
 
 export const inputCls = 'w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-none focus:border-fco-blue transition-colors'
+
+interface SegmentedControlProps<T extends string> {
+  label: string
+  options: { value: T; label: string }[]
+  value: T
+  onChange: (value: T) => void
+}
+
+export function SegmentedControl<T extends string>({ label, options, value, onChange }: SegmentedControlProps<T>) {
+  return (
+    <div>
+      <span className="block text-sm font-semibold text-strong mb-2">{label}</span>
+      <div className="grid grid-cols-2 gap-1 p-1 rounded-xl surface-inset border" role="radiogroup" aria-label={label}>
+        {options.map((o) => {
+          const selected = value === o.value
+          return (
+            <button
+              key={o.value}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(o.value)}
+              className={`h-11 rounded-lg text-sm font-semibold cursor-pointer border-none transition-all ${
+                selected ? 'bg-fco-blue text-white shadow-xs' : 'bg-transparent text-soft hover:text-strong'
+              }`}
+            >
+              {o.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
 export function CrudActions({ onEdit, onDelete }: { onEdit?: () => void; onDelete?: () => void }) {
   return (

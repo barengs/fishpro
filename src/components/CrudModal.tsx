@@ -6,13 +6,14 @@ interface CrudModalProps {
   title: string
   subtitle?: string
   onClose: () => void
-  onSubmit: (e: React.FormEvent) => void
+  onSubmit?: (e: React.FormEvent) => void
   submitLabel?: string
   children: React.ReactNode
   wide?: boolean
+  hideFooter?: boolean
 }
 
-export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabel = 'Simpan', children, wide = false }: CrudModalProps) {
+export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabel = 'Simpan', children, wide = false, hideFooter = false }: CrudModalProps) {
   useEffect(() => {
     if (!open) return
     const handleKey = (e: KeyboardEvent) => {
@@ -32,7 +33,7 @@ export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabe
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-fco-dark/50 backdrop-blur-sm" onClick={onClose} />
       <div className={`relative w-full ${wide ? 'max-w-220' : 'max-w-135'} max-h-[90vh] overflow-y-auto surface-card border rounded-3xl shadow-2xl`}>
-        <div className="sticky top-0 surface-card border-b border-fco-border px-6 sm:px-8 py-5 flex items-start justify-between gap-4 rounded-t-3xl">
+        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-6 sm:px-8 py-5 flex items-start justify-between gap-4 rounded-t-3xl">
           <div>
             <h2 className="m-0 text-xl font-extrabold tracking-tight">{title}</h2>
             {subtitle && <p className="m-0 mt-1 text-sm text-soft">{subtitle}</p>}
@@ -41,17 +42,21 @@ export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabe
             <X size={18} aria-hidden="true" />
           </button>
         </div>
-        <form onSubmit={onSubmit} className="px-6 sm:px-8 py-6 flex flex-col gap-4">
-          {children}
-          <div className="flex gap-3 mt-2">
-            <button type="button" onClick={onClose} className="h-12 px-6 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors">
-              Batal
-            </button>
-            <button type="submit" className="flex-1 h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
-              {submitLabel}
-            </button>
-          </div>
-        </form>
+        {hideFooter || !onSubmit ? (
+          <div className="px-6 sm:px-8 py-6">{children}</div>
+        ) : (
+          <form onSubmit={onSubmit} className="px-6 sm:px-8 py-6 flex flex-col gap-4">
+            {children}
+            <div className="flex gap-3 mt-2">
+              <button type="button" onClick={onClose} className="h-12 px-6 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors">
+                Batal
+              </button>
+              <button type="submit" className="flex-1 h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+                {submitLabel}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   )
