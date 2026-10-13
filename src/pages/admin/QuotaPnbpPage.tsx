@@ -59,10 +59,10 @@ export function QuotaPnbpPage() {
         </section>
       )}
       <CrudModal open={quotaModal.open} title="Tambah kuota" subtitle="Quota unik per kapal-tahun (ship, year, quota kg)." onClose={quotaModal.closeModal} onSubmit={(e) => { e.preventDefault(); quotaModal.closeModal() }} submitLabel="Simpan kuota">
-        <FormField label="Kapal (ship)" htmlFor="q-ship"><input id="q-ship" required value={q.ship} onChange={(e) => setQ({ ...q, ship: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Kapal (ship)" htmlFor="q-ship" required><input id="q-ship" required value={q.ship} onChange={(e) => setQ({ ...q, ship: e.target.value })} className={inputCls} /></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tahun" htmlFor="q-year"><input id="q-year" type="number" required value={q.year} onChange={(e) => setQ({ ...q, year: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Kuota (kg)" htmlFor="q-q"><input id="q-q" type="number" step="0.01" required value={q.quota} onChange={(e) => setQ({ ...q, quota: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Tahun" htmlFor="q-year" required><input id="q-year" type="number" required value={q.year} onChange={(e) => setQ({ ...q, year: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Kuota (kg)" htmlFor="q-q" required><input id="q-q" type="number" step="0.01" required value={q.quota} onChange={(e) => setQ({ ...q, quota: e.target.value })} className={inputCls} /></FormField>
         </div>
       </CrudModal>
       <CrudModal open={tariffModal.open} title="Ubah tarif PNBP" subtitle="Rumus BE: GT ≤ batas → rate_small, GT > batas → rate_large." onClose={tariffModal.closeModal} onSubmit={(e) => { e.preventDefault(); tariffModal.closeModal() }} submitLabel="Simpan tarif">

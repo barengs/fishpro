@@ -32,8 +32,10 @@ export function CenteredAuth({ children, wide = false, register = false, hideBra
         </div>
       </header>
 
-      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-14 pb-12 sm:pb-16 ${register ? 'max-w-160' : wide ? 'max-w-220' : 'max-w-135'}`}>
-        {children}
+      <main className="flex-1 flex flex-col justify-center items-center w-full px-4 sm:px-6 py-8 sm:py-12 my-auto">
+        <div className={`w-full ${register ? 'max-w-160' : wide ? 'max-w-220' : 'max-w-135'}`}>
+          {children}
+        </div>
       </main>
 
       <footer className="pb-8 text-center text-xs text-fco-placeholder">

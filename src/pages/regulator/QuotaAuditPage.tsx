@@ -45,10 +45,10 @@ export function QuotaAuditPage() {
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
       <CrudModal open={open} title="Override kuota manual" subtitle="Hak regulator: ship + year + quota baru + alasan." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan override">
-        <FormField label="Nomor registrasi kapal" htmlFor="ov-reg"><input id="ov-reg" required value={f.registration_number} onChange={(e) => setF({ ...f, registration_number: e.target.value })} placeholder="REG-0087" className={inputCls} /></FormField>
+        <FormField label="Nomor registrasi kapal" htmlFor="ov-reg" required><input id="ov-reg" required value={f.registration_number} onChange={(e) => setF({ ...f, registration_number: e.target.value })} placeholder="REG-0087" className={inputCls} /></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tahun" htmlFor="ov-year"><input id="ov-year" type="number" required value={f.year} onChange={(e) => setF({ ...f, year: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Kuota baru (kg)" htmlFor="ov-q"><input id="ov-q" type="number" step="0.01" required value={f.new_quota} onChange={(e) => setF({ ...f, new_quota: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Tahun" htmlFor="ov-year" required><input id="ov-year" type="number" required value={f.year} onChange={(e) => setF({ ...f, year: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Kuota baru (kg)" htmlFor="ov-q" required><input id="ov-q" type="number" step="0.01" required value={f.new_quota} onChange={(e) => setF({ ...f, new_quota: e.target.value })} className={inputCls} /></FormField>
         </div>
         <FormField label="Alasan penyesuaian" htmlFor="ov-r"><textarea id="ov-r" rows={3} value={f.reason} onChange={(e) => setF({ ...f, reason: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
       </CrudModal>

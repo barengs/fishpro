@@ -40,7 +40,7 @@ export function SpeciesPage() {
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
       <CrudModal open={open} title="Tambah spesies + harga" subtitle="FishSpecies (nama unik, ilmiah) + harga acuan per kg." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan spesies">
-        <FormField label="Nama ikan (unik)" htmlFor="sp-name"><input id="sp-name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Nama ikan (unik)" htmlFor="sp-name" required><input id="sp-name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={inputCls} /></FormField>
         <FormField label="Nama ilmiah" htmlFor="sp-sci"><input id="sp-sci" value={f.scientific_name} onChange={(e) => setF({ ...f, scientific_name: e.target.value })} placeholder="Thunnus ..." className={inputCls} /></FormField>
         <FormField label="Deskripsi" htmlFor="sp-desc"><textarea id="sp-desc" rows={2} value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

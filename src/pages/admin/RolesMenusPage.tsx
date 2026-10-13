@@ -79,11 +79,11 @@ export function RolesMenusPage() {
         </section>
       )}
       <CrudModal open={roleModal.open} title="Tambah peran" subtitle="Role baru dengan deskripsi dan permission default." onClose={roleModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!rForm.name) return; setRoles((p) => [...p, { id: Date.now(), name: rForm.name, desc: rForm.description }]); setRForm({ name: '', description: '' }); roleModal.closeModal() }} submitLabel="Simpan peran">
-        <FormField label="Nama peran (unik)" htmlFor="rl-name"><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Nama peran (unik)" htmlFor="rl-name" required><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
         <FormField label="Deskripsi" htmlFor="rl-desc"><textarea id="rl-desc" rows={2} value={rForm.description} onChange={(e) => setRForm({ ...rForm, description: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
       </CrudModal>
       <CrudModal open={menuModal.open} title="Tambah menu" subtitle="Menu navigasi dinamis dengan parent dan urutan." onClose={menuModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]); menuModal.closeModal() }} submitLabel="Simpan menu">
-        <FormField label="Nama menu" htmlFor="mn-name"><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Nama menu" htmlFor="mn-name" required><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormField label="URL" htmlFor="mn-url"><input id="mn-url" value={mForm.url} onChange={(e) => setMForm({ ...mForm, url: e.target.value })} placeholder="/admin/..." className={inputCls} /></FormField>
           <FormField label="Ikon" htmlFor="mn-icon"><input id="mn-icon" value={mForm.icon} onChange={(e) => setMForm({ ...mForm, icon: e.target.value })} className={inputCls} /></FormField>
@@ -95,8 +95,8 @@ export function RolesMenusPage() {
       </CrudModal>
       <CrudModal open={adminModal.open} title="Tambah admin" subtitle="AdminUser + AdminProfile baru." onClose={adminModal.closeModal} onSubmit={(e) => { e.preventDefault(); adminModal.closeModal() }} submitLabel="Simpan admin">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Username" htmlFor="au-user"><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Email" htmlFor="au-email"><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Username" htmlFor="au-user" required><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Email" htmlFor="au-email" required><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
         </div>
         <FormField label="Nama lengkap" htmlFor="au-name"><input id="au-name" value={uForm.full_name} onChange={(e) => setUForm({ ...uForm, full_name: e.target.value })} className={inputCls} /></FormField>
         <FormField label="Telepon" htmlFor="au-phone"><input id="au-phone" value={uForm.phone} onChange={(e) => setUForm({ ...uForm, phone: e.target.value })} className={inputCls} /></FormField>

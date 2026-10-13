@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Navigation } from 'lucide-react'
 import { FormField, inputCls } from './FormField'
 import { emptyCatchForm, type CatchReportFormData } from './catchReportTypes'
 
@@ -24,6 +25,72 @@ export function CatchReportWizard({ onSubmit, onCancel }: CatchReportWizardProps
   const [currentStep, setCurrentStep] = useState(1)
   const [form, setForm] = useState<CatchReportFormData>(emptyCatchForm)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [isLocating, setIsLocating] = useState(false)
+
+  const handleGetLocation = () => {
+    setErrorMsg(null)
+    setIsLocating(true)
+
+    const applyPosition = (lat: number | string, lng: number | string) => {
+      const numLat = typeof lat === 'number' ? lat : parseFloat(lat)
+      const numLng = typeof lng === 'number' ? lng : parseFloat(lng)
+      setForm((prev) => ({
+        ...prev,
+        location_latitude: isNaN(numLat) ? String(lat) : numLat.toFixed(6),
+        location_longitude: isNaN(numLng) ? String(lng) : numLng.toFixed(6)
+      }))
+      setIsLocating(false)
+    }
+
+    const fallbackToNetworkGeo = async () => {
+      try {
+        const res = await fetch('https://get.geojs.io/v1/ip/geo.json')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.latitude && data.longitude) {
+            applyPosition(data.latitude, data.longitude)
+            return true
+          }
+        }
+      } catch {
+        // network error / offline
+      }
+      return false
+    }
+
+    // 1. Jika konteks aman (HTTPS atau localhost), coba baca sensor GPS perangkat
+    if (window.isSecureContext && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          applyPosition(pos.coords.latitude, pos.coords.longitude)
+        },
+        async (err) => {
+          // Jika GPS gagal, coba fallback koordinat jaringan IP
+          const ok = await fallbackToNetworkGeo()
+          if (!ok) {
+            if (err.code === err.PERMISSION_DENIED) {
+              setErrorMsg('Izin akses GPS ditolak oleh browser. Harap izinkan akses lokasi di pengaturan browser.')
+            } else {
+              applyPosition(-8.747000, 115.214000)
+              setErrorMsg('Sensor GPS tidak terjangkau. Koordinat diisi dengan estimasi pelabuhan Benoa.')
+            }
+            setIsLocating(false)
+          }
+        },
+        { enableHighAccuracy: true, timeout: 6000, maximumAge: 60000 }
+      )
+    } else {
+      // 2. Di HP via jaringan lokal HTTP (misal http://192.168.x.x:5173), browser memblokir navigator.geolocation
+      // karena W3C Secure Context (wajib HTTPS). Kita gunakan deteksi jaringan IP otomatis:
+      fallbackToNetworkGeo().then((ok) => {
+        if (!ok) {
+          applyPosition(-8.747000, 115.214000)
+          setErrorMsg('Browser HP memblokir GPS di alamat HTTP lokal (wajib HTTPS). Koordinat diisi estimasi pelabuhan.')
+          setIsLocating(false)
+        }
+      })
+    }
+  }
 
   const handleNext = () => {
     setErrorMsg(null)
@@ -125,13 +192,27 @@ export function CatchReportWizard({ onSubmit, onCancel }: CatchReportWizardProps
                   </select>
                 </FormField>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <FormField label="Latitude" htmlFor="cr-lat" required>
-                  <input id="cr-lat" value={form.location_latitude} onChange={(e) => setForm({ ...form, location_latitude: e.target.value })} className={inputCls} />
-                </FormField>
-                <FormField label="Longitude" htmlFor="cr-lng" required>
-                  <input id="cr-lng" value={form.location_longitude} onChange={(e) => setForm({ ...form, location_longitude: e.target.value })} className={inputCls} />
-                </FormField>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-soft">Koordinat lokasi</span>
+                  <button
+                    type="button"
+                    onClick={handleGetLocation}
+                    disabled={isLocating}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-fco-blue bg-fco-blue-light dark:bg-fco-blue/15 hover:bg-fco-blue/25 border border-fco-blue-border dark:border-fco-blue/30 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                  >
+                    <Navigation size={13} className={isLocating ? 'animate-spin' : ''} aria-hidden="true" />
+                    <span>{isLocating ? 'Mendeteksi GPS...' : 'Gunakan GPS otomatis'}</span>
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <FormField label="Latitude" htmlFor="cr-lat" required>
+                    <input id="cr-lat" value={form.location_latitude} onChange={(e) => setForm({ ...form, location_latitude: e.target.value })} placeholder="-8.740000" className={inputCls} />
+                  </FormField>
+                  <FormField label="Longitude" htmlFor="cr-lng" required>
+                    <input id="cr-lng" value={form.location_longitude} onChange={(e) => setForm({ ...form, location_longitude: e.target.value })} placeholder="115.200000" className={inputCls} />
+                  </FormField>
+                </div>
               </div>
               <FormField label="Catatan lokasi" htmlFor="cr-desc">
                 <input id="cr-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Opsional" className={inputCls} />

@@ -39,8 +39,8 @@ export function CaptainsPage() {
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
       <CrudModal open={open} title="Tunjuk nahkoda" subtitle="Nahkoda baru dengan lisensi unik untuk armada Anda." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan nahkoda">
-        <FormField label="Nama nahkoda" htmlFor="cp-name"><input id="cp-name" required value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} className={inputCls} /></FormField>
-        <FormField label="Nomor lisensi (unik)" htmlFor="cp-lic"><input id="cp-lic" required value={f.license_number} onChange={(e) => setF({ ...f, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
+        <FormField label="Nama nahkoda" htmlFor="cp-name" required><input id="cp-name" required value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} className={inputCls} /></FormField>
+        <FormField label="Nomor lisensi (unik)" htmlFor="cp-lic" required><input id="cp-lic" required value={f.license_number} onChange={(e) => setF({ ...f, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormField label="Tanggal lahir" htmlFor="cp-dob"><input id="cp-dob" type="date" value={f.date_of_birth} onChange={(e) => setF({ ...f, date_of_birth: e.target.value })} className={inputCls} /></FormField>
           <FormField label="Pengalaman (th)" htmlFor="cp-exp"><input id="cp-exp" type="number" value={f.years_of_experience} onChange={(e) => setF({ ...f, years_of_experience: e.target.value })} className={inputCls} /></FormField>
