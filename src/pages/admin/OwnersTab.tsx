@@ -40,7 +40,7 @@ export function OwnersTab() {
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
       <CrudModal open={open} title="Tambah pemilik" subtitle="Daftarkan pemilik kapal perorangan atau perusahaan." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan pemilik">
-        <FormField label="Nama lengkap" htmlFor="o-name"><input id="o-name" required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Nama / perusahaan" className={inputCls} /></FormField>
+        <FormField label="Nama lengkap" htmlFor="o-name" required><input id="o-name" required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Nama / perusahaan" className={inputCls} /></FormField>
         <FormField label="Tipe pemilik" htmlFor="o-type"><select id="o-type" value={form.owner_type} onChange={(e) => setForm({ ...form, owner_type: e.target.value })} className={inputCls}><option value="individual">Perorangan</option><option value="company">Perusahaan</option></select></FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormField label="Email" htmlFor="o-email"><input id="o-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} /></FormField>

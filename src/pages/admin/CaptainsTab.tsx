@@ -41,8 +41,8 @@ export function CaptainsTab() {
       </section>
       <CrudModal open={open} title="Tambah nahkoda" subtitle="Daftarkan nahkoda dengan nomor lisensi unik." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan nahkoda">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Nama nahkoda" htmlFor="c-name"><input id="c-name" required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Nomor lisensi (unik)" htmlFor="c-lic"><input id="c-lic" required value={form.license_number} onChange={(e) => setForm({ ...form, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
+          <FormField label="Nama nahkoda" htmlFor="c-name" required><input id="c-name" required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className={inputCls} /></FormField>
+          <FormField label="Nomor lisensi (unik)" htmlFor="c-lic" required><input id="c-lic" required value={form.license_number} onChange={(e) => setForm({ ...form, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormField label="Pemilik (owner)" htmlFor="c-owner"><input id="c-owner" value={form.owner} onChange={(e) => setForm({ ...form, owner: e.target.value })} className={inputCls} /></FormField>

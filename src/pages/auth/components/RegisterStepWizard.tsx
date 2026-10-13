@@ -266,12 +266,16 @@ export function RegisterStepWizard() {
               <div>
                 <label htmlFor="rg-name" className={labelCls}>
                   {role === 'owner' && ownerType === 'company' ? 'Nama penanggung jawab' : 'Nama lengkap'}
+                  <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
                 </label>
                 <input id="rg-name" type="text" autoComplete="name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Nama sesuai KTP" className={inputCls} />
               </div>
               {role === 'owner' && ownerType === 'company' && (
                 <div>
-                  <label htmlFor="rg-company" className={labelCls}>Nama perusahaan</label>
+                  <label htmlFor="rg-company" className={labelCls}>
+                    Nama perusahaan
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-company" type="text" autoComplete="organization" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="PT ..." className={inputCls} />
                 </div>
               )}
@@ -287,25 +291,40 @@ export function RegisterStepWizard() {
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="rg-user" className={labelCls}>Username</label>
+                  <label htmlFor="rg-user" className={labelCls}>
+                    Username
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-user" type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="tanpa spasi" className={inputCls} />
                 </div>
                 <div>
-                  <label htmlFor="rg-phone" className={labelCls}>WA</label>
+                  <label htmlFor="rg-phone" className={labelCls}>
+                    WA
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-phone" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08..." className={inputCls} />
                 </div>
               </div>
               <div>
-                <label htmlFor="rg-email" className={labelCls}>Email</label>
+                <label htmlFor="rg-email" className={labelCls}>
+                  Email
+                  <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                </label>
                 <input id="rg-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@email.com" className={inputCls} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="rg-pass" className={labelCls}>Kata sandi</label>
+                  <label htmlFor="rg-pass" className={labelCls}>
+                    Kata sandi
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-pass" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min. 8 karakter" className={inputCls} />
                 </div>
                 <div>
-                  <label htmlFor="rg-pass2" className={labelCls}>Ulangi sandi</label>
+                  <label htmlFor="rg-pass2" className={labelCls}>
+                    Ulangi sandi
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-pass2" type="password" autoComplete="new-password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} placeholder="Sama seperti di kiri" className={inputCls} />
                 </div>
               </div>
@@ -326,16 +345,25 @@ export function RegisterStepWizard() {
               <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="rg-lic" className={labelCls}>No. lisensi</label>
+                    <label htmlFor="rg-lic" className={labelCls}>
+                      No. lisensi
+                      <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                    </label>
                     <input id="rg-lic" type="text" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} placeholder="SKN-..." className={inputCls} />
                   </div>
                   <div>
-                    <label htmlFor="rg-exp" className={labelCls}>Pengalaman (tahun)</label>
+                    <label htmlFor="rg-exp" className={labelCls}>
+                      Pengalaman (tahun)
+                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                    </label>
                     <input id="rg-exp" type="number" min="0" value={experienceYears} onChange={(e) => setExperienceYears(e.target.value)} className={inputCls} />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="rg-ship" className={labelCls}>No. kapal yang diawaki</label>
+                  <label htmlFor="rg-ship" className={labelCls}>
+                    No. kapal yang diawaki
+                    <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                  </label>
                   <input id="rg-ship" type="text" value={shipReg} onChange={(e) => setShipReg(e.target.value)} placeholder="REG-... (boleh kosong)" className={inputCls} />
                 </div>
               </div>
@@ -344,21 +372,33 @@ export function RegisterStepWizard() {
               <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="rg-shipname" className={labelCls}>Nama kapal</label>
+                    <label htmlFor="rg-shipname" className={labelCls}>
+                      Nama kapal
+                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                    </label>
                     <input id="rg-shipname" type="text" value={shipName} onChange={(e) => setShipName(e.target.value)} placeholder="KM ..." className={inputCls} />
                   </div>
                   <div>
-                    <label htmlFor="rg-shipreg" className={labelCls}>No. kapal (SIPI)</label>
+                    <label htmlFor="rg-shipreg" className={labelCls}>
+                      No. kapal (SIPI)
+                      <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                    </label>
                     <input id="rg-shipreg" type="text" value={shipReg} onChange={(e) => setShipReg(e.target.value)} placeholder="REG-..." className={inputCls} />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="rg-port" className={labelCls}>Pelabuhan</label>
+                    <label htmlFor="rg-port" className={labelCls}>
+                      Pelabuhan
+                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                    </label>
                     <input id="rg-port" type="text" value={homePort} onChange={(e) => setHomePort(e.target.value)} placeholder="Benoa" className={inputCls} />
                   </div>
                   <div>
-                    <label htmlFor="rg-wpp" className={labelCls}>WPP</label>
+                    <label htmlFor="rg-wpp" className={labelCls}>
+                      WPP
+                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                    </label>
                     <select id="rg-wpp" value={wpp} onChange={(e) => setWpp(e.target.value)} className={inputCls}>
                       <option value="WPP 573">573 — Hindia Selatan Jawa</option>
                       <option value="WPP 711">711 — Karimata & Natuna</option>
@@ -372,11 +412,17 @@ export function RegisterStepWizard() {
             {role === 'regulator' && (
               <div className="flex flex-col gap-4">
                 <div>
-                  <label htmlFor="rg-dept" className={labelCls}>Satuan kerja</label>
+                  <label htmlFor="rg-dept" className={labelCls}>
+                    Satuan kerja
+                    <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+                  </label>
                   <input id="rg-dept" type="text" value={department} onChange={(e) => setDepartment(e.target.value)} className={inputCls} />
                 </div>
                 <div>
-                  <label htmlFor="rg-nip" className={labelCls}>NIP / ID pengawas</label>
+                  <label htmlFor="rg-nip" className={labelCls}>
+                    NIP / ID pengawas
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </label>
                   <input id="rg-nip" type="text" value={nip} onChange={(e) => setNip(e.target.value)} placeholder="18 digit NIP" className={inputCls} />
                 </div>
               </div>

@@ -27,6 +27,7 @@ export function LoginForm() {
       <div>
         <label htmlFor="login-identifier" className="block text-sm font-semibold text-strong mb-2">
           Nama pengguna atau nomor registrasi
+          <span className="text-red-500 ml-1 font-bold" aria-label="wajib diisi" title="Wajib diisi">*</span>
         </label>
         <div className="relative">
           <User size={18} className="text-fco-placeholder absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
@@ -47,6 +48,7 @@ export function LoginForm() {
         <div className="flex justify-between items-center mb-2">
           <label htmlFor="login-password" className="text-sm font-semibold text-strong">
             Kata sandi
+            <span className="text-red-500 ml-1 font-bold" aria-label="wajib diisi" title="Wajib diisi">*</span>
           </label>
           <Link to="/reset-password" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
             Lupa kata sandi?

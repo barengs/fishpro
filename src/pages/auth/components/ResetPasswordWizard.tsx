@@ -80,6 +80,7 @@ export function ResetPasswordWizard() {
           <div>
             <label htmlFor="reset-id" className="block text-sm font-semibold text-strong mb-2">
               Email atau nomor registrasi
+              <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
             </label>
             <div className="relative">
               <Mail size={18} className="text-fco-placeholder absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
@@ -141,6 +142,7 @@ export function ResetPasswordWizard() {
           <div>
             <label htmlFor="new-pass" className="block text-sm font-semibold text-strong mb-2">
               Kata sandi baru
+              <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
             </label>
             <input
               id="new-pass"
@@ -156,6 +158,7 @@ export function ResetPasswordWizard() {
           <div>
             <label htmlFor="confirm-pass" className="block text-sm font-semibold text-strong mb-2">
               Konfirmasi sandi baru
+              <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
             </label>
             <input
               id="confirm-pass"

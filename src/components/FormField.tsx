@@ -3,16 +3,22 @@ interface FormFieldProps {
   htmlFor: string
   hint?: string
   required?: boolean
+  optional?: boolean
   children: React.ReactNode
 }
 
-export function FormField({ label, htmlFor, hint, required, children }: FormFieldProps) {
+export function FormField({ label, htmlFor, hint, required, optional, children }: FormFieldProps) {
+  const isOptional = optional ?? (!required)
+
   return (
     <div>
       <label htmlFor={htmlFor} className="block text-sm font-semibold text-strong mb-2">
         {label}
         {required && (
-          <span className="text-red-500 ml-1" aria-label="wajib diisi" title="Wajib diisi">*</span>
+          <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+        )}
+        {isOptional && (
+          <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
         )}
       </label>
       {children}
@@ -28,12 +34,24 @@ interface SegmentedControlProps<T extends string> {
   options: { value: T; label: string }[]
   value: T
   onChange: (value: T) => void
+  required?: boolean
+  optional?: boolean
 }
 
-export function SegmentedControl<T extends string>({ label, options, value, onChange }: SegmentedControlProps<T>) {
+export function SegmentedControl<T extends string>({ label, options, value, onChange, required, optional }: SegmentedControlProps<T>) {
+  const isOptional = optional ?? (!required)
+
   return (
     <div>
-      <span className="block text-sm font-semibold text-strong mb-2">{label}</span>
+      <span className="block text-sm font-semibold text-strong mb-2">
+        {label}
+        {required && (
+          <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+        )}
+        {isOptional && (
+          <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
+        )}
+      </span>
       <div className="grid grid-cols-2 gap-1 p-1 rounded-xl surface-inset border" role="radiogroup" aria-label={label}>
         {options.map((o) => {
           const selected = value === o.value
