@@ -23,7 +23,7 @@ import { OwnerLayout } from "./pages/owner/components/OwnerSidebar";
 import { OwnerDashboard } from "./pages/owner/OwnerDashboard";
 import { FleetPage } from "./pages/owner/FleetPage";
 import { CaptainsPage } from "./pages/owner/CaptainsPage";
-import { CaptainLayout } from "./pages/captain/components/CaptainNavbar";
+import { CaptainLayout } from "./pages/captain/components/CaptainSidebar";
 import { CaptainDashboard } from "./pages/captain/CaptainDashboard";
 import { MyCatchesPage } from "./pages/captain/MyCatchesPage";
 import { MyShipPage } from "./pages/captain/MyShipPage";
