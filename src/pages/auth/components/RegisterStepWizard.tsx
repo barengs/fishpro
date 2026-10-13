@@ -5,10 +5,10 @@ import { Anchor, ShieldCheck, Ship } from 'lucide-react'
 
 type Role = 'owner' | 'captain' | 'regulator'
 
-const roleCards: { key: Role; title: string; desc: string; Icon: typeof Ship }[] = [
-  { key: 'owner', title: 'Pemilik Kapal', desc: 'Armada, kuota & PNBP', Icon: Ship },
-  { key: 'captain', title: 'Nahkoda', desc: 'Lapor tangkapan', Icon: Anchor },
-  { key: 'regulator', title: 'Pengawas', desc: 'Audit & verifikasi', Icon: ShieldCheck }
+const roleCards: { key: Role; title: string; desc: string; Icon: typeof Ship; card: string; iconBox: string }[] = [
+  { key: 'owner', title: 'Pemilik Kapal', desc: 'Armada, kuota & PNBP', Icon: Ship, card: 'bg-fco-blue hover:bg-fco-blue-hover', iconBox: 'bg-white/20' },
+  { key: 'captain', title: 'Nahkoda', desc: 'Lapor tangkapan', Icon: Anchor, card: 'bg-emerald-600 hover:bg-emerald-700', iconBox: 'bg-white/20' },
+  { key: 'regulator', title: 'Pengawas', desc: 'Audit & verifikasi', Icon: ShieldCheck, card: 'bg-amber-500 hover:bg-amber-600', iconBox: 'bg-white/20' }
 ]
 
 const roleLabel: Record<Role, string> = {
@@ -126,10 +126,8 @@ export function RegisterStepWizard() {
   if (!role) {
     return (
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <h3 className="m-0 mb-1 text-lg sm:text-xl font-extrabold text-strong">Daftar sebagai apa?</h3>
-        <p className="m-0 mb-5 text-sm text-soft">Pilih satu — formulirnya langsung muncul di bawah.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {roleCards.map(({ key, title, desc, Icon }, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-220 mx-auto">
+          {roleCards.map(({ key, title, desc, Icon, card, iconBox }, i) => (
             <motion.button
               key={key}
               type="button"
@@ -139,17 +137,17 @@ export function RegisterStepWizard() {
               transition={{ delay: i * 0.08, duration: 0.3 }}
               whileHover={{ y: -4, scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className="flex sm:flex-col items-center sm:text-center gap-4 sm:gap-0 p-5 sm:py-8 sm:px-4 rounded-2xl border-2 border-fco-border surface-card hover:border-fco-blue hover:shadow-lg cursor-pointer text-left sm:text-center w-full"
+              className={`flex sm:flex-col items-center justify-center sm:text-center gap-4 sm:gap-0 p-5 sm:py-8 sm:px-4 rounded-2xl text-white text-center w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
             >
               <motion.span
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-fco-blue text-white flex items-center justify-center shrink-0 sm:mb-4 shadow-md shadow-fco-blue/30"
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-4`}
                 whileHover={{ rotate: -6, scale: 1.08 }}
               >
                 <Icon size={26} aria-hidden="true" />
               </motion.span>
               <span className="flex-1 min-w-0">
-                <span className="block text-base sm:text-lg font-extrabold text-strong">{title}</span>
-                <span className="block text-sm text-soft mt-0.5">{desc}</span>
+                <span className="block text-base sm:text-lg font-extrabold">{title}</span>
+                <span className="block text-sm text-white/85 mt-0.5">{desc}</span>
               </span>
             </motion.button>
           ))}
