@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fishpro-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
