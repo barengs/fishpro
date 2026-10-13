@@ -19,20 +19,20 @@ export function CenteredAuth({ children, wide = false, register = false, hideBra
             </Link>
           )}
           <nav aria-label="Navigasi" className="flex items-center gap-1 ml-auto">
-            <Link to="/onboard" className="h-9.5 px-4 inline-flex items-center rounded-fco text-sm font-semibold text-soft hover:text-strong no-underline">
+            <Link to="/onboard" className="h-9 px-2.5 sm:px-4 inline-flex items-center rounded-fco text-xs sm:text-sm font-semibold text-soft hover:text-strong no-underline transition-colors">
               Beranda
             </Link>
-            <Link to="/login" className="h-9.5 px-4 inline-flex items-center rounded-fco text-sm font-semibold text-soft hover:text-strong no-underline">
+            <Link to="/login" className="h-9 px-2.5 sm:px-4 inline-flex items-center rounded-fco text-xs sm:text-sm font-semibold text-soft hover:text-strong no-underline transition-colors">
               Masuk
             </Link>
-            <Link to="/register" className="h-9.5 px-4 inline-flex items-center rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold no-underline transition-colors">
+            <Link to="/register" className="h-9 px-3 sm:px-4 inline-flex items-center rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-xs sm:text-sm font-semibold no-underline transition-colors">
               Daftar
             </Link>
           </nav>
         </div>
       </header>
 
-      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-16 ${register ? 'max-w-160' : wide ? 'max-w-220' : 'max-w-135'}`}>
+      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-14 pb-12 sm:pb-16 ${register ? 'max-w-160' : wide ? 'max-w-220' : 'max-w-135'}`}>
         {children}
       </main>
 

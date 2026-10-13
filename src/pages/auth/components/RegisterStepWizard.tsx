@@ -137,17 +137,17 @@ export function RegisterStepWizard() {
               transition={{ delay: i * 0.08, duration: 0.3 }}
               whileHover={{ y: -4, scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className={`flex sm:flex-col items-center justify-center sm:text-center gap-4 sm:gap-0 p-5 sm:py-6 sm:px-4 rounded-2xl text-white text-center w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
+              className={`flex sm:flex-col items-center sm:justify-center text-left sm:text-center gap-3.5 sm:gap-0 p-4 sm:py-6 sm:px-4 rounded-2xl text-white w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
             >
               <motion.span
-                className={`w-14 h-14 sm:w-12 sm:h-12 rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-3`}
+                className={`w-12 h-12 rounded-xl sm:rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-3`}
                 whileHover={{ rotate: -6, scale: 1.08 }}
               >
-                <Icon size={26} aria-hidden="true" />
+                <Icon size={24} aria-hidden="true" />
               </motion.span>
               <span className="flex-1 min-w-0">
                 <span className="block text-base sm:text-lg font-extrabold">{title}</span>
-                <span className="block text-sm text-white/85 mt-0.5">{desc}</span>
+                <span className="block text-xs sm:text-sm text-white/85 mt-0.5">{desc}</span>
               </span>
             </motion.button>
           ))}
@@ -195,16 +195,16 @@ export function RegisterStepWizard() {
 
       <div className="mb-5">
         <div className="flex items-center justify-between relative mb-2">
-          <div className="absolute left-6 right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
+          <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
           <div
-            className="absolute left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
+            className="absolute left-4 sm:left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
           />
           {steps.map((s) => {
             const isPassed = currentStep > s.num
             const isCurrent = currentStep === s.num
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 px-1">
+              <div key={s.num} className="flex flex-col items-center gap-1 z-10 px-0.5 sm:px-1">
                 <div
                   className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
                     isCurrent
@@ -216,7 +216,7 @@ export function RegisterStepWizard() {
                 >
                   {isPassed ? '✓' : s.num}
                 </div>
-                <span className={`text-xs sm:text-sm font-semibold ${isCurrent ? 'text-fco-blue' : isPassed ? 'text-strong' : 'text-fco-placeholder'}`}>
+                <span className={`text-[11px] sm:text-xs font-semibold whitespace-nowrap ${isCurrent ? 'text-fco-blue' : isPassed ? 'text-strong' : 'text-fco-placeholder'}`}>
                   {s.title}
                 </span>
               </div>
@@ -389,31 +389,31 @@ export function RegisterStepWizard() {
           <div>
             <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Cek sekali lagi</h3>
             <p className="m-0 mb-5 text-sm text-soft">Pastikan tidak ada salah ketik.</p>
-            <dl className="m-0 mb-5 p-4 sm:p-5 rounded-2xl surface-inset border text-sm flex flex-col gap-2.5">
-              <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
-                <dt className="text-soft">Peran</dt>
-                <dd className="m-0 font-bold text-fco-blue">{roleLabel[role]}</dd>
+            <dl className="m-0 mb-5 p-3.5 sm:p-5 rounded-2xl surface-inset border text-xs sm:text-sm flex flex-col gap-2.5">
+              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                <dt className="text-soft shrink-0">Peran</dt>
+                <dd className="m-0 font-bold text-fco-blue text-right">{roleLabel[role]}</dd>
               </div>
-              <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
-                <dt className="text-soft">Nama</dt>
-                <dd className="m-0 font-semibold text-strong text-right">{fullName}{companyName ? ` · ${companyName}` : ''}</dd>
+              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                <dt className="text-soft shrink-0">Nama</dt>
+                <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">{fullName}{companyName ? ` · ${companyName}` : ''}</dd>
               </div>
-              <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
-                <dt className="text-soft">Kontak</dt>
-                <dd className="m-0 text-strong text-right">{email} · {phone}</dd>
+              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                <dt className="text-soft shrink-0">Kontak</dt>
+                <dd className="m-0 text-strong text-right truncate max-w-[65%]">{email} · {phone}</dd>
               </div>
               {(shipReg || licenseNumber || nip) && (
-                <div className="flex justify-between gap-3 py-1">
-                  <dt className="text-soft">{role === 'captain' ? 'Lisensi' : role === 'owner' ? 'Kapal' : 'NIP'}</dt>
-                  <dd className="m-0 font-semibold text-strong text-right">
+                <div className="flex justify-between items-center gap-2 py-1">
+                  <dt className="text-soft shrink-0">{role === 'captain' ? 'Lisensi' : role === 'owner' ? 'Kapal' : 'NIP'}</dt>
+                  <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
                     {role === 'captain' ? licenseNumber : role === 'owner' ? `${shipReg}${shipName ? ` (${shipName})` : ''}` : nip}
                   </dd>
                 </div>
               )}
             </dl>
-            <label className="flex items-start gap-2.5 text-sm text-soft cursor-pointer mb-5">
+            <label className="flex items-start gap-2.5 text-xs sm:text-sm text-soft cursor-pointer mb-5">
               <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 rounded accent-[#1A56DB]" />
-              <span>Data sudah benar. Laporan yang saya kirim tercatat permanen dan tidak bisa diubah.</span>
+              <span className="leading-snug">Data sudah benar. Laporan yang saya kirim tercatat permanen dan tidak bisa diubah.</span>
             </label>
           </div>
         )}
