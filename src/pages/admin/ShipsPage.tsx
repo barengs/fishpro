@@ -50,7 +50,7 @@ export function ShipsPage() {
       <section className="surface-card border rounded-2xl p-6 shadow-xs">
         <DataTable columns={columns} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
-      <CrudModal open={open} title="Tambah kapal" subtitle="3 langkah: identitas, spesifikasi, cek." onClose={closeModal} wide hideFooter>
+      <CrudModal open={open} title="Tambah kapal" subtitle="3 langkah: identitas, spesifikasi, cek." onClose={closeModal} hideFooter>
         <ShipFormWizard onSubmit={handleSubmit} />
       </CrudModal>
     </div>

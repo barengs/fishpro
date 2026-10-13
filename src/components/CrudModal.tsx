@@ -33,9 +33,9 @@ export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabe
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-fco-dark/50 backdrop-blur-sm" onClick={onClose} />
       <div className={`relative w-full ${wide ? 'max-w-220' : 'max-w-135'} max-h-[90vh] overflow-y-auto surface-card border rounded-3xl shadow-2xl`}>
-        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-6 sm:px-8 py-5 flex items-start justify-between gap-4 rounded-t-3xl">
+        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-5 sm:px-6 py-4 flex items-start justify-between gap-4 rounded-t-2xl">
           <div>
-            <h2 className="m-0 text-xl font-extrabold tracking-tight">{title}</h2>
+            <h2 className="m-0 text-lg font-extrabold tracking-tight">{title}</h2>
             {subtitle && <p className="m-0 mt-1 text-sm text-soft">{subtitle}</p>}
           </div>
           <button type="button" onClick={onClose} aria-label="Tutup" className="w-9 h-9 rounded-fco border border-fco-border bg-transparent hover:surface-page flex items-center justify-center cursor-pointer transition-colors shrink-0">
@@ -43,7 +43,7 @@ export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabe
           </button>
         </div>
         {hideFooter || !onSubmit ? (
-          <div className="px-6 sm:px-8 py-6">{children}</div>
+          <div className="px-5 sm:px-6 py-5">{children}</div>
         ) : (
           <form onSubmit={onSubmit} className="px-6 sm:px-8 py-6 flex flex-col gap-4">
             {children}

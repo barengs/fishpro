@@ -48,7 +48,7 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
   return (
     <div>
       {/* Stepper */}
-      <div className="mb-6">
+      <div className="mb-5">
         <div className="flex items-center justify-between relative">
           <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border z-0" />
           <div
@@ -61,7 +61,7 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
             return (
               <div key={s.num} className="flex flex-col items-center gap-1.5 relative surface-card px-2">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
                     isCurrent
                       ? 'bg-fco-blue text-white ring-4 ring-fco-blue/15'
                       : isPassed
@@ -96,7 +96,7 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
         >
           {/* STEP 1: IDENTITAS — 2 wajib */}
           {currentStep === 1 && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3.5">
               <FormField label="Nama kapal" htmlFor="wz-name" required>
                 <input id="wz-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="KM ..." className={inputCls} />
               </FormField>
@@ -116,7 +116,7 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
 
           {/* STEP 2: SPESIFIKASI — semua opsional */}
           {currentStep === 2 && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <FormField label="Panjang (m)" htmlFor="wz-length">
                   <input id="wz-length" type="number" step="0.01" value={form.length} onChange={(e) => setForm({ ...form, length: e.target.value })} className={inputCls} />
@@ -171,18 +171,18 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex gap-3 mt-6">
+      <div className="flex gap-2.5 mt-5">
         {currentStep > 1 && (
-          <button type="button" onClick={handlePrev} className="h-12 px-5 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
+          <button type="button" onClick={handlePrev} className="h-11 px-4 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
             Kembali
           </button>
         )}
         {currentStep < 3 ? (
-          <motion.button type="button" onClick={handleNext} whileTap={{ scale: 0.97 }} className="flex-1 h-12 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors">
+          <motion.button type="button" onClick={handleNext} whileTap={{ scale: 0.97 }} className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors">
             Lanjut
           </motion.button>
         ) : (
-          <motion.button type="button" onClick={handleSubmit} whileTap={{ scale: 0.97 }} className="flex-1 h-12 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors">
+          <motion.button type="button" onClick={handleSubmit} whileTap={{ scale: 0.97 }} className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors">
             Simpan kapal
           </motion.button>
         )}
