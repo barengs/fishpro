@@ -166,24 +166,38 @@ export function RegisterStepWizard() {
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="max-w-full w-full"
       >
-      {/* Peran terpilih + stepper */}
-      <div className="flex items-center gap-2.5 mb-6 p-3 rounded-xl surface-inset border">
-        {(() => {
-          const found = roleCards.find((c) => c.key === role)
-          const Icon = found?.Icon ?? Ship
-          return <Icon size={18} className="text-fco-blue shrink-0" aria-hidden="true" />
-        })()}
-        <span className="text-sm font-bold text-strong">{roleLabel[role]}</span>
-        <button type="button" onClick={changeRole} className="ml-auto text-sm font-semibold text-fco-blue hover:text-fco-blue-hover bg-transparent border-none cursor-pointer p-0">
-          Ganti
-        </button>
-      </div>
+      {/* Header identitas peran terpilih */}
+      {(() => {
+        const found = roleCards.find((c) => c.key === role)
+        const Icon = found?.Icon ?? Ship
+        const roleBg = role === 'owner' ? 'bg-fco-blue' : role === 'captain' ? 'bg-emerald-600' : 'bg-amber-500'
+        return (
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-fco-border">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-sm`}>
+                <Icon size={20} aria-hidden="true" />
+              </span>
+              <div className="min-w-0">
+                <span className="text-xs text-soft font-medium block">Mendaftar sebagai</span>
+                <span className="text-base font-extrabold text-strong truncate block">{roleLabel[role]}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={changeRole}
+              className="text-xs sm:text-sm font-semibold text-fco-blue hover:text-fco-blue-hover hover:underline bg-transparent border-none cursor-pointer py-1 px-2.5 rounded-lg hover:surface-inset transition-colors shrink-0"
+            >
+              Ganti peran
+            </button>
+          </div>
+        )
+      })()}
 
       <div className="mb-5">
         <div className="flex items-center justify-between relative mb-2">
-          <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border z-0" />
+          <div className="absolute left-6 right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
           <div
-            className="absolute left-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-blue z-0 transition-all duration-300"
+            className="absolute left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
           />
           {steps.map((s) => {

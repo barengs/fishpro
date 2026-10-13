@@ -66,9 +66,9 @@ export function CatchReportWizard({ onSubmit, onCancel }: CatchReportWizardProps
       {/* Stepper */}
       <div className="mb-5">
         <div className="flex items-center justify-between relative">
-          <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border z-0" />
+          <div className="absolute left-6 right-6 top-4 h-0.5 bg-fco-border z-0" />
           <div
-            className="absolute left-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-blue z-0 transition-all duration-300"
+            className="absolute left-6 top-4 h-0.5 bg-fco-blue z-0 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
           />
           {steps.map((s) => {
