@@ -91,11 +91,11 @@ export function ResetPasswordWizard() {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+                className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
               />
             </div>
           </div>
-          <button type="submit" className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+          <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors">
             Kirim kode verifikasi
           </button>
         </form>
@@ -150,7 +150,7 @@ export function ResetPasswordWizard() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Minimal 8 karakter"
-              className="w-full h-13 border border-fco-border rounded-xl px-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+              className="w-full h-12 rounded-xl px-4 text-sm sm:text-fco-md field-input transition-colors"
             />
           </div>
           <div>
@@ -165,10 +165,10 @@ export function ResetPasswordWizard() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Ulangi kata sandi baru"
-              className="w-full h-13 border border-fco-border rounded-xl px-4 text-fco-md bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+              className="w-full h-12 rounded-xl px-4 text-sm sm:text-fco-md field-input transition-colors"
             />
           </div>
-          <button type="submit" className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">
+          <button type="submit" className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors">
             Simpan kata sandi
           </button>
         </form>

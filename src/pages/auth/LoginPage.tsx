@@ -6,7 +6,7 @@ export function LoginPage() {
   return (
     <CenteredAuth>
       <div className="surface-card border rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm">
-        <div className="mb-5 sm:mb-6">
+        <div className="mb-5 sm:mb-6 text-center">
           <h1 className="m-0 mb-1 text-xl sm:text-2xl font-extrabold tracking-tight">Masuk</h1>
           <p className="m-0 text-sm sm:text-fco-md text-soft">Gunakan username atau nomor registrasi kapal Anda.</p>
         </div>

@@ -6,6 +6,7 @@ import { UserProfileBadge } from '../../../components/UserProfileBadge'
 import { House, Ship, Users } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
+import { FullscreenToggle } from '../../../components/FullscreenToggle'
 
 const navItems = [
   { label: 'Beranda', to: '/owner', end: true, Icon: House },
@@ -48,8 +49,9 @@ export function OwnerLayout() {
       <OwnerSidebar />
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top navbar: notif + akun di kanan */}
-        <header className="hidden lg:flex items-center justify-end gap-4 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
+        <header className="hidden lg:flex items-center justify-end gap-3 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
           <NotificationBell count={1} />
+          <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge initials="PT" name="PT Laut Nusantara" role="Pemilik kapal" onLogout={() => navigate('/login')} />
         </header>

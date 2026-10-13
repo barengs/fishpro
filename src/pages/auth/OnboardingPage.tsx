@@ -53,7 +53,7 @@ function ReportMockup() {
         <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
         <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
         <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-        <span className="ml-3 text-xs text-soft tabular-nums">fco / lapor-tangkapan</span>
+        <span className="ml-3 text-xs text-soft tabular-nums">fishpro / lapor-tangkapan</span>
         <span className="ml-auto inline-flex items-center gap-1 text-xs font-bold text-fco-blue">
           <Check size={13} strokeWidth={3} aria-hidden="true" /> tersimpan + ter-hash
         </span>
@@ -84,7 +84,7 @@ export function OnboardingPage() {
     <div className="min-h-screen flex flex-col surface-page text-strong">
       <header className="surface-topbar border-b sticky top-0 z-40">
         <div className="max-w-360 mx-auto px-4 sm:px-8 h-16 flex items-center gap-2">
-          <Link to="/onboard" className="no-underline" aria-label="FCO beranda"><Logo /></Link>
+          <Link to="/onboard" className="no-underline" aria-label="FISHPRO beranda"><Logo /></Link>
           <nav aria-label="Navigasi" className="hidden md:flex items-center gap-1 ml-8">
             {[['Cara kerja', '#cara-kerja'], ['Peran', '#peran'], ['FAQ', '#faq']].map(([label, href]) => (
               <a key={href} href={href} className="px-3.5 h-9 inline-flex items-center rounded-fco text-sm font-semibold text-soft hover:text-strong hover-soft no-underline transition-colors">{label}</a>

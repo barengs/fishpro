@@ -5,6 +5,7 @@ import { UserProfileBadge } from '../../../components/UserProfileBadge'
 import { BarChart3, ClipboardList, Fish, LayoutDashboard, Link2, MapPin, ShieldCheck, Ship, UserRound, Users } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
+import { FullscreenToggle } from '../../../components/FullscreenToggle'
 
 const navItems = [
   { label: 'Ringkasan', to: '/admin', end: true, Icon: LayoutDashboard },
@@ -59,7 +60,8 @@ export function AdminLayout() {
     <div className="min-h-screen flex surface-page text-strong">
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="hidden lg:flex items-center justify-end gap-4 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
+        <header className="hidden lg:flex items-center justify-end gap-3 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
+          <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" onLogout={() => navigate('/login')} />
         </header>

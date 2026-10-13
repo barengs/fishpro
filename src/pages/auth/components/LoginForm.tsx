@@ -38,7 +38,7 @@ export function LoginForm() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="REG-0412 atau admin_kkp"
-            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-4 text-fco-md text-strong bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
           />
         </div>
       </div>
@@ -62,7 +62,7 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
-            className="w-full h-13 border border-fco-border rounded-xl pl-11 pr-12 text-fco-md text-strong bg-white placeholder:text-fco-placeholder focus:outline-none focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/10 transition"
+            className="w-full h-12 rounded-xl pl-11 pr-12 text-sm sm:text-fco-md field-input transition-colors"
           />
           <button
             type="button"
@@ -77,7 +77,7 @@ export function LoginForm() {
 
       <button
         type="submit"
-        className="h-13 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors"
+        className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors"
       >
         Masuk
       </button>

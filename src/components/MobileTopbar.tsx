@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, LogOut, Menu, User, X } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
+import { FullscreenToggle } from './FullscreenToggle'
 
 interface Profile {
   initials: string
@@ -61,6 +62,7 @@ export function MobileTopbar({ open, onToggle, onClose, profile, onLogout, child
             <Menu size={22} strokeWidth={2.2} aria-hidden="true" />
           </button>
           <div className="flex items-center gap-2">
+            <FullscreenToggle compact />
             <ThemeToggle compact />
             <div ref={accountRef} className="relative">
             <button
@@ -118,7 +120,7 @@ export function MobileTopbar({ open, onToggle, onClose, profile, onLogout, child
           className={`absolute left-0 top-0 bottom-0 w-72 max-w-[85vw] surface-card p-4 overflow-y-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="flex items-center gap-3 px-1 mb-5">
-            <span className="text-sm font-extrabold tracking-tight text-strong">FCO</span>
+            <span className="text-sm font-extrabold tracking-tight text-strong">FISHPRO</span>
             <span className="text-xs text-soft">Menu navigasi</span>
             <button type="button" onClick={onClose} aria-label="Tutup menu" className="ml-auto w-9 h-9 rounded-fco border border-fco-border bg-white flex items-center justify-center cursor-pointer hover:surface-page transition-colors shrink-0">
               <X size={18} className="text-strong" strokeWidth={2} aria-hidden="true" />
