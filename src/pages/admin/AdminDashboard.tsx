@@ -1,15 +1,15 @@
-import { Search } from 'lucide-react'
-import { KpiCard } from '../../components/KpiCard'
+import { ClipboardList, Coins, Fish, Search, Ship } from 'lucide-react'
+import { KpiCard, type KpiColor } from '../../components/KpiCard'
 import { PnbpChart } from './components/PnbpChart'
 import { BlockchainCard } from './components/BlockchainCard'
 import { CriticalQuotaTable } from './components/CriticalQuotaTable'
 import { WppBarChart } from './components/WppBarChart'
 
 const kpis = [
-  { label: 'Kapal aktif', value: '1.284', delta: '12 kapal baru bulan ini' },
-  { label: 'Laporan bulan ini', value: '3.472', delta: '4,2% dari bulan lalu' },
-  { label: 'Total tangkapan', value: '842 ton', delta: '3,1% dari bulan lalu' },
-  { label: 'PNBP terhitung', value: 'Rp 4,4 M', delta: '6,8% dari bulan lalu' }
+  { label: 'Kapal aktif', value: '1.284', delta: '12 kapal baru bulan ini', color: 'blue' as KpiColor, Icon: Ship },
+  { label: 'Laporan bulan ini', value: '3.472', delta: '4,2% dari bulan lalu', color: 'emerald' as KpiColor, Icon: ClipboardList },
+  { label: 'Total tangkapan', value: '842 ton', delta: '3,1% dari bulan lalu', color: 'cyan' as KpiColor, Icon: Fish },
+  { label: 'PNBP terhitung', value: 'Rp 4,4 M', delta: '6,8% dari bulan lalu', color: 'purple' as KpiColor, Icon: Coins }
 ]
 
 export function AdminDashboard() {
@@ -37,7 +37,7 @@ export function AdminDashboard() {
         {/* Global KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {kpis.map((k) => (
-            <KpiCard key={k.label} label={k.label} value={k.value} delta={k.delta} />
+            <KpiCard key={k.label} label={k.label} value={k.value} delta={k.delta} color={k.color} Icon={k.Icon} />
           ))}
         </div>
 

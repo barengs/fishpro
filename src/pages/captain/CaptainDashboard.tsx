@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, Plus } from 'lucide-react'
+import { BarChart3, Check, Coins, Fish, Plus, Ship } from 'lucide-react'
 import { KpiCard } from '../../components/KpiCard'
 import { StatusChip } from '../../components/StatusChip'
 import { CrudModal } from '../../components/CrudModal'
@@ -66,10 +66,10 @@ export function CaptainDashboard() {
 
       {/* 4 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <KpiCard label="Sisa kuota 2026" value="8.400 kg" delta="70% dari kuota 12.000 kg" />
-        <KpiCard label="Tangkapan bulan ini" value="430 kg" delta="5 laporan tercatat" />
-        <KpiCard label="PNBP terhitung" value="Rp 535.000" delta="Berdasarkan tarif resmi KKP" />
-        <KpiCard label="Status kapal" value="Aktif" delta="42,5 GT · SIPI berlaku s.d. Des 2026" />
+        <KpiCard label="Sisa kuota 2026" value="8.400 kg" delta="70% dari kuota 12.000 kg" color="blue" Icon={BarChart3} />
+        <KpiCard label="Tangkapan bulan ini" value="430 kg" delta="5 laporan tercatat" color="emerald" Icon={Fish} />
+        <KpiCard label="PNBP terhitung" value="Rp 535.000" delta="Berdasarkan tarif resmi KKP" color="purple" Icon={Coins} />
+        <KpiCard label="Status kapal" value="Aktif" delta="42,5 GT · SIPI berlaku s.d. Des 2026" color="cyan" Icon={Ship} />
       </div>
 
       {/* Hero Quota & Blockchain Status */}

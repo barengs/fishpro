@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AlertTriangle, Coins, Link2, Ship } from 'lucide-react'
 import { KpiCard } from '../../components/KpiCard'
 import { QuotaAuditTable, type ShipQuotaItem } from './components/QuotaAuditTable'
 import { ManualQuotaModal } from './components/ManualQuotaModal'
@@ -74,10 +75,10 @@ export function RegulatorDashboard() {
 
         {/* Global KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-          <KpiCard label="Total Kapal Diawasi" value="1.284" note="Aktif izin berlayar (SIPI/SIKPI)" />
-          <KpiCard label="Kapal Over-Quota" value="8" delta="Perlu tindakan regulator" trendUp={false} />
-          <KpiCard label="Kepatuhan Blockchain" value="100%" note="Seluruh tx tersinkronisasi hash" />
-          <KpiCard label="Potensi PNBP Berjalan" value="Rp 4,4 M" delta="+6,8% dari estimasi bulan lalu" />
+          <KpiCard label="Total Kapal Diawasi" value="1.284" note="Aktif izin berlayar (SIPI/SIKPI)" color="blue" Icon={Ship} />
+          <KpiCard label="Kapal Over-Quota" value="8" delta="Perlu tindakan regulator" trendUp={false} color="rose" Icon={AlertTriangle} />
+          <KpiCard label="Kepatuhan Blockchain" value="100%" note="Seluruh tx tersinkronisasi hash" color="emerald" Icon={Link2} />
+          <KpiCard label="Potensi PNBP Berjalan" value="Rp 4,4 M" delta="+6,8% dari estimasi bulan lalu" color="purple" Icon={Coins} />
         </div>
 
         {/* Audit Table */}
