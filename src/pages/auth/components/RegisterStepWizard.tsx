@@ -406,7 +406,7 @@ export function RegisterStepWizard() {
 
         <div className="flex gap-3 mt-6">
           {currentStep > 1 && (
-            <button type="button" onClick={handlePrev} className="h-12 sm:h-13 px-5 sm:px-6 rounded-xl text-sm sm:text-fco-md border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
+            <button type="button" onClick={handlePrev} className="flex-1 h-12 sm:h-13 rounded-xl text-sm sm:text-fco-md border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
               Kembali
             </button>
           )}

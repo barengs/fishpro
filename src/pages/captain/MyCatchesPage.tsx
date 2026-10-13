@@ -4,7 +4,8 @@ import { DataTable, type Column } from '../../components/DataTable'
 import { CrudModal } from '../../components/CrudModal'
 import { useCrudModal } from '../../components/useCrudModal'
 import { StatusChip } from '../../components/StatusChip'
-import { FormField, inputCls } from '../../components/FormField'
+import { CatchReportWizard } from '../../components/CatchReportWizard'
+import type { CatchReportFormData } from '../../components/catchReportTypes'
 
 // Captain view: FishCatch milik kapalnya (ship FK, catch_date, catch_type, lat, lng, description)
 // + CatchDetail (fish_species FK, wpp FK, quantity, unit, value, notes).
@@ -15,7 +16,6 @@ export function MyCatchesPage() {
     { id: 1, date: '2026-10-08', type: 'pelagic', species: 'Tongkol', qty: '120 kg', wpp: 'WPP 573' },
     { id: 2, date: '2026-10-06', type: 'pelagic', species: 'Cakalang', qty: '95 kg', wpp: 'WPP 573' }
   ])
-  const [f, setF] = useState({ catch_date: '2026-10-09', catch_type: 'pelagic', location_latitude: '-8.740000', location_longitude: '115.200000', description: '', fish_species: '', wpp: 'WPP 573', quantity: '', unit: 'kg', value: '', notes: '' })
   const { open, openModal, closeModal } = useCrudModal()
 
   const cols: Column<Row>[] = [
@@ -26,10 +26,8 @@ export function MyCatchesPage() {
     { key: 'st', header: 'Status', flex: 1, align: 'center', render: () => <StatusChip label="Tercatat" /> }
   ]
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!f.fish_species || !f.quantity) return
-    setRows((p) => [{ id: Date.now(), date: f.catch_date, type: f.catch_type, species: f.fish_species, qty: `${f.quantity} ${f.unit}`, wpp: f.wpp }, ...p])
+  const handleSubmit = (data: CatchReportFormData) => {
+    setRows((p) => [{ id: Date.now(), date: data.catch_date, type: data.catch_type, species: data.fish_species, qty: `${data.quantity} ${data.unit}`, wpp: data.wpp }, ...p])
     closeModal()
   }
 
@@ -39,24 +37,8 @@ export function MyCatchesPage() {
       <section className="surface-card border rounded-2xl p-6 shadow-xs">
         <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
       </section>
-      <CrudModal open={open} title="Lapor tangkapan" subtitle="FishCatch + CatchDetail — PNBP dihitung otomatis." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Kirim laporan" wide>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tanggal" htmlFor="mc-date"><input id="mc-date" type="date" required value={f.catch_date} onChange={(e) => setF({ ...f, catch_date: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Jenis" htmlFor="mc-type"><select id="mc-type" value={f.catch_type} onChange={(e) => setF({ ...f, catch_type: e.target.value })} className={inputCls}><option value="pelagic">Pelagis</option><option value="demersal">Demersal</option><option value="reef">Terumbu</option></select></FormField>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Latitude" htmlFor="mc-lat"><input id="mc-lat" value={f.location_latitude} onChange={(e) => setF({ ...f, location_latitude: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Longitude" htmlFor="mc-lng"><input id="mc-lng" value={f.location_longitude} onChange={(e) => setF({ ...f, location_longitude: e.target.value })} className={inputCls} /></FormField>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Spesies" htmlFor="mc-sp"><input id="mc-sp" required value={f.fish_species} onChange={(e) => setF({ ...f, fish_species: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="WPP" htmlFor="mc-wpp"><input id="mc-wpp" value={f.wpp} onChange={(e) => setF({ ...f, wpp: e.target.value })} className={inputCls} /></FormField>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <FormField label="Jumlah" htmlFor="mc-q"><input id="mc-q" type="number" step="0.01" required value={f.quantity} onChange={(e) => setF({ ...f, quantity: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Satuan" htmlFor="mc-u"><select id="mc-u" value={f.unit} onChange={(e) => setF({ ...f, unit: e.target.value })} className={inputCls}><option value="kg">kg</option><option value="ton">ton</option></select></FormField>
-          <FormField label="Nilai" htmlFor="mc-v"><input id="mc-v" type="number" step="0.01" value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} className={inputCls} /></FormField>
-        </div>
+      <CrudModal open={open} title="Lapor tangkapan" subtitle="3 langkah: waktu & lokasi, hasil, cek." onClose={closeModal} hideFooter>
+        <CatchReportWizard onSubmit={handleSubmit} onCancel={closeModal} />
       </CrudModal>
     </div>
   )

@@ -48,7 +48,7 @@ export function CrudModal({ open, title, subtitle, onClose, onSubmit, submitLabe
           <form onSubmit={onSubmit} className="px-6 sm:px-8 py-6 flex flex-col gap-4">
             {children}
             <div className="flex gap-3 mt-2">
-              <button type="button" onClick={onClose} className="h-12 px-6 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors">
+              <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors">
                 Batal
               </button>
               <button type="submit" className="flex-1 h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors">

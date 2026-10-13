@@ -173,7 +173,7 @@ export function ShipFormWizard({ onSubmit }: ShipFormWizardProps) {
 
       <div className="flex gap-2.5 mt-5">
         {currentStep > 1 && (
-          <button type="button" onClick={handlePrev} className="h-11 px-4 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
+          <button type="button" onClick={handlePrev} className="flex-1 h-11 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
             Kembali
           </button>
         )}
