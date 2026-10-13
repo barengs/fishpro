@@ -75,7 +75,7 @@ export function CatchReportWizard({ onSubmit, onCancel }: CatchReportWizardProps
             const isPassed = currentStep > s.num
             const isCurrent = currentStep === s.num
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 relative surface-card px-2">
+              <div key={s.num} className="flex flex-col items-center gap-1.5 relative px-1">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
                     isCurrent

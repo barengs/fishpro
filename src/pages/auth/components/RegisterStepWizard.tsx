@@ -17,7 +17,7 @@ const roleLabel: Record<Role, string> = {
   regulator: 'Pengawas'
 }
 
-const inputCls = 'w-full h-13 border border-fco-border rounded-fco px-3 text-sm field-input focus:outline-none focus:border-fco-blue'
+const inputCls = 'w-full h-11 border-[1.5px] border-fco-border rounded-xl px-3.5 text-sm field-input focus:outline-none focus:border-fco-blue'
 const labelCls = 'block text-sm font-semibold text-strong mb-1.5'
 
 export function RegisterStepWizard() {
@@ -137,10 +137,10 @@ export function RegisterStepWizard() {
               transition={{ delay: i * 0.08, duration: 0.3 }}
               whileHover={{ y: -4, scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className={`flex sm:flex-col items-center justify-center sm:text-center gap-4 sm:gap-0 p-5 sm:py-8 sm:px-4 rounded-2xl text-white text-center w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
+              className={`flex sm:flex-col items-center justify-center sm:text-center gap-4 sm:gap-0 p-5 sm:py-6 sm:px-4 rounded-2xl text-white text-center w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
             >
               <motion.span
-                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-4`}
+                className={`w-14 h-14 sm:w-12 sm:h-12 rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-3`}
                 whileHover={{ rotate: -6, scale: 1.08 }}
               >
                 <Icon size={26} aria-hidden="true" />
@@ -179,7 +179,7 @@ export function RegisterStepWizard() {
         </button>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-5">
         <div className="flex items-center justify-between relative mb-2">
           <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-fco-border z-0" />
           <div
@@ -190,11 +190,11 @@ export function RegisterStepWizard() {
             const isPassed = currentStep > s.num
             const isCurrent = currentStep === s.num
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 surface-card px-2">
+              <div key={s.num} className="flex flex-col items-center gap-1.5 z-10 px-1">
                 <div
-                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
                     isCurrent
-                      ? 'bg-fco-blue text-white ring-4 ring-fco-blue/15'
+                      ? 'bg-fco-blue text-white ring-2 ring-fco-blue/15'
                       : isPassed
                       ? 'bg-fco-blue text-white'
                       : 'surface-card border-2 border-fco-border text-soft'
@@ -221,7 +221,7 @@ export function RegisterStepWizard() {
         {/* STEP 1: DATA DIRI (sesuai peran) */}
         {currentStep === 1 && (
           <div>
-            <h3 className="m-0 mb-1 text-lg sm:text-xl font-extrabold text-strong">Siapa Anda?</h3>
+            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Siapa Anda?</h3>
             <p className="m-0 mb-5 text-sm text-soft">Identitas sesuai dokumen resmi.</p>
             <div className="flex flex-col gap-4">
               {role === 'owner' && (
@@ -268,7 +268,7 @@ export function RegisterStepWizard() {
         {/* STEP 2: AKUN (sama semua peran) */}
         {currentStep === 2 && (
           <div>
-            <h3 className="m-0 mb-1 text-lg sm:text-xl font-extrabold text-strong">Buat akun masuk</h3>
+            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Buat akun masuk</h3>
             <p className="m-0 mb-5 text-sm text-soft">Dipakai setiap kali masuk.</p>
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -302,7 +302,7 @@ export function RegisterStepWizard() {
         {/* STEP 3: DETAIL PERAN */}
         {currentStep === 3 && (
           <div>
-            <h3 className="m-0 mb-1 text-lg sm:text-xl font-extrabold text-strong">
+            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
               {role === 'owner' ? 'Data kapal' : role === 'captain' ? 'Data pelaut' : 'Data pengawas'}
             </h3>
             <p className="m-0 mb-5 text-sm text-soft">
@@ -373,7 +373,7 @@ export function RegisterStepWizard() {
         {/* STEP 4: CEK */}
         {currentStep === 4 && (
           <div>
-            <h3 className="m-0 mb-1 text-lg sm:text-xl font-extrabold text-strong">Cek sekali lagi</h3>
+            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Cek sekali lagi</h3>
             <p className="m-0 mb-5 text-sm text-soft">Pastikan tidak ada salah ketik.</p>
             <dl className="m-0 mb-5 p-4 sm:p-5 rounded-2xl surface-inset border text-sm flex flex-col gap-2.5">
               <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
@@ -404,9 +404,9 @@ export function RegisterStepWizard() {
           </div>
         )}
 
-        <div className="flex gap-3 mt-6">
+        <div className="flex gap-2.5 mt-5">
           {currentStep > 1 && (
-            <button type="button" onClick={handlePrev} className="flex-1 h-12 sm:h-13 rounded-xl text-sm sm:text-fco-md border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
+            <button type="button" onClick={handlePrev} className="flex-1 h-11 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
               Kembali
             </button>
           )}
@@ -415,7 +415,7 @@ export function RegisterStepWizard() {
               type="button"
               onClick={handleNext}
               whileTap={{ scale: 0.97 }}
-              className="flex-1 h-12 sm:h-13 rounded-xl text-sm sm:text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
+              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
             >
               Lanjut
             </motion.button>
@@ -424,7 +424,7 @@ export function RegisterStepWizard() {
               type="button"
               onClick={handleSubmit}
               whileTap={{ scale: 0.97 }}
-              className="flex-1 h-12 sm:h-13 rounded-xl text-sm sm:text-fco-md border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
+              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
             >
               Buat akun
             </motion.button>

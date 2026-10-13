@@ -4,10 +4,11 @@ import { Logo } from '../../../components/Logo'
 interface CenteredAuthProps {
   children: React.ReactNode
   wide?: boolean
+  register?: boolean
   hideBrand?: boolean
 }
 
-export function CenteredAuth({ children, wide = false, hideBrand = false }: CenteredAuthProps) {
+export function CenteredAuth({ children, wide = false, register = false, hideBrand = false }: CenteredAuthProps) {
   return (
     <div className="min-h-screen flex flex-col surface-page text-strong">
       <header className="surface-topbar border-b sticky top-0 z-40">
@@ -31,7 +32,7 @@ export function CenteredAuth({ children, wide = false, hideBrand = false }: Cent
         </div>
       </header>
 
-      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-16 ${wide ? 'max-w-220' : 'max-w-135'}`}>
+      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-16 ${register ? 'max-w-160' : wide ? 'max-w-220' : 'max-w-135'}`}>
         {children}
       </main>
 
