@@ -25,7 +25,7 @@ export function ProgressBar({
         />
       </div>
       {showText && (
-        <span className="w-9 text-[13px] font-semibold tabular-nums text-fco-dark">
+        <span className="w-9 text-fco-sm font-semibold tabular-nums text-strong">
           {width}
         </span>
       )}

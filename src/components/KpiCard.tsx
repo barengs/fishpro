@@ -1,37 +1,92 @@
+import type { LucideIcon } from 'lucide-react'
+import { TrendingDown, TrendingUp } from 'lucide-react'
+
+export type KpiColor = 'blue' | 'emerald' | 'amber' | 'purple' | 'cyan' | 'rose'
+
 interface KpiCardProps {
   label: string
   value: string
   delta?: string
   note?: string
   trendUp?: boolean
+  color?: KpiColor
+  Icon?: LucideIcon
 }
 
-export function KpiCard({ label, value, delta, note, trendUp = true }: KpiCardProps) {
+const colorMap: Record<KpiColor, {
+  card: string
+  iconBg: string
+}> = {
+  blue: {
+    card: 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20',
+    iconBg: 'bg-white/20 text-white'
+  },
+  emerald: {
+    card: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20',
+    iconBg: 'bg-white/20 text-white'
+  },
+  amber: {
+    card: 'bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20',
+    iconBg: 'bg-white/20 text-white'
+  },
+  purple: {
+    card: 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20',
+    iconBg: 'bg-white/20 text-white'
+  },
+  cyan: {
+    card: 'bg-gradient-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20',
+    iconBg: 'bg-white/20 text-white'
+  },
+  rose: {
+    card: 'bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20',
+    iconBg: 'bg-white/20 text-white'
+  }
+}
+
+export function KpiCard({
+  label,
+  value,
+  delta,
+  note,
+  trendUp = true,
+  color = 'blue',
+  Icon
+}: KpiCardProps) {
+  const styles = colorMap[color]
+
   return (
-    <div className="bg-white border border-fco-border rounded-2xl p-5 flex flex-col justify-between shadow-xs">
-      <div className="text-[13px] font-semibold text-fco-muted">{label}</div>
-      <div className="text-[28px] font-extrabold tracking-tight my-2 tabular-nums text-fco-dark">
+    <div
+      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none ${styles.card}`}
+    >
+      {/* Decorative background glow circles */}
+      <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none transition-transform group-hover:scale-125 duration-300" />
+      <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-white/5 pointer-events-none" />
+
+      <div className="flex items-center justify-between gap-3 mb-2 relative z-10">
+        <div className="text-sm font-semibold text-white/85">{label}</div>
+        {Icon && (
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-200 ${styles.iconBg}`}>
+            <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
+          </div>
+        )}
+      </div>
+
+      <div className="text-2xl sm:text-3xl font-extrabold tracking-tight my-1 tabular-nums text-white relative z-10">
         {value}
       </div>
+
       {delta && (
-        <div className="flex items-center gap-1.5 text-xs text-fco-muted">
-          {trendUp && (
-            <svg
-              className="w-3.5 h-3.5 stroke-fco-blue shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
+        <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1 relative z-10 font-medium">
+          {trendUp ? (
+            <TrendingUp size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
+          ) : (
+            <TrendingDown size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
           )}
           <span>{delta}</span>
         </div>
       )}
-      {note && <div className="text-xs text-fco-muted">{note}</div>}
+
+      {note && <div className="text-xs text-white/80 mt-1 relative z-10">{note}</div>}
     </div>
   )
 }
