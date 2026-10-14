@@ -1,0 +1,30 @@
+name: Deploy Fishpro Frontend
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy ke VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          timeout: 60s
+          command_timeout: 30m
+          script: |
+            mkdir -p /var/www/fishpro
+            cd /var/www/fishpro
+            if [ ! -d "frontend/.git" ]; then
+              rm -rf frontend
+              git clone https://github.com/barengs/fishpro.git frontend
+            fi
+            cd /var/www/fishpro/frontend
+            git pull origin main
+            cd /var/www/fishpro
+            docker compose up -d --no-deps --build frontend
