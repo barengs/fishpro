@@ -1,14 +1,24 @@
+import { Search } from 'lucide-react'
+
 interface PageHeaderProps {
   title: string
   desc: string
   actions?: React.ReactNode
   showSearch?: boolean
   searchPlaceholder?: string
+  searchValue?: string
+  onSearchChange?: (val: string) => void
 }
 
-import { Search } from 'lucide-react'
-
-export function PageHeader({ title, desc, actions, showSearch, searchPlaceholder }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  desc,
+  actions,
+  showSearch,
+  searchPlaceholder,
+  searchValue,
+  onSearchChange,
+}: PageHeaderProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
       <div>
@@ -18,8 +28,19 @@ export function PageHeader({ title, desc, actions, showSearch, searchPlaceholder
       <div className="flex items-center gap-3">
         {showSearch && (
           <div className="relative">
-            <Search size={18} className="text-soft absolute left-3 top-2.5 pointer-events-none" strokeWidth={1.8} aria-hidden="true" />
-            <input type="search" placeholder={searchPlaceholder ?? 'Cari...'} className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors" />
+            <Search
+              size={18}
+              className="text-soft absolute left-3 top-2.5 pointer-events-none"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={searchValue ?? ''}
+              onChange={(e) => onSearchChange?.(e.target.value)}
+              placeholder={searchPlaceholder ?? 'Cari...'}
+              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors"
+            />
           </div>
         )}
         {actions}

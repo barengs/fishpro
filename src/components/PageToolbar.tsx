@@ -10,6 +10,8 @@ interface PageToolbarProps {
   title: string
   desc: string
   searchPlaceholder?: string
+  searchValue?: string
+  onSearchChange?: (val: string) => void
   tabs?: SubTab[]
   activeTab?: string
   onTabChange?: (key: string) => void
@@ -17,7 +19,18 @@ interface PageToolbarProps {
   onAdd: () => void
 }
 
-export function PageToolbar({ title, desc, searchPlaceholder, tabs, activeTab, onTabChange, addLabel, onAdd }: PageToolbarProps) {
+export function PageToolbar({
+  title,
+  desc,
+  searchPlaceholder,
+  searchValue,
+  onSearchChange,
+  tabs,
+  activeTab,
+  onTabChange,
+  addLabel,
+  onAdd,
+}: PageToolbarProps) {
   return (
     <div>
       <PageHeader
@@ -25,6 +38,8 @@ export function PageToolbar({ title, desc, searchPlaceholder, tabs, activeTab, o
         desc={desc}
         showSearch
         searchPlaceholder={searchPlaceholder}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
         actions={
           <button
             type="button"
@@ -45,7 +60,11 @@ export function PageToolbar({ title, desc, searchPlaceholder, tabs, activeTab, o
               role="tab"
               aria-selected={activeTab === t.key}
               onClick={() => onTabChange?.(t.key)}
-              className={`h-9.5 px-5 rounded-lg text-sm font-semibold border-none cursor-pointer transition-all ${activeTab === t.key ? 'bg-fco-blue text-white shadow-xs' : 'bg-transparent text-soft hover:text-strong'}`}
+              className={`h-9.5 px-5 rounded-lg text-sm font-semibold border-none cursor-pointer transition-all ${
+                activeTab === t.key
+                  ? 'bg-fco-blue text-white shadow-xs'
+                  : 'bg-transparent text-soft hover:text-strong'
+              }`}
             >
               {t.label}
             </button>
