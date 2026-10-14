@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Anchor, ShieldCheck, Ship } from 'lucide-react'
+import { Anchor, Building2, ShieldCheck, Ship, User } from 'lucide-react'
 
 type Role = 'owner' | 'captain' | 'regulator'
 
@@ -240,26 +240,41 @@ export function RegisterStepWizard() {
             <div className="flex flex-col gap-4">
               {role === 'owner' && (
                 <div>
-                  <span className={labelCls}>Daftar sebagai</span>
-                  <div className="grid grid-cols-2 gap-3">
+                  <span className={labelCls}>
+                    Tipe pemilik
+                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                  </span>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {[
-                      { key: 'individual', label: 'Pribadi' },
-                      { key: 'company', label: 'Perusahaan' }
-                    ].map((t) => (
-                      <button
-                        key={t.key}
-                        type="button"
-                        onClick={() => setOwnerType(t.key as typeof ownerType)}
-                        aria-pressed={ownerType === t.key}
-                        className={`h-12 rounded-xl text-sm sm:text-fco-md font-semibold cursor-pointer border transition-colors ${
-                          ownerType === t.key
-                            ? 'border-fco-blue bg-fco-blue-light dark:bg-fco-blue/15 text-fco-blue'
-                            : 'border-fco-border surface-card text-strong'
-                        }`}
-                      >
-                        {t.label}
-                      </button>
-                    ))}
+                      { key: 'individual', label: 'Pribadi', Icon: User },
+                      { key: 'company', label: 'Perusahaan', Icon: Building2 }
+                    ].map((t) => {
+                      const isSelected = ownerType === t.key
+                      return (
+                        <button
+                          key={t.key}
+                          type="button"
+                          onClick={() => setOwnerType(t.key as typeof ownerType)}
+                          aria-pressed={isSelected}
+                          className={`flex flex-col items-center justify-center gap-2.5 p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all aspect-square max-h-36 sm:max-h-40 w-full text-center group ${
+                            isSelected
+                              ? 'border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue shadow-xs'
+                              : 'border-fco-border surface-card text-strong hover:border-fco-blue/40'
+                          }`}
+                        >
+                          <span
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                              isSelected
+                                ? 'bg-fco-blue text-white shadow-xs'
+                                : 'surface-inset text-soft group-hover:text-fco-blue'
+                            }`}
+                          >
+                            <t.Icon size={24} strokeWidth={2} aria-hidden="true" />
+                          </span>
+                          <span className="font-extrabold text-sm sm:text-base tracking-tight">{t.label}</span>
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )}
