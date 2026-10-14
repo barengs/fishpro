@@ -6,6 +6,7 @@ import { BarChart3, ClipboardList, Fish, LayoutDashboard, Link2, MapPin, ShieldC
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 import { FullscreenToggle } from '../../../components/FullscreenToggle'
+import { authService } from '../../../services/auth'
 
 const navItems = [
   { label: 'Ringkasan', to: '/admin', end: true, Icon: LayoutDashboard },
@@ -56,6 +57,12 @@ export function AdminSidebar() {
 export function AdminLayout() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await authService.logout()
+    navigate('/login')
+  }
+
   return (
     <div className="min-h-screen flex surface-page text-strong">
       <AdminSidebar />
@@ -63,11 +70,11 @@ export function AdminLayout() {
         <header className="hidden lg:flex items-center justify-end gap-3 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
           <FullscreenToggle />
           <ThemeToggle />
-          <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" onLogout={() => navigate('/login')} />
+          <UserProfileBadge initials="AD" name="Administrator" role="Admin KKP" onLogout={handleLogout} />
         </header>
         <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)}
         profile={{ initials: 'AD', name: 'Administrator', role: 'Admin KKP' }}
-        onLogout={() => navigate('/login')}>
+        onLogout={handleLogout}>
           <SidebarBody onNavigate={() => setOpen(false)} />
         </MobileTopbar>
         <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-10 pt-20 lg:pt-7">

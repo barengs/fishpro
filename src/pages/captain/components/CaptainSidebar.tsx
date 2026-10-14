@@ -7,6 +7,7 @@ import { ClipboardList, LayoutDashboard, Ship } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 import { FullscreenToggle } from '../../../components/FullscreenToggle'
+import { authService } from '../../../services/auth'
 
 const navItems = [
   { label: 'Ringkasan', to: '/captain', end: true, Icon: LayoutDashboard },
@@ -54,6 +55,12 @@ export function CaptainSidebar() {
 export function CaptainLayout() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await authService.logout()
+    navigate('/login')
+  }
+
   return (
     <div className="min-h-screen flex surface-page text-strong">
       <CaptainSidebar />
@@ -66,7 +73,7 @@ export function CaptainLayout() {
             initials="BH"
             name="Budi Hartono"
             role="Nahkoda KM Samudra Jaya"
-            onLogout={() => navigate('/login')}
+            onLogout={handleLogout}
           />
         </header>
         <MobileTopbar
@@ -74,7 +81,7 @@ export function CaptainLayout() {
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
           profile={{ initials: 'BH', name: 'Budi Hartono', role: 'Nahkoda KM Samudra Jaya' }}
-          onLogout={() => navigate('/login')}
+          onLogout={handleLogout}
         >
           <div onClick={() => setOpen(false)}>
             <SidebarBody />

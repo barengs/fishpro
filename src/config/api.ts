@@ -12,7 +12,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${API_BASE_URL}/api/auth/login/`,
     REFRESH: `${API_BASE_URL}/api/auth/refresh/`,
-    REGISTER: `${API_BASE_URL}/api/auth/`,
+    REGISTER: `${API_BASE_URL}/api/auth/register/`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout/`,
   },
 

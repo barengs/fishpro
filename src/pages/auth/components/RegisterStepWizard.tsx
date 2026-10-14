@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Anchor, Building2, ShieldCheck, Ship, User } from 'lucide-react'
+import { Anchor, Building2, Loader2, ShieldCheck, Ship, User } from 'lucide-react'
+import { authService, type RegisterPayload } from '../../../services/auth'
 
 type Role = 'owner' | 'captain' | 'regulator'
 
@@ -46,6 +47,7 @@ export function RegisterStepWizard() {
 
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const steps = [
     { num: 1, title: 'Data diri' },
@@ -112,14 +114,47 @@ export function RegisterStepWizard() {
     setCurrentStep((prev) => Math.max(1, prev - 1))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!agreeTerms) {
       setErrorMsg('Centang persetujuan dulu untuk lanjut.')
       return
     }
-    if (role === 'captain') navigate('/captain')
-    else if (role === 'owner') navigate('/owner')
-    else navigate('/regulator')
+
+    if (role === 'regulator') {
+      setErrorMsg('Pendaftaran mandiri diperuntukkan bagi Pemilik Kapal dan Nahkoda. Akun Pengawas/Regulator diterbitkan langsung oleh Administrator KKP.')
+      return
+    }
+
+    setIsLoading(true)
+    setErrorMsg(null)
+
+    try {
+      const payload: RegisterPayload = {
+        username: username.trim(),
+        email: email.trim(),
+        password,
+        password_confirm: passwordConfirm,
+        role: role === 'captain' ? 'captain' : 'owner',
+        full_name: fullName.trim(),
+        phone: phone.trim(),
+        contact_info: phone.trim(),
+        owner_type: role === 'owner' ? ownerType : 'individual',
+        ship_code: (shipReg && shipReg.trim()) || undefined,
+        address: (homePort && homePort.trim()) || undefined,
+      }
+
+      const res = await authService.register(payload)
+      if (res.role === 'captain') {
+        navigate('/captain')
+      } else {
+        navigate('/owner')
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Pendaftaran gagal. Periksa kembali isian formulir.'
+      setErrorMsg(message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // ── Gate: 3 tombol besar, form muncul dengan animasi ──
@@ -498,10 +533,12 @@ export function RegisterStepWizard() {
             <motion.button
               type="button"
               onClick={handleSubmit}
+              disabled={isLoading}
               whileTap={{ scale: 0.97 }}
-              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
+              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Buat akun
+              {isLoading && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+              <span>{isLoading ? 'Mendaftarkan...' : 'Buat akun'}</span>
             </motion.button>
           )}
         </div>

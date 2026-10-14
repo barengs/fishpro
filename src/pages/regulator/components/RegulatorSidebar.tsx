@@ -6,6 +6,7 @@ import { FileCheck, LayoutDashboard, Link2 } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 import { FullscreenToggle } from '../../../components/FullscreenToggle'
+import { authService } from '../../../services/auth'
 
 const navItems = [
   { label: 'Ringkasan', to: '/regulator', end: true, Icon: LayoutDashboard },
@@ -43,6 +44,12 @@ export function RegulatorSidebar() {
 export function RegulatorLayout() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await authService.logout()
+    navigate('/login')
+  }
+
   return (
     <div className="min-h-screen flex surface-page text-strong">
       <RegulatorSidebar />
@@ -50,11 +57,11 @@ export function RegulatorLayout() {
         <header className="hidden lg:flex items-center justify-end gap-3 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
           <FullscreenToggle />
           <ThemeToggle />
-          <UserProfileBadge initials="RG" name="Pengawas Perikanan" role="Regulator KKP" avatarBg="#0284C7" onLogout={() => navigate('/login')} />
+          <UserProfileBadge initials="RG" name="Pengawas Perikanan" role="Regulator KKP" avatarBg="#0284C7" onLogout={handleLogout} />
         </header>
         <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)}
         profile={{ initials: 'RG', name: 'Pengawas Perikanan', role: 'Regulator KKP', avatarBg: '#0284C7' }}
-        onLogout={() => navigate('/login')}>
+        onLogout={handleLogout}>
           <SidebarBody onNavigate={() => setOpen(false)} />
         </MobileTopbar>
         <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-10 pt-20 lg:pt-7"><Outlet /></main>

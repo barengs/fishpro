@@ -7,6 +7,7 @@ import { House, Ship, Users } from 'lucide-react'
 import { MobileTopbar } from '../../../components/MobileTopbar'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 import { FullscreenToggle } from '../../../components/FullscreenToggle'
+import { authService } from '../../../services/auth'
 
 const navItems = [
   { label: 'Beranda', to: '/owner', end: true, Icon: House },
@@ -44,6 +45,12 @@ export function OwnerSidebar() {
 export function OwnerLayout() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await authService.logout()
+    navigate('/login')
+  }
+
   return (
     <div className="min-h-screen flex surface-page text-strong">
       <OwnerSidebar />
@@ -53,11 +60,11 @@ export function OwnerLayout() {
           <NotificationBell count={1} />
           <FullscreenToggle />
           <ThemeToggle />
-          <UserProfileBadge initials="PT" name="PT Laut Nusantara" role="Pemilik kapal" onLogout={() => navigate('/login')} />
+          <UserProfileBadge initials="PT" name="PT Laut Nusantara" role="Pemilik kapal" onLogout={handleLogout} />
         </header>
         <MobileTopbar open={open} onToggle={() => setOpen(!open)} onClose={() => setOpen(false)}
         profile={{ initials: 'PT', name: 'PT Laut Nusantara', role: 'Pemilik kapal' }}
-        onLogout={() => navigate('/login')}>
+        onLogout={handleLogout}>
           <div onClick={() => setOpen(false)}>
             <SidebarBody />
           </div>

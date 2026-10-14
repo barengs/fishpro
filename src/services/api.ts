@@ -4,6 +4,32 @@ interface RequestOptions extends RequestInit {
   token?: string | null
 }
 
+function parseErrorMessage(data: unknown): string {
+  if (!data) return ''
+  if (typeof data === 'string') return data
+  if (typeof data === 'object') {
+    const obj = data as Record<string, unknown>
+    if (obj.detail && typeof obj.detail === 'string') return obj.detail
+    if (obj.message && typeof obj.message === 'string') return obj.message
+    if (obj.error) return parseErrorMessage(obj.error)
+    
+    // Parse serializer field errors object: { field: ["error message"] }
+    const parts: string[] = []
+    for (const [key, val] of Object.entries(obj)) {
+      const prefix = key === 'non_field_errors' ? '' : `${key}: `
+      if (Array.isArray(val)) {
+        parts.push(`${prefix}${val.join(', ')}`)
+      } else if (typeof val === 'string') {
+        parts.push(`${prefix}${val}`)
+      } else if (val && typeof val === 'object') {
+        parts.push(`${prefix}${parseErrorMessage(val)}`)
+      }
+    }
+    if (parts.length > 0) return parts.join(' | ')
+  }
+  return ''
+}
+
 /**
  * Universal API Client with automatic JSON parsing and Token Authorization
  */
@@ -40,12 +66,8 @@ export async function apiClient<T = unknown>(
   const data = await response.json().catch(() => null)
 
   if (!response.ok) {
-    const errorMsg =
-      data?.detail ||
-      data?.message ||
-      data?.error ||
-      (typeof data === 'string' ? data : null) ||
-      `HTTP Error ${response.status}: ${response.statusText}`
+    const parsed = parseErrorMessage(data)
+    const errorMsg = parsed || `HTTP Error ${response.status}: ${response.statusText}`
     throw new Error(errorMsg)
   }
 
