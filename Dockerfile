@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
 COPY . .
+ARG VITE_API_BASE_URL=https://api.fishpro.id
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
 # STAGE 2: Serve dengan Nginx
