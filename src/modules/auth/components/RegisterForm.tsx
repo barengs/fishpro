@@ -24,7 +24,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
     <div className="max-w-[480px] w-full mx-auto">
       <div className="mb-6">
         <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-          Daftar akun FCO
+          Daftar akun FishPro
         </h2>
         <p className="text-sm text-fco-muted m-0">
           Pilih peran Anda untuk memulai pendaftaran sistem.

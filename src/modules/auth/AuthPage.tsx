@@ -58,7 +58,7 @@ export function AuthPage({ mode }: AuthPageProps) {
 
         {/* Bottom: Subtitle footer */}
         <div className="relative z-10 text-[13px] text-[#9FB6E6]">
-          Sistem Manajemen Tangkapan Ikan FCO
+          Sistem Manajemen Tangkapan Ikan FishPro
         </div>
       </div>
 

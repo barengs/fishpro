@@ -128,7 +128,7 @@ export function RegisterStepWizard() {
         {currentStep === 1 && (
           <div className="animate-in fade-in duration-200">
             <h3 className="text-xl font-extrabold text-fco-dark mb-1">Pilih Peran & Identitas</h3>
-            <p className="text-sm text-fco-muted mb-5">Tentukan jenis akun Anda di ekosistem perikanan FCO.</p>
+            <p className="text-sm text-fco-muted mb-5">Tentukan jenis akun Anda di ekosistem perikanan FishPro.</p>
 
             <div className="flex gap-2 p-1 bg-fco-blue-light rounded-xl mb-5">
               {[

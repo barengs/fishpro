@@ -32,7 +32,7 @@ export function Logo({ size = 36, variant = 'light' }: LogoProps) {
           isDark ? 'text-white' : 'text-fco-dark'
         }`}
       >
-        FCO
+        FishPro
       </span>
     </div>
   )

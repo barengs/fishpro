@@ -154,7 +154,7 @@ export function ResetPasswordWizard() {
                 Buat Sandi Baru
               </h2>
               <p className="text-sm text-fco-muted m-0">
-                Pilih kata sandi yang kuat dan aman untuk akun FCO Anda.
+                Pilih kata sandi yang kuat dan aman untuk akun FishPro Anda.
               </p>
             </div>
 
@@ -207,7 +207,7 @@ export function ResetPasswordWizard() {
               Sandi Berhasil Diperbarui
             </h2>
             <p className="text-sm text-fco-muted mb-6">
-              Kata sandi akun FCO Anda telah diperbarui. Silakan masuk kembali dengan kata sandi baru.
+              Kata sandi akun FishPro Anda telah diperbarui. Silakan masuk kembali dengan kata sandi baru.
             </p>
             <button
               type="button"

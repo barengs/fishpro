@@ -24,7 +24,7 @@ export function LoginForm() {
     <div className="max-w-[420px] w-full mx-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-extrabold text-fco-dark mb-1.5 tracking-tight">
-          Masuk ke FCO
+          Masuk ke FishPro
         </h2>
         <p className="text-sm text-fco-muted m-0">
           Gunakan nama pengguna atau nomor registrasi kapal Anda.

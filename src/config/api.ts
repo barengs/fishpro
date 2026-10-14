@@ -1,5 +1,5 @@
 /**
- * FCO Backend API Configuration & Endpoints
+ * FishPro Backend API Configuration & Endpoints
  * Base URL defaults to https://api.fishpro.id
  * Can be overridden with VITE_API_BASE_URL environment variable.
  */
