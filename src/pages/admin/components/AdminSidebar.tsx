@@ -17,7 +17,7 @@ import {
 import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
-import { authService } from "../../../services/auth";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
 
 const navItems = [
   { label: "Ringkasan", to: "/admin", end: true, Icon: LayoutDashboard },
@@ -79,6 +79,7 @@ export function AdminSidebar() {
 export function AdminLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -93,9 +94,9 @@ export function AdminLayout() {
           <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge
-            initials="AD"
-            name="Administrator"
-            role="Admin KKP"
+            initials={userInfo.initials}
+            name={userInfo.name}
+            role={userInfo.roleLabel}
             onLogout={handleLogout}
           />
         </header>
@@ -103,7 +104,11 @@ export function AdminLayout() {
           open={open}
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
-          profile={{ initials: "AD", name: "Administrator", role: "Admin KKP" }}
+          profile={{
+            initials: userInfo.initials,
+            name: userInfo.name,
+            role: userInfo.roleLabel,
+          }}
           onLogout={handleLogout}
         >
           <SidebarBody onNavigate={() => setOpen(false)} />

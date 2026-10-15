@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, Coins, Link2, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import {
@@ -9,8 +9,10 @@ import { ManualQuotaModal } from "./components/ManualQuotaModal";
 import { ComplianceOverview } from "./components/ComplianceOverview";
 import { BlockchainCard } from "../admin/components/BlockchainCard";
 import { shipsService } from "../../services/ships";
+import { blockchainService } from "../../services/blockchain";
+import { pnbpService } from "../../services/pnbp";
 
-const initialShips: ShipQuotaItem[] = [
+const fallbackShips: ShipQuotaItem[] = [
   {
     name: "KM Bahari Satu",
     reg: "REG-0087",
@@ -62,10 +64,90 @@ const initialShips: ShipQuotaItem[] = [
 ];
 
 export function RegulatorDashboard() {
-  const [ships, setShips] = useState<ShipQuotaItem[]>(initialShips);
+  const [ships, setShips] = useState<ShipQuotaItem[]>(fallbackShips);
   const [selectedShip, setSelectedShip] = useState<ShipQuotaItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Dynamic KPI states
+  const [totalMonitored, setTotalMonitored] = useState<number>(1284);
+  const [criticalCount, setCriticalCount] = useState<number>(2);
+  const [blockchainValid, setBlockchainValid] = useState<boolean>(true);
+  const [pnbpStr, setPnbpStr] = useState<string>("Rp 4,4 M");
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadRegulatorData() {
+      try {
+        const [shipsData, chainStatus, chartRes] = await Promise.all([
+          shipsService.getAll().catch(() => []),
+          blockchainService.getStatus().catch(() => null),
+          pnbpService.getUnifiedChartData().catch(() => null),
+        ]);
+
+        if (ignore) return;
+
+        if (shipsData.length > 0) {
+          setTotalMonitored(shipsData.length);
+
+          const mapped: ShipQuotaItem[] = shipsData.map((s) => {
+            const q = s.current_year_quota;
+            const pct = q ? q.quota_percentage : 70;
+            const totalQ = q ? Number(q.total_quota) : 12000;
+            const usedQ = q ? Number(q.used_quota) : 3600;
+            const isCritical = pct < 15;
+            const isWarning = pct < 35;
+
+            return {
+              name: s.name,
+              reg: s.registration_number,
+              owner:
+                s.owner_name ||
+                (s.owner ? `Owner #${s.owner}` : "PT Laut Nusantara"),
+              allocatedQuota: `${totalQ.toLocaleString("id-ID")} kg`,
+              usedQuota: `${usedQ.toLocaleString("id-ID")} kg`,
+              percentRemaining: `${pct}%`,
+              aiRecommendedQuota: `${Math.round(totalQ * 1.15).toLocaleString("id-ID")} kg`,
+              status: isCritical ? "Kritis" : isWarning ? "Waspada" : "Normal",
+              statusBg: isCritical ? "#FFF1E0" : "#E8F0FE",
+              statusColor: isCritical ? "#B54708" : "#1A56DB",
+            };
+          });
+
+          setShips(mapped);
+
+          const critCount = shipsData.filter(
+            (s) => (s.current_year_quota?.quota_percentage ?? 70) < 15,
+          ).length;
+          setCriticalCount(critCount);
+        }
+
+        if (chainStatus && !ignore) {
+          setBlockchainValid(chainStatus.valid);
+        }
+
+        const summary = chartRes?.charts_data?.summary_stats;
+        if (summary?.total_pnbp_sum && !ignore) {
+          const sum = summary.total_pnbp_sum;
+          setPnbpStr(
+            sum >= 1_000_000_000
+              ? `Rp ${(sum / 1_000_000_000).toFixed(1)} M`
+              : `Rp ${(sum / 1_000_000).toFixed(0)} jt`,
+          );
+        }
+      } catch {
+        // Ignored: keep fallback
+      }
+    }
+
+    loadRegulatorData();
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
 
   const handleOpenModal = (ship: ShipQuotaItem) => {
     setSelectedShip(ship);
@@ -102,6 +184,7 @@ export function RegulatorDashboard() {
         `Kuota kapal ${data.shipReg} berhasil diupdate ke ${data.newQuota.toLocaleString("id-ID")} kg via API backend.`,
       );
       setTimeout(() => setToastMessage(null), 4000);
+      setRefreshKey((k) => k + 1);
     } catch (err: unknown) {
       alert(
         err instanceof Error
@@ -140,7 +223,7 @@ export function RegulatorDashboard() {
       </div>
 
       {toastMessage && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-5 border border-fco-blue-border">
+        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
           ✓ {toastMessage}
         </div>
       )}
@@ -149,30 +232,36 @@ export function RegulatorDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KpiCard
           label="Total Kapal Diawasi"
-          value="1.284"
+          value={totalMonitored.toLocaleString("id-ID")}
           note="Aktif izin berlayar (SIPI/SIKPI)"
           color="blue"
           Icon={Ship}
         />
         <KpiCard
-          label="Kapal Over-Quota"
-          value="8"
-          delta="Perlu tindakan regulator"
-          trendUp={false}
+          label="Kapal Over-Quota / Kritis"
+          value={`${criticalCount}`}
+          delta={
+            criticalCount > 0 ? "Perlu tindakan override" : "Semua kapal patuh"
+          }
+          trendUp={criticalCount === 0}
           color="rose"
           Icon={AlertTriangle}
         />
         <KpiCard
           label="Kepatuhan Blockchain"
-          value="100%"
-          note="Seluruh tx tersinkronisasi hash"
+          value={blockchainValid ? "100%" : "Perlu Cek"}
+          note={
+            blockchainValid
+              ? "Seluruh tx tersinkronisasi hash"
+              : "Integritas terganggu"
+          }
           color="emerald"
           Icon={Link2}
         />
         <KpiCard
           label="Potensi PNBP Berjalan"
-          value="Rp 4,4 M"
-          delta="+6,8% dari estimasi bulan lalu"
+          value={pnbpStr}
+          delta="Estimasi penerimaan resmi"
           color="purple"
           Icon={Coins}
         />
@@ -185,7 +274,11 @@ export function RegulatorDashboard() {
 
       {/* Side by side: Compliance + Blockchain */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ComplianceOverview />
+        <ComplianceOverview
+          totalShips={totalMonitored}
+          criticalCount={criticalCount}
+          blockchainValid={blockchainValid}
+        />
         <BlockchainCard />
       </div>
 

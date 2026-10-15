@@ -15,49 +15,57 @@ import {
 } from "./components/RecentCatchesTable";
 import { shipsService, type Ship as ShipType } from "../../services/ships";
 import { catchesService } from "../../services/catches";
-import { authService } from "../../services/auth";
+import {
+  blockchainService,
+  type BlockchainBlock,
+  type BlockchainStatus,
+} from "../../services/blockchain";
+import { authService, getUserDisplayInfo } from "../../services/auth";
 import { fishSpeciesService } from "../../services/fish";
 
-const fallbackReports: CatchReport[] = [
-  {
-    date: "08 Okt 2026",
-    species: "Tongkol",
-    qty: "120 kg",
-    pnbp: "Rp 120.000",
-  },
-  { date: "06 Okt 2026", species: "Cakalang", qty: "95 kg", pnbp: "Rp 95.000" },
-  {
-    date: "03 Okt 2026",
-    species: "Tuna sirip kuning",
-    qty: "60 kg",
-    pnbp: "Rp 180.000",
-  },
-];
-
 export function CaptainDashboard() {
-  const [reports, setReports] = useState<CatchReport[]>(fallbackReports);
+  const [reports, setReports] = useState<CatchReport[]>([]);
   const [ship, setShip] = useState<ShipType | null>(null);
+  const [blockchainStatus, setBlockchainStatus] =
+    useState<BlockchainStatus | null>(null);
+  const [lastBlock, setLastBlock] = useState<BlockchainBlock | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { open, openModal, closeModal } = useCrudModal();
 
   const currentUser = authService.getStoredUser();
   const captainId = currentUser?.id || 1;
+  const userInfo = getUserDisplayInfo();
 
   useEffect(() => {
     let ignore = false;
 
     async function loadData() {
       try {
-        const ships = await shipsService
-          .getByCaptain(captainId)
-          .catch(() => []);
+        const [ships, chainStatus, blocks] = await Promise.all([
+          shipsService.getByCaptain(captainId).catch(() => []),
+          blockchainService.getStatus().catch(() => null),
+          blockchainService.getBlocks().catch(() => []),
+        ]);
+
+        if (ignore) return;
+
+        if (chainStatus) setBlockchainStatus(chainStatus);
+        if (blocks.length > 0) setLastBlock(blocks[blocks.length - 1]);
+
         let targetShip = ships.length > 0 ? ships[0] : null;
         if (!targetShip) {
           const all = await shipsService.getAll().catch(() => []);
-          targetShip = all.length > 0 ? all[0] : null;
+          const matched = all.find(
+            (s) =>
+              (s.captain && s.captain === captainId) ||
+              (s.captain_name &&
+                s.captain_name.toLowerCase() ===
+                  currentUser?.username.toLowerCase()),
+          );
+          targetShip = matched || (all.length > 0 ? all[0] : null);
         }
-        if (ignore) return;
+
         setShip(targetShip);
 
         if (targetShip) {
@@ -65,6 +73,7 @@ export function CaptainDashboard() {
             .getAll({ ship_id: targetShip.id })
             .catch(() => []);
           if (ignore) return;
+
           if (catchesData.length > 0) {
             const formatted: CatchReport[] = [];
             for (const c of catchesData) {
@@ -79,8 +88,12 @@ export function CaptainDashboard() {
                 });
               }
             }
-            if (formatted.length > 0) setReports(formatted.slice(0, 5));
+            setReports(formatted.slice(0, 5));
+          } else {
+            setReports([]);
           }
+        } else {
+          setReports([]);
         }
       } catch {
         // Ignored
@@ -92,7 +105,7 @@ export function CaptainDashboard() {
     return () => {
       ignore = true;
     };
-  }, [captainId, refreshKey]);
+  }, [captainId, currentUser?.username, refreshKey]);
 
   const handleReportAdded = async (data: CatchReportFormData) => {
     const shipReg = ship ? ship.registration_number : "REG-0412";
@@ -140,18 +153,34 @@ export function CaptainDashboard() {
     }
   };
 
-  const shipName = ship?.name || "KM Samudra Jaya";
-  const shipReg = ship?.registration_number || "REG-0412";
-  const homePort = ship?.home_port || "Benoa";
-  const remainingQuotaKg = ship?.current_year_quota
-    ? `${ship.current_year_quota.remaining_quota} kg`
-    : "8.400 kg";
-  const totalQuotaKg = ship?.current_year_quota
-    ? `${ship.current_year_quota.total_quota} kg`
-    : "12.000 kg";
-  const quotaPct = ship?.current_year_quota
-    ? ship.current_year_quota.quota_percentage
-    : 70;
+  // Calculate actual metrics
+  const totalWeightKg = reports.reduce((acc, r) => {
+    const num = parseFloat(r.qty) || 0;
+    return acc + num;
+  }, 0);
+
+  const totalPnbpSum = reports.reduce((acc, r) => {
+    const raw = r.pnbp.replace(/[^0-9]/g, "");
+    return acc + (Number(raw) || 0);
+  }, 0);
+
+  const hasShip = Boolean(ship);
+  const quota = ship?.current_year_quota;
+
+  const dynamicSpecs = ship
+    ? [
+        {
+          label: "Gross tonnage",
+          value: ship.gross_tonnage ? `${ship.gross_tonnage} GT` : "—",
+        },
+        { label: "Panjang", value: ship.length ? `${ship.length} m` : "—" },
+        { label: "Lebar", value: ship.width ? `${ship.width} m` : "—" },
+        {
+          label: "Tahun dibuat",
+          value: ship.year_built ? String(ship.year_built) : "—",
+        },
+      ]
+    : undefined;
 
   return (
     <div>
@@ -162,7 +191,9 @@ export function CaptainDashboard() {
             Ringkasan Nahkoda
           </h1>
           <div className="text-sm text-soft mt-1">
-            {shipName} · {shipReg} · Pelabuhan asal {homePort}
+            {hasShip
+              ? `${ship!.name} · ${ship!.registration_number} · Pelabuhan asal ${ship!.home_port || "—"}`
+              : `Akun nahkoda: ${userInfo.name} · Belum ada kapal terhubung`}
           </div>
         </div>
 
@@ -188,29 +219,63 @@ export function CaptainDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <KpiCard
           label="Sisa kuota 2026"
-          value={remainingQuotaKg}
-          delta={`${quotaPct}% dari kuota ${totalQuotaKg}`}
+          value={
+            quota
+              ? `${Number(quota.remaining_quota).toLocaleString("id-ID")} kg`
+              : hasShip
+                ? "—"
+                : "0 kg"
+          }
+          delta={
+            quota
+              ? `${quota.quota_percentage}% dari kuota ${Number(quota.total_quota).toLocaleString("id-ID")} kg`
+              : hasShip
+                ? "Menunggu alokasi kuota"
+                : "Belum ada kapal terhubung"
+          }
           color="blue"
           Icon={BarChart3}
         />
         <KpiCard
-          label="Tangkapan bulan ini"
-          value="430 kg"
-          delta={`${reports.length} laporan tercatat`}
+          label="Tangkapan terlapor"
+          value={
+            totalWeightKg > 0
+              ? `${totalWeightKg.toLocaleString("id-ID")} kg`
+              : "0 kg"
+          }
+          delta={
+            reports.length > 0
+              ? `${reports.length} laporan masuk ke sistem`
+              : "Belum ada laporan tangkapan"
+          }
           color="emerald"
           Icon={Fish}
         />
         <KpiCard
           label="PNBP terhitung"
-          value="Rp 535.000"
+          value={
+            totalPnbpSum > 0
+              ? `Rp ${totalPnbpSum.toLocaleString("id-ID")}`
+              : "Rp 0"
+          }
           delta="Berdasarkan tarif resmi KKP"
           color="purple"
           Icon={Coins}
         />
         <KpiCard
           label="Status kapal"
-          value={ship?.active ? "Aktif" : "Aktif"}
-          delta={`${ship?.gross_tonnage || "42,5"} GT · SIPI berlaku s.d. Des 2026`}
+          value={
+            hasShip
+              ? ship!.active !== false
+                ? "Aktif"
+                : "Nonaktif"
+              : "Belum Terhubung"
+          }
+          delta={
+            hasShip
+              ? `${ship!.gross_tonnage || 0} GT · SIPI berlaku`
+              : "Hubungi pemilik untuk penugasan"
+          }
           color="cyan"
           Icon={Ship}
         />
@@ -220,10 +285,18 @@ export function CaptainDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4 items-stretch">
         <div className="lg:col-span-3">
           <QuotaHeroCard
-            remainingKg={remainingQuotaKg}
-            totalKg={totalQuotaKg}
-            percentage={quotaPct}
-            validUntil="31 Des 2026"
+            remainingKg={
+              quota
+                ? `${Number(quota.remaining_quota).toLocaleString("id-ID")} kg`
+                : "0 kg"
+            }
+            totalKg={
+              quota
+                ? `${Number(quota.total_quota).toLocaleString("id-ID")} kg`
+                : "0 kg"
+            }
+            percentage={quota ? quota.quota_percentage : 0}
+            validUntil={quota ? "31 Des 2026" : "—"}
           />
         </div>
         <div className="lg:col-span-2">
@@ -234,9 +307,15 @@ export function CaptainDashboard() {
                   Status blockchain
                 </h2>
                 <StatusChip
-                  label="Terverifikasi"
-                  bg="#E8F0FE"
-                  color="#1A56DB"
+                  label={
+                    blockchainStatus?.valid === false
+                      ? "Peringatan"
+                      : "Terverifikasi"
+                  }
+                  bg={blockchainStatus?.valid === false ? "#FFF1E0" : "#E8F0FE"}
+                  color={
+                    blockchainStatus?.valid === false ? "#B54708" : "#1A56DB"
+                  }
                   icon={
                     <Check
                       size={14}
@@ -248,30 +327,37 @@ export function CaptainDashboard() {
                 />
               </div>
               <p className="m-0 text-xs text-soft mb-4 leading-relaxed">
-                Semua laporan tangkapan {shipName} disegel permanen ke buku
-                besar blockchain terdistribusi.
+                {hasShip
+                  ? `Semua laporan tangkapan ${ship!.name} disegel permanen ke buku besar blockchain terdistribusi.`
+                  : "Semua laporan tangkapan kapal disegel permanen ke buku besar blockchain terdistribusi."}
               </p>
               <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
                 <div className="flex justify-between py-2.5">
                   <span className="text-soft">Blok terakhir</span>
-                  <span className="font-semibold tabular-nums">#2318</span>
+                  <span className="font-semibold tabular-nums">
+                    {lastBlock ? `#${lastBlock.index}` : "—"}
+                  </span>
                 </div>
                 <div className="flex justify-between py-2.5">
                   <span className="text-soft">Hash verifikasi</span>
                   <span className="font-semibold tabular-nums text-fco-blue">
-                    c04d…88a7
+                    {lastBlock
+                      ? `${lastBlock.hash.slice(0, 4)}…${lastBlock.hash.slice(-4)}`
+                      : "—"}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5">
                   <span className="text-soft">Total laporan kapal</span>
                   <span className="font-semibold tabular-nums">
-                    48 transaksi
+                    {reports.length} transaksi
                   </span>
                 </div>
               </div>
             </div>
             <div className="mt-4 pt-3 border-t border-fco-border-subtle flex items-center justify-between text-xs text-soft">
-              <span>Kepatuhan audit: 100%</span>
+              <span>
+                Integritas ledger: {blockchainStatus?.valid ? "100%" : "—"}
+              </span>
               <Link
                 to="/captain/catches"
                 className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
@@ -289,7 +375,7 @@ export function CaptainDashboard() {
           <RecentCatchesTable reports={reports} />
         </div>
         <div className="lg:col-span-2">
-          <ShipSpecsCard />
+          <ShipSpecsCard specs={dynamicSpecs} />
         </div>
       </div>
 

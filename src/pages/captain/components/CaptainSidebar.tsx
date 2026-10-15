@@ -7,7 +7,7 @@ import { ClipboardList, LayoutDashboard, Ship } from "lucide-react";
 import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
-import { authService } from "../../../services/auth";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
 
 const navItems = [
   { label: "Ringkasan", to: "/captain", end: true, Icon: LayoutDashboard },
@@ -67,6 +67,7 @@ export function CaptainSidebar() {
 export function CaptainLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -82,9 +83,9 @@ export function CaptainLayout() {
           <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge
-            initials="BH"
-            name="Budi Hartono"
-            role="Nahkoda KM Samudra Jaya"
+            initials={userInfo.initials}
+            name={userInfo.name}
+            role={userInfo.roleLabel}
             onLogout={handleLogout}
           />
         </header>
@@ -93,9 +94,9 @@ export function CaptainLayout() {
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
           profile={{
-            initials: "BH",
-            name: "Budi Hartono",
-            role: "Nahkoda KM Samudra Jaya",
+            initials: userInfo.initials,
+            name: userInfo.name,
+            role: userInfo.roleLabel,
           }}
           onLogout={handleLogout}
         >

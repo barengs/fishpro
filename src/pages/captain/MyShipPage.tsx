@@ -21,18 +21,26 @@ export function MyShipPage() {
         if (ships.length > 0) {
           setShip(ships[0]);
         } else {
-          // Fallback to all ships if captainId not directly assigned
-          const all = await shipsService.getAll();
-          if (all.length > 0) setShip(all[0]);
+          // Check all ships
+          const all = await shipsService.getAll().catch(() => []);
+          // Try matching ship where captain id matches or captain name matches user name
+          const matched = all.find(
+            (s) =>
+              (s.captain && s.captain === captainId) ||
+              (s.captain_name &&
+                s.captain_name.toLowerCase() ===
+                  currentUser?.username.toLowerCase()),
+          );
+          setShip(matched || (all.length > 0 ? all[0] : null));
         }
       } catch {
-        // Ignored
+        setShip(null);
       } finally {
         setLoading(false);
       }
     }
     loadShip();
-  }, [captainId]);
+  }, [captainId, currentUser?.username]);
 
   const specs = ship
     ? [
@@ -44,7 +52,11 @@ export function MyShipPage() {
         },
         {
           label: "Nahkoda (Captain)",
-          value: ship.captain_name || currentUser?.username || "—",
+          value:
+            ship.captain_name ||
+            currentUser?.profile?.name ||
+            currentUser?.username ||
+            "—",
         },
         { label: "Panjang (m)", value: ship.length ? `${ship.length} m` : "—" },
         { label: "Lebar (m)", value: ship.width ? `${ship.width} m` : "—" },
@@ -64,28 +76,17 @@ export function MyShipPage() {
         {
           label: "Total kuota tahun berjalan",
           value: ship.current_year_quota
-            ? `${ship.current_year_quota.total_quota} kg`
-            : "12.000 kg",
+            ? `${Number(ship.current_year_quota.total_quota).toLocaleString("id-ID")} kg`
+            : "—",
         },
         {
           label: "Sisa kuota",
           value: ship.current_year_quota
-            ? `${ship.current_year_quota.remaining_quota} kg (${ship.current_year_quota.quota_percentage}%)`
-            : "8.400 kg (70%)",
+            ? `${Number(ship.current_year_quota.remaining_quota).toLocaleString("id-ID")} kg (${ship.current_year_quota.quota_percentage}%)`
+            : "—",
         },
       ]
-    : [
-        { label: "Nama kapal", value: "KM Samudra Jaya" },
-        { label: "Nomor registrasi", value: "REG-0412" },
-        { label: "Panjang (m)", value: "18,00 m" },
-        { label: "Lebar (m)", value: "5,20 m" },
-        { label: "Gross tonnage", value: "42,50 GT" },
-        { label: "Tahun dibuat", value: "2015" },
-        { label: "Pelabuhan asal", value: "Benoa" },
-        { label: "Status", value: "Aktif" },
-        { label: "Kuota 2026", value: "12.000 kg" },
-        { label: "Sisa kuota", value: "8.400 kg (70%)" },
-      ];
+    : [];
 
   return (
     <div className="max-w-220 mx-auto">
@@ -104,6 +105,20 @@ export function MyShipPage() {
             />
             <span>Memuat informasi kapal...</span>
           </div>
+        ) : !ship ? (
+          <div className="py-12 flex flex-col items-center justify-center text-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-fco-blue-light dark:bg-fco-blue/20 flex items-center justify-center text-fco-blue">
+              <ShipIcon size={28} aria-hidden="true" />
+            </div>
+            <h2 className="text-lg font-extrabold text-strong m-0">
+              Belum Ada Kapal Terhubung
+            </h2>
+            <p className="text-sm text-soft max-w-115 m-0 leading-relaxed">
+              Akun nahkoda Anda saat ini belum dihubungkan ke kapal yang
+              terdaftar di database KKP. Hubungi pemilik kapal (Owner) atau
+              Administrator untuk menugaskan kapal ke akun Anda.
+            </p>
+          </div>
         ) : (
           <div>
             <div className="flex items-center gap-3 pb-6 mb-6 border-b border-fco-border-subtle">
@@ -112,11 +127,10 @@ export function MyShipPage() {
               </div>
               <div>
                 <h2 className="text-xl font-extrabold text-strong m-0">
-                  {ship ? ship.name : "KM Samudra Jaya"}
+                  {ship.name}
                 </h2>
                 <div className="text-xs text-soft tabular-nums mt-0.5">
-                  {ship ? ship.registration_number : "REG-0412"} · Terdaftar di
-                  sistem KKP
+                  {ship.registration_number} · Terdaftar di sistem KKP
                 </div>
               </div>
             </div>

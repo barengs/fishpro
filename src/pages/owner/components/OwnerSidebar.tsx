@@ -7,7 +7,7 @@ import { House, Ship, Users } from "lucide-react";
 import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
-import { authService } from "../../../services/auth";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
 
 const navItems = [
   { label: "Beranda", to: "/owner", end: true, Icon: House },
@@ -63,6 +63,7 @@ export function OwnerSidebar() {
 export function OwnerLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -79,9 +80,9 @@ export function OwnerLayout() {
           <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge
-            initials="PT"
-            name="PT Laut Nusantara"
-            role="Pemilik kapal"
+            initials={userInfo.initials}
+            name={userInfo.name}
+            role={userInfo.roleLabel}
             onLogout={handleLogout}
           />
         </header>
@@ -90,9 +91,9 @@ export function OwnerLayout() {
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
           profile={{
-            initials: "PT",
-            name: "PT Laut Nusantara",
-            role: "Pemilik kapal",
+            initials: userInfo.initials,
+            name: userInfo.name,
+            role: userInfo.roleLabel,
           }}
           onLogout={handleLogout}
         >

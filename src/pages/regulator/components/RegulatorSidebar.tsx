@@ -6,7 +6,7 @@ import { FileCheck, LayoutDashboard, Link2 } from "lucide-react";
 import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
-import { authService } from "../../../services/auth";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
 
 const navItems = [
   { label: "Ringkasan", to: "/regulator", end: true, Icon: LayoutDashboard },
@@ -63,6 +63,7 @@ export function RegulatorSidebar() {
 export function RegulatorLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -77,9 +78,9 @@ export function RegulatorLayout() {
           <FullscreenToggle />
           <ThemeToggle />
           <UserProfileBadge
-            initials="RG"
-            name="Pengawas Perikanan"
-            role="Regulator KKP"
+            initials={userInfo.initials}
+            name={userInfo.name}
+            role={userInfo.roleLabel}
             avatarBg="#0284C7"
             onLogout={handleLogout}
           />
@@ -89,9 +90,9 @@ export function RegulatorLayout() {
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
           profile={{
-            initials: "RG",
-            name: "Pengawas Perikanan",
-            role: "Regulator KKP",
+            initials: userInfo.initials,
+            name: userInfo.name,
+            role: userInfo.roleLabel,
             avatarBg: "#0284C7",
           }}
           onLogout={handleLogout}

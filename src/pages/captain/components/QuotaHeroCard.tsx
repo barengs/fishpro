@@ -6,10 +6,10 @@ interface QuotaHeroCardProps {
 }
 
 export function QuotaHeroCard({
-  remainingKg = "8.400 kg",
-  totalKg = "12.000 kg",
-  percentage = 70,
-  validUntil = "31 Des 2026",
+  remainingKg = "0 kg",
+  totalKg = "0 kg",
+  percentage = 0,
+  validUntil = "—",
 }: Partial<QuotaHeroCardProps>) {
   return (
     <section className="bg-fco-blue text-white rounded-fco-lg p-7 relative overflow-hidden shadow-sm">
@@ -19,25 +19,33 @@ export function QuotaHeroCard({
 
       <div className="relative z-10">
         <div className="text-sm font-semibold text-fco-mist">
-          Sisa kuota 2026
+          Sisa kuota tahun berjalan
         </div>
         <div className="flex items-baseline gap-2 my-2 mb-5">
           <span className="text-fco-display font-extrabold tracking-tight tabular-nums text-white">
             {remainingKg}
           </span>
-          <span className="text-fco-md text-fco-mist">dari {totalKg}</span>
+          <span className="text-fco-md text-fco-mist">
+            {totalKg !== "0 kg"
+              ? `dari ${totalKg}`
+              : "kuota belum dialokasikan"}
+          </span>
         </div>
 
         <div className="h-2 rounded-full bg-white/25 overflow-hidden">
           <div
             className="h-full rounded-full bg-white transition-all duration-300"
-            style={{ width: `${percentage}%` }}
+            style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}
           />
         </div>
 
         <div className="flex justify-between mt-2.5 text-fco-sm text-fco-mist">
           <span>{percentage}% tersisa</span>
-          <span>Berlaku sampai {validUntil}</span>
+          <span>
+            {validUntil !== "—"
+              ? `Berlaku s.d. ${validUntil}`
+              : "Status: Menunggu alokasi kuota"}
+          </span>
         </div>
       </div>
     </section>
