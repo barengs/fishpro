@@ -1,55 +1,11 @@
-import { apiClient, API_ENDPOINTS } from './api'
-
-export interface LoginCredentials {
-  username: string
-  password: string
-}
-
-export interface UserProfile {
-  type?: string
-  full_name?: string
-  name?: string
-  email?: string
-  phone?: string
-  department?: string
-  position?: string
-  owner_type?: string
-  address?: string
-  license_number?: string
-  years_of_experience?: number
-}
-
-export interface LoginResponse {
-  token: string
-  refresh_token?: string
-  user_id: number
-  username: string
-  user_as: 'admin' | 'owner' | 'captain' | 'regulator' | 'user'
-  roles: string[]
-  profile?: UserProfile
-}
-
-export interface RegisterPayload {
-  username: string
-  email: string
-  password: string
-  password_confirm: string
-  role?: 'owner' | 'captain' | 'admin' | string
-  full_name?: string
-  phone?: string
-  contact_info?: string
-  address?: string
-  ship_code?: string
-  owner_type?: 'individual' | 'company'
-}
-
-export interface RegisterResponse {
-  token: string
-  user_id: number
-  username: string
-  role: string
-  profile?: UserProfile
-}
+import { apiClient, API_ENDPOINTS } from '../api'
+import type {
+  LoginCredentials,
+  LoginResponse,
+  RegisterPayload,
+  RegisterResponse,
+  StoredUser,
+} from './types'
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
@@ -129,7 +85,7 @@ export const authService = {
     return localStorage.getItem('user_as')
   },
 
-  getStoredUser(): { id: number; username: string; role: string; profile?: UserProfile } | null {
+  getStoredUser(): StoredUser | null {
     try {
       const stored = localStorage.getItem('user')
       return stored ? JSON.parse(stored) : null
