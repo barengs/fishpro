@@ -8,6 +8,12 @@ import { shipsService, type Ship as ShipType } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
 import { authService } from "../../services/auth";
+import {
+  calculateAverageRemainingQuota,
+  calculateCatchTotalVolume,
+  formatRupiah,
+  formatWeight,
+} from "../../utils";
 
 interface OwnerMetrics {
   shipsCount: number;
@@ -57,49 +63,13 @@ export function OwnerDashboard() {
           (s) => !s.captain,
         ).length;
 
-        // Calculate average remaining quota percentage
-        let avgQuota = 0;
-        if (shipsCount > 0) {
-          const totalPct = ownerShips.reduce((acc, s) => {
-            const p = s.current_year_quota
-              ? s.current_year_quota.quota_percentage
-              : 0;
-            return acc + p;
-          }, 0);
-          avgQuota = Math.round(totalPct / shipsCount);
-        }
-
+        const avgQuota = calculateAverageRemainingQuota(ownerShips);
         const summary = chartRes?.charts_data?.summary_stats;
-        let pnbpStr = "Rp 0";
-        let catchStr = "0 kg";
 
-        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0) {
-          const sum = summary.total_pnbp_sum;
-          pnbpStr =
-            sum >= 1_000_000_000
-              ? `Rp ${(sum / 1_000_000_000).toFixed(1)} M`
-              : `Rp ${(sum / 1_000_000).toFixed(1)} jt`;
-        }
-
-        if (summary?.total_volume_sum && summary.total_volume_sum > 0) {
-          const vol = summary.total_volume_sum;
-          catchStr =
-            vol >= 1000 ? `${(vol / 1000).toFixed(1)} ton` : `${vol} kg`;
-        } else if (catches.length > 0) {
-          const sumQty = catches.reduce((acc, c) => {
-            const detailQty = (c.catch_details || []).reduce(
-              (dAcc, d) => dAcc + (parseFloat(String(d.quantity)) || 0),
-              0,
-            );
-            return acc + detailQty;
-          }, 0);
-          if (sumQty > 0) {
-            catchStr =
-              sumQty >= 1000
-                ? `${(sumQty / 1000).toFixed(1)} ton`
-                : `${sumQty} kg`;
-          }
-        }
+        const pnbpStr = formatRupiah(summary?.total_pnbp_sum);
+        const rawVolume =
+          summary?.total_volume_sum || calculateCatchTotalVolume(catches);
+        const catchStr = formatWeight(rawVolume);
 
         setMetrics({
           shipsCount,

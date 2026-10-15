@@ -4,6 +4,7 @@ import {
   type PnbpHistoryRecord,
   type UnifiedChartSummaryStats,
 } from "../../../services/pnbp";
+import { formatRupiah } from "../../../utils";
 import { Loader2, TrendingUp } from "lucide-react";
 
 interface MonthlyPoint {
@@ -110,13 +111,6 @@ export function PnbpChart() {
         predPoints.map((p) => `${p.x},${p.y}`).join(" ")
       : predPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
-  const formatRupiahShort = (val: number) => {
-    if (val >= 1_000_000_000) return `${(val / 1_000_000_000).toFixed(1)} M`;
-    if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(0)} jt`;
-    if (val >= 1_000) return `${(val / 1_000).toFixed(0)} rb`;
-    return `${val}`;
-  };
-
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -130,7 +124,7 @@ export function PnbpChart() {
             <div className="text-xs text-soft mt-1">
               Akumulasi tercatat:{" "}
               <span className="font-semibold text-fco-blue tabular-nums">
-                Rp {Number(stats.total_pnbp_sum).toLocaleString("id-ID")}
+                {formatRupiah(stats.total_pnbp_sum, false)}
               </span>
               {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
             </div>
@@ -223,7 +217,7 @@ export function PnbpChart() {
                   textAnchor="end"
                   className="font-mono text-soft"
                 >
-                  {formatRupiahShort(val)}
+                  {formatRupiah(val).replace("Rp ", "")}
                 </text>
               </g>
             );

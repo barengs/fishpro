@@ -7,6 +7,7 @@ import {
   type BlockchainBlock,
   type FishCatchTransaction,
 } from "../../services/blockchain";
+import { formatShortHash } from "../../utils";
 import { Check, ShieldCheck } from "lucide-react";
 
 export function BlockchainPage() {
@@ -58,9 +59,7 @@ export function BlockchainPage() {
           className="text-xs font-mono text-fco-blue truncate block max-w-44"
           title={r.hash}
         >
-          {r.hash.length > 16
-            ? `${r.hash.slice(0, 8)}…${r.hash.slice(-6)}`
-            : r.hash}
+          {formatShortHash(r.hash, 8, 6)}
         </span>
       ),
     },
@@ -73,9 +72,7 @@ export function BlockchainPage() {
           className="text-xs font-mono text-soft truncate block max-w-44"
           title={r.previous_hash}
         >
-          {r.previous_hash.length > 16
-            ? `${r.previous_hash.slice(0, 8)}…${r.previous_hash.slice(-6)}`
-            : r.previous_hash || "Genesis"}
+          {r.previous_hash ? formatShortHash(r.previous_hash, 8, 6) : "Genesis"}
         </span>
       ),
     },

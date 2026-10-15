@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { pnbpService } from "../../../services/pnbp";
+import { formatRupiah } from "../../../utils";
 import { BarChart3, Loader2 } from "lucide-react";
 
 const past = "#1A56DB";
@@ -24,7 +25,7 @@ export function PnbpPredictionBars() {
         const stats = res.charts_data?.summary_stats;
         if (stats && stats.total_pnbp_sum && stats.total_pnbp_sum > 0) {
           setSummaryInfo(
-            `Total tercatat: Rp ${(stats.total_pnbp_sum / 1_000_000).toFixed(1)} jt`,
+            `Total tercatat: ${formatRupiah(stats.total_pnbp_sum)}`,
           );
         }
 
@@ -50,7 +51,7 @@ export function PnbpPredictionBars() {
                 color: idx < 3 ? past : next,
                 top:
                   idx === preds.monthly_forecasts!.length - 1
-                    ? `Rp ${(f.predicted_pnbp / 1_000_000).toFixed(0)} jt`
+                    ? formatRupiah(f.predicted_pnbp)
                     : "",
               }),
             );

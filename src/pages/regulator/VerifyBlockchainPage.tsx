@@ -6,6 +6,7 @@ import {
   blockchainService,
   type FishCatchTransaction,
 } from "../../services/blockchain";
+import { formatRupiah } from "../../utils";
 import { Check, ShieldCheck } from "lucide-react";
 
 export function VerifyBlockchainPage() {
@@ -94,7 +95,7 @@ export function VerifyBlockchainPage() {
       align: "right",
       render: (r) => (
         <span className="text-sm tabular-nums font-mono text-fco-blue">
-          {r.pnbp ? `Rp ${Number(r.pnbp).toLocaleString("id-ID")}` : "—"}
+          {r.pnbp ? formatRupiah(r.pnbp, false) : "—"}
         </span>
       ),
     },

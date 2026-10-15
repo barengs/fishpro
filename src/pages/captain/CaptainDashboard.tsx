@@ -22,6 +22,12 @@ import {
 } from "../../services/blockchain";
 import { authService, getUserDisplayInfo } from "../../services/auth";
 import { fishSpeciesService } from "../../services/fish";
+import {
+  extractCatchReportMetrics,
+  formatRupiah,
+  formatShortHash,
+  formatWeight,
+} from "../../utils";
 
 export function CaptainDashboard() {
   const [reports, setReports] = useState<CatchReport[]>([]);
@@ -153,16 +159,8 @@ export function CaptainDashboard() {
     }
   };
 
-  // Calculate actual metrics
-  const totalWeightKg = reports.reduce((acc, r) => {
-    const num = parseFloat(r.qty) || 0;
-    return acc + num;
-  }, 0);
-
-  const totalPnbpSum = reports.reduce((acc, r) => {
-    const raw = r.pnbp.replace(/[^0-9]/g, "");
-    return acc + (Number(raw) || 0);
-  }, 0);
+  // Calculate actual metrics using pure calculation utilities
+  const { totalWeightKg, totalPnbpSum } = extractCatchReportMetrics(reports);
 
   const hasShip = Boolean(ship);
   const quota = ship?.current_year_quota;
@@ -238,11 +236,7 @@ export function CaptainDashboard() {
         />
         <KpiCard
           label="Tangkapan terlapor"
-          value={
-            totalWeightKg > 0
-              ? `${totalWeightKg.toLocaleString("id-ID")} kg`
-              : "0 kg"
-          }
+          value={formatWeight(totalWeightKg)}
           delta={
             reports.length > 0
               ? `${reports.length} laporan masuk ke sistem`
@@ -253,11 +247,7 @@ export function CaptainDashboard() {
         />
         <KpiCard
           label="PNBP terhitung"
-          value={
-            totalPnbpSum > 0
-              ? `Rp ${totalPnbpSum.toLocaleString("id-ID")}`
-              : "Rp 0"
-          }
+          value={formatRupiah(totalPnbpSum, false)}
           delta="Berdasarkan tarif resmi KKP"
           color="purple"
           Icon={Coins}
@@ -341,9 +331,7 @@ export function CaptainDashboard() {
                 <div className="flex justify-between py-2.5">
                   <span className="text-soft">Hash verifikasi</span>
                   <span className="font-semibold tabular-nums text-fco-blue">
-                    {lastBlock
-                      ? `${lastBlock.hash.slice(0, 4)}…${lastBlock.hash.slice(-4)}`
-                      : "—"}
+                    {formatShortHash(lastBlock?.hash, 4, 4)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5">
@@ -362,7 +350,7 @@ export function CaptainDashboard() {
                 to="/captain/catches"
                 className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
               >
-                Lihat riwayat →
+                Lihat riwayat
               </Link>
             </div>
           </section>

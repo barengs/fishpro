@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ProgressBar } from "../../../components/ProgressBar";
 import { regionsService, type FishingArea } from "../../../services/regions";
 import { catchesService } from "../../../services/catches";
+import { formatWeight } from "../../../utils";
 import { Loader2 } from "lucide-react";
 
 interface WppItem {
@@ -51,10 +52,7 @@ export function WppBarChart() {
           const maxVal = Math.max(...list.map((x) => x.qty), 1);
           const formatted = list.map((x) => ({
             label: x.label,
-            value:
-              x.qty >= 1000
-                ? `${(x.qty / 1000).toFixed(1)} ton`
-                : `${x.qty} kg`,
+            value: formatWeight(x.qty),
             width:
               maxVal > 0 && x.qty > 0
                 ? `${Math.round((x.qty / maxVal) * 90 + 10)}%`

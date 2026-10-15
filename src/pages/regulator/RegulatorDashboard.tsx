@@ -11,6 +11,7 @@ import { BlockchainCard } from "../admin/components/BlockchainCard";
 import { shipsService } from "../../services/ships";
 import { blockchainService } from "../../services/blockchain";
 import { pnbpService } from "../../services/pnbp";
+import { formatNumber, formatRupiah } from "../../utils";
 
 export function RegulatorDashboard() {
   const [ships, setShips] = useState<ShipQuotaItem[]>([]);
@@ -79,17 +80,8 @@ export function RegulatorDashboard() {
         }
 
         const summary = chartRes?.charts_data?.summary_stats;
-        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0 && !ignore) {
-          const sum = summary.total_pnbp_sum;
-          setPnbpStr(
-            sum >= 1_000_000_000
-              ? `Rp ${(sum / 1_000_000_000).toFixed(1)} M`
-              : sum >= 1_000_000
-                ? `Rp ${(sum / 1_000_000).toFixed(0)} jt`
-                : `Rp ${Number(sum).toLocaleString("id-ID")}`,
-          );
-        } else if (!ignore) {
-          setPnbpStr("Rp 0");
+        if (!ignore) {
+          setPnbpStr(formatRupiah(summary?.total_pnbp_sum));
         }
       } catch {
         // Ignored: keep empty state
@@ -186,7 +178,7 @@ export function RegulatorDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KpiCard
           label="Total Kapal Diawasi"
-          value={totalMonitored.toLocaleString("id-ID")}
+          value={formatNumber(totalMonitored)}
           note="Aktif izin berlayar (SIPI/SIKPI)"
           color="blue"
           Icon={Ship}

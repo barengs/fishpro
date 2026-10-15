@@ -8,6 +8,12 @@ import { WppBarChart } from "./components/WppBarChart";
 import { shipsService } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
+import {
+  calculateCatchTotalVolume,
+  formatNumber,
+  formatRupiah,
+  formatWeight,
+} from "../../utils";
 
 interface DashboardMetrics {
   activeShipsCount: number;
@@ -40,51 +46,19 @@ export function AdminDashboard() {
 
         const activeShips = ships.filter((s) => s.active !== false).length;
         const totalCatches = catches.length;
-
         const summary = chartRes?.charts_data?.summary_stats;
-        let pnbpStr = "Rp 0";
-        let volumeStr = "0 kg";
 
-        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0) {
-          const sum = summary.total_pnbp_sum;
-          if (sum >= 1_000_000_000) {
-            pnbpStr = `Rp ${(sum / 1_000_000_000).toFixed(1)} M`;
-          } else if (sum >= 1_000_000) {
-            pnbpStr = `Rp ${(sum / 1_000_000).toFixed(1)} jt`;
-          } else {
-            pnbpStr = `Rp ${Number(sum).toLocaleString("id-ID")}`;
-          }
-        }
-
-        if (summary?.total_volume_sum && summary.total_volume_sum > 0) {
-          const vol = summary.total_volume_sum;
-          if (vol >= 1000) {
-            volumeStr = `${(vol / 1000).toFixed(1)} ton`;
-          } else {
-            volumeStr = `${vol} kg`;
-          }
-        } else if (catches.length > 0) {
-          const sumQty = catches.reduce((acc, c) => {
-            const detailQty = (c.catch_details || []).reduce(
-              (dAcc, d) => dAcc + (parseFloat(String(d.quantity)) || 0),
-              0,
-            );
-            return acc + detailQty;
-          }, 0);
-          if (sumQty > 0) {
-            volumeStr =
-              sumQty >= 1000
-                ? `${(sumQty / 1000).toFixed(1)} ton`
-                : `${sumQty} kg`;
-          }
-        }
+        const totalPnbpStr = formatRupiah(summary?.total_pnbp_sum);
+        const rawVolume =
+          summary?.total_volume_sum || calculateCatchTotalVolume(catches);
+        const totalVolumeStr = formatWeight(rawVolume);
 
         setMetrics({
           activeShipsCount: activeShips,
           totalShipsCount: ships.length,
           totalCatchesCount: totalCatches,
-          totalVolumeStr: volumeStr,
-          totalPnbpStr: pnbpStr,
+          totalVolumeStr,
+          totalPnbpStr,
         });
       } catch {
         // Keeps 0 metrics on error
@@ -132,7 +106,7 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <KpiCard
           label="Kapal aktif"
-          value={metrics.activeShipsCount.toLocaleString("id-ID")}
+          value={formatNumber(metrics.activeShipsCount)}
           delta={`${metrics.totalShipsCount} total armada nasional`}
           color="blue"
           Icon={Ship}
@@ -140,7 +114,7 @@ export function AdminDashboard() {
         />
         <KpiCard
           label="Total laporan tangkapan"
-          value={metrics.totalCatchesCount.toLocaleString("id-ID")}
+          value={formatNumber(metrics.totalCatchesCount)}
           delta={
             metrics.totalCatchesCount > 0
               ? "Tercatat di blockchain"

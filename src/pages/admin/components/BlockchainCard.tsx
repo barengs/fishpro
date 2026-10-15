@@ -7,6 +7,7 @@ import {
   type BlockchainBlock,
   type BlockchainStatus,
 } from "../../../services/blockchain";
+import { formatNumber, formatShortHash } from "../../../utils";
 
 export function BlockchainCard() {
   const [status, setStatus] = useState<BlockchainStatus | null>(null);
@@ -38,17 +39,15 @@ export function BlockchainCard() {
   const chain = [
     {
       label: "Total blok",
-      value: blockCount.toLocaleString("id-ID"),
+      value: formatNumber(blockCount),
     },
     {
       label: "Transaksi tercatat",
-      value: txCount.toLocaleString("id-ID"),
+      value: formatNumber(txCount),
     },
     {
       label: "Blok terakhir",
-      value: lastBlock
-        ? `${lastBlock.hash.slice(0, 6)}…${lastBlock.hash.slice(-4)}`
-        : "—",
+      value: formatShortHash(lastBlock?.hash, 6, 4),
     },
     {
       label: "Status rantai",
