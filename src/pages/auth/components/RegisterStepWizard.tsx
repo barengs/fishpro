@@ -110,18 +110,9 @@ export function RegisterStepWizard() {
 
   const handleNext = () => {
     setErrorMsg(null);
-    if (currentStep === 1) {
-      if (!fullName.trim()) {
-        setErrorMsg("Nama masih kosong.");
-        return;
-      }
-      if (role === "owner" && ownerType === "company" && !companyName.trim()) {
-        setErrorMsg("Nama perusahaan masih kosong.");
-        return;
-      }
-    } else if (currentStep === 2) {
-      if (!username.trim() || !email.trim() || !phone.trim() || !password) {
-        setErrorMsg("Lengkapi username, WA, email, dan sandi.");
+    if (currentStep === 2) {
+      if (!username.trim() || !email.trim() || !password) {
+        setErrorMsg("Lengkapi username, email, dan sandi.");
         return;
       }
       if (password.length < 8) {
@@ -130,19 +121,6 @@ export function RegisterStepWizard() {
       }
       if (password !== passwordConfirm) {
         setErrorMsg("Sandi tidak sama, coba lagi.");
-        return;
-      }
-    } else if (currentStep === 3) {
-      if (role === "captain" && !licenseNumber.trim()) {
-        setErrorMsg("No. lisensi wajib diisi.");
-        return;
-      }
-      if (role === "owner" && !shipReg.trim()) {
-        setErrorMsg("No. registrasi kapal wajib diisi.");
-        return;
-      }
-      if (role === "regulator" && !nip.trim()) {
-        setErrorMsg("NIP / ID pengawas wajib diisi.");
         return;
       }
     }
@@ -355,12 +333,8 @@ export function RegisterStepWizard() {
                   <div>
                     <span className={labelCls}>
                       Tipe pemilik
-                      <span
-                        className="text-red-500 ml-1 font-bold"
-                        aria-label="mandatory"
-                        title="Mandatory"
-                      >
-                        *
+                      <span className="text-soft font-normal text-xs ml-1.5">
+                        (optional)
                       </span>
                     </span>
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -414,12 +388,8 @@ export function RegisterStepWizard() {
                     {role === "owner" && ownerType === "company"
                       ? "Nama penanggung jawab"
                       : "Nama lengkap"}
-                    <span
-                      className="text-red-500 ml-1 font-bold"
-                      aria-label="mandatory"
-                      title="Mandatory"
-                    >
-                      *
+                    <span className="text-soft font-normal text-xs ml-1.5">
+                      (optional)
                     </span>
                   </label>
                   <input
@@ -436,12 +406,8 @@ export function RegisterStepWizard() {
                   <div>
                     <label htmlFor="rg-company" className={labelCls}>
                       Nama perusahaan
-                      <span
-                        className="text-red-500 ml-1 font-bold"
-                        aria-label="mandatory"
-                        title="Mandatory"
-                      >
-                        *
+                      <span className="text-soft font-normal text-xs ml-1.5">
+                        (optional)
                       </span>
                     </label>
                     <input
@@ -494,12 +460,8 @@ export function RegisterStepWizard() {
                   <div>
                     <label htmlFor="rg-phone" className={labelCls}>
                       WA
-                      <span
-                        className="text-red-500 ml-1 font-bold"
-                        aria-label="mandatory"
-                        title="Mandatory"
-                      >
-                        *
+                      <span className="text-soft font-normal text-xs ml-1.5">
+                        (optional)
                       </span>
                     </label>
                     <input
@@ -679,12 +641,8 @@ export function RegisterStepWizard() {
                     <div>
                       <label htmlFor="rg-shipreg" className={labelCls}>
                         No. kapal (SIPI)
-                        <span
-                          className="text-red-500 ml-1 font-bold"
-                          aria-label="mandatory"
-                          title="Mandatory"
-                        >
-                          *
+                        <span className="text-soft font-normal text-xs ml-1.5">
+                          (optional)
                         </span>
                       </label>
                       <input

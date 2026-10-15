@@ -1023,7 +1023,7 @@ export function RolesMenusPage() {
                   className={inputCls}
                 />
               </FormField>
-              <FormField label="Peran Spesifik (Opsional)" htmlFor="ad-role">
+              <FormField label="Peran Spesifik" htmlFor="ad-role">
                 <select
                   id="ad-role"
                   disabled={submitting || roles.length === 0}

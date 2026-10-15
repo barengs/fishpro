@@ -58,6 +58,13 @@ export function ManualQuotaModal({
           <div>
             <label className="block text-fco-sm font-semibold text-strong mb-1.5">
               Nomor Registrasi Kapal
+              <span
+                className="text-red-500 ml-1 font-bold"
+                aria-label="mandatory"
+                title="Mandatory"
+              >
+                *
+              </span>
             </label>
             <input
               type="text"
@@ -73,6 +80,13 @@ export function ManualQuotaModal({
             <div>
               <label className="block text-fco-sm font-semibold text-strong mb-1.5">
                 Tahun Kuota
+                <span
+                  className="text-red-500 ml-1 font-bold"
+                  aria-label="mandatory"
+                  title="Mandatory"
+                >
+                  *
+                </span>
               </label>
               <input
                 type="number"
@@ -85,6 +99,13 @@ export function ManualQuotaModal({
             <div>
               <label className="block text-fco-sm font-semibold text-strong mb-1.5">
                 Kuota Baru (kg)
+                <span
+                  className="text-red-500 ml-1 font-bold"
+                  aria-label="mandatory"
+                  title="Mandatory"
+                >
+                  *
+                </span>
               </label>
               <input
                 type="number"
@@ -99,6 +120,9 @@ export function ManualQuotaModal({
           <div>
             <label className="block text-fco-sm font-semibold text-strong mb-1.5">
               Alasan Penyesuaian
+              <span className="text-soft font-normal text-xs ml-1.5">
+                (optional)
+              </span>
             </label>
             <textarea
               rows={3}

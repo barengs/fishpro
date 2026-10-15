@@ -278,7 +278,7 @@ export function OwnersTab() {
           </FormField>
         </div>
 
-        <FormField label="Kontak tambahan (opsional)" htmlFor="o-contact">
+        <FormField label="Kontak tambahan" htmlFor="o-contact">
           <input
             id="o-contact"
             disabled={submitting}

@@ -435,40 +435,44 @@ export function QuotaPnbpPage() {
         }}
         submitLabel="Simpan tarif"
       >
-        <FormField label="Nama tarif (unik)" htmlFor="tf-name">
+        <FormField label="Nama tarif (unik)" htmlFor="tf-name" required>
           <input
             id="tf-name"
+            required
             value={t.name}
             onChange={(e) => setT({ ...t, name: e.target.value })}
             className={inputCls}
           />
         </FormField>
-        <FormField label="Batas GT" htmlFor="tf-gt">
+        <FormField label="Batas GT" htmlFor="tf-gt" required>
           <input
             id="tf-gt"
             type="number"
             step="0.01"
+            required
             value={t.gt_threshold}
             onChange={(e) => setT({ ...t, gt_threshold: e.target.value })}
             className={inputCls}
           />
         </FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tarif GT kecil" htmlFor="tf-s">
+          <FormField label="Tarif GT kecil" htmlFor="tf-s" required>
             <input
               id="tf-s"
               type="number"
               step="0.0001"
+              required
               value={t.rate_small}
               onChange={(e) => setT({ ...t, rate_small: e.target.value })}
               className={inputCls}
             />
           </FormField>
-          <FormField label="Tarif GT besar" htmlFor="tf-l">
+          <FormField label="Tarif GT besar" htmlFor="tf-l" required>
             <input
               id="tf-l"
               type="number"
               step="0.0001"
+              required
               value={t.rate_large}
               onChange={(e) => setT({ ...t, rate_large: e.target.value })}
               className={inputCls}

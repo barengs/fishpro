@@ -273,7 +273,7 @@ export function CaptainsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tanggal lahir (opsional)" htmlFor="cp-dob">
+          <FormField label="Tanggal lahir" htmlFor="cp-dob">
             <input
               id="cp-dob"
               type="date"
@@ -308,7 +308,7 @@ export function CaptainsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Email (opsional)" htmlFor="cp-email">
+          <FormField label="Email" htmlFor="cp-email">
             <input
               id="cp-email"
               type="email"
@@ -320,7 +320,7 @@ export function CaptainsPage() {
             />
           </FormField>
 
-          <FormField label="Telepon (opsional)" htmlFor="cp-phone">
+          <FormField label="Telepon" htmlFor="cp-phone">
             <input
               id="cp-phone"
               disabled={submitting}
@@ -332,7 +332,7 @@ export function CaptainsPage() {
           </FormField>
         </div>
 
-        <FormField label="Kontak tambahan (opsional)" htmlFor="cp-contact">
+        <FormField label="Kontak tambahan" htmlFor="cp-contact">
           <input
             id="cp-contact"
             disabled={submitting}
@@ -343,7 +343,7 @@ export function CaptainsPage() {
           />
         </FormField>
 
-        <FormField label="Alamat (opsional)" htmlFor="cp-addr">
+        <FormField label="Alamat" htmlFor="cp-addr">
           <textarea
             id="cp-addr"
             rows={2}

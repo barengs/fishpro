@@ -302,7 +302,7 @@ export function CaptainsTab() {
             </select>
           </FormField>
 
-          <FormField label="Tanggal lahir (opsional)" htmlFor="c-dob">
+          <FormField label="Tanggal lahir" htmlFor="c-dob">
             <input
               id="c-dob"
               type="date"
@@ -317,7 +317,7 @@ export function CaptainsTab() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Email (opsional)" htmlFor="c-email">
+          <FormField label="Email" htmlFor="c-email">
             <input
               id="c-email"
               type="email"
@@ -329,7 +329,7 @@ export function CaptainsTab() {
             />
           </FormField>
 
-          <FormField label="Telepon (opsional)" htmlFor="c-phone">
+          <FormField label="Telepon" htmlFor="c-phone">
             <input
               id="c-phone"
               disabled={submitting}
@@ -342,7 +342,7 @@ export function CaptainsTab() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Kontak tambahan (opsional)" htmlFor="c-contact">
+          <FormField label="Kontak tambahan" htmlFor="c-contact">
             <input
               id="c-contact"
               disabled={submitting}
@@ -376,7 +376,7 @@ export function CaptainsTab() {
           </FormField>
         </div>
 
-        <FormField label="Alamat (opsional)" htmlFor="c-addr">
+        <FormField label="Alamat" htmlFor="c-addr">
           <textarea
             id="c-addr"
             rows={2}
