@@ -1,6 +1,14 @@
 import { apiClient, API_ENDPOINTS } from "../api";
 import type { PaginatedResponse } from "../types";
-import type { CreateShipPayload, Ship, ShipRecommendation } from "./types";
+import type {
+  CreateShipPayload,
+  ManualQuotaInputPayload,
+  ManualQuotaInputResponse,
+  PredictShipQuotaPayload,
+  PredictShipQuotaResponse,
+  Ship,
+  ShipRecommendation,
+} from "./types";
 
 export const shipsService = {
   /**
@@ -102,5 +110,35 @@ export const shipsService = {
     total_ships_analyzed: number;
   }> {
     return apiClient(`${API_ENDPOINTS.SHIPS.AI_RECOMMENDATIONS}`);
+  },
+
+  /**
+   * POST /api/ships/predict-quota/ - Prediksi Kuota Kapal dengan LSTM dan NSGA-III
+   */
+  async predictQuota(
+    payload: PredictShipQuotaPayload,
+  ): Promise<PredictShipQuotaResponse> {
+    return apiClient<PredictShipQuotaResponse>(
+      API_ENDPOINTS.SHIPS.PREDICT_QUOTA,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
+  /**
+   * POST /api/ships/regulator/manual-quota/ - Input Kuota Manual oleh Regulator
+   */
+  async regulatorManualQuota(
+    payload: ManualQuotaInputPayload,
+  ): Promise<ManualQuotaInputResponse> {
+    return apiClient<ManualQuotaInputResponse>(
+      API_ENDPOINTS.SHIPS.REGULATOR_MANUAL_QUOTA,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
   },
 };

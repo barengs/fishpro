@@ -8,6 +8,7 @@ import {
 import { ManualQuotaModal } from "./components/ManualQuotaModal";
 import { ComplianceOverview } from "./components/ComplianceOverview";
 import { BlockchainCard } from "../admin/components/BlockchainCard";
+import { shipsService } from "../../services/ships";
 
 const initialShips: ShipQuotaItem[] = [
   {
@@ -71,29 +72,39 @@ export function RegulatorDashboard() {
     setIsModalOpen(true);
   };
 
-  const handleSaveQuota = (data: {
+  const handleSaveQuota = async (data: {
     shipReg: string;
     year: number;
     newQuota: number;
     reason: string;
   }) => {
-    setShips((prev) =>
-      prev.map((s) =>
-        s.reg === data.shipReg
-          ? {
-              ...s,
-              allocatedQuota: `${data.newQuota.toLocaleString("id-ID")} kg`,
-              status: "Disesuaikan",
-              statusBg: "#E8F0FE",
-              statusColor: "#1A56DB",
-            }
-          : s,
-      ),
-    );
-    setToastMessage(
-      `Kuota kapal ${data.shipReg} berhasil diupdate ke ${data.newQuota.toLocaleString("id-ID")} kg`,
-    );
-    setTimeout(() => setToastMessage(null), 4000);
+    try {
+      await shipsService.regulatorManualQuota({
+        ship_registration_number: data.shipReg,
+        year: data.year,
+        quota_amount: data.newQuota,
+      });
+
+      setShips((prev) =>
+        prev.map((s) =>
+          s.reg === data.shipReg
+            ? {
+                ...s,
+                allocatedQuota: `${data.newQuota.toLocaleString("id-ID")} kg`,
+                status: "Disesuaikan",
+                statusBg: "#E8F0FE",
+                statusColor: "#1A56DB",
+              }
+            : s,
+        ),
+      );
+      setToastMessage(
+        `Kuota kapal ${data.shipReg} berhasil diupdate ke ${data.newQuota.toLocaleString("id-ID")} kg via API backend.`,
+      );
+      setTimeout(() => setToastMessage(null), 4000);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal menyesuaikan kuota kapal via API.');
+    }
   };
 
   return (
