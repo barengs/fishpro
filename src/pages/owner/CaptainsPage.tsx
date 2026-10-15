@@ -8,7 +8,7 @@ import {
   captainsService,
   type Captain,
   type CreateCaptainPayload,
-} from '../../services/owners'
+} from '../../services/captains'
 import { authService } from '../../services/auth'
 import { Loader2 } from 'lucide-react'
 

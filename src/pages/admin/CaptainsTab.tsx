@@ -6,9 +6,11 @@ import { CrudModal } from '../../components/CrudModal'
 import { useCrudModal } from '../../components/useCrudModal'
 import {
   captainsService,
-  ownersService,
   type Captain,
   type CreateCaptainPayload,
+} from '../../services/captains'
+import {
+  ownersService,
   type Owner,
 } from '../../services/owners'
 import { Loader2 } from 'lucide-react'

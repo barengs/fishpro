@@ -34,31 +34,4 @@ export interface CreateOwnerPayload {
   address?: string
 }
 
-export interface Captain {
-  id: number
-  full_name: string
-  license_number: string
-  owner: number
-  owner_name?: string
-  date_of_birth?: string | null
-  contact_info?: string | null
-  email?: string | null
-  phone?: string | null
-  address?: string | null
-  years_of_experience?: number | null
-  ships?: OwnerShip[]
-  created_at?: string
-  updated_at?: string
-}
-
-export interface CreateCaptainPayload {
-  full_name: string
-  license_number: string
-  owner: number
-  date_of_birth?: string | null
-  contact_info?: string | null
-  email?: string | null
-  phone?: string | null
-  address?: string | null
-  years_of_experience?: number | null
-}
+export type { Captain, CreateCaptainPayload } from '../captains/types'

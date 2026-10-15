@@ -21,6 +21,9 @@ export const API_ENDPOINTS = {
     LIST: `${API_BASE_URL}/api/owners/owners/`,
     CAPTAINS: `${API_BASE_URL}/api/owners/captains/`,
   },
+  CAPTAINS: {
+    LIST: `${API_BASE_URL}/api/owners/captains/`,
+  },
 
   // 3. Ships & Quota
   SHIPS: {

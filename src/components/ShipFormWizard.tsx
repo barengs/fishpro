@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FormField, inputCls } from './FormField'
 import { emptyShipForm, type ShipFormData } from './shipFormTypes'
-import { ownersService, captainsService, type Owner, type Captain } from '../services/owners'
+import { ownersService, type Owner } from '../services/owners'
+import { captainsService, type Captain } from '../services/captains'
 
 const steps = [
   { num: 1, title: 'Identitas' },
