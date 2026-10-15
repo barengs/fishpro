@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
+import { pnbpService } from "../../../services/pnbp";
+
 const past = "#1A56DB";
 const next = "#BCD3F8";
 
-const bars = [
+interface BarItem {
+  label: string;
+  h: string;
+  color: string;
+  top: string;
+}
+
+const defaultBars: BarItem[] = [
   { label: "Agu", h: "58%", color: past, top: "" },
   { label: "Sep", h: "66%", color: past, top: "" },
   { label: "Okt", h: "74%", color: past, top: "" },
@@ -11,13 +21,69 @@ const bars = [
 ];
 
 export function PnbpPredictionBars() {
+  const [bars, setBars] = useState<BarItem[]>(defaultBars);
+  const [summaryInfo, setSummaryInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    pnbpService
+      .getUnifiedChartData()
+      .then((res) => {
+        const stats = res.charts_data?.summary_stats;
+        if (stats && stats.total_pnbp_sum) {
+          setSummaryInfo(
+            `Total tercatat: Rp ${(stats.total_pnbp_sum / 1_000_000).toFixed(1)} jt`,
+          );
+        }
+
+        const preds = res.charts_data?.pnbp_predictions?.data;
+        if (
+          preds &&
+          preds.monthly_forecasts &&
+          preds.monthly_forecasts.length > 0
+        ) {
+          const maxPnbp = Math.max(
+            ...preds.monthly_forecasts.map(
+              (f: { predicted_pnbp: number }) => f.predicted_pnbp || 1,
+            ),
+            1,
+          );
+
+          const dynamicBars: BarItem[] = preds.monthly_forecasts
+            .slice(0, 6)
+            .map(
+              (f: { month: string; predicted_pnbp: number }, idx: number) => ({
+                label: f.month || `M${idx + 1}`,
+                h: `${Math.round(((f.predicted_pnbp || 0) / maxPnbp) * 85 + 15)}%`,
+                color: idx < 3 ? past : next,
+                top:
+                  idx === preds.monthly_forecasts!.length - 1
+                    ? `Rp ${(f.predicted_pnbp / 1_000_000).toFixed(0)} jt`
+                    : "",
+              }),
+            );
+
+          if (dynamicBars.length > 0) setBars(dynamicBars);
+        }
+      })
+      .catch(() => {
+        // Fallback to default bars
+      });
+  }, []);
+
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
-      <h2 className="mt-0 mb-1 text-base font-bold text-strong">
-        Prediksi PNBP
-      </h2>
+      <div className="flex justify-between items-start mb-1">
+        <h2 className="m-0 text-base font-bold text-strong">
+          Prediksi PNBP Armada
+        </h2>
+        {summaryInfo && (
+          <span className="text-xs text-fco-blue font-semibold tabular-nums">
+            {summaryInfo}
+          </span>
+        )}
+      </div>
       <div className="text-fco-sm text-soft mb-5">
-        Tiga bulan terakhir dan tiga bulan ke depan
+        Tiga bulan terakhir dan tiga bulan ke depan (Unified Chart Data)
       </div>
 
       <div className="flex items-end gap-3 h-37.5">

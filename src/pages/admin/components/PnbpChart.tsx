@@ -1,10 +1,44 @@
+import { useEffect, useState } from "react";
+import {
+  pnbpService,
+  type UnifiedChartSummaryStats,
+} from "../../../services/pnbp";
+
 export function PnbpChart() {
+  const [stats, setStats] = useState<UnifiedChartSummaryStats | null>(null);
+
+  useEffect(() => {
+    pnbpService
+      .getUnifiedChartData()
+      .then((res) => {
+        if (res.charts_data?.summary_stats) {
+          setStats(res.charts_data.summary_stats);
+        }
+      })
+      .catch(() => {
+        // Fallback to static visualization
+      });
+  }, []);
+
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <h2 className="m-0 text-base font-bold text-strong">
-          PNBP bulanan: aktual dan prediksi
-        </h2>
+        <div>
+          <h2 className="m-0 text-base font-bold text-strong">
+            PNBP bulanan: aktual dan prediksi
+          </h2>
+          {stats &&
+            stats.total_pnbp_sum !== undefined &&
+            stats.total_pnbp_sum > 0 && (
+              <div className="text-xs text-soft mt-1">
+                Akumulasi tercatat:{" "}
+                <span className="font-semibold text-fco-blue tabular-nums">
+                  Rp {Number(stats.total_pnbp_sum).toLocaleString("id-ID")}
+                </span>
+                {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
+              </div>
+            )}
+        </div>
         <div className="flex gap-4 text-xs text-soft">
           <span className="flex items-center gap-1.5">
             <svg width="20" height="4" viewBox="0 0 20 4" aria-hidden="true">

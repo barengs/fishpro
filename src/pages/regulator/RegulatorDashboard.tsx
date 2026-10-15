@@ -103,7 +103,11 @@ export function RegulatorDashboard() {
       );
       setTimeout(() => setToastMessage(null), 4000);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal menyesuaikan kuota kapal via API.');
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Gagal menyesuaikan kuota kapal via API.",
+      );
     }
   };
 

@@ -34,22 +34,25 @@ export function QuotaAuditPage() {
   const aiModal = useCrudModal();
   const [selectedShipForAi, setSelectedShipForAi] = useState<Ship | null>(null);
   const [aiPredicting, setAiPredicting] = useState(false);
-  const [aiResult, setAiResult] =
-    useState<PredictShipQuotaResponse | null>(null);
+  const [aiResult, setAiResult] = useState<PredictShipQuotaResponse | null>(
+    null,
+  );
   const [aiError, setAiError] = useState<string | null>(null);
 
   const fetchShips = useCallback(async (query?: string) => {
-    setLoading(true)
-    setErrorMsg(null)
+    setLoading(true);
+    setErrorMsg(null);
     try {
-      const data = await shipsService.getAll(query)
-      setShips(data)
+      const data = await shipsService.getAll(query);
+      setShips(data);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal memuat data kapal')
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal memuat data kapal",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -151,7 +154,9 @@ export function QuotaAuditPage() {
         const q = r.current_year_quota;
         return (
           <span className="text-sm tabular-nums font-semibold">
-            {q ? `${Number(q.total_quota).toLocaleString("id-ID")} kg` : "12.000 kg"}
+            {q
+              ? `${Number(q.total_quota).toLocaleString("id-ID")} kg`
+              : "12.000 kg"}
           </span>
         );
       },
@@ -324,7 +329,9 @@ export function QuotaAuditPage() {
           <div className="flex items-center gap-2 p-3.5 rounded-xl bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 text-xs leading-relaxed">
             <Sparkles size={18} className="shrink-0 text-purple-600" />
             <span>
-              Algoritma mengeksekusi deep learning LSTM untuk membaca tren tangkapan historis, kemudian dioptimasi menggunakan NSGA-III untuk menjaga kelestarian stok ikan.
+              Algoritma mengeksekusi deep learning LSTM untuk membaca tren
+              tangkapan historis, kemudian dioptimasi menggunakan NSGA-III untuk
+              menjaga kelestarian stok ikan.
             </span>
           </div>
 
@@ -345,7 +352,9 @@ export function QuotaAuditPage() {
             <div className="flex flex-col gap-3.5">
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-4 rounded-xl surface-inset border">
-                  <div className="text-xs text-soft mb-1">Hasil Prediksi LSTM</div>
+                  <div className="text-xs text-soft mb-1">
+                    Hasil Prediksi LSTM
+                  </div>
                   <div className="text-lg font-bold text-strong tabular-nums">
                     {aiResult.lstm_predicted_quota
                       ? `${Number(aiResult.lstm_predicted_quota).toLocaleString("id-ID")} kg`
@@ -357,7 +366,9 @@ export function QuotaAuditPage() {
                     Rekomendasi Optimal NSGA-III
                   </div>
                   <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-300 tabular-nums">
-                    {aiResult.nsga_optimized_quota || aiResult.predicted_quota || aiResult.optimal_quota
+                    {aiResult.nsga_optimized_quota ||
+                    aiResult.predicted_quota ||
+                    aiResult.optimal_quota
                       ? `${Number(aiResult.nsga_optimized_quota || aiResult.predicted_quota || aiResult.optimal_quota).toLocaleString("id-ID")} kg`
                       : "—"}
                   </div>
@@ -378,7 +389,8 @@ export function QuotaAuditPage() {
                   aiModal.closeModal();
                   if (selectedShipForAi && quotaVal) {
                     setF({
-                      registration_number: selectedShipForAi.registration_number,
+                      registration_number:
+                        selectedShipForAi.registration_number,
                       year: "2026",
                       new_quota: String(quotaVal),
                       reason:

@@ -6,6 +6,8 @@ export interface PnbpHistoryRecord {
   record_count?: number;
   date?: string;
   pnbp?: number;
+  nama_kapal?: string;
+  total_volume?: number;
 }
 
 export interface PnbpHistoryResponse {
@@ -65,26 +67,47 @@ export interface PredictPnbpPayload {
   ships_data?: unknown[];
 }
 
+export interface UnifiedChartSummaryStats {
+  total_historical_records?: number;
+  total_pnbp_sum?: number;
+  avg_pnbp_per_record?: number;
+  max_pnbp?: number;
+  min_pnbp?: number;
+  total_volume_sum?: number;
+  avg_volume_per_record?: number;
+  unique_ships?: number;
+  [key: string]: unknown;
+}
+
 export interface UnifiedChartDataResponse {
   status: string;
   charts_data: {
     historical_pnbp?: {
-      labels?: string[];
-      data?: number[];
+      data?: PnbpHistoryRecord[];
+      count?: number;
+      chart_type?: string;
+      title?: string;
       [key: string]: unknown;
     };
     pnbp_predictions?: {
-      labels?: string[];
-      data?: number[];
+      data?: PnbpPredictionsData | null;
+      available?: boolean;
+      chart_type?: string;
+      title?: string;
       [key: string]: unknown;
     };
-    quota_predictions?: unknown;
-    summary_stats?: {
-      total_historical_pnbp?: number;
-      total_predicted_pnbp?: number;
-      growth_rate?: number;
+    quota_predictions?: {
+      data?: {
+        ship_name?: string;
+        ship_registration?: string;
+        predictions?: unknown;
+      } | null;
+      available?: boolean;
+      chart_type?: string;
+      title?: string;
       [key: string]: unknown;
     };
+    summary_stats?: UnifiedChartSummaryStats;
     [key: string]: unknown;
   };
 }
