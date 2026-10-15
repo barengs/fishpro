@@ -109,7 +109,10 @@ function ReportMockup() {
             <span className="font-bold tabular-nums">70%</span>
           </div>
           <div className="h-2 rounded-full track-bar overflow-hidden">
-            <div className="h-full w-[70%] rounded-full bg-fco-blue" />
+            <div
+              className="h-full rounded-full bg-fco-blue"
+              style={{ width: "70%" }}
+            />
           </div>
         </div>
         <div className="mt-3 flex items-center gap-1.5 text-xs text-soft tabular-nums">
@@ -175,7 +178,7 @@ export function OnboardingPage() {
         {/* Hero: one claim, one visual */}
         <section className="max-w-360 mx-auto px-4 sm:px-8 pt-14 sm:pt-20 pb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
-            <h1 className="m-0 mb-4 text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
+            <h1 className="m-0 mb-4 text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
               Lapor tangkapan sekali, dipercaya semua pihak.
             </h1>
             <p className="m-0 mb-7 text-lg text-soft leading-relaxed max-w-130">

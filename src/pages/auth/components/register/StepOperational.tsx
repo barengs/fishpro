@@ -21,7 +21,7 @@ interface StepOperationalProps {
 }
 
 const inputCls =
-  "w-full h-11 border-[1.5px] border-fco-border rounded-xl px-3.5 text-sm field-input focus:outline-none focus:border-fco-blue";
+  "w-full h-11 border border-fco-border rounded-xl px-3.5 text-sm field-input focus:outline-none focus:border-fco-blue";
 const labelCls = "block text-sm font-semibold text-strong mb-1.5";
 
 export function StepOperational({

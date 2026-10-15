@@ -44,14 +44,14 @@ export function StepReview({
         </div>
         <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
           <dt className="text-soft shrink-0">Nama</dt>
-          <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
+          <dd className="m-0 font-semibold text-strong text-right truncate max-w-2/3">
             {fullName}
             {companyName ? ` · ${companyName}` : ""}
           </dd>
         </div>
         <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
           <dt className="text-soft shrink-0">Kontak</dt>
-          <dd className="m-0 text-strong text-right truncate max-w-[65%]">
+          <dd className="m-0 text-strong text-right truncate max-w-2/3">
             {email} · {phone}
           </dd>
         </div>
@@ -64,7 +64,7 @@ export function StepReview({
                   ? "Kapal"
                   : "NIP"}
             </dt>
-            <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
+            <dd className="m-0 font-semibold text-strong text-right truncate max-w-2/3">
               {role === "captain"
                 ? licenseNumber
                 : role === "owner"
@@ -79,7 +79,7 @@ export function StepReview({
           type="checkbox"
           checked={agreeTerms}
           onChange={(e) => setAgreeTerms(e.target.checked)}
-          className="mt-0.5 rounded accent-[#1A56DB]"
+          className="mt-0.5 rounded accent-fco-blue"
         />
         <span className="leading-snug">
           Data sudah benar. Laporan yang saya kirim tercatat permanen dan tidak

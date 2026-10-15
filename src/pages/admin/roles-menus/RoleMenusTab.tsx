@@ -287,7 +287,7 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
               />
               Dapat Melihat
             </label>
@@ -304,7 +304,7 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
               />
               Dapat Membuat
             </label>
@@ -321,7 +321,7 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
               />
               Dapat Mengedit
             </label>
@@ -338,7 +338,7 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
               />
               Dapat Menghapus
             </label>

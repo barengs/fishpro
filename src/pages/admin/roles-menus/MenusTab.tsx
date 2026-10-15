@@ -270,7 +270,7 @@ export function MenusTab() {
                 onChange={(e) =>
                   setMForm({ ...mForm, is_active: e.target.checked })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
               />
               Menu Aktif
             </label>

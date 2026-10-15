@@ -39,7 +39,7 @@ export function CtaButton({
     "shadow-lg shadow-fco-blue/30",
     "transition-all duration-200 ease-out",
     "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-fco-blue/40 hover:brightness-110",
-    "active:translate-y-0 active:scale-[0.98] active:shadow-md",
+    "active:translate-y-0 active:scale-98 active:shadow-md",
     "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-fco-blue/40",
     fullWidth ? "w-full" : "",
     isDisabled
@@ -55,7 +55,8 @@ export function CtaButton({
       {pulse && !isDisabled && (
         <span
           aria-hidden="true"
-          className="absolute inset-0 rounded-2xl bg-fco-blue/40 animate-ping [animation-duration:2.2s] pointer-events-none"
+          className="absolute inset-0 rounded-2xl bg-fco-blue/40 animate-ping pointer-events-none"
+          style={{ animationDuration: "2.2s" }}
         />
       )}
       {loading ? (

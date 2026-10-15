@@ -108,7 +108,7 @@ export function TariffConfigTab() {
               type="checkbox"
               checked={t.is_active}
               onChange={(e) => setT({ ...t, is_active: e.target.checked })}
-              className="w-4 h-4 rounded text-fco-blue accent-[#1A56DB]"
+              className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
             />
             Tarif Aktif Digunakan
           </label>

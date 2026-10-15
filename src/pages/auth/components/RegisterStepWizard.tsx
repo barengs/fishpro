@@ -178,9 +178,9 @@ export function RegisterStepWizard() {
       {/* Stepper */}
       <div className="mb-5">
         <div className="flex items-center justify-between relative mb-2">
-          <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
+          <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-4.5 h-0.5 bg-fco-border z-0" />
           <div
-            className="absolute left-4 sm:left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
+            className="absolute left-4 sm:left-6 top-4 sm:top-4.5 h-0.5 bg-fco-blue z-0 transition-all duration-300"
             style={{
               width: `${((currentStep - 1) / (steps.length - 1)) * 88}%`,
             }}
@@ -205,7 +205,7 @@ export function RegisterStepWizard() {
                   {isPassed ? "✓" : s.num}
                 </div>
                 <span
-                  className={`text-[11px] sm:text-xs font-semibold whitespace-nowrap ${
+                  className={`text-fco-xs sm:text-xs font-semibold whitespace-nowrap ${
                     isCurrent
                       ? "text-fco-blue"
                       : isPassed

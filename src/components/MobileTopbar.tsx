@@ -147,7 +147,8 @@ export function MobileTopbar({
         <div
           role="dialog"
           aria-label="Menu navigasi"
-          className={`absolute left-0 top-0 bottom-0 w-72 max-w-[85vw] surface-card p-4 overflow-y-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "-translate-x-full"}`}
+          className={`absolute left-0 top-0 bottom-0 w-72 surface-card p-4 overflow-y-auto shadow-2xl transition-transform duration-300 ease-out ${open ? "translate-x-0" : "-translate-x-full"}`}
+          style={{ maxWidth: "85vw" }}
         >
           <div className="flex items-center gap-3 px-1 mb-5">
             <span className="text-sm font-extrabold tracking-tight text-strong">

@@ -72,7 +72,7 @@ export function CsvImportModal({
             disabled={submitting}
             checked={clearExisting}
             onChange={(e) => setClearExisting(e.target.checked)}
-            className="rounded text-fco-blue accent-[#1A56DB]"
+            className="rounded text-fco-blue accent-fco-blue"
           />
           <span>Hapus data lama sebelum mengimpor (clear_existing)</span>
         </label>

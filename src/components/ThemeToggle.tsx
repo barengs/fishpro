@@ -15,7 +15,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       className={`${compact ? "w-9 h-9" : "w-10 h-10"} rounded-fco border border-fco-border bg-white dark:bg-fco-surface-dark hover:surface-page dark:hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors relative overflow-hidden`}
     >
       <span
-        className={`absolute transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${isDark ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"}`}
+        className={`absolute transition-all duration-300 ease-out ${isDark ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"}`}
       >
         <Moon
           size={compact ? 16 : 18}
@@ -25,7 +25,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
         />
       </span>
       <span
-        className={`absolute transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${isDark ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"}`}
+        className={`absolute transition-all duration-300 ease-out ${isDark ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"}`}
       >
         <Sun
           size={compact ? 16 : 18}

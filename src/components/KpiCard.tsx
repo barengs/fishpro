@@ -62,7 +62,7 @@ export function KpiCard({
 
   return (
     <div
-      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none min-h-[140px] ${styles.card}`}
+      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none min-h-35 ${styles.card}`}
     >
       {/* Decorative background glow circles */}
       <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none transition-transform group-hover:scale-125 duration-300" />
