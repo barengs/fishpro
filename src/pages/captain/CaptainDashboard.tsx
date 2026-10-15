@@ -11,53 +11,108 @@ import { QuotaHeroCard } from './components/QuotaHeroCard'
 import { ShipSpecsCard } from './components/ShipSpecsCard'
 import { RecentCatchesTable, type CatchReport } from './components/RecentCatchesTable'
 import { shipsService, type Ship as ShipType } from '../../services/ships'
+import { catchesService } from '../../services/catches'
 import { authService } from '../../services/auth'
+import { fishSpeciesService } from '../../services/fish'
 
-const initialReports: CatchReport[] = [
+const fallbackReports: CatchReport[] = [
   { date: '08 Okt 2026', species: 'Tongkol', qty: '120 kg', pnbp: 'Rp 120.000' },
   { date: '06 Okt 2026', species: 'Cakalang', qty: '95 kg', pnbp: 'Rp 95.000' },
   { date: '03 Okt 2026', species: 'Tuna sirip kuning', qty: '60 kg', pnbp: 'Rp 180.000' },
-  { date: '29 Sep 2026', species: 'Tongkol', qty: '140 kg', pnbp: 'Rp 140.000' },
-  { date: '25 Sep 2026', species: 'Cakalang', qty: '110 kg', pnbp: 'Rp 110.000' }
 ]
 
 export function CaptainDashboard() {
-  const [reports, setReports] = useState<CatchReport[]>(initialReports)
+  const [reports, setReports] = useState<CatchReport[]>(fallbackReports)
   const [ship, setShip] = useState<ShipType | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
   const { open, openModal, closeModal } = useCrudModal()
 
   const currentUser = authService.getStoredUser()
   const captainId = currentUser?.id || 1
 
   useEffect(() => {
+    let ignore = false
+
     async function loadData() {
       try {
         const ships = await shipsService.getByCaptain(captainId).catch(() => [])
-        if (ships.length > 0) {
-          setShip(ships[0])
-        } else {
-          const all = await shipsService.getAll()
-          if (all.length > 0) setShip(all[0])
+        let targetShip = ships.length > 0 ? ships[0] : null
+        if (!targetShip) {
+          const all = await shipsService.getAll().catch(() => [])
+          targetShip = all.length > 0 ? all[0] : null
+        }
+        if (ignore) return
+        setShip(targetShip)
+
+        if (targetShip) {
+          const catchesData = await catchesService.getAll({ ship_id: targetShip.id }).catch(() => [])
+          if (ignore) return
+          if (catchesData.length > 0) {
+            const formatted: CatchReport[] = []
+            for (const c of catchesData) {
+              for (const d of c.catch_details || []) {
+                formatted.push({
+                  date: c.catch_date,
+                  species: d.fish_species_name || `Spesies #${d.fish_species}`,
+                  qty: `${d.quantity} ${d.unit}`,
+                  pnbp: d.pnbp ? `Rp ${Number(d.pnbp).toLocaleString('id-ID')}` : '—',
+                })
+              }
+            }
+            if (formatted.length > 0) setReports(formatted.slice(0, 5))
+          }
         }
       } catch {
         // Ignored
       }
     }
-    loadData()
-  }, [captainId])
 
-  const handleReportAdded = (data: CatchReportFormData) => {
-    const newReport: CatchReport = {
-      date: data.catch_date,
-      species: data.fish_species,
-      qty: `${data.quantity} ${data.unit}`,
-      pnbp: data.value ? `Rp ${Number(data.value).toLocaleString('id-ID')}` : 'Rp 150.000'
+    loadData()
+
+    return () => {
+      ignore = true
     }
-    setReports((prev) => [newReport, ...prev])
-    setToast(`Laporan ${data.fish_species} (${data.quantity} ${data.unit}) berhasil dicatat & disegel ke blockchain!`)
-    setTimeout(() => setToast(null), 4000)
-    closeModal()
+  }, [captainId, refreshKey])
+
+  const handleReportAdded = async (data: CatchReportFormData) => {
+    const shipReg = ship ? ship.registration_number : 'REG-0412'
+
+    try {
+      const speciesList = await fishSpeciesService.getAll().catch(() => [])
+      let speciesId = Number(data.fish_species)
+      if (isNaN(speciesId) || speciesId === 0) {
+        const found = speciesList.find(
+          (s) => s.name.toLowerCase() === data.fish_species.toLowerCase()
+        )
+        speciesId = found ? found.id : (speciesList.length > 0 ? speciesList[0].id : 1)
+      }
+
+      await catchesService.createWithDetails({
+        ship: shipReg,
+        catch_date: data.catch_date,
+        catch_type: data.catch_type,
+        location_latitude: data.location_latitude,
+        location_longitude: data.location_longitude,
+        description: data.description || '',
+        catch_details: [
+          {
+            fish_species: speciesId,
+            quantity: parseFloat(data.quantity) || 0,
+            unit: data.unit || 'kg',
+            value: data.value ? parseFloat(data.value) : null,
+            notes: data.description || '',
+          },
+        ],
+      })
+
+      setToast(`Laporan tangkapan berhasil dikirim dan disegel ke blockchain!`)
+      setTimeout(() => setToast(null), 4000)
+      closeModal()
+      setRefreshKey((k) => k + 1)
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal mengirim laporan tangkapan')
+    }
   }
 
   const shipName = ship?.name || 'KM Samudra Jaya'
@@ -91,7 +146,7 @@ export function CaptainDashboard() {
       </div>
 
       {toast && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-5 border border-fco-blue-border">
+        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
           ✓ {toast}
         </div>
       )}
@@ -105,7 +160,7 @@ export function CaptainDashboard() {
           color="blue"
           Icon={BarChart3}
         />
-        <KpiCard label="Tangkapan bulan ini" value="430 kg" delta="5 laporan tercatat" color="emerald" Icon={Fish} />
+        <KpiCard label="Tangkapan bulan ini" value="430 kg" delta={`${reports.length} laporan tercatat`} color="emerald" Icon={Fish} />
         <KpiCard label="PNBP terhitung" value="Rp 535.000" delta="Berdasarkan tarif resmi KKP" color="purple" Icon={Coins} />
         <KpiCard
           label="Status kapal"
