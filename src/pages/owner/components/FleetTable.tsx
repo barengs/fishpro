@@ -1,25 +1,69 @@
-import { ProgressBar } from '../../../components/ProgressBar'
-import { StatusChip } from '../../../components/StatusChip'
+import { ProgressBar } from "../../../components/ProgressBar";
+import { StatusChip } from "../../../components/StatusChip";
 
-const ok = { chip: 'Aktif', chipBg: '#E8F0FE', chipColor: '#1A56DB' }
-const warn = { chip: 'Kuota menipis', chipBg: '#FFF1E0', chipColor: '#B54708' }
-const watch = { chip: 'Perlu dipantau', chipBg: '#E8F0FE', chipColor: '#1A56DB' }
-const idle = { chip: 'Tanpa nahkoda', chipBg: '#EEF1F6', chipColor: '#4A5872' }
+const ok = { chip: "Aktif", chipBg: "#E8F0FE", chipColor: "#1A56DB" };
+const warn = { chip: "Kuota menipis", chipBg: "#FFF1E0", chipColor: "#B54708" };
+const watch = {
+  chip: "Perlu dipantau",
+  chipBg: "#E8F0FE",
+  chipColor: "#1A56DB",
+};
+const idle = { chip: "Tanpa nahkoda", chipBg: "#EEF1F6", chipColor: "#4A5872" };
 
 const fleet = [
-  { name: 'KM Samudra Jaya', reg: 'REG-0412', captain: 'Budi Hartono', captainColor: '#0F1F3D', width: '70%', ...ok },
-  { name: 'KM Bahari Satu', reg: 'REG-0087', captain: 'Agus Salim', captainColor: '#0F1F3D', width: '14%', ...warn },
-  { name: 'KM Mutiara Laut', reg: 'REG-0233', captain: 'Dewa Putu', captainColor: '#0F1F3D', width: '22%', ...watch },
-  { name: 'KM Laut Biru', reg: 'REG-0301', captain: 'Rahmat Ali', captainColor: '#0F1F3D', width: '58%', ...ok },
-  { name: 'KM Tirta Mas', reg: 'REG-0450', captain: 'Belum ditunjuk', captainColor: '#5B6B86', width: '81%', ...idle }
-]
+  {
+    name: "KM Samudra Jaya",
+    reg: "REG-0412",
+    captain: "Budi Hartono",
+    captainColor: "#0F1F3D",
+    width: "70%",
+    ...ok,
+  },
+  {
+    name: "KM Bahari Satu",
+    reg: "REG-0087",
+    captain: "Agus Salim",
+    captainColor: "#0F1F3D",
+    width: "14%",
+    ...warn,
+  },
+  {
+    name: "KM Mutiara Laut",
+    reg: "REG-0233",
+    captain: "Dewa Putu",
+    captainColor: "#0F1F3D",
+    width: "22%",
+    ...watch,
+  },
+  {
+    name: "KM Laut Biru",
+    reg: "REG-0301",
+    captain: "Rahmat Ali",
+    captainColor: "#0F1F3D",
+    width: "58%",
+    ...ok,
+  },
+  {
+    name: "KM Tirta Mas",
+    reg: "REG-0450",
+    captain: "Belum ditunjuk",
+    captainColor: "#5B6B86",
+    width: "81%",
+    ...idle,
+  },
+];
 
 export function FleetTable() {
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="m-0 text-base font-bold text-strong">Armada kapal (5)</h2>
-        <a href="/owner/captains" className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline">
+        <h2 className="m-0 text-base font-bold text-strong">
+          Armada kapal (5)
+        </h2>
+        <a
+          href="/owner/captains"
+          className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
+        >
           Kelola nahkoda →
         </a>
       </div>
@@ -34,12 +78,20 @@ export function FleetTable() {
           </div>
 
           {fleet.map((s) => (
-            <div key={s.reg} className="flex items-center py-4 border-t border-fco-border-subtle">
+            <div
+              key={s.reg}
+              className="flex items-center py-4 border-t border-fco-border-subtle"
+            >
               <div className="basis-3/10">
-                <div className="text-sm font-semibold text-strong">{s.name}</div>
+                <div className="text-sm font-semibold text-strong">
+                  {s.name}
+                </div>
                 <div className="text-xs text-soft tabular-nums">{s.reg}</div>
               </div>
-              <div className="basis-2/10 text-sm" style={{ color: s.captainColor }}>
+              <div
+                className="basis-2/10 text-sm"
+                style={{ color: s.captainColor }}
+              >
                 {s.captain}
               </div>
               <div className="basis-3/10 pr-6">
@@ -53,5 +105,5 @@ export function FleetTable() {
         </div>
       </div>
     </section>
-  )
+  );
 }

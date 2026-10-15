@@ -1,21 +1,28 @@
-import { apiClient, API_ENDPOINTS } from '../api'
-import type { PaginatedResponse } from '../types'
-import type { AssignMenuPayload, CreateMenuPayload, Menu, RoleMenu } from './types'
+import { apiClient, API_ENDPOINTS } from "../api";
+import type { PaginatedResponse } from "../types";
+import type {
+  AssignMenuPayload,
+  CreateMenuPayload,
+  Menu,
+  RoleMenu,
+} from "./types";
 
 export const menusService = {
   /**
    * GET /api/admin/menus/ - Daftar semua menu aktif
    */
   async getAll(): Promise<Menu[]> {
-    const data = await apiClient<PaginatedResponse<Menu> | Menu[]>(API_ENDPOINTS.ADMIN.MENUS)
-    return Array.isArray(data) ? data : data.results || []
+    const data = await apiClient<PaginatedResponse<Menu> | Menu[]>(
+      API_ENDPOINTS.ADMIN.MENUS,
+    );
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/admin/menus/{id}/ - Ambil menu
    */
   async getById(id: number): Promise<Menu> {
-    return apiClient<Menu>(`${API_ENDPOINTS.ADMIN.MENUS}${id}/`)
+    return apiClient<Menu>(`${API_ENDPOINTS.ADMIN.MENUS}${id}/`);
   },
 
   /**
@@ -23,9 +30,9 @@ export const menusService = {
    */
   async create(payload: CreateMenuPayload): Promise<Menu> {
     return apiClient<Menu>(API_ENDPOINTS.ADMIN.MENUS, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -33,9 +40,9 @@ export const menusService = {
    */
   async update(id: number, payload: CreateMenuPayload): Promise<Menu> {
     return apiClient<Menu>(`${API_ENDPOINTS.ADMIN.MENUS}${id}/`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -43,9 +50,9 @@ export const menusService = {
    */
   async patch(id: number, payload: Partial<CreateMenuPayload>): Promise<Menu> {
     return apiClient<Menu>(`${API_ENDPOINTS.ADMIN.MENUS}${id}/`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -53,10 +60,10 @@ export const menusService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.ADMIN.MENUS}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
-}
+};
 
 export const roleMenusService = {
   /**
@@ -64,16 +71,16 @@ export const roleMenusService = {
    */
   async getAll(): Promise<RoleMenu[]> {
     const data = await apiClient<PaginatedResponse<RoleMenu> | RoleMenu[]>(
-      API_ENDPOINTS.ADMIN.ROLE_MENUS
-    )
-    return Array.isArray(data) ? data : data.results || []
+      API_ENDPOINTS.ADMIN.ROLE_MENUS,
+    );
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/admin/role-menus/{id}/ - Ambil hubungan peran-menu
    */
   async getById(id: number): Promise<RoleMenu> {
-    return apiClient<RoleMenu>(`${API_ENDPOINTS.ADMIN.ROLE_MENUS}${id}/`)
+    return apiClient<RoleMenu>(`${API_ENDPOINTS.ADMIN.ROLE_MENUS}${id}/`);
   },
 
   /**
@@ -81,17 +88,20 @@ export const roleMenusService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.ADMIN.ROLE_MENUS}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
 
   /**
    * POST /api/admin/role-menus/assign_menu/ - Tetapkan menu ke peran
    */
   async assignMenu(payload: AssignMenuPayload): Promise<{ message: string }> {
-    return apiClient<{ message: string }>(`${API_ENDPOINTS.ADMIN.ROLE_MENUS}assign_menu/`, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
+    return apiClient<{ message: string }>(
+      `${API_ENDPOINTS.ADMIN.ROLE_MENUS}assign_menu/`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
   },
-}
+};

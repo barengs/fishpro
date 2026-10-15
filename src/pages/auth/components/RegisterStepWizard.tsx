@@ -1,132 +1,174 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Anchor, Building2, Loader2, ShieldCheck, Ship, User } from 'lucide-react'
-import { authService, type RegisterPayload } from '../../../services/auth'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Anchor,
+  Building2,
+  Loader2,
+  ShieldCheck,
+  Ship,
+  User,
+} from "lucide-react";
+import { authService, type RegisterPayload } from "../../../services/auth";
 
-type Role = 'owner' | 'captain' | 'regulator'
+type Role = "owner" | "captain" | "regulator";
 
-const roleCards: { key: Role; title: string; desc: string; Icon: typeof Ship; card: string; iconBox: string }[] = [
-  { key: 'owner', title: 'Pemilik Kapal', desc: 'Armada, kuota & PNBP', Icon: Ship, card: 'bg-fco-blue hover:bg-fco-blue-hover', iconBox: 'bg-white/20' },
-  { key: 'captain', title: 'Nahkoda', desc: 'Lapor tangkapan', Icon: Anchor, card: 'bg-emerald-600 hover:bg-emerald-700', iconBox: 'bg-white/20' },
-  { key: 'regulator', title: 'Pengawas', desc: 'Audit & verifikasi', Icon: ShieldCheck, card: 'bg-amber-500 hover:bg-amber-600', iconBox: 'bg-white/20' }
-]
+const roleCards: {
+  key: Role;
+  title: string;
+  desc: string;
+  Icon: typeof Ship;
+  card: string;
+  iconBox: string;
+}[] = [
+  {
+    key: "owner",
+    title: "Pemilik Kapal",
+    desc: "Armada, kuota & PNBP",
+    Icon: Ship,
+    card: "bg-fco-blue hover:bg-fco-blue-hover",
+    iconBox: "bg-white/20",
+  },
+  {
+    key: "captain",
+    title: "Nahkoda",
+    desc: "Lapor tangkapan",
+    Icon: Anchor,
+    card: "bg-emerald-600 hover:bg-emerald-700",
+    iconBox: "bg-white/20",
+  },
+  {
+    key: "regulator",
+    title: "Pengawas",
+    desc: "Audit & verifikasi",
+    Icon: ShieldCheck,
+    card: "bg-amber-500 hover:bg-amber-600",
+    iconBox: "bg-white/20",
+  },
+];
 
 const roleLabel: Record<Role, string> = {
-  owner: 'Pemilik Kapal',
-  captain: 'Nahkoda',
-  regulator: 'Pengawas'
-}
+  owner: "Pemilik Kapal",
+  captain: "Nahkoda",
+  regulator: "Pengawas",
+};
 
-const inputCls = 'w-full h-11 border-[1.5px] border-fco-border rounded-xl px-3.5 text-sm field-input focus:outline-none focus:border-fco-blue'
-const labelCls = 'block text-sm font-semibold text-strong mb-1.5'
+const inputCls =
+  "w-full h-11 border-[1.5px] border-fco-border rounded-xl px-3.5 text-sm field-input focus:outline-none focus:border-fco-blue";
+const labelCls = "block text-sm font-semibold text-strong mb-1.5";
 
 export function RegisterStepWizard() {
-  const navigate = useNavigate()
-  const [role, setRole] = useState<Role | null>(null)
-  const [currentStep, setCurrentStep] = useState(1)
+  const navigate = useNavigate();
+  const [role, setRole] = useState<Role | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const [ownerType, setOwnerType] = useState<'individual' | 'company'>('company')
-  const [fullName, setFullName] = useState('')
-  const [companyName, setCompanyName] = useState('')
+  const [ownerType, setOwnerType] = useState<"individual" | "company">(
+    "company",
+  );
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const [licenseNumber, setLicenseNumber] = useState('')
-  const [experienceYears, setExperienceYears] = useState('5')
-  const [shipReg, setShipReg] = useState('')
-  const [shipName, setShipName] = useState('')
-  const [homePort, setHomePort] = useState('Pelabuhan Benoa')
-  const [wpp, setWpp] = useState('WPP 573')
-  const [department, setDepartment] = useState('Direktorat Pengawasan Sumber Daya Kelautan')
-  const [nip, setNip] = useState('')
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [experienceYears, setExperienceYears] = useState("5");
+  const [shipReg, setShipReg] = useState("");
+  const [shipName, setShipName] = useState("");
+  const [homePort, setHomePort] = useState("Pelabuhan Benoa");
+  const [wpp, setWpp] = useState("WPP 573");
+  const [department, setDepartment] = useState(
+    "Direktorat Pengawasan Sumber Daya Kelautan",
+  );
+  const [nip, setNip] = useState("");
 
-  const [agreeTerms, setAgreeTerms] = useState(false)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const steps = [
-    { num: 1, title: 'Data diri' },
-    { num: 2, title: 'Akun' },
-    { num: 3, title: 'Detail' },
-    { num: 4, title: 'Cek' }
-  ]
+    { num: 1, title: "Data diri" },
+    { num: 2, title: "Akun" },
+    { num: 3, title: "Detail" },
+    { num: 4, title: "Cek" },
+  ];
 
   const pickRole = (r: Role) => {
-    setRole(r)
-    setCurrentStep(1)
-    setErrorMsg(null)
-  }
+    setRole(r);
+    setCurrentStep(1);
+    setErrorMsg(null);
+  };
 
   const changeRole = () => {
-    setRole(null)
-    setCurrentStep(1)
-    setErrorMsg(null)
-  }
+    setRole(null);
+    setCurrentStep(1);
+    setErrorMsg(null);
+  };
 
   const handleNext = () => {
-    setErrorMsg(null)
+    setErrorMsg(null);
     if (currentStep === 1) {
       if (!fullName.trim()) {
-        setErrorMsg('Nama masih kosong.')
-        return
+        setErrorMsg("Nama masih kosong.");
+        return;
       }
-      if (role === 'owner' && ownerType === 'company' && !companyName.trim()) {
-        setErrorMsg('Nama perusahaan masih kosong.')
-        return
+      if (role === "owner" && ownerType === "company" && !companyName.trim()) {
+        setErrorMsg("Nama perusahaan masih kosong.");
+        return;
       }
     } else if (currentStep === 2) {
       if (!username.trim() || !email.trim() || !phone.trim() || !password) {
-        setErrorMsg('Lengkapi username, WA, email, dan sandi.')
-        return
+        setErrorMsg("Lengkapi username, WA, email, dan sandi.");
+        return;
       }
       if (password.length < 8) {
-        setErrorMsg('Sandi minimal 8 karakter.')
-        return
+        setErrorMsg("Sandi minimal 8 karakter.");
+        return;
       }
       if (password !== passwordConfirm) {
-        setErrorMsg('Sandi tidak sama, coba lagi.')
-        return
+        setErrorMsg("Sandi tidak sama, coba lagi.");
+        return;
       }
     } else if (currentStep === 3) {
-      if (role === 'captain' && !licenseNumber.trim()) {
-        setErrorMsg('No. lisensi wajib diisi.')
-        return
+      if (role === "captain" && !licenseNumber.trim()) {
+        setErrorMsg("No. lisensi wajib diisi.");
+        return;
       }
-      if (role === 'owner' && !shipReg.trim()) {
-        setErrorMsg('No. registrasi kapal wajib diisi.')
-        return
+      if (role === "owner" && !shipReg.trim()) {
+        setErrorMsg("No. registrasi kapal wajib diisi.");
+        return;
       }
-      if (role === 'regulator' && !nip.trim()) {
-        setErrorMsg('NIP / ID pengawas wajib diisi.')
-        return
+      if (role === "regulator" && !nip.trim()) {
+        setErrorMsg("NIP / ID pengawas wajib diisi.");
+        return;
       }
     }
-    setCurrentStep((prev) => Math.min(4, prev + 1))
-  }
+    setCurrentStep((prev) => Math.min(4, prev + 1));
+  };
 
   const handlePrev = () => {
-    setErrorMsg(null)
-    setCurrentStep((prev) => Math.max(1, prev - 1))
-  }
+    setErrorMsg(null);
+    setCurrentStep((prev) => Math.max(1, prev - 1));
+  };
 
   const handleSubmit = async () => {
     if (!agreeTerms) {
-      setErrorMsg('Centang persetujuan dulu untuk lanjut.')
-      return
+      setErrorMsg("Centang persetujuan dulu untuk lanjut.");
+      return;
     }
 
-    if (role === 'regulator') {
-      setErrorMsg('Pendaftaran mandiri diperuntukkan bagi Pemilik Kapal dan Nahkoda. Akun Pengawas/Regulator diterbitkan langsung oleh Administrator KKP.')
-      return
+    if (role === "regulator") {
+      setErrorMsg(
+        "Pendaftaran mandiri diperuntukkan bagi Pemilik Kapal dan Nahkoda. Akun Pengawas/Regulator diterbitkan langsung oleh Administrator KKP.",
+      );
+      return;
     }
 
-    setIsLoading(true)
-    setErrorMsg(null)
+    setIsLoading(true);
+    setErrorMsg(null);
 
     try {
       const payload: RegisterPayload = {
@@ -134,33 +176,40 @@ export function RegisterStepWizard() {
         email: email.trim(),
         password,
         password_confirm: passwordConfirm,
-        role: role === 'captain' ? 'captain' : 'owner',
+        role: role === "captain" ? "captain" : "owner",
         full_name: fullName.trim(),
         phone: phone.trim(),
         contact_info: phone.trim(),
-        owner_type: role === 'owner' ? ownerType : 'individual',
+        owner_type: role === "owner" ? ownerType : "individual",
         ship_code: (shipReg && shipReg.trim()) || undefined,
         address: (homePort && homePort.trim()) || undefined,
-      }
+      };
 
-      const res = await authService.register(payload)
-      if (res.role === 'captain') {
-        navigate('/captain')
+      const res = await authService.register(payload);
+      if (res.role === "captain") {
+        navigate("/captain");
       } else {
-        navigate('/owner')
+        navigate("/owner");
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Pendaftaran gagal. Periksa kembali isian formulir.'
-      setErrorMsg(message)
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Pendaftaran gagal. Periksa kembali isian formulir.";
+      setErrorMsg(message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // ── Gate: 3 tombol besar, form muncul dengan animasi ──
   if (!role) {
     return (
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-220 mx-auto">
           {roleCards.map(({ key, title, desc, Icon, card, iconBox }, i) => (
             <motion.button
@@ -181,14 +230,18 @@ export function RegisterStepWizard() {
                 <Icon size={24} aria-hidden="true" />
               </motion.span>
               <span className="flex-1 min-w-0">
-                <span className="block text-base sm:text-lg font-extrabold">{title}</span>
-                <span className="block text-xs sm:text-sm text-white/85 mt-0.5">{desc}</span>
+                <span className="block text-base sm:text-lg font-extrabold">
+                  {title}
+                </span>
+                <span className="block text-xs sm:text-sm text-white/85 mt-0.5">
+                  {desc}
+                </span>
               </span>
             </motion.button>
           ))}
         </div>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -198,352 +251,638 @@ export function RegisterStepWizard() {
         initial={{ opacity: 0, x: 32 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -32 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
         className="max-w-full w-full"
       >
-      {/* Header identitas peran terpilih */}
-      {(() => {
-        const found = roleCards.find((c) => c.key === role)
-        const Icon = found?.Icon ?? Ship
-        const roleBg = role === 'owner' ? 'bg-fco-blue' : role === 'captain' ? 'bg-emerald-600' : 'bg-amber-500'
-        return (
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-fco-border">
-            <div className="flex items-center gap-3 min-w-0">
-              <span className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-sm`}>
-                <Icon size={20} aria-hidden="true" />
-              </span>
-              <div className="min-w-0">
-                <span className="text-xs text-soft font-medium block">Mendaftar sebagai</span>
-                <span className="text-base font-extrabold text-strong truncate block">{roleLabel[role]}</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={changeRole}
-              className="text-xs sm:text-sm font-semibold text-fco-blue hover:text-fco-blue-hover hover:underline bg-transparent border-none cursor-pointer py-1 px-2.5 rounded-lg hover:surface-inset transition-colors shrink-0"
-            >
-              Ganti peran
-            </button>
-          </div>
-        )
-      })()}
-
-      <div className="mb-5">
-        <div className="flex items-center justify-between relative mb-2">
-          <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
-          <div
-            className="absolute left-4 sm:left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
-            style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
-          />
-          {steps.map((s) => {
-            const isPassed = currentStep > s.num
-            const isCurrent = currentStep === s.num
-            return (
-              <div key={s.num} className="flex flex-col items-center gap-1 z-10 px-0.5 sm:px-1">
-                <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
-                    isCurrent
-                      ? 'bg-fco-blue text-white ring-2 ring-fco-blue/15'
-                      : isPassed
-                      ? 'bg-fco-blue text-white'
-                      : 'surface-card border-2 border-fco-border text-soft'
-                  }`}
+        {/* Header identitas peran terpilih */}
+        {(() => {
+          const found = roleCards.find((c) => c.key === role);
+          const Icon = found?.Icon ?? Ship;
+          const roleBg =
+            role === "owner"
+              ? "bg-fco-blue"
+              : role === "captain"
+                ? "bg-emerald-600"
+                : "bg-amber-500";
+          return (
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-fco-border">
+              <div className="flex items-center gap-3 min-w-0">
+                <span
+                  className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-sm`}
                 >
-                  {isPassed ? '✓' : s.num}
-                </div>
-                <span className={`text-[11px] sm:text-xs font-semibold whitespace-nowrap ${isCurrent ? 'text-fco-blue' : isPassed ? 'text-strong' : 'text-fco-placeholder'}`}>
-                  {s.title}
+                  <Icon size={20} aria-hidden="true" />
                 </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      <div>
-        {errorMsg && (
-          <div role="alert" className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
-            {errorMsg}
-          </div>
-        )}
-
-        {/* STEP 1: DATA DIRI (sesuai peran) */}
-        {currentStep === 1 && (
-          <div>
-            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Siapa Anda?</h3>
-            <p className="m-0 mb-5 text-sm text-soft">Identitas sesuai dokumen resmi.</p>
-            <div className="flex flex-col gap-4">
-              {role === 'owner' && (
-                <div>
-                  <span className={labelCls}>
-                    Tipe pemilik
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
+                <div className="min-w-0">
+                  <span className="text-xs text-soft font-medium block">
+                    Mendaftar sebagai
                   </span>
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    {[
-                      { key: 'individual', label: 'Pribadi', Icon: User },
-                      { key: 'company', label: 'Perusahaan', Icon: Building2 }
-                    ].map((t) => {
-                      const isSelected = ownerType === t.key
-                      return (
-                        <button
-                          key={t.key}
-                          type="button"
-                          onClick={() => setOwnerType(t.key as typeof ownerType)}
-                          aria-pressed={isSelected}
-                          className={`flex flex-col items-center justify-center gap-2.5 p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all aspect-square max-h-36 sm:max-h-40 w-full text-center group ${
-                            isSelected
-                              ? 'border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue shadow-xs'
-                              : 'border-fco-border surface-card text-strong hover:border-fco-blue/40'
-                          }`}
-                        >
-                          <span
-                            className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                  <span className="text-base font-extrabold text-strong truncate block">
+                    {roleLabel[role]}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={changeRole}
+                className="text-xs sm:text-sm font-semibold text-fco-blue hover:text-fco-blue-hover hover:underline bg-transparent border-none cursor-pointer py-1 px-2.5 rounded-lg hover:surface-inset transition-colors shrink-0"
+              >
+                Ganti peran
+              </button>
+            </div>
+          );
+        })()}
+
+        <div className="mb-5">
+          <div className="flex items-center justify-between relative mb-2">
+            <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-[18px] h-0.5 bg-fco-border z-0" />
+            <div
+              className="absolute left-4 sm:left-6 top-4 sm:top-[18px] h-0.5 bg-fco-blue z-0 transition-all duration-300"
+              style={{
+                width: `${((currentStep - 1) / (steps.length - 1)) * 88}%`,
+              }}
+            />
+            {steps.map((s) => {
+              const isPassed = currentStep > s.num;
+              const isCurrent = currentStep === s.num;
+              return (
+                <div
+                  key={s.num}
+                  className="flex flex-col items-center gap-1 z-10 px-0.5 sm:px-1"
+                >
+                  <div
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
+                      isCurrent
+                        ? "bg-fco-blue text-white ring-2 ring-fco-blue/15"
+                        : isPassed
+                          ? "bg-fco-blue text-white"
+                          : "surface-card border-2 border-fco-border text-soft"
+                    }`}
+                  >
+                    {isPassed ? "✓" : s.num}
+                  </div>
+                  <span
+                    className={`text-[11px] sm:text-xs font-semibold whitespace-nowrap ${isCurrent ? "text-fco-blue" : isPassed ? "text-strong" : "text-fco-placeholder"}`}
+                  >
+                    {s.title}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          {errorMsg && (
+            <div
+              role="alert"
+              className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20"
+            >
+              {errorMsg}
+            </div>
+          )}
+
+          {/* STEP 1: DATA DIRI (sesuai peran) */}
+          {currentStep === 1 && (
+            <div>
+              <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
+                Siapa Anda?
+              </h3>
+              <p className="m-0 mb-5 text-sm text-soft">
+                Identitas sesuai dokumen resmi.
+              </p>
+              <div className="flex flex-col gap-4">
+                {role === "owner" && (
+                  <div>
+                    <span className={labelCls}>
+                      Tipe pemilik
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </span>
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      {[
+                        { key: "individual", label: "Pribadi", Icon: User },
+                        {
+                          key: "company",
+                          label: "Perusahaan",
+                          Icon: Building2,
+                        },
+                      ].map((t) => {
+                        const isSelected = ownerType === t.key;
+                        return (
+                          <button
+                            key={t.key}
+                            type="button"
+                            onClick={() =>
+                              setOwnerType(t.key as typeof ownerType)
+                            }
+                            aria-pressed={isSelected}
+                            className={`flex flex-col items-center justify-center gap-2.5 p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all aspect-square max-h-36 sm:max-h-40 w-full text-center group ${
                               isSelected
-                                ? 'bg-fco-blue text-white shadow-xs'
-                                : 'surface-inset text-soft group-hover:text-fco-blue'
+                                ? "border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue shadow-xs"
+                                : "border-fco-border surface-card text-strong hover:border-fco-blue/40"
                             }`}
                           >
-                            <t.Icon size={24} strokeWidth={2} aria-hidden="true" />
-                          </span>
-                          <span className="font-extrabold text-sm sm:text-base tracking-tight">{t.label}</span>
-                        </button>
-                      )
-                    })}
+                            <span
+                              className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                                isSelected
+                                  ? "bg-fco-blue text-white shadow-xs"
+                                  : "surface-inset text-soft group-hover:text-fco-blue"
+                              }`}
+                            >
+                              <t.Icon
+                                size={24}
+                                strokeWidth={2}
+                                aria-hidden="true"
+                              />
+                            </span>
+                            <span className="font-extrabold text-sm sm:text-base tracking-tight">
+                              {t.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <label htmlFor="rg-name" className={labelCls}>
+                    {role === "owner" && ownerType === "company"
+                      ? "Nama penanggung jawab"
+                      : "Nama lengkap"}
+                    <span
+                      className="text-red-500 ml-1 font-bold"
+                      aria-label="mandatory"
+                      title="Mandatory"
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    id="rg-name"
+                    type="text"
+                    autoComplete="name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Nama sesuai KTP"
+                    className={inputCls}
+                  />
+                </div>
+                {role === "owner" && ownerType === "company" && (
+                  <div>
+                    <label htmlFor="rg-company" className={labelCls}>
+                      Nama perusahaan
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-company"
+                      type="text"
+                      autoComplete="organization"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      placeholder="PT ..."
+                      className={inputCls}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: AKUN (sama semua peran) */}
+          {currentStep === 2 && (
+            <div>
+              <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
+                Buat akun masuk
+              </h3>
+              <p className="m-0 mb-5 text-sm text-soft">
+                Dipakai setiap kali masuk.
+              </p>
+              <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="rg-user" className={labelCls}>
+                      Username
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-user"
+                      type="text"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="tanpa spasi"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rg-phone" className={labelCls}>
+                      WA
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-phone"
+                      type="tel"
+                      autoComplete="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="08..."
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="rg-email" className={labelCls}>
+                    Email
+                    <span
+                      className="text-red-500 ml-1 font-bold"
+                      aria-label="mandatory"
+                      title="Mandatory"
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    id="rg-email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="nama@email.com"
+                    className={inputCls}
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="rg-pass" className={labelCls}>
+                      Kata sandi
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-pass"
+                      type="password"
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Min. 8 karakter"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rg-pass2" className={labelCls}>
+                      Ulangi sandi
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-pass2"
+                      type="password"
+                      autoComplete="new-password"
+                      value={passwordConfirm}
+                      onChange={(e) => setPasswordConfirm(e.target.value)}
+                      placeholder="Sama seperti di kiri"
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: DETAIL PERAN */}
+          {currentStep === 3 && (
+            <div>
+              <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
+                {role === "owner"
+                  ? "Data kapal"
+                  : role === "captain"
+                    ? "Data pelaut"
+                    : "Data pengawas"}
+              </h3>
+              <p className="m-0 mb-5 text-sm text-soft">
+                {role === "owner"
+                  ? "Kapal yang Anda daftarkan."
+                  : role === "captain"
+                    ? "Lisensi dan kapal yang Anda awak."
+                    : "Satker dan identitas dinas."}
+              </p>
+              {role === "captain" && (
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="rg-lic" className={labelCls}>
+                        No. lisensi
+                        <span
+                          className="text-red-500 ml-1 font-bold"
+                          aria-label="mandatory"
+                          title="Mandatory"
+                        >
+                          *
+                        </span>
+                      </label>
+                      <input
+                        id="rg-lic"
+                        type="text"
+                        value={licenseNumber}
+                        onChange={(e) => setLicenseNumber(e.target.value)}
+                        placeholder="SKN-..."
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="rg-exp" className={labelCls}>
+                        Pengalaman (tahun)
+                        <span className="text-soft font-normal text-xs ml-1.5">
+                          (optional)
+                        </span>
+                      </label>
+                      <input
+                        id="rg-exp"
+                        type="number"
+                        min="0"
+                        value={experienceYears}
+                        onChange={(e) => setExperienceYears(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="rg-ship" className={labelCls}>
+                      No. kapal yang diawaki
+                      <span className="text-soft font-normal text-xs ml-1.5">
+                        (optional)
+                      </span>
+                    </label>
+                    <input
+                      id="rg-ship"
+                      type="text"
+                      value={shipReg}
+                      onChange={(e) => setShipReg(e.target.value)}
+                      placeholder="REG-... (boleh kosong)"
+                      className={inputCls}
+                    />
                   </div>
                 </div>
               )}
-              <div>
-                <label htmlFor="rg-name" className={labelCls}>
-                  {role === 'owner' && ownerType === 'company' ? 'Nama penanggung jawab' : 'Nama lengkap'}
-                  <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                </label>
-                <input id="rg-name" type="text" autoComplete="name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Nama sesuai KTP" className={inputCls} />
-              </div>
-              {role === 'owner' && ownerType === 'company' && (
-                <div>
-                  <label htmlFor="rg-company" className={labelCls}>
-                    Nama perusahaan
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-company" type="text" autoComplete="organization" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="PT ..." className={inputCls} />
+              {role === "owner" && (
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="rg-shipname" className={labelCls}>
+                        Nama kapal
+                        <span className="text-soft font-normal text-xs ml-1.5">
+                          (optional)
+                        </span>
+                      </label>
+                      <input
+                        id="rg-shipname"
+                        type="text"
+                        value={shipName}
+                        onChange={(e) => setShipName(e.target.value)}
+                        placeholder="KM ..."
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="rg-shipreg" className={labelCls}>
+                        No. kapal (SIPI)
+                        <span
+                          className="text-red-500 ml-1 font-bold"
+                          aria-label="mandatory"
+                          title="Mandatory"
+                        >
+                          *
+                        </span>
+                      </label>
+                      <input
+                        id="rg-shipreg"
+                        type="text"
+                        value={shipReg}
+                        onChange={(e) => setShipReg(e.target.value)}
+                        placeholder="REG-..."
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="rg-port" className={labelCls}>
+                        Pelabuhan
+                        <span className="text-soft font-normal text-xs ml-1.5">
+                          (optional)
+                        </span>
+                      </label>
+                      <input
+                        id="rg-port"
+                        type="text"
+                        value={homePort}
+                        onChange={(e) => setHomePort(e.target.value)}
+                        placeholder="Benoa"
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="rg-wpp" className={labelCls}>
+                        WPP
+                        <span className="text-soft font-normal text-xs ml-1.5">
+                          (optional)
+                        </span>
+                      </label>
+                      <select
+                        id="rg-wpp"
+                        value={wpp}
+                        onChange={(e) => setWpp(e.target.value)}
+                        className={inputCls}
+                      >
+                        <option value="WPP 573">
+                          573 — Hindia Selatan Jawa
+                        </option>
+                        <option value="WPP 711">711 — Karimata & Natuna</option>
+                        <option value="WPP 712">712 — Laut Jawa</option>
+                        <option value="WPP 713">713 — Makassar & Flores</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {role === "regulator" && (
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <label htmlFor="rg-dept" className={labelCls}>
+                      Satuan kerja
+                      <span className="text-soft font-normal text-xs ml-1.5">
+                        (optional)
+                      </span>
+                    </label>
+                    <input
+                      id="rg-dept"
+                      type="text"
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rg-nip" className={labelCls}>
+                      NIP / ID pengawas
+                      <span
+                        className="text-red-500 ml-1 font-bold"
+                        aria-label="mandatory"
+                        title="Mandatory"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="rg-nip"
+                      type="text"
+                      value={nip}
+                      onChange={(e) => setNip(e.target.value)}
+                      placeholder="18 digit NIP"
+                      className={inputCls}
+                    />
+                  </div>
                 </div>
               )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* STEP 2: AKUN (sama semua peran) */}
-        {currentStep === 2 && (
-          <div>
-            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Buat akun masuk</h3>
-            <p className="m-0 mb-5 text-sm text-soft">Dipakai setiap kali masuk.</p>
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="rg-user" className={labelCls}>
-                    Username
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-user" type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="tanpa spasi" className={inputCls} />
-                </div>
-                <div>
-                  <label htmlFor="rg-phone" className={labelCls}>
-                    WA
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-phone" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08..." className={inputCls} />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="rg-email" className={labelCls}>
-                  Email
-                  <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                </label>
-                <input id="rg-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@email.com" className={inputCls} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="rg-pass" className={labelCls}>
-                    Kata sandi
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-pass" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min. 8 karakter" className={inputCls} />
-                </div>
-                <div>
-                  <label htmlFor="rg-pass2" className={labelCls}>
-                    Ulangi sandi
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-pass2" type="password" autoComplete="new-password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} placeholder="Sama seperti di kiri" className={inputCls} />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: DETAIL PERAN */}
-        {currentStep === 3 && (
-          <div>
-            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
-              {role === 'owner' ? 'Data kapal' : role === 'captain' ? 'Data pelaut' : 'Data pengawas'}
-            </h3>
-            <p className="m-0 mb-5 text-sm text-soft">
-              {role === 'owner' ? 'Kapal yang Anda daftarkan.' : role === 'captain' ? 'Lisensi dan kapal yang Anda awak.' : 'Satker dan identitas dinas.'}
-            </p>
-            {role === 'captain' && (
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="rg-lic" className={labelCls}>
-                      No. lisensi
-                      <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                    </label>
-                    <input id="rg-lic" type="text" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} placeholder="SKN-..." className={inputCls} />
-                  </div>
-                  <div>
-                    <label htmlFor="rg-exp" className={labelCls}>
-                      Pengalaman (tahun)
-                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                    </label>
-                    <input id="rg-exp" type="number" min="0" value={experienceYears} onChange={(e) => setExperienceYears(e.target.value)} className={inputCls} />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="rg-ship" className={labelCls}>
-                    No. kapal yang diawaki
-                    <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                  </label>
-                  <input id="rg-ship" type="text" value={shipReg} onChange={(e) => setShipReg(e.target.value)} placeholder="REG-... (boleh kosong)" className={inputCls} />
-                </div>
-              </div>
-            )}
-            {role === 'owner' && (
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="rg-shipname" className={labelCls}>
-                      Nama kapal
-                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                    </label>
-                    <input id="rg-shipname" type="text" value={shipName} onChange={(e) => setShipName(e.target.value)} placeholder="KM ..." className={inputCls} />
-                  </div>
-                  <div>
-                    <label htmlFor="rg-shipreg" className={labelCls}>
-                      No. kapal (SIPI)
-                      <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                    </label>
-                    <input id="rg-shipreg" type="text" value={shipReg} onChange={(e) => setShipReg(e.target.value)} placeholder="REG-..." className={inputCls} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="rg-port" className={labelCls}>
-                      Pelabuhan
-                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                    </label>
-                    <input id="rg-port" type="text" value={homePort} onChange={(e) => setHomePort(e.target.value)} placeholder="Benoa" className={inputCls} />
-                  </div>
-                  <div>
-                    <label htmlFor="rg-wpp" className={labelCls}>
-                      WPP
-                      <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                    </label>
-                    <select id="rg-wpp" value={wpp} onChange={(e) => setWpp(e.target.value)} className={inputCls}>
-                      <option value="WPP 573">573 — Hindia Selatan Jawa</option>
-                      <option value="WPP 711">711 — Karimata & Natuna</option>
-                      <option value="WPP 712">712 — Laut Jawa</option>
-                      <option value="WPP 713">713 — Makassar & Flores</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
-            {role === 'regulator' && (
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label htmlFor="rg-dept" className={labelCls}>
-                    Satuan kerja
-                    <span className="text-soft font-normal text-xs ml-1.5">(optional)</span>
-                  </label>
-                  <input id="rg-dept" type="text" value={department} onChange={(e) => setDepartment(e.target.value)} className={inputCls} />
-                </div>
-                <div>
-                  <label htmlFor="rg-nip" className={labelCls}>
-                    NIP / ID pengawas
-                    <span className="text-red-500 ml-1 font-bold" aria-label="mandatory" title="Mandatory">*</span>
-                  </label>
-                  <input id="rg-nip" type="text" value={nip} onChange={(e) => setNip(e.target.value)} placeholder="18 digit NIP" className={inputCls} />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* STEP 4: CEK */}
-        {currentStep === 4 && (
-          <div>
-            <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">Cek sekali lagi</h3>
-            <p className="m-0 mb-5 text-sm text-soft">Pastikan tidak ada salah ketik.</p>
-            <dl className="m-0 mb-5 p-3.5 sm:p-5 rounded-2xl surface-inset border text-xs sm:text-sm flex flex-col gap-2.5">
-              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
-                <dt className="text-soft shrink-0">Peran</dt>
-                <dd className="m-0 font-bold text-fco-blue text-right">{roleLabel[role]}</dd>
-              </div>
-              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
-                <dt className="text-soft shrink-0">Nama</dt>
-                <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">{fullName}{companyName ? ` · ${companyName}` : ''}</dd>
-              </div>
-              <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
-                <dt className="text-soft shrink-0">Kontak</dt>
-                <dd className="m-0 text-strong text-right truncate max-w-[65%]">{email} · {phone}</dd>
-              </div>
-              {(shipReg || licenseNumber || nip) && (
-                <div className="flex justify-between items-center gap-2 py-1">
-                  <dt className="text-soft shrink-0">{role === 'captain' ? 'Lisensi' : role === 'owner' ? 'Kapal' : 'NIP'}</dt>
-                  <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
-                    {role === 'captain' ? licenseNumber : role === 'owner' ? `${shipReg}${shipName ? ` (${shipName})` : ''}` : nip}
+          {/* STEP 4: CEK */}
+          {currentStep === 4 && (
+            <div>
+              <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
+                Cek sekali lagi
+              </h3>
+              <p className="m-0 mb-5 text-sm text-soft">
+                Pastikan tidak ada salah ketik.
+              </p>
+              <dl className="m-0 mb-5 p-3.5 sm:p-5 rounded-2xl surface-inset border text-xs sm:text-sm flex flex-col gap-2.5">
+                <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                  <dt className="text-soft shrink-0">Peran</dt>
+                  <dd className="m-0 font-bold text-fco-blue text-right">
+                    {roleLabel[role]}
                   </dd>
                 </div>
-              )}
-            </dl>
-            <label className="flex items-start gap-2.5 text-xs sm:text-sm text-soft cursor-pointer mb-5">
-              <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 rounded accent-[#1A56DB]" />
-              <span className="leading-snug">Data sudah benar. Laporan yang saya kirim tercatat permanen dan tidak bisa diubah.</span>
-            </label>
-          </div>
-        )}
+                <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                  <dt className="text-soft shrink-0">Nama</dt>
+                  <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
+                    {fullName}
+                    {companyName ? ` · ${companyName}` : ""}
+                  </dd>
+                </div>
+                <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
+                  <dt className="text-soft shrink-0">Kontak</dt>
+                  <dd className="m-0 text-strong text-right truncate max-w-[65%]">
+                    {email} · {phone}
+                  </dd>
+                </div>
+                {(shipReg || licenseNumber || nip) && (
+                  <div className="flex justify-between items-center gap-2 py-1">
+                    <dt className="text-soft shrink-0">
+                      {role === "captain"
+                        ? "Lisensi"
+                        : role === "owner"
+                          ? "Kapal"
+                          : "NIP"}
+                    </dt>
+                    <dd className="m-0 font-semibold text-strong text-right truncate max-w-[65%]">
+                      {role === "captain"
+                        ? licenseNumber
+                        : role === "owner"
+                          ? `${shipReg}${shipName ? ` (${shipName})` : ""}`
+                          : nip}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <label className="flex items-start gap-2.5 text-xs sm:text-sm text-soft cursor-pointer mb-5">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className="mt-0.5 rounded accent-[#1A56DB]"
+                />
+                <span className="leading-snug">
+                  Data sudah benar. Laporan yang saya kirim tercatat permanen
+                  dan tidak bisa diubah.
+                </span>
+              </label>
+            </div>
+          )}
 
-        <div className="flex gap-2.5 mt-5">
-          {currentStep > 1 && (
-            <button type="button" onClick={handlePrev} className="flex-1 h-11 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors">
-              Kembali
-            </button>
-          )}
-          {currentStep < 4 ? (
-            <motion.button
-              type="button"
-              onClick={handleNext}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
-            >
-              Lanjut
-            </motion.button>
-          ) : (
-            <motion.button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {isLoading && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
-              <span>{isLoading ? 'Mendaftarkan...' : 'Buat akun'}</span>
-            </motion.button>
-          )}
+          <div className="flex gap-2.5 mt-5">
+            {currentStep > 1 && (
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="flex-1 h-11 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors"
+              >
+                Kembali
+              </button>
+            )}
+            {currentStep < 4 ? (
+              <motion.button
+                type="button"
+                onClick={handleNext}
+                whileTap={{ scale: 0.97 }}
+                className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
+              >
+                Lanjut
+              </motion.button>
+            ) : (
+              <motion.button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                whileTap={{ scale: 0.97 }}
+                className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isLoading && (
+                  <Loader2
+                    size={16}
+                    className="animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>{isLoading ? "Mendaftarkan..." : "Buat akun"}</span>
+              </motion.button>
+            )}
+          </div>
         </div>
-      </div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

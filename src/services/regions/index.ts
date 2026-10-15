@@ -1,2 +1,2 @@
-export * from './types'
-export * from './regionsService'
+export * from "./types";
+export * from "./regionsService";

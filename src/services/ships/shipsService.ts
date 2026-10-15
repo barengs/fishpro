@@ -1,6 +1,6 @@
-import { apiClient, API_ENDPOINTS } from '../api'
-import type { PaginatedResponse } from '../types'
-import type { CreateShipPayload, Ship, ShipRecommendation } from './types'
+import { apiClient, API_ENDPOINTS } from "../api";
+import type { PaginatedResponse } from "../types";
+import type { CreateShipPayload, Ship, ShipRecommendation } from "./types";
 
 export const shipsService = {
   /**
@@ -9,17 +9,17 @@ export const shipsService = {
   async getAll(search?: string): Promise<Ship[]> {
     const url = search
       ? `${API_ENDPOINTS.SHIPS.LIST}?search=${encodeURIComponent(search)}`
-      : API_ENDPOINTS.SHIPS.LIST
+      : API_ENDPOINTS.SHIPS.LIST;
 
-    const data = await apiClient<PaginatedResponse<Ship> | Ship[]>(url)
-    return Array.isArray(data) ? data : data.results || []
+    const data = await apiClient<PaginatedResponse<Ship> | Ship[]>(url);
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/ships/ships/{id}/ - Mengambil detail satu kapal
    */
   async getById(id: number): Promise<Ship> {
-    return apiClient<Ship>(`${API_ENDPOINTS.SHIPS.LIST}${id}/`)
+    return apiClient<Ship>(`${API_ENDPOINTS.SHIPS.LIST}${id}/`);
   },
 
   /**
@@ -27,9 +27,9 @@ export const shipsService = {
    */
   async getByOwner(ownerId: number): Promise<Ship[]> {
     const data = await apiClient<Ship[]>(
-      `${API_ENDPOINTS.SHIPS.LIST}by_owner/?owner_id=${ownerId}`
-    )
-    return Array.isArray(data) ? data : []
+      `${API_ENDPOINTS.SHIPS.LIST}by_owner/?owner_id=${ownerId}`,
+    );
+    return Array.isArray(data) ? data : [];
   },
 
   /**
@@ -37,18 +37,20 @@ export const shipsService = {
    */
   async getByCaptain(captainId: number): Promise<Ship[]> {
     const data = await apiClient<Ship[]>(
-      `${API_ENDPOINTS.SHIPS.LIST}by_captain/?captain_id=${captainId}`
-    )
-    return Array.isArray(data) ? data : []
+      `${API_ENDPOINTS.SHIPS.LIST}by_captain/?captain_id=${captainId}`,
+    );
+    return Array.isArray(data) ? data : [];
   },
 
   /**
    * GET /api/ships/check-ship/?registration_number={reg}
    */
-  async checkRegistration(reg: string): Promise<{ exists: boolean; ship?: Ship }> {
+  async checkRegistration(
+    reg: string,
+  ): Promise<{ exists: boolean; ship?: Ship }> {
     return apiClient<{ exists: boolean; ship?: Ship }>(
-      `${API_ENDPOINTS.SHIPS.CHECK_REGISTRATION}?registration_number=${encodeURIComponent(reg)}`
-    )
+      `${API_ENDPOINTS.SHIPS.CHECK_REGISTRATION}?registration_number=${encodeURIComponent(reg)}`,
+    );
   },
 
   /**
@@ -56,9 +58,9 @@ export const shipsService = {
    */
   async create(payload: CreateShipPayload): Promise<Ship> {
     return apiClient<Ship>(API_ENDPOINTS.SHIPS.LIST, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -66,9 +68,9 @@ export const shipsService = {
    */
   async update(id: number, payload: CreateShipPayload): Promise<Ship> {
     return apiClient<Ship>(`${API_ENDPOINTS.SHIPS.LIST}${id}/`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -76,9 +78,9 @@ export const shipsService = {
    */
   async patch(id: number, payload: Partial<CreateShipPayload>): Promise<Ship> {
     return apiClient<Ship>(`${API_ENDPOINTS.SHIPS.LIST}${id}/`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -86,19 +88,19 @@ export const shipsService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.SHIPS.LIST}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
 
   /**
    * GET /api/ships/ai-recommendations/
    */
   async getAiRecommendations(): Promise<{
-    top_ships: ShipRecommendation[]
-    analysis_period: string
-    recommendation_factors: string
-    total_ships_analyzed: number
+    top_ships: ShipRecommendation[];
+    analysis_period: string;
+    recommendation_factors: string;
+    total_ships_analyzed: number;
   }> {
-    return apiClient(`${API_ENDPOINTS.SHIPS.AI_RECOMMENDATIONS}`)
+    return apiClient(`${API_ENDPOINTS.SHIPS.AI_RECOMMENDATIONS}`);
   },
-}
+};

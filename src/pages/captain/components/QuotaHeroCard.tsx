@@ -1,15 +1,15 @@
 interface QuotaHeroCardProps {
-  remainingKg: string
-  totalKg: string
-  percentage: number
-  validUntil: string
+  remainingKg: string;
+  totalKg: string;
+  percentage: number;
+  validUntil: string;
 }
 
 export function QuotaHeroCard({
-  remainingKg = '8.400 kg',
-  totalKg = '12.000 kg',
+  remainingKg = "8.400 kg",
+  totalKg = "12.000 kg",
   percentage = 70,
-  validUntil = '31 Des 2026'
+  validUntil = "31 Des 2026",
 }: Partial<QuotaHeroCardProps>) {
   return (
     <section className="bg-fco-blue text-white rounded-fco-lg p-7 relative overflow-hidden shadow-sm">
@@ -18,7 +18,9 @@ export function QuotaHeroCard({
       <div className="absolute w-50 h-50 rounded-full border border-white/18 -right-7.5 -top-15 pointer-events-none" />
 
       <div className="relative z-10">
-        <div className="text-sm font-semibold text-fco-mist">Sisa kuota 2026</div>
+        <div className="text-sm font-semibold text-fco-mist">
+          Sisa kuota 2026
+        </div>
         <div className="flex items-baseline gap-2 my-2 mb-5">
           <span className="text-fco-display font-extrabold tracking-tight tabular-nums text-white">
             {remainingKg}
@@ -39,5 +41,5 @@ export function QuotaHeroCard({
         </div>
       </div>
     </section>
-  )
+  );
 }

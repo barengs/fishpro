@@ -1,30 +1,35 @@
-import { ProgressBar } from '../../../components/ProgressBar'
-import { StatusChip } from '../../../components/StatusChip'
+import { ProgressBar } from "../../../components/ProgressBar";
+import { StatusChip } from "../../../components/StatusChip";
 
 export interface ShipQuotaItem {
-  name: string
-  reg: string
-  owner: string
-  allocatedQuota: string
-  usedQuota: string
-  percentRemaining: string
-  aiRecommendedQuota: string
-  status: string
-  statusBg: string
-  statusColor: string
+  name: string;
+  reg: string;
+  owner: string;
+  allocatedQuota: string;
+  usedQuota: string;
+  percentRemaining: string;
+  aiRecommendedQuota: string;
+  status: string;
+  statusBg: string;
+  statusColor: string;
 }
 
 interface QuotaAuditTableProps {
-  ships: ShipQuotaItem[]
-  onAdjustQuota: (ship: ShipQuotaItem) => void
+  ships: ShipQuotaItem[];
+  onAdjustQuota: (ship: ShipQuotaItem) => void;
 }
 
-export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) {
+export function QuotaAuditTable({
+  ships,
+  onAdjustQuota,
+}: QuotaAuditTableProps) {
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="m-0 text-base font-bold text-strong">Audit & Monitoring Kuota Kapal</h2>
+          <h2 className="m-0 text-base font-bold text-strong">
+            Audit & Monitoring Kuota Kapal
+          </h2>
           <div className="text-fco-sm text-soft mt-0.5">
             Data perbandingan alokasi kuota vs rekomendasi optimasi AI
           </div>
@@ -43,14 +48,21 @@ export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) 
           </div>
 
           {ships.map((s) => (
-            <div key={s.reg} className="flex items-center py-4 border-t border-fco-border-subtle">
+            <div
+              key={s.reg}
+              className="flex items-center py-4 border-t border-fco-border-subtle"
+            >
               <div className="basis-3/12">
-                <div className="text-sm font-semibold text-strong">{s.name}</div>
+                <div className="text-sm font-semibold text-strong">
+                  {s.name}
+                </div>
                 <div className="text-xs text-soft">
                   {s.reg} · {s.owner}
                 </div>
               </div>
-              <div className="basis-2/12 text-fco-sm font-semibold text-strong">{s.allocatedQuota}</div>
+              <div className="basis-2/12 text-fco-sm font-semibold text-strong">
+                {s.allocatedQuota}
+              </div>
               <div className="basis-2/12 text-fco-sm font-semibold text-fco-blue">
                 {s.aiRecommendedQuota}
               </div>
@@ -58,7 +70,11 @@ export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) 
                 <ProgressBar width={s.percentRemaining} showText />
               </div>
               <div className="basis-2/12 text-center">
-                <StatusChip label={s.status} bg={s.statusBg} color={s.statusColor} />
+                <StatusChip
+                  label={s.status}
+                  bg={s.statusBg}
+                  color={s.statusColor}
+                />
               </div>
               <div className="basis-2/12 text-right">
                 <button
@@ -74,5 +90,5 @@ export function QuotaAuditTable({ ships, onAdjustQuota }: QuotaAuditTableProps) 
         </div>
       </div>
     </section>
-  )
+  );
 }

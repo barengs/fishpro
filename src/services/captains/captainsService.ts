@@ -1,6 +1,6 @@
-import { apiClient, API_ENDPOINTS } from '../api'
-import type { PaginatedResponse } from '../types'
-import type { Captain, CreateCaptainPayload } from './types'
+import { apiClient, API_ENDPOINTS } from "../api";
+import type { PaginatedResponse } from "../types";
+import type { Captain, CreateCaptainPayload } from "./types";
 
 export const captainsService = {
   /**
@@ -10,10 +10,10 @@ export const captainsService = {
   async getAll(search?: string): Promise<Captain[]> {
     const url = search
       ? `${API_ENDPOINTS.CAPTAINS.LIST}?search=${encodeURIComponent(search)}`
-      : API_ENDPOINTS.CAPTAINS.LIST
+      : API_ENDPOINTS.CAPTAINS.LIST;
 
-    const data = await apiClient<PaginatedResponse<Captain> | Captain[]>(url)
-    return Array.isArray(data) ? data : data.results || []
+    const data = await apiClient<PaginatedResponse<Captain> | Captain[]>(url);
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
@@ -21,7 +21,7 @@ export const captainsService = {
    * Mengambil nahkoda tertentu berdasarkan ID
    */
   async getById(id: number): Promise<Captain> {
-    return apiClient<Captain>(`${API_ENDPOINTS.CAPTAINS.LIST}${id}/`)
+    return apiClient<Captain>(`${API_ENDPOINTS.CAPTAINS.LIST}${id}/`);
   },
 
   /**
@@ -30,9 +30,9 @@ export const captainsService = {
    */
   async create(payload: CreateCaptainPayload): Promise<Captain> {
     return apiClient<Captain>(API_ENDPOINTS.CAPTAINS.LIST, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -41,20 +41,23 @@ export const captainsService = {
    */
   async update(id: number, payload: CreateCaptainPayload): Promise<Captain> {
     return apiClient<Captain>(`${API_ENDPOINTS.CAPTAINS.LIST}${id}/`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
    * PATCH /api/owners/captains/{id}/ - Perbarui sebagian nahkoda
    * Memperbarui sebagian informasi nahkoda yang ada
    */
-  async patch(id: number, payload: Partial<CreateCaptainPayload>): Promise<Captain> {
+  async patch(
+    id: number,
+    payload: Partial<CreateCaptainPayload>,
+  ): Promise<Captain> {
     return apiClient<Captain>(`${API_ENDPOINTS.CAPTAINS.LIST}${id}/`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -63,7 +66,7 @@ export const captainsService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.CAPTAINS.LIST}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
-}
+};

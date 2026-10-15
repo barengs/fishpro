@@ -1,6 +1,6 @@
-import { apiClient, API_ENDPOINTS } from '../api'
-import type { PaginatedResponse } from '../types'
-import type { CreateRolePayload, Role, UserRole } from './types'
+import { apiClient, API_ENDPOINTS } from "../api";
+import type { PaginatedResponse } from "../types";
+import type { CreateRolePayload, Role, UserRole } from "./types";
 
 export const rolesService = {
   /**
@@ -9,16 +9,16 @@ export const rolesService = {
   async getAll(search?: string): Promise<Role[]> {
     const url = search
       ? `${API_ENDPOINTS.ADMIN.ROLES}?search=${encodeURIComponent(search)}`
-      : API_ENDPOINTS.ADMIN.ROLES
-    const data = await apiClient<PaginatedResponse<Role> | Role[]>(url)
-    return Array.isArray(data) ? data : data.results || []
+      : API_ENDPOINTS.ADMIN.ROLES;
+    const data = await apiClient<PaginatedResponse<Role> | Role[]>(url);
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/admin/roles/{id}/ - Ambil peran
    */
   async getById(id: number): Promise<Role> {
-    return apiClient<Role>(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`)
+    return apiClient<Role>(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`);
   },
 
   /**
@@ -26,9 +26,9 @@ export const rolesService = {
    */
   async create(payload: CreateRolePayload): Promise<Role> {
     return apiClient<Role>(API_ENDPOINTS.ADMIN.ROLES, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -36,9 +36,9 @@ export const rolesService = {
    */
   async update(id: number, payload: CreateRolePayload): Promise<Role> {
     return apiClient<Role>(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -46,9 +46,9 @@ export const rolesService = {
    */
   async patch(id: number, payload: Partial<CreateRolePayload>): Promise<Role> {
     return apiClient<Role>(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -56,23 +56,26 @@ export const rolesService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
 
   /**
    * POST /api/admin/roles/{id}/assign_permission/ - Tetapkan izin ke peran
    */
-  async assignPermission(roleId: number, permissionId: number): Promise<{ message: string }> {
+  async assignPermission(
+    roleId: number,
+    permissionId: number,
+  ): Promise<{ message: string }> {
     return apiClient<{ message: string }>(
       `${API_ENDPOINTS.ADMIN.ROLES}${roleId}/assign_permission/`,
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ permission_id: permissionId }),
-      }
-    )
+      },
+    );
   },
-}
+};
 
 export const userRolesService = {
   /**
@@ -80,16 +83,16 @@ export const userRolesService = {
    */
   async getAll(): Promise<UserRole[]> {
     const data = await apiClient<PaginatedResponse<UserRole> | UserRole[]>(
-      API_ENDPOINTS.ADMIN.USER_ROLES
-    )
-    return Array.isArray(data) ? data : data.results || []
+      API_ENDPOINTS.ADMIN.USER_ROLES,
+    );
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/admin/user-roles/{id}/ - Ambil hubungan pengguna-peran
    */
   async getById(id: number): Promise<UserRole> {
-    return apiClient<UserRole>(`${API_ENDPOINTS.ADMIN.USER_ROLES}${id}/`)
+    return apiClient<UserRole>(`${API_ENDPOINTS.ADMIN.USER_ROLES}${id}/`);
   },
 
   /**
@@ -97,17 +100,23 @@ export const userRolesService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.ADMIN.USER_ROLES}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
 
   /**
    * POST /api/admin/user-roles/assign_role/ - Tetapkan peran ke pengguna
    */
-  async assignRole(userId: number, roleId: number): Promise<{ message: string }> {
-    return apiClient<{ message: string }>(`${API_ENDPOINTS.ADMIN.USER_ROLES}assign_role/`, {
-      method: 'POST',
-      body: JSON.stringify({ user_id: userId, role_id: roleId }),
-    })
+  async assignRole(
+    userId: number,
+    roleId: number,
+  ): Promise<{ message: string }> {
+    return apiClient<{ message: string }>(
+      `${API_ENDPOINTS.ADMIN.USER_ROLES}assign_role/`,
+      {
+        method: "POST",
+        body: JSON.stringify({ user_id: userId, role_id: roleId }),
+      },
+    );
   },
-}
+};

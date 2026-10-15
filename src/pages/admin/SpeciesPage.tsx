@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
-import { PageToolbar } from '../../components/PageToolbar'
-import { DataTable, type Column } from '../../components/DataTable'
-import { CrudActions, FormField, inputCls } from '../../components/FormField'
-import { CrudModal } from '../../components/CrudModal'
-import { useCrudModal } from '../../components/useCrudModal'
+import { useEffect, useState } from "react";
+import { PageToolbar } from "../../components/PageToolbar";
+import { DataTable, type Column } from "../../components/DataTable";
+import { CrudActions, FormField, inputCls } from "../../components/FormField";
+import { CrudModal } from "../../components/CrudModal";
+import { useCrudModal } from "../../components/useCrudModal";
 import {
   fishService,
   fishSpeciesService,
@@ -11,248 +11,263 @@ import {
   type CreateFishSpeciesPayload,
   type Fish,
   type FishSpecies,
-} from '../../services/fish'
-import { Download, FileUp, Loader2 } from 'lucide-react'
+} from "../../services/fish";
+import { Download, FileUp, Loader2 } from "lucide-react";
 
-type SpeciesTab = 'species' | 'individual'
+type SpeciesTab = "species" | "individual";
 
 export function SpeciesPage() {
-  const [tab, setTab] = useState<SpeciesTab>('species')
-  const [search, setSearch] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [tab, setTab] = useState<SpeciesTab>("species");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   // Species state
-  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([])
+  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
   const [speciesForm, setSpeciesForm] = useState<CreateFishSpeciesPayload>({
-    name: '',
-    scientific_name: '',
-    description: '',
-  })
-  const [editingSpeciesId, setEditingSpeciesId] = useState<number | null>(null)
-  const speciesModal = useCrudModal()
+    name: "",
+    scientific_name: "",
+    description: "",
+  });
+  const [editingSpeciesId, setEditingSpeciesId] = useState<number | null>(null);
+  const speciesModal = useCrudModal();
 
   // Fish (individual) state
-  const [fishList, setFishList] = useState<Fish[]>([])
+  const [fishList, setFishList] = useState<Fish[]>([]);
   const [fishForm, setFishForm] = useState<CreateFishPayload>({
     species: 0,
-    name: '',
-    weight: '',
-    notes: '',
-  })
-  const [editingFishId, setEditingFishId] = useState<number | null>(null)
-  const fishModal = useCrudModal()
+    name: "",
+    weight: "",
+    notes: "",
+  });
+  const [editingFishId, setEditingFishId] = useState<number | null>(null);
+  const fishModal = useCrudModal();
 
   // CSV Import Modal state
-  const importModal = useCrudModal()
-  const [csvText, setCsvText] = useState('')
-  const [clearExisting, setClearExisting] = useState(false)
-  const [importing, setImporting] = useState(false)
+  const importModal = useCrudModal();
+  const [csvText, setCsvText] = useState("");
+  const [clearExisting, setClearExisting] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const fetchData = async (currentTab: SpeciesTab, query?: string) => {
-    setLoading(true)
-    setErrorMsg(null)
+    setLoading(true);
+    setErrorMsg(null);
     try {
-      if (currentTab === 'species') {
-        const data = await fishSpeciesService.getAll(query)
-        setSpeciesList(data)
+      if (currentTab === "species") {
+        const data = await fishSpeciesService.getAll(query);
+        setSpeciesList(data);
       } else {
         const [fishData, spData] = await Promise.all([
           fishService.getAll(),
           fishSpeciesService.getAll(),
-        ])
-        setFishList(fishData)
-        setSpeciesList(spData)
+        ]);
+        setFishList(fishData);
+        setSpeciesList(spData);
       }
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal memuat data ikan')
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal memuat data ikan",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData(tab, search)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [tab, search])
+      fetchData(tab, search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [tab, search]);
 
   // ================= Handlers =================
 
   const handleOpenAddSpecies = () => {
-    setEditingSpeciesId(null)
-    setSpeciesForm({ name: '', scientific_name: '', description: '' })
-    speciesModal.openModal()
-  }
+    setEditingSpeciesId(null);
+    setSpeciesForm({ name: "", scientific_name: "", description: "" });
+    speciesModal.openModal();
+  };
 
   const handleOpenEditSpecies = (sp: FishSpecies) => {
-    setEditingSpeciesId(sp.id)
+    setEditingSpeciesId(sp.id);
     setSpeciesForm({
       name: sp.name,
-      scientific_name: sp.scientific_name || '',
-      description: sp.description || '',
-    })
-    speciesModal.openModal()
-  }
+      scientific_name: sp.scientific_name || "",
+      description: sp.description || "",
+    });
+    speciesModal.openModal();
+  };
 
   const handleDeleteSpecies = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus spesies "${name}"?`)) return
+    if (!window.confirm(`Yakin ingin menghapus spesies "${name}"?`)) return;
     try {
-      await fishSpeciesService.delete(id)
-      setToastMsg(`Spesies "${name}" berhasil dihapus.`)
-      setTimeout(() => setToastMsg(null), 3000)
-      fetchData('species', search)
+      await fishSpeciesService.delete(id);
+      setToastMsg(`Spesies "${name}" berhasil dihapus.`);
+      setTimeout(() => setToastMsg(null), 3000);
+      fetchData("species", search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal menghapus spesies')
+      alert(err instanceof Error ? err.message : "Gagal menghapus spesies");
     }
-  }
+  };
 
   const handleSpeciesSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!speciesForm.name.trim()) return
-    setSubmitting(true)
-    setErrorMsg(null)
+    e.preventDefault();
+    if (!speciesForm.name.trim()) return;
+    setSubmitting(true);
+    setErrorMsg(null);
     try {
       if (editingSpeciesId) {
-        await fishSpeciesService.update(editingSpeciesId, speciesForm)
-        setToastMsg(`Spesies "${speciesForm.name}" berhasil diperbarui.`)
+        await fishSpeciesService.update(editingSpeciesId, speciesForm);
+        setToastMsg(`Spesies "${speciesForm.name}" berhasil diperbarui.`);
       } else {
-        await fishSpeciesService.create(speciesForm)
-        setToastMsg(`Spesies baru "${speciesForm.name}" berhasil ditambahkan.`)
+        await fishSpeciesService.create(speciesForm);
+        setToastMsg(`Spesies baru "${speciesForm.name}" berhasil ditambahkan.`);
       }
-      setTimeout(() => setToastMsg(null), 3000)
-      speciesModal.closeModal()
-      fetchData('species', search)
+      setTimeout(() => setToastMsg(null), 3000);
+      speciesModal.closeModal();
+      fetchData("species", search);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal menyimpan spesies')
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menyimpan spesies",
+      );
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   // Individual Fish Handlers
   const handleOpenAddFish = () => {
-    setEditingFishId(null)
+    setEditingFishId(null);
     setFishForm({
       species: speciesList.length > 0 ? speciesList[0].id : 0,
-      name: '',
-      weight: '',
-      notes: '',
-    })
-    fishModal.openModal()
-  }
+      name: "",
+      weight: "",
+      notes: "",
+    });
+    fishModal.openModal();
+  };
 
   const handleOpenEditFish = (f: Fish) => {
-    setEditingFishId(f.id)
+    setEditingFishId(f.id);
     setFishForm({
       species: f.species,
-      name: f.name || '',
-      weight: f.weight ?? '',
-      notes: f.notes || '',
-    })
-    fishModal.openModal()
-  }
+      name: f.name || "",
+      weight: f.weight ?? "",
+      notes: f.notes || "",
+    });
+    fishModal.openModal();
+  };
 
   const handleDeleteFish = async (id: number, name?: string | null) => {
-    const label = name || `#${id}`
-    if (!window.confirm(`Yakin ingin menghapus data ikan ${label}?`)) return
+    const label = name || `#${id}`;
+    if (!window.confirm(`Yakin ingin menghapus data ikan ${label}?`)) return;
     try {
-      await fishService.delete(id)
-      setToastMsg(`Data ikan ${label} berhasil dihapus.`)
-      setTimeout(() => setToastMsg(null), 3000)
-      fetchData('individual')
+      await fishService.delete(id);
+      setToastMsg(`Data ikan ${label} berhasil dihapus.`);
+      setTimeout(() => setToastMsg(null), 3000);
+      fetchData("individual");
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal menghapus data ikan')
+      alert(err instanceof Error ? err.message : "Gagal menghapus data ikan");
     }
-  }
+  };
 
   const handleFishSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!fishForm.species) {
-      setErrorMsg('Harap pilih jenis spesies ikan.')
-      return
+      setErrorMsg("Harap pilih jenis spesies ikan.");
+      return;
     }
-    setSubmitting(true)
-    setErrorMsg(null)
+    setSubmitting(true);
+    setErrorMsg(null);
     try {
       const payload: CreateFishPayload = {
         ...fishForm,
         weight: fishForm.weight ? parseFloat(String(fishForm.weight)) : null,
-      }
+      };
       if (editingFishId) {
-        await fishService.update(editingFishId, payload)
-        setToastMsg('Data ikan berhasil diperbarui.')
+        await fishService.update(editingFishId, payload);
+        setToastMsg("Data ikan berhasil diperbarui.");
       } else {
-        await fishService.create(payload)
-        setToastMsg('Data ikan individu baru berhasil ditambahkan.')
+        await fishService.create(payload);
+        setToastMsg("Data ikan individu baru berhasil ditambahkan.");
       }
-      setTimeout(() => setToastMsg(null), 3000)
-      fishModal.closeModal()
-      fetchData('individual')
+      setTimeout(() => setToastMsg(null), 3000);
+      fishModal.closeModal();
+      fetchData("individual");
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal menyimpan data ikan')
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menyimpan data ikan",
+      );
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   // CSV Import Submit
   const handleCsvImportSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!csvText.trim()) return
-    setImporting(true)
-    setErrorMsg(null)
+    e.preventDefault();
+    if (!csvText.trim()) return;
+    setImporting(true);
+    setErrorMsg(null);
     try {
-      if (tab === 'species') {
-        const res = await fishSpeciesService.importSpecies(csvText, clearExisting)
+      if (tab === "species") {
+        const res = await fishSpeciesService.importSpecies(
+          csvText,
+          clearExisting,
+        );
         setToastMsg(
-          `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`
-        )
+          `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`,
+        );
       } else {
-        const res = await fishService.importFish(csvText, clearExisting)
+        const res = await fishService.importFish(csvText, clearExisting);
         setToastMsg(
-          `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`
-        )
+          `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`,
+        );
       }
-      setTimeout(() => setToastMsg(null), 4000)
-      importModal.closeModal()
-      setCsvText('')
-      fetchData(tab)
+      setTimeout(() => setToastMsg(null), 4000);
+      importModal.closeModal();
+      setCsvText("");
+      fetchData(tab);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal mengimpor data CSV')
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal mengimpor data CSV",
+      );
     } finally {
-      setImporting(false)
+      setImporting(false);
     }
-  }
+  };
 
   // ================= Columns =================
 
   const speciesCols: Column<FishSpecies>[] = [
     {
-      key: 'name',
-      header: 'Nama Ikan / Ilmiah',
+      key: "name",
+      header: "Nama Ikan / Ilmiah",
       flex: 3,
       render: (r) => (
         <div>
           <div className="text-sm font-semibold">{r.name}</div>
-          <div className="text-xs text-soft italic">{r.scientific_name || '—'}</div>
+          <div className="text-xs text-soft italic">
+            {r.scientific_name || "—"}
+          </div>
         </div>
       ),
     },
     {
-      key: 'desc',
-      header: 'Deskripsi / Karakteristik',
+      key: "desc",
+      header: "Deskripsi / Karakteristik",
       flex: 4,
-      render: (r) => <span className="text-sm text-soft">{r.description || '—'}</span>,
+      render: (r) => (
+        <span className="text-sm text-soft">{r.description || "—"}</span>
+      ),
     },
     {
-      key: 'aksi',
-      header: 'Aksi',
+      key: "aksi",
+      header: "Aksi",
       flex: 1,
-      align: 'right',
+      align: "right",
       render: (r) => (
         <CrudActions
           onEdit={() => handleOpenEditSpecies(r)}
@@ -260,38 +275,48 @@ export function SpeciesPage() {
         />
       ),
     },
-  ]
+  ];
 
   const fishCols: Column<Fish>[] = [
     {
-      key: 'name',
-      header: 'Nama Ikan / Spesies',
+      key: "name",
+      header: "Nama Ikan / Spesies",
       flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold">{r.name || 'Ikan Tanpa Label'}</div>
-          <div className="text-xs text-fco-blue font-medium">{r.species_name || `Spesies #${r.species}`}</div>
+          <div className="text-sm font-semibold">
+            {r.name || "Ikan Tanpa Label"}
+          </div>
+          <div className="text-xs text-fco-blue font-medium">
+            {r.species_name || `Spesies #${r.species}`}
+          </div>
         </div>
       ),
     },
     {
-      key: 'weight',
-      header: 'Berat',
+      key: "weight",
+      header: "Berat",
       flex: 2,
-      align: 'right',
-      render: (r) => <span className="text-sm tabular-nums font-semibold">{r.weight ? `${r.weight} kg` : '—'}</span>,
+      align: "right",
+      render: (r) => (
+        <span className="text-sm tabular-nums font-semibold">
+          {r.weight ? `${r.weight} kg` : "—"}
+        </span>
+      ),
     },
     {
-      key: 'notes',
-      header: 'Catatan',
+      key: "notes",
+      header: "Catatan",
       flex: 3,
-      render: (r) => <span className="text-xs text-soft">{r.notes || '—'}</span>,
+      render: (r) => (
+        <span className="text-xs text-soft">{r.notes || "—"}</span>
+      ),
     },
     {
-      key: 'aksi',
-      header: 'Aksi',
+      key: "aksi",
+      header: "Aksi",
       flex: 1,
-      align: 'right',
+      align: "right",
       render: (r) => (
         <CrudActions
           onEdit={() => handleOpenEditFish(r)}
@@ -299,42 +324,52 @@ export function SpeciesPage() {
         />
       ),
     },
-  ]
+  ];
 
   return (
     <div>
       <PageToolbar
-        title={tab === 'species' ? 'Katalog Spesies Ikan' : 'Data Ikan Individu'}
-        desc={
-          tab === 'species'
-            ? 'Katalog jenis ikan tangkapan laut dan air tawar (nama lokal, nama taksonomi ilmiah).'
-            : 'Pencatatan karakteristik sampel ikan individu (berat kg, catatan kualitas).'
+        title={
+          tab === "species" ? "Katalog Spesies Ikan" : "Data Ikan Individu"
         }
-        searchPlaceholder={tab === 'species' ? 'Cari nama spesies...' : 'Cari ikan...'}
+        desc={
+          tab === "species"
+            ? "Katalog jenis ikan tangkapan laut dan air tawar (nama lokal, nama taksonomi ilmiah)."
+            : "Pencatatan karakteristik sampel ikan individu (berat kg, catatan kualitas)."
+        }
+        searchPlaceholder={
+          tab === "species" ? "Cari nama spesies..." : "Cari ikan..."
+        }
         searchValue={search}
         onSearchChange={setSearch}
         tabs={[
-          { key: 'species', label: '1. Spesies Ikan (FishSpecies)' },
-          { key: 'individual', label: '2. Ikan Individu (Fish)' },
+          { key: "species", label: "1. Spesies Ikan (FishSpecies)" },
+          { key: "individual", label: "2. Ikan Individu (Fish)" },
         ]}
         activeTab={tab}
         onTabChange={(k) => {
-          setTab(k as SpeciesTab)
-          setSearch('')
+          setTab(k as SpeciesTab);
+          setSearch("");
         }}
-        addLabel={tab === 'species' ? 'Tambah Spesies' : 'Tambah Ikan'}
-        onAdd={tab === 'species' ? handleOpenAddSpecies : handleOpenAddFish}
+        addLabel={tab === "species" ? "Tambah Spesies" : "Tambah Ikan"}
+        onAdd={tab === "species" ? handleOpenAddSpecies : handleOpenAddFish}
       />
 
       {/* CSV Action Buttons */}
       <div className="flex gap-2.5 mb-5 flex-wrap">
         <a
-          href={tab === 'species' ? fishSpeciesService.getTemplateUrl() : fishSpeciesService.getFishTemplateUrl()}
+          href={
+            tab === "species"
+              ? fishSpeciesService.getTemplateUrl()
+              : fishSpeciesService.getFishTemplateUrl()
+          }
           download
           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-fco-border surface-card hover:surface-inset transition-colors no-underline text-strong shadow-2xs"
         >
           <Download size={14} className="text-fco-blue" aria-hidden="true" />
-          <span>Unduh Template CSV {tab === 'species' ? 'Spesies' : 'Ikan'}</span>
+          <span>
+            Unduh Template CSV {tab === "species" ? "Spesies" : "Ikan"}
+          </span>
         </a>
         <button
           type="button"
@@ -342,7 +377,7 @@ export function SpeciesPage() {
           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-fco-border surface-card hover:surface-inset transition-colors cursor-pointer text-strong shadow-2xs"
         >
           <FileUp size={14} className="text-emerald-600" aria-hidden="true" />
-          <span>Impor {tab === 'species' ? 'Spesies' : 'Ikan'} dari CSV</span>
+          <span>Impor {tab === "species" ? "Spesies" : "Ikan"} dari CSV</span>
         </button>
       </div>
 
@@ -359,7 +394,7 @@ export function SpeciesPage() {
       )}
 
       <section className="surface-card border rounded-2xl p-6 shadow-xs">
-        {tab === 'species' ? (
+        {tab === "species" ? (
           <DataTable
             columns={speciesCols}
             rows={speciesList}
@@ -381,11 +416,17 @@ export function SpeciesPage() {
       {/* Modal 1: Species CRUD */}
       <CrudModal
         open={speciesModal.open}
-        title={editingSpeciesId ? 'Ubah Spesies Ikan' : 'Tambah Spesies Ikan'}
+        title={editingSpeciesId ? "Ubah Spesies Ikan" : "Tambah Spesies Ikan"}
         subtitle="Daftarkan jenis ikan baru ke katalog resmi."
         onClose={speciesModal.closeModal}
         onSubmit={handleSpeciesSubmit}
-        submitLabel={submitting ? 'Menyimpan...' : editingSpeciesId ? 'Perbarui Spesies' : 'Simpan Spesies'}
+        submitLabel={
+          submitting
+            ? "Menyimpan..."
+            : editingSpeciesId
+              ? "Perbarui Spesies"
+              : "Simpan Spesies"
+        }
       >
         <FormField label="Nama Ikan (Unik)" htmlFor="sp-name" required>
           <input
@@ -393,7 +434,9 @@ export function SpeciesPage() {
             required
             disabled={submitting}
             value={speciesForm.name}
-            onChange={(e) => setSpeciesForm({ ...speciesForm, name: e.target.value })}
+            onChange={(e) =>
+              setSpeciesForm({ ...speciesForm, name: e.target.value })
+            }
             placeholder="Contoh: Tuna Sirip Kuning"
             className={inputCls}
           />
@@ -402,8 +445,13 @@ export function SpeciesPage() {
           <input
             id="sp-sci"
             disabled={submitting}
-            value={speciesForm.scientific_name || ''}
-            onChange={(e) => setSpeciesForm({ ...speciesForm, scientific_name: e.target.value })}
+            value={speciesForm.scientific_name || ""}
+            onChange={(e) =>
+              setSpeciesForm({
+                ...speciesForm,
+                scientific_name: e.target.value,
+              })
+            }
             placeholder="Contoh: Thunnus albacares"
             className={inputCls}
           />
@@ -413,8 +461,10 @@ export function SpeciesPage() {
             id="sp-desc"
             rows={3}
             disabled={submitting}
-            value={speciesForm.description || ''}
-            onChange={(e) => setSpeciesForm({ ...speciesForm, description: e.target.value })}
+            value={speciesForm.description || ""}
+            onChange={(e) =>
+              setSpeciesForm({ ...speciesForm, description: e.target.value })
+            }
             placeholder="Karakteristik habitat, ukuran umum, atau musim..."
             className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue resize-none"
           />
@@ -424,11 +474,17 @@ export function SpeciesPage() {
       {/* Modal 2: Individual Fish CRUD */}
       <CrudModal
         open={fishModal.open}
-        title={editingFishId ? 'Ubah Data Ikan' : 'Tambah Ikan Individu'}
+        title={editingFishId ? "Ubah Data Ikan" : "Tambah Ikan Individu"}
         subtitle="Catat sampel ikan individu dengan spesifikasi berat."
         onClose={fishModal.closeModal}
         onSubmit={handleFishSubmit}
-        submitLabel={submitting ? 'Menyimpan...' : editingFishId ? 'Perbarui Data' : 'Simpan Data'}
+        submitLabel={
+          submitting
+            ? "Menyimpan..."
+            : editingFishId
+              ? "Perbarui Data"
+              : "Simpan Data"
+        }
       >
         <FormField label="Spesies Ikan" htmlFor="fi-species" required>
           <select
@@ -436,15 +492,20 @@ export function SpeciesPage() {
             required
             disabled={submitting || speciesList.length === 0}
             value={fishForm.species}
-            onChange={(e) => setFishForm({ ...fishForm, species: Number(e.target.value) })}
+            onChange={(e) =>
+              setFishForm({ ...fishForm, species: Number(e.target.value) })
+            }
             className={inputCls}
           >
             {speciesList.length === 0 ? (
-              <option value="">Belum ada spesies (tambahkan spesies dulu)</option>
+              <option value="">
+                Belum ada spesies (tambahkan spesies dulu)
+              </option>
             ) : (
               speciesList.map((sp) => (
                 <option key={sp.id} value={sp.id}>
-                  {sp.name} {sp.scientific_name ? `(${sp.scientific_name})` : ''}
+                  {sp.name}{" "}
+                  {sp.scientific_name ? `(${sp.scientific_name})` : ""}
                 </option>
               ))
             )}
@@ -455,8 +516,10 @@ export function SpeciesPage() {
             <input
               id="fi-name"
               disabled={submitting}
-              value={fishForm.name || ''}
-              onChange={(e) => setFishForm({ ...fishForm, name: e.target.value })}
+              value={fishForm.name || ""}
+              onChange={(e) =>
+                setFishForm({ ...fishForm, name: e.target.value })
+              }
               placeholder="Contoh: Tuna Grade A"
               className={inputCls}
             />
@@ -467,8 +530,10 @@ export function SpeciesPage() {
               type="number"
               step="0.01"
               disabled={submitting}
-              value={fishForm.weight ?? ''}
-              onChange={(e) => setFishForm({ ...fishForm, weight: e.target.value })}
+              value={fishForm.weight ?? ""}
+              onChange={(e) =>
+                setFishForm({ ...fishForm, weight: e.target.value })
+              }
               placeholder="Contoh: 15.5"
               className={inputCls}
             />
@@ -479,8 +544,10 @@ export function SpeciesPage() {
             id="fi-notes"
             rows={2}
             disabled={submitting}
-            value={fishForm.notes || ''}
-            onChange={(e) => setFishForm({ ...fishForm, notes: e.target.value })}
+            value={fishForm.notes || ""}
+            onChange={(e) =>
+              setFishForm({ ...fishForm, notes: e.target.value })
+            }
             placeholder="Kualitas kesegaran, lokasi penangkapan khusus, dll..."
             className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue resize-none"
           />
@@ -490,15 +557,17 @@ export function SpeciesPage() {
       {/* Modal 3: CSV Import */}
       <CrudModal
         open={importModal.open}
-        title={`Impor ${tab === 'species' ? 'Spesies' : 'Ikan'} dari CSV`}
+        title={`Impor ${tab === "species" ? "Spesies" : "Ikan"} dari CSV`}
         subtitle={`Kirim data CSV teks sesuai header resmi backend.`}
         onClose={importModal.closeModal}
         onSubmit={handleCsvImportSubmit}
-        submitLabel={importing ? 'Mengimpor...' : 'Mulai Impor CSV'}
+        submitLabel={importing ? "Mengimpor..." : "Mulai Impor CSV"}
       >
         <FormField
           label={`Konten CSV (Header: ${
-            tab === 'species' ? 'name,scientific_name,description' : 'nama_jenis,nama_ikan,berat_kg,catatan'
+            tab === "species"
+              ? "name,scientific_name,description"
+              : "nama_jenis,nama_ikan,berat_kg,catatan"
           })`}
           htmlFor="csv-data"
           required
@@ -511,7 +580,7 @@ export function SpeciesPage() {
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={
-              tab === 'species'
+              tab === "species"
                 ? "name,scientific_name,description\nTongkol,Euthynnus affinis,Ikan pelagis bernilai ekonomis\nCakalang,Katsuwonus pelamis,Ikan pelagis cepat berenang"
                 : "nama_jenis,nama_ikan,berat_kg,catatan\nTongkol,Tongkol Super,1.5,Kualitas ekspor"
             }
@@ -538,5 +607,5 @@ export function SpeciesPage() {
         )}
       </CrudModal>
     </div>
-  )
+  );
 }

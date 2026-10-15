@@ -1,2 +1,2 @@
-export * from './types'
-export * from './pnbpService'
+export * from "./types";
+export * from "./pnbpService";

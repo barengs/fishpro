@@ -1,110 +1,130 @@
-import { useEffect, useState } from 'react'
-import { PageHeader } from '../../components/PageHeader'
-import { DataTable, type Column } from '../../components/DataTable'
-import { StatusChip } from '../../components/StatusChip'
+import { useEffect, useState } from "react";
+import { PageHeader } from "../../components/PageHeader";
+import { DataTable, type Column } from "../../components/DataTable";
+import { StatusChip } from "../../components/StatusChip";
 import {
   blockchainService,
   type BlockchainBlock,
   type FishCatchTransaction,
-} from '../../services/blockchain'
-import { Check, ShieldCheck } from 'lucide-react'
+} from "../../services/blockchain";
+import { Check, ShieldCheck } from "lucide-react";
 
 export function BlockchainPage() {
-  const [blocks, setBlocks] = useState<BlockchainBlock[]>([])
-  const [transactions, setTransactions] = useState<FishCatchTransaction[]>([])
-  const [loading, setLoading] = useState(true)
-  const [statusValid, setStatusValid] = useState<boolean | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [blocks, setBlocks] = useState<BlockchainBlock[]>([]);
+  const [transactions, setTransactions] = useState<FishCatchTransaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [statusValid, setStatusValid] = useState<boolean | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadBlockchainData() {
-      setLoading(true)
-      setErrorMsg(null)
+      setLoading(true);
+      setErrorMsg(null);
       try {
         const [blocksData, txData, statusData] = await Promise.all([
           blockchainService.getBlocks().catch(() => []),
           blockchainService.getTransactions().catch(() => []),
           blockchainService.getStatus().catch(() => null),
-        ])
-        setBlocks(blocksData)
-        setTransactions(txData)
-        if (statusData) setStatusValid(statusData.valid)
+        ]);
+        setBlocks(blocksData);
+        setTransactions(txData);
+        if (statusData) setStatusValid(statusData.valid);
       } catch (err: unknown) {
-        setErrorMsg(err instanceof Error ? err.message : 'Gagal memuat data blockchain')
+        setErrorMsg(
+          err instanceof Error ? err.message : "Gagal memuat data blockchain",
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    loadBlockchainData()
-  }, [])
+    loadBlockchainData();
+  }, []);
 
   const blockCols: Column<BlockchainBlock>[] = [
     {
-      key: 'ix',
-      header: 'Blok',
+      key: "ix",
+      header: "Blok",
       flex: 1,
-      render: (r) => <span className="text-sm font-bold tabular-nums">#{r.index}</span>,
+      render: (r) => (
+        <span className="text-sm font-bold tabular-nums">#{r.index}</span>
+      ),
     },
     {
-      key: 'hash',
-      header: 'Hash Blok',
+      key: "hash",
+      header: "Hash Blok",
       flex: 3,
       render: (r) => (
-        <span className="text-xs font-mono text-fco-blue truncate block max-w-44" title={r.hash}>
-          {r.hash.length > 16 ? `${r.hash.slice(0, 8)}…${r.hash.slice(-6)}` : r.hash}
+        <span
+          className="text-xs font-mono text-fco-blue truncate block max-w-44"
+          title={r.hash}
+        >
+          {r.hash.length > 16
+            ? `${r.hash.slice(0, 8)}…${r.hash.slice(-6)}`
+            : r.hash}
         </span>
       ),
     },
     {
-      key: 'prev',
-      header: 'Previous Hash',
+      key: "prev",
+      header: "Previous Hash",
       flex: 3,
       render: (r) => (
-        <span className="text-xs font-mono text-soft truncate block max-w-44" title={r.previous_hash}>
-          {r.previous_hash.length > 16 ? `${r.previous_hash.slice(0, 8)}…${r.previous_hash.slice(-6)}` : r.previous_hash || 'Genesis'}
+        <span
+          className="text-xs font-mono text-soft truncate block max-w-44"
+          title={r.previous_hash}
+        >
+          {r.previous_hash.length > 16
+            ? `${r.previous_hash.slice(0, 8)}…${r.previous_hash.slice(-6)}`
+            : r.previous_hash || "Genesis"}
         </span>
       ),
     },
     {
-      key: 'nonce',
-      header: 'Nonce',
+      key: "nonce",
+      header: "Nonce",
       flex: 1,
-      align: 'center',
-      render: (r) => <span className="text-xs tabular-nums text-soft">{r.nonce}</span>,
+      align: "center",
+      render: (r) => (
+        <span className="text-xs tabular-nums text-soft">{r.nonce}</span>
+      ),
     },
     {
-      key: 'time',
-      header: 'Timestamp',
+      key: "time",
+      header: "Timestamp",
       flex: 2,
-      align: 'right',
+      align: "right",
       render: (r) => (
         <span className="text-xs text-soft tabular-nums">
-          {new Date(r.timestamp).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
+          {new Date(r.timestamp).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </span>
       ),
     },
-  ]
+  ];
 
   const txCols: Column<FishCatchTransaction>[] = [
     {
-      key: 'ship',
-      header: 'Kapal / WPP',
+      key: "ship",
+      header: "Kapal / WPP",
       flex: 2,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold tabular-nums">{r.ship_registration_number}</div>
-          <div className="text-xs text-soft">{r.fishing_area_code || 'WPP —'}</div>
+          <div className="text-sm font-semibold tabular-nums">
+            {r.ship_registration_number}
+          </div>
+          <div className="text-xs text-soft">
+            {r.fishing_area_code || "WPP —"}
+          </div>
         </div>
       ),
     },
     {
-      key: 'fish',
-      header: 'Spesies / Jumlah',
+      key: "fish",
+      header: "Spesies / Jumlah",
       flex: 3,
       render: (r) => (
         <div>
@@ -116,29 +136,36 @@ export function BlockchainPage() {
       ),
     },
     {
-      key: 'block',
-      header: 'Blok ID',
+      key: "block",
+      header: "Blok ID",
       flex: 1,
-      align: 'center',
+      align: "center",
       render: (r) => (
         <span className="text-xs font-bold text-fco-blue tabular-nums">
-          #{r.block_id || (r.block_data ? r.block_data.index : '—')}
+          #{r.block_id || (r.block_data ? r.block_data.index : "—")}
         </span>
       ),
     },
     {
-      key: 'st',
-      header: 'Integritas',
+      key: "st",
+      header: "Integritas",
       flex: 1,
-      align: 'center',
+      align: "center",
       render: () => (
         <StatusChip
           label="Tercatat"
-          icon={<Check size={12} className="text-fco-blue" strokeWidth={2.6} aria-hidden="true" />}
+          icon={
+            <Check
+              size={12}
+              className="text-fco-blue"
+              strokeWidth={2.6}
+              aria-hidden="true"
+            />
+          }
         />
       ),
     },
-  ]
+  ];
 
   return (
     <div>
@@ -164,7 +191,9 @@ export function BlockchainPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="m-0 text-base font-bold text-strong">Blok Blockchain ({blocks.length})</h2>
+            <h2 className="m-0 text-base font-bold text-strong">
+              Blok Blockchain ({blocks.length})
+            </h2>
             <span className="text-xs text-soft">Ordered by index</span>
           </div>
           <DataTable
@@ -178,7 +207,9 @@ export function BlockchainPage() {
 
         <section className="surface-card border rounded-2xl p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="m-0 text-base font-bold text-strong">Transaksi Tangkapan ({transactions.length})</h2>
+            <h2 className="m-0 text-base font-bold text-strong">
+              Transaksi Tangkapan ({transactions.length})
+            </h2>
             <span className="text-xs text-soft">Immutable SHA-256</span>
           </div>
           <DataTable
@@ -191,5 +222,5 @@ export function BlockchainPage() {
         </section>
       </div>
     </div>
-  )
+  );
 }

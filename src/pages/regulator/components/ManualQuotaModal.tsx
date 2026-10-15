@@ -1,30 +1,37 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 interface ManualQuotaModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (data: { shipReg: string; year: number; newQuota: number; reason: string }) => void
-  initialShipReg?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: {
+    shipReg: string;
+    year: number;
+    newQuota: number;
+    reason: string;
+  }) => void;
+  initialShipReg?: string;
 }
 
 export function ManualQuotaModal({
   isOpen,
   onClose,
   onSave,
-  initialShipReg = ''
+  initialShipReg = "",
 }: ManualQuotaModalProps) {
-  const [shipReg, setShipReg] = useState(initialShipReg)
-  const [year, setYear] = useState(2026)
-  const [newQuota, setNewQuota] = useState(15000)
-  const [reason, setReason] = useState('Penyesuaian kuota berdasarkan rekomendasi optimasi NSGA-III')
+  const [shipReg, setShipReg] = useState(initialShipReg);
+  const [year, setYear] = useState(2026);
+  const [newQuota, setNewQuota] = useState(15000);
+  const [reason, setReason] = useState(
+    "Penyesuaian kuota berdasarkan rekomendasi optimasi NSGA-III",
+  );
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave({ shipReg, year, newQuota, reason })
-    onClose()
-  }
+    e.preventDefault();
+    onSave({ shipReg, year, newQuota, reason });
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-fco-dark/50 backdrop-blur-xs flex items-center justify-center z-50 p-5">
@@ -43,7 +50,8 @@ export function ManualQuotaModal({
         </div>
 
         <p className="text-fco-sm text-soft mt-0 mb-5 leading-relaxed">
-          Hak regulator: Menyesuaikan batas kuota kapal penangkap ikan dengan validasi blockchain terverifikasi.
+          Hak regulator: Menyesuaikan batas kuota kapal penangkap ikan dengan
+          validasi blockchain terverifikasi.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
@@ -118,5 +126,5 @@ export function ManualQuotaModal({
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -1,56 +1,61 @@
-import { useEffect, useState } from 'react'
-import { PageToolbar } from '../../components/PageToolbar'
-import { DataTable, type Column } from '../../components/DataTable'
-import { CrudActions } from '../../components/FormField'
-import { StatusChip } from '../../components/StatusChip'
-import { CrudModal } from '../../components/CrudModal'
-import { useCrudModal } from '../../components/useCrudModal'
-import { ShipFormWizard } from '../../components/ShipFormWizard'
-import type { ShipFormData } from '../../components/shipFormTypes'
-import { shipsService, type Ship, type CreateShipPayload } from '../../services/ships'
+import { useEffect, useState } from "react";
+import { PageToolbar } from "../../components/PageToolbar";
+import { DataTable, type Column } from "../../components/DataTable";
+import { CrudActions } from "../../components/FormField";
+import { StatusChip } from "../../components/StatusChip";
+import { CrudModal } from "../../components/CrudModal";
+import { useCrudModal } from "../../components/useCrudModal";
+import { ShipFormWizard } from "../../components/ShipFormWizard";
+import type { ShipFormData } from "../../components/shipFormTypes";
+import {
+  shipsService,
+  type Ship,
+  type CreateShipPayload,
+} from "../../services/ships";
 
 export function ShipsPage() {
-  const [rows, setRows] = useState<Ship[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
-  const { open, openModal, closeModal } = useCrudModal()
+  const [rows, setRows] = useState<Ship[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const { open, openModal, closeModal } = useCrudModal();
 
   const fetchShips = async (query?: string) => {
-    setLoading(true)
-    setErrorMsg(null)
+    setLoading(true);
+    setErrorMsg(null);
     try {
-      const data = await shipsService.getAll(query)
-      setRows(data)
+      const data = await shipsService.getAll(query);
+      setRows(data);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Gagal memuat data kapal'
-      setErrorMsg(msg)
+      const msg =
+        err instanceof Error ? err.message : "Gagal memuat data kapal";
+      setErrorMsg(msg);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchShips(search)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [search])
+      fetchShips(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus kapal "${name}"?`)) return
+    if (!window.confirm(`Yakin ingin menghapus kapal "${name}"?`)) return;
 
     try {
-      await shipsService.delete(id)
-      setToastMsg(`Kapal "${name}" berhasil dihapus.`)
-      setTimeout(() => setToastMsg(null), 3000)
-      fetchShips(search)
+      await shipsService.delete(id);
+      setToastMsg(`Kapal "${name}" berhasil dihapus.`);
+      setTimeout(() => setToastMsg(null), 3000);
+      fetchShips(search);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Gagal menghapus kapal'
-      alert(msg)
+      const msg = err instanceof Error ? err.message : "Gagal menghapus kapal";
+      alert(msg);
     }
-  }
+  };
 
   const handleSubmit = async (data: ShipFormData) => {
     try {
@@ -61,27 +66,29 @@ export function ShipsPage() {
         captain: data.captain ? Number(data.captain) || null : null,
         length: data.length ? parseFloat(data.length) : null,
         width: data.width ? parseFloat(data.width) : null,
-        gross_tonnage: data.gross_tonnage ? parseFloat(data.gross_tonnage) : null,
+        gross_tonnage: data.gross_tonnage
+          ? parseFloat(data.gross_tonnage)
+          : null,
         year_built: data.year_built ? Number(data.year_built) : null,
         home_port: data.home_port?.trim() || null,
         active: data.active,
-      }
+      };
 
-      await shipsService.create(payload)
-      setToastMsg(`Kapal "${data.name}" berhasil didaftarkan.`)
-      setTimeout(() => setToastMsg(null), 3000)
-      closeModal()
-      fetchShips(search)
+      await shipsService.create(payload);
+      setToastMsg(`Kapal "${data.name}" berhasil didaftarkan.`);
+      setTimeout(() => setToastMsg(null), 3000);
+      closeModal();
+      fetchShips(search);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Gagal menyimpan kapal'
-      alert(msg)
+      const msg = err instanceof Error ? err.message : "Gagal menyimpan kapal";
+      alert(msg);
     }
-  }
+  };
 
   const columns: Column<Ship>[] = [
     {
-      key: 'name',
-      header: 'Nama / Registrasi',
+      key: "name",
+      header: "Nama / Registrasi",
       flex: 3,
       render: (r) => (
         <div>
@@ -94,29 +101,39 @@ export function ShipsPage() {
       ),
     },
     {
-      key: 'owner',
-      header: 'Pemilik',
+      key: "owner",
+      header: "Pemilik",
       flex: 2,
-      render: (r) => <span className="text-sm">{r.owner_name || (r.owner ? `Owner #${r.owner}` : '—')}</span>,
+      render: (r) => (
+        <span className="text-sm">
+          {r.owner_name || (r.owner ? `Owner #${r.owner}` : "—")}
+        </span>
+      ),
     },
     {
-      key: 'captain',
-      header: 'Nahkoda',
+      key: "captain",
+      header: "Nahkoda",
       flex: 2,
-      render: (r) => <span className="text-sm">{r.captain_name || (r.captain ? `Captain #${r.captain}` : '—')}</span>,
+      render: (r) => (
+        <span className="text-sm">
+          {r.captain_name || (r.captain ? `Captain #${r.captain}` : "—")}
+        </span>
+      ),
     },
     {
-      key: 'gt',
-      header: 'GT',
+      key: "gt",
+      header: "GT",
       flex: 1,
-      align: 'right',
-      render: (r) => <span className="text-sm tabular-nums">{r.gross_tonnage ?? '—'}</span>,
+      align: "right",
+      render: (r) => (
+        <span className="text-sm tabular-nums">{r.gross_tonnage ?? "—"}</span>
+      ),
     },
     {
-      key: 'status',
-      header: 'Status',
+      key: "status",
+      header: "Status",
       flex: 1,
-      align: 'center',
+      align: "center",
       render: (r) =>
         r.active ? (
           <StatusChip label="Aktif" />
@@ -125,17 +142,15 @@ export function ShipsPage() {
         ),
     },
     {
-      key: 'aksi',
-      header: 'Aksi',
+      key: "aksi",
+      header: "Aksi",
       flex: 1,
-      align: 'right',
+      align: "right",
       render: (r) => (
-        <CrudActions
-          onDelete={() => handleDelete(r.id, r.name)}
-        />
+        <CrudActions onDelete={() => handleDelete(r.id, r.name)} />
       ),
     },
-  ]
+  ];
 
   return (
     <div>
@@ -181,5 +196,5 @@ export function ShipsPage() {
         <ShipFormWizard onSubmit={handleSubmit} />
       </CrudModal>
     </div>
-  )
+  );
 }

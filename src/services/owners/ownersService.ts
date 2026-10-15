@@ -1,6 +1,6 @@
-import { apiClient, API_ENDPOINTS } from '../api'
-import type { PaginatedResponse } from '../types'
-import type { CreateOwnerPayload, Owner } from './types'
+import { apiClient, API_ENDPOINTS } from "../api";
+import type { PaginatedResponse } from "../types";
+import type { CreateOwnerPayload, Owner } from "./types";
 
 export const ownersService = {
   /**
@@ -9,17 +9,17 @@ export const ownersService = {
   async getAll(search?: string): Promise<Owner[]> {
     const url = search
       ? `${API_ENDPOINTS.OWNERS.LIST}?search=${encodeURIComponent(search)}`
-      : API_ENDPOINTS.OWNERS.LIST
+      : API_ENDPOINTS.OWNERS.LIST;
 
-    const data = await apiClient<PaginatedResponse<Owner> | Owner[]>(url)
-    return Array.isArray(data) ? data : data.results || []
+    const data = await apiClient<PaginatedResponse<Owner> | Owner[]>(url);
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
    * GET /api/owners/owners/{id}/ - Mengambil detail pemilik berdasarkan ID
    */
   async getById(id: number): Promise<Owner> {
-    return apiClient<Owner>(`${API_ENDPOINTS.OWNERS.LIST}${id}/`)
+    return apiClient<Owner>(`${API_ENDPOINTS.OWNERS.LIST}${id}/`);
   },
 
   /**
@@ -27,9 +27,9 @@ export const ownersService = {
    */
   async create(payload: CreateOwnerPayload): Promise<Owner> {
     return apiClient<Owner>(API_ENDPOINTS.OWNERS.LIST, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -37,19 +37,22 @@ export const ownersService = {
    */
   async update(id: number, payload: CreateOwnerPayload): Promise<Owner> {
     return apiClient<Owner>(`${API_ENDPOINTS.OWNERS.LIST}${id}/`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
    * PATCH /api/owners/owners/{id}/ - Memperbarui sebagian data pemilik
    */
-  async patch(id: number, payload: Partial<CreateOwnerPayload>): Promise<Owner> {
+  async patch(
+    id: number,
+    payload: Partial<CreateOwnerPayload>,
+  ): Promise<Owner> {
     return apiClient<Owner>(`${API_ENDPOINTS.OWNERS.LIST}${id}/`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
-    })
+    });
   },
 
   /**
@@ -57,7 +60,7 @@ export const ownersService = {
    */
   async delete(id: number): Promise<void> {
     await apiClient(`${API_ENDPOINTS.OWNERS.LIST}${id}/`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   },
-}
+};

@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Logo } from '../../../components/Logo'
-import { NotificationBell } from '../../../components/NotificationBell'
-import { UserProfileBadge } from '../../../components/UserProfileBadge'
-import { ClipboardList, LayoutDashboard, Ship } from 'lucide-react'
-import { MobileTopbar } from '../../../components/MobileTopbar'
-import { ThemeToggle } from '../../../components/ThemeToggle'
-import { FullscreenToggle } from '../../../components/FullscreenToggle'
-import { authService } from '../../../services/auth'
+import { useState } from "react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Logo } from "../../../components/Logo";
+import { NotificationBell } from "../../../components/NotificationBell";
+import { UserProfileBadge } from "../../../components/UserProfileBadge";
+import { ClipboardList, LayoutDashboard, Ship } from "lucide-react";
+import { MobileTopbar } from "../../../components/MobileTopbar";
+import { ThemeToggle } from "../../../components/ThemeToggle";
+import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import { authService } from "../../../services/auth";
 
 const navItems = [
-  { label: 'Ringkasan', to: '/captain', end: true, Icon: LayoutDashboard },
-  { label: 'Riwayat Tangkapan', to: '/captain/catches', Icon: ClipboardList },
-  { label: 'Kapal Saya', to: '/captain/ship', Icon: Ship }
-]
+  { label: "Ringkasan", to: "/captain", end: true, Icon: LayoutDashboard },
+  { label: "Riwayat Tangkapan", to: "/captain/catches", Icon: ClipboardList },
+  { label: "Kapal Saya", to: "/captain/ship", Icon: Ship },
+];
 
 function SidebarBody() {
   return (
@@ -26,40 +26,52 @@ function SidebarBody() {
           className={({ isActive }) =>
             `flex items-center gap-3 h-10.5 px-3 rounded-fco text-sm font-semibold no-underline transition-all ${
               isActive
-                ? 'bg-fco-blue-light text-fco-blue'
-                : 'bg-transparent text-soft hover:surface-page hover:text-strong'
+                ? "bg-fco-blue-light text-fco-blue"
+                : "bg-transparent text-soft hover:surface-page hover:text-strong"
             }`
           }
         >
-          {<n.Icon size={20} className="shrink-0" strokeWidth={1.8} aria-hidden="true" />}
+          {
+            <n.Icon
+              size={20}
+              className="shrink-0"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+          }
           {n.label}
         </NavLink>
       ))}
     </div>
-  )
+  );
 }
 
 export function CaptainSidebar() {
   return (
-    <nav aria-label="Menu utama Nahkoda" className="hidden lg:flex flex-col basis-62 shrink-0 surface-topbar border-r p-4">
+    <nav
+      aria-label="Menu utama Nahkoda"
+      className="hidden lg:flex flex-col basis-62 shrink-0 surface-topbar border-r p-4"
+    >
       <div className="px-2 pb-7">
-        <Link to="/captain" className="no-underline"><Logo /></Link>
+        <Link to="/captain" className="no-underline">
+          <Logo />
+        </Link>
       </div>
       <div className="flex-1">
         <SidebarBody />
       </div>
     </nav>
-  )
+  );
 }
 
 export function CaptainLayout() {
-  const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await authService.logout()
-    navigate('/login')
-  }
+    await authService.logout();
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen flex surface-page text-strong">
@@ -80,7 +92,11 @@ export function CaptainLayout() {
           open={open}
           onToggle={() => setOpen(!open)}
           onClose={() => setOpen(false)}
-          profile={{ initials: 'BH', name: 'Budi Hartono', role: 'Nahkoda KM Samudra Jaya' }}
+          profile={{
+            initials: "BH",
+            name: "Budi Hartono",
+            role: "Nahkoda KM Samudra Jaya",
+          }}
           onLogout={handleLogout}
         >
           <div onClick={() => setOpen(false)}>
@@ -92,5 +108,5 @@ export function CaptainLayout() {
         </main>
       </div>
     </div>
-  )
+  );
 }

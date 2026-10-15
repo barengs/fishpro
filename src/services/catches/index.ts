@@ -1,2 +1,2 @@
-export * from './types'
-export * from './catchesService'
+export * from "./types";
+export * from "./catchesService";

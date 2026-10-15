@@ -1,3 +1,3 @@
-export * from './types'
-export * from './ownersService'
-export * from '../captains'
+export * from "./types";
+export * from "./ownersService";
+export * from "../captains";

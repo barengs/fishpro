@@ -1,9 +1,9 @@
-import { apiClient, API_ENDPOINTS } from '../api'
+import { apiClient, API_ENDPOINTS } from "../api";
 import type {
   BlockchainBlock,
   BlockchainStatus,
   FishCatchTransaction,
-} from './types'
+} from "./types";
 
 export const blockchainService = {
   /**
@@ -11,7 +11,7 @@ export const blockchainService = {
    * Memeriksa validitas rantai blok dan mengambil total blok serta transaksi
    */
   async getStatus(): Promise<BlockchainStatus> {
-    return apiClient<BlockchainStatus>(API_ENDPOINTS.BLOCKCHAIN.STATUS)
+    return apiClient<BlockchainStatus>(API_ENDPOINTS.BLOCKCHAIN.STATUS);
   },
 
   /**
@@ -19,8 +19,10 @@ export const blockchainService = {
    * Mengambil semua blok blockchain beserta hash dan timestamp
    */
   async getBlocks(): Promise<BlockchainBlock[]> {
-    const data = await apiClient<BlockchainBlock[]>(API_ENDPOINTS.BLOCKCHAIN.BLOCKS)
-    return Array.isArray(data) ? data : []
+    const data = await apiClient<BlockchainBlock[]>(
+      API_ENDPOINTS.BLOCKCHAIN.BLOCKS,
+    );
+    return Array.isArray(data) ? data : [];
   },
 
   /**
@@ -29,8 +31,8 @@ export const blockchainService = {
    */
   async getTransactions(): Promise<FishCatchTransaction[]> {
     const data = await apiClient<FishCatchTransaction[]>(
-      API_ENDPOINTS.BLOCKCHAIN.TRANSACTIONS
-    )
-    return Array.isArray(data) ? data : []
+      API_ENDPOINTS.BLOCKCHAIN.TRANSACTIONS,
+    );
+    return Array.isArray(data) ? data : [];
   },
-}
+};

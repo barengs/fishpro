@@ -4,8 +4,8 @@
  * Can be overridden with VITE_API_BASE_URL environment variable.
  */
 export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || 'https://api.fishpro.id'
-).replace(/\/+$/, '')
+  import.meta.env.VITE_API_BASE_URL || "https://api.fishpro.id"
+).replace(/\/+$/, "");
 
 export const API_ENDPOINTS = {
   // 1. Authentication
@@ -88,12 +88,12 @@ export const API_ENDPOINTS = {
     SWAGGER: `${API_BASE_URL}/api/docs/`,
     REDOC: `${API_BASE_URL}/api/docs/redoc/`,
   },
-} as const
+} as const;
 
 /**
  * Helper to build custom or dynamic API URL
  */
 export function getApiUrl(path: string): string {
-  const cleanPath = path.startsWith('/') ? path : `/${path}`
-  return `${API_BASE_URL}${cleanPath}`
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
 }

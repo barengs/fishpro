@@ -1,82 +1,100 @@
-import { useCallback, useEffect, useState } from 'react'
-import { PageToolbar } from '../../components/PageToolbar'
-import { DataTable, type Column } from '../../components/DataTable'
-import { CrudActions, FormField, inputCls } from '../../components/FormField'
-import { StatusChip } from '../../components/StatusChip'
-import { CrudModal } from '../../components/CrudModal'
-import { useCrudModal } from '../../components/useCrudModal'
-import { CatchReportWizard } from '../../components/CatchReportWizard'
-import type { CatchReportFormData } from '../../components/catchReportTypes'
-import { catchesService, type FishCatch } from '../../services/catches'
-import { shipsService, type Ship } from '../../services/ships'
-import { fishSpeciesService, type FishSpecies } from '../../services/fish'
+import { useCallback, useEffect, useState } from "react";
+import { PageToolbar } from "../../components/PageToolbar";
+import { DataTable, type Column } from "../../components/DataTable";
+import { CrudActions, FormField, inputCls } from "../../components/FormField";
+import { StatusChip } from "../../components/StatusChip";
+import { CrudModal } from "../../components/CrudModal";
+import { useCrudModal } from "../../components/useCrudModal";
+import { CatchReportWizard } from "../../components/CatchReportWizard";
+import type { CatchReportFormData } from "../../components/catchReportTypes";
+import { catchesService, type FishCatch } from "../../services/catches";
+import { shipsService, type Ship } from "../../services/ships";
+import { fishSpeciesService, type FishSpecies } from "../../services/fish";
 
 export function CatchesPage() {
-  const [rows, setRows] = useState<FishCatch[]>([])
-  const [ships, setShips] = useState<Ship[]>([])
-  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [selectedShipReg, setSelectedShipReg] = useState('')
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
-  const { open, openModal, closeModal } = useCrudModal()
+  const [rows, setRows] = useState<FishCatch[]>([]);
+  const [ships, setShips] = useState<Ship[]>([]);
+  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedShipReg, setSelectedShipReg] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const { open, openModal, closeModal } = useCrudModal();
 
-  const fetchCatches = useCallback(async (query?: string) => {
-    setLoading(true)
-    setErrorMsg(null)
-    try {
-      const [catchesData, shipsData, spData] = await Promise.all([
-        catchesService.getAll(query ? { search: query } : undefined),
-        shipsService.getAll().catch(() => []),
-        fishSpeciesService.getAll().catch(() => []),
-      ])
-      setRows(catchesData)
-      setShips(shipsData)
-      setSpeciesList(spData)
-      if (shipsData.length > 0 && !selectedShipReg) {
-        setSelectedShipReg(shipsData[0].registration_number)
+  const fetchCatches = useCallback(
+    async (query?: string) => {
+      setLoading(true);
+      setErrorMsg(null);
+      try {
+        const [catchesData, shipsData, spData] = await Promise.all([
+          catchesService.getAll(query ? { search: query } : undefined),
+          shipsService.getAll().catch(() => []),
+          fishSpeciesService.getAll().catch(() => []),
+        ]);
+        setRows(catchesData);
+        setShips(shipsData);
+        setSpeciesList(spData);
+        if (shipsData.length > 0 && !selectedShipReg) {
+          setSelectedShipReg(shipsData[0].registration_number);
+        }
+      } catch (err: unknown) {
+        setErrorMsg(
+          err instanceof Error
+            ? err.message
+            : "Gagal memuat data laporan tangkapan",
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Gagal memuat data laporan tangkapan')
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedShipReg])
+    },
+    [selectedShipReg],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchCatches(search)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [search, fetchCatches])
+      fetchCatches(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, fetchCatches]);
 
   const handleDelete = async (id: number, shipName?: string) => {
-    if (!window.confirm(`Hapus laporan tangkapan untuk ${shipName || `#${id}`}?`)) return
+    if (
+      !window.confirm(`Hapus laporan tangkapan untuk ${shipName || `#${id}`}?`)
+    )
+      return;
     try {
-      await catchesService.delete(id)
-      setToastMsg('Laporan tangkapan berhasil dihapus.')
-      setTimeout(() => setToastMsg(null), 3000)
-      fetchCatches(search)
+      await catchesService.delete(id);
+      setToastMsg("Laporan tangkapan berhasil dihapus.");
+      setTimeout(() => setToastMsg(null), 3000);
+      fetchCatches(search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal menghapus laporan tangkapan')
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Gagal menghapus laporan tangkapan",
+      );
     }
-  }
+  };
 
   const handleSubmit = async (data: CatchReportFormData) => {
     if (!selectedShipReg.trim()) {
-      alert('Harap pilih kapal untuk laporan tangkapan ini.')
-      return
+      alert("Harap pilih kapal untuk laporan tangkapan ini.");
+      return;
     }
 
     try {
       // Find species ID
-      let speciesId = Number(data.fish_species)
+      let speciesId = Number(data.fish_species);
       if (isNaN(speciesId) || speciesId === 0) {
         const found = speciesList.find(
-          (s) => s.name.toLowerCase() === data.fish_species.toLowerCase()
-        )
-        speciesId = found ? found.id : (speciesList.length > 0 ? speciesList[0].id : 1)
+          (s) => s.name.toLowerCase() === data.fish_species.toLowerCase(),
+        );
+        speciesId = found
+          ? found.id
+          : speciesList.length > 0
+            ? speciesList[0].id
+            : 1;
       }
 
       const payload = {
@@ -85,45 +103,56 @@ export function CatchesPage() {
         catch_type: data.catch_type,
         location_latitude: data.location_latitude,
         location_longitude: data.location_longitude,
-        description: data.description || '',
+        description: data.description || "",
         catch_details: [
           {
             fish_species: speciesId,
             quantity: parseFloat(data.quantity) || 0,
-            unit: data.unit || 'kg',
+            unit: data.unit || "kg",
             value: data.value ? parseFloat(data.value) : null,
-            notes: data.description || '',
+            notes: data.description || "",
           },
         ],
-      }
+      };
 
-      await catchesService.createWithDetails(payload)
-      setToastMsg(`Laporan tangkapan untuk ${selectedShipReg} berhasil dibuat dan disegel ke blockchain!`)
-      setTimeout(() => setToastMsg(null), 4000)
-      closeModal()
-      fetchCatches(search)
+      await catchesService.createWithDetails(payload);
+      setToastMsg(
+        `Laporan tangkapan untuk ${selectedShipReg} berhasil dibuat dan disegel ke blockchain!`,
+      );
+      setTimeout(() => setToastMsg(null), 4000);
+      closeModal();
+      fetchCatches(search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal mengirim laporan tangkapan')
+      alert(
+        err instanceof Error ? err.message : "Gagal mengirim laporan tangkapan",
+      );
     }
-  }
+  };
 
   const cols: Column<FishCatch>[] = [
     {
-      key: 'ship',
-      header: 'Kapal / Tanggal',
+      key: "ship",
+      header: "Kapal / Tanggal",
       flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold">{r.ship_name || `Kapal ${r.ship}`}</div>
+          <div className="text-sm font-semibold">
+            {r.ship_name || `Kapal ${r.ship}`}
+          </div>
           <div className="text-xs text-soft tabular-nums">
-            {r.catch_date} · {r.catch_type === 'pelagic' ? 'Pelagis' : r.catch_type === 'demersal' ? 'Demersal' : 'Terumbu'}
+            {r.catch_date} ·{" "}
+            {r.catch_type === "pelagic"
+              ? "Pelagis"
+              : r.catch_type === "demersal"
+                ? "Demersal"
+                : "Terumbu"}
           </div>
         </div>
       ),
     },
     {
-      key: 'loc',
-      header: 'Lokasi Koordinat',
+      key: "loc",
+      header: "Lokasi Koordinat",
       flex: 2,
       render: (r) => (
         <span className="text-xs text-soft font-mono">
@@ -132,43 +161,49 @@ export function CatchesPage() {
       ),
     },
     {
-      key: 'details',
-      header: 'Detail Tangkapan',
+      key: "details",
+      header: "Detail Tangkapan",
       flex: 3,
       render: (r) => {
-        const details = r.catch_details || []
-        if (details.length === 0) return <span className="text-xs text-soft">—</span>
+        const details = r.catch_details || [];
+        if (details.length === 0)
+          return <span className="text-xs text-soft">—</span>;
         return (
           <div className="flex flex-col gap-0.5">
             {details.map((d, i) => (
               <div key={i} className="text-xs">
-                <span className="font-semibold text-strong">{d.fish_species_name || `Spesies #${d.fish_species}`}</span>: {d.quantity} {d.unit}
-                {d.pnbp && <span className="text-fco-blue font-mono font-medium ml-1.5">(PNBP: Rp {Number(d.pnbp).toLocaleString('id-ID')})</span>}
+                <span className="font-semibold text-strong">
+                  {d.fish_species_name || `Spesies #${d.fish_species}`}
+                </span>
+                : {d.quantity} {d.unit}
+                {d.pnbp && (
+                  <span className="text-fco-blue font-mono font-medium ml-1.5">
+                    (PNBP: Rp {Number(d.pnbp).toLocaleString("id-ID")})
+                  </span>
+                )}
               </div>
             ))}
           </div>
-        )
+        );
       },
     },
     {
-      key: 'st',
-      header: 'Status',
+      key: "st",
+      header: "Status",
       flex: 1,
-      align: 'center',
+      align: "center",
       render: () => <StatusChip label="Tercatat" />,
     },
     {
-      key: 'aksi',
-      header: 'Aksi',
+      key: "aksi",
+      header: "Aksi",
       flex: 1,
-      align: 'right',
+      align: "right",
       render: (r) => (
-        <CrudActions
-          onDelete={() => handleDelete(r.id, r.ship_name)}
-        />
+        <CrudActions onDelete={() => handleDelete(r.id, r.ship_name)} />
       ),
     },
-  ]
+  ];
 
   return (
     <div>
@@ -212,7 +247,11 @@ export function CatchesPage() {
         hideFooter
       >
         <div className="mb-4">
-          <FormField label="Pilih Kapal Terdaftar (Ship)" htmlFor="ct-ship" required>
+          <FormField
+            label="Pilih Kapal Terdaftar (Ship)"
+            htmlFor="ct-ship"
+            required
+          >
             {ships.length > 0 ? (
               <select
                 id="ct-ship"
@@ -222,7 +261,8 @@ export function CatchesPage() {
               >
                 {ships.map((s) => (
                   <option key={s.id} value={s.registration_number}>
-                    {s.name} ({s.registration_number}) · {s.gross_tonnage || 0} GT
+                    {s.name} ({s.registration_number}) · {s.gross_tonnage || 0}{" "}
+                    GT
                   </option>
                 ))}
               </select>
@@ -240,5 +280,5 @@ export function CatchesPage() {
         <CatchReportWizard onSubmit={handleSubmit} onCancel={closeModal} />
       </CrudModal>
     </div>
-  )
+  );
 }

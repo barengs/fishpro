@@ -1,2 +1,2 @@
-export * from './types'
-export * from './fishService'
+export * from "./types";
+export * from "./fishService";
