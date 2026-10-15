@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BarChart3, Check, Coins, Fish, Plus, Ship } from 'lucide-react'
 import { KpiCard } from '../../components/KpiCard'
@@ -10,6 +10,8 @@ import type { CatchReportFormData } from '../../components/catchReportTypes'
 import { QuotaHeroCard } from './components/QuotaHeroCard'
 import { ShipSpecsCard } from './components/ShipSpecsCard'
 import { RecentCatchesTable, type CatchReport } from './components/RecentCatchesTable'
+import { shipsService, type Ship as ShipType } from '../../services/ships'
+import { authService } from '../../services/auth'
 
 const initialReports: CatchReport[] = [
   { date: '08 Okt 2026', species: 'Tongkol', qty: '120 kg', pnbp: 'Rp 120.000' },
@@ -21,8 +23,29 @@ const initialReports: CatchReport[] = [
 
 export function CaptainDashboard() {
   const [reports, setReports] = useState<CatchReport[]>(initialReports)
+  const [ship, setShip] = useState<ShipType | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const { open, openModal, closeModal } = useCrudModal()
+
+  const currentUser = authService.getStoredUser()
+  const captainId = currentUser?.id || 1
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const ships = await shipsService.getByCaptain(captainId).catch(() => [])
+        if (ships.length > 0) {
+          setShip(ships[0])
+        } else {
+          const all = await shipsService.getAll()
+          if (all.length > 0) setShip(all[0])
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadData()
+  }, [captainId])
 
   const handleReportAdded = (data: CatchReportFormData) => {
     const newReport: CatchReport = {
@@ -37,13 +60,22 @@ export function CaptainDashboard() {
     closeModal()
   }
 
+  const shipName = ship?.name || 'KM Samudra Jaya'
+  const shipReg = ship?.registration_number || 'REG-0412'
+  const homePort = ship?.home_port || 'Benoa'
+  const remainingQuotaKg = ship?.current_year_quota ? `${ship.current_year_quota.remaining_quota} kg` : '8.400 kg'
+  const totalQuotaKg = ship?.current_year_quota ? `${ship.current_year_quota.total_quota} kg` : '12.000 kg'
+  const quotaPct = ship?.current_year_quota ? ship.current_year_quota.quota_percentage : 70
+
   return (
     <div>
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
         <div>
           <h1 className="m-0 text-3xl font-extrabold tracking-tight">Ringkasan Nahkoda</h1>
-          <div className="text-sm text-soft mt-1">KM Samudra Jaya · REG-0412 · Pelabuhan asal Benoa</div>
+          <div className="text-sm text-soft mt-1">
+            {shipName} · {shipReg} · Pelabuhan asal {homePort}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -66,16 +98,33 @@ export function CaptainDashboard() {
 
       {/* 4 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <KpiCard label="Sisa kuota 2026" value="8.400 kg" delta="70% dari kuota 12.000 kg" color="blue" Icon={BarChart3} />
+        <KpiCard
+          label="Sisa kuota 2026"
+          value={remainingQuotaKg}
+          delta={`${quotaPct}% dari kuota ${totalQuotaKg}`}
+          color="blue"
+          Icon={BarChart3}
+        />
         <KpiCard label="Tangkapan bulan ini" value="430 kg" delta="5 laporan tercatat" color="emerald" Icon={Fish} />
         <KpiCard label="PNBP terhitung" value="Rp 535.000" delta="Berdasarkan tarif resmi KKP" color="purple" Icon={Coins} />
-        <KpiCard label="Status kapal" value="Aktif" delta="42,5 GT · SIPI berlaku s.d. Des 2026" color="cyan" Icon={Ship} />
+        <KpiCard
+          label="Status kapal"
+          value={ship?.active ? 'Aktif' : 'Aktif'}
+          delta={`${ship?.gross_tonnage || '42,5'} GT · SIPI berlaku s.d. Des 2026`}
+          color="cyan"
+          Icon={Ship}
+        />
       </div>
 
       {/* Hero Quota & Blockchain Status */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4 items-stretch">
         <div className="lg:col-span-3">
-          <QuotaHeroCard remainingKg="8.400 kg" totalKg="12.000 kg" percentage={70} validUntil="31 Des 2026" />
+          <QuotaHeroCard
+            remainingKg={remainingQuotaKg}
+            totalKg={totalQuotaKg}
+            percentage={quotaPct}
+            validUntil="31 Des 2026"
+          />
         </div>
         <div className="lg:col-span-2">
           <section className="surface-card border rounded-2xl p-6 shadow-xs flex flex-col justify-between h-full">
@@ -90,7 +139,7 @@ export function CaptainDashboard() {
                 />
               </div>
               <p className="m-0 text-xs text-soft mb-4 leading-relaxed">
-                Semua laporan tangkapan KM Samudra Jaya disegel permanen ke buku besar blockchain terdistribusi.
+                Semua laporan tangkapan {shipName} disegel permanen ke buku besar blockchain terdistribusi.
               </p>
               <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
                 <div className="flex justify-between py-2.5">
