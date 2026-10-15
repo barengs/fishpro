@@ -15,56 +15,8 @@ interface CriticalShipItem {
   chipColor: string;
 }
 
-const fallbackQuotaRows: CriticalShipItem[] = [
-  {
-    name: "KM Cahaya Timur",
-    reg: "REG-0319",
-    pct: 9,
-    width: "9%",
-    chip: "Hampir habis",
-    chipBg: "#FFF1E0",
-    chipColor: "#B54708",
-  },
-  {
-    name: "KM Bahari Satu",
-    reg: "REG-0087",
-    pct: 14,
-    width: "14%",
-    chip: "Hampir habis",
-    chipBg: "#FFF1E0",
-    chipColor: "#B54708",
-  },
-  {
-    name: "KM Mutiara Laut",
-    reg: "REG-0233",
-    pct: 22,
-    width: "22%",
-    chip: "Perlu dipantau",
-    chipBg: "#E8F0FE",
-    chipColor: "#1A56DB",
-  },
-  {
-    name: "KM Nusantara 7",
-    reg: "REG-0561",
-    pct: 27,
-    width: "27%",
-    chip: "Perlu dipantau",
-    chipBg: "#E8F0FE",
-    chipColor: "#1A56DB",
-  },
-  {
-    name: "KM Karya Bersama",
-    reg: "REG-0198",
-    pct: 31,
-    width: "31%",
-    chip: "Perlu dipantau",
-    chipBg: "#E8F0FE",
-    chipColor: "#1A56DB",
-  },
-];
-
 export function CriticalQuotaTable() {
-  const [rows, setRows] = useState<CriticalShipItem[]>(fallbackQuotaRows);
+  const [rows, setRows] = useState<CriticalShipItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -103,9 +55,11 @@ export function CriticalQuotaTable() {
           // Sort by lowest remaining quota first, pick top 5
           parsed.sort((a, b) => a.pct - b.pct);
           setRows(parsed.slice(0, 5));
+        } else {
+          setRows([]);
         }
       } catch {
-        // Fallback to initial rows
+        setRows([]);
       } finally {
         setLoading(false);
       }
@@ -140,6 +94,10 @@ export function CriticalQuotaTable() {
             <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
               <Loader2 size={18} className="animate-spin text-fco-blue" />
               <span>Memuat status kuota kapal...</span>
+            </div>
+          ) : rows.length === 0 ? (
+            <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle">
+              Belum ada data kapal terdaftar di database KKP.
             </div>
           ) : (
             rows.map((q) => (

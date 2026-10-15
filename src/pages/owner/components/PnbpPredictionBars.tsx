@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { pnbpService } from "../../../services/pnbp";
+import { BarChart3, Loader2 } from "lucide-react";
 
 const past = "#1A56DB";
 const next = "#BCD3F8";
@@ -11,25 +12,17 @@ interface BarItem {
   top: string;
 }
 
-const defaultBars: BarItem[] = [
-  { label: "Agu", h: "58%", color: past, top: "" },
-  { label: "Sep", h: "66%", color: past, top: "" },
-  { label: "Okt", h: "74%", color: past, top: "" },
-  { label: "Nov", h: "80%", color: next, top: "" },
-  { label: "Des", h: "86%", color: next, top: "" },
-  { label: "Jan", h: "92%", color: next, top: "Rp 38 jt" },
-];
-
 export function PnbpPredictionBars() {
-  const [bars, setBars] = useState<BarItem[]>(defaultBars);
+  const [bars, setBars] = useState<BarItem[]>([]);
   const [summaryInfo, setSummaryInfo] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     pnbpService
       .getUnifiedChartData()
       .then((res) => {
         const stats = res.charts_data?.summary_stats;
-        if (stats && stats.total_pnbp_sum) {
+        if (stats && stats.total_pnbp_sum && stats.total_pnbp_sum > 0) {
           setSummaryInfo(
             `Total tercatat: Rp ${(stats.total_pnbp_sum / 1_000_000).toFixed(1)} jt`,
           );
@@ -62,11 +55,16 @@ export function PnbpPredictionBars() {
               }),
             );
 
-          if (dynamicBars.length > 0) setBars(dynamicBars);
+          setBars(dynamicBars);
+        } else {
+          setBars([]);
         }
       })
       .catch(() => {
-        // Fallback to default bars
+        setBars([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -83,44 +81,64 @@ export function PnbpPredictionBars() {
         )}
       </div>
       <div className="text-fco-sm text-soft mb-5">
-        Tiga bulan terakhir dan tiga bulan ke depan (Unified Chart Data)
+        Proyeksi tren penerimaan armada berbasis pipeline machine learning
       </div>
 
-      <div className="flex items-end gap-3 h-37.5">
-        {bars.map((b) => (
-          <div
-            key={b.label}
-            className="flex-1 h-full flex flex-col justify-end items-center gap-1.5"
-          >
-            <div className="text-fco-xs font-bold text-strong h-3.5">
-              {b.top}
-            </div>
-            <div
-              className="w-full rounded-t-md transition-all duration-300"
-              style={{ height: b.h, backgroundColor: b.color }}
-            />
+      {loading ? (
+        <div className="h-37.5 flex items-center justify-center gap-2 text-sm text-soft">
+          <Loader2 size={18} className="animate-spin text-fco-blue" />
+          <span>Memuat data proyeksi...</span>
+        </div>
+      ) : bars.length === 0 ? (
+        <div className="py-8 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-fco-border rounded-xl">
+          <BarChart3 size={20} className="text-soft" />
+          <p className="m-0 text-xs text-soft">
+            Belum ada data proyeksi PNBP untuk armada Anda. Data grafik akan
+            muncul setelah laporan tangkapan terakumulasi.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-end gap-3 h-37.5">
+            {bars.map((b) => (
+              <div
+                key={b.label}
+                className="flex-1 h-full flex flex-col justify-end items-center gap-1.5"
+              >
+                <div className="text-fco-xs font-bold text-strong h-3.5">
+                  {b.top}
+                </div>
+                <div
+                  className="w-full rounded-t-md transition-all duration-300"
+                  style={{ height: b.h, backgroundColor: b.color }}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="flex gap-3 mt-2">
-        {bars.map((b) => (
-          <div key={b.label} className="flex-1 text-center text-xs text-soft">
-            {b.label}
+          <div className="flex gap-3 mt-2">
+            {bars.map((b) => (
+              <div
+                key={b.label}
+                className="flex-1 text-center text-xs text-soft"
+              >
+                {b.label}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="flex gap-4 mt-4 text-xs text-soft">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue" />
-          Aktual
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue-border" />
-          Prediksi
-        </span>
-      </div>
+          <div className="flex gap-4 mt-4 text-xs text-soft">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue" />
+              Aktual
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue-border" />
+              Prediksi
+            </span>
+          </div>
+        </>
+      )}
     </section>
   );
 }

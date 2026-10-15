@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ClipboardList, Coins, Fish, Search, Ship } from "lucide-react";
-import { KpiCard, type KpiColor } from "../../components/KpiCard";
+import { KpiCard } from "../../components/KpiCard";
 import { PnbpChart } from "./components/PnbpChart";
 import { BlockchainCard } from "./components/BlockchainCard";
 import { CriticalQuotaTable } from "./components/CriticalQuotaTable";
@@ -9,51 +9,28 @@ import { shipsService } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
 
-interface KpiItem {
-  label: string;
-  value: string;
-  delta?: string;
-  color: KpiColor;
-  Icon: typeof Ship;
+interface DashboardMetrics {
+  activeShipsCount: number;
+  totalShipsCount: number;
+  totalCatchesCount: number;
+  totalVolumeStr: string;
+  totalPnbpStr: string;
 }
 
-const defaultKpis: KpiItem[] = [
-  {
-    label: "Kapal aktif",
-    value: "1.284",
-    delta: "12 kapal baru bulan ini",
-    color: "blue",
-    Icon: Ship,
-  },
-  {
-    label: "Laporan bulan ini",
-    value: "3.472",
-    delta: "4,2% dari bulan lalu",
-    color: "emerald",
-    Icon: ClipboardList,
-  },
-  {
-    label: "Total tangkapan",
-    value: "842 ton",
-    delta: "3,1% dari bulan lalu",
-    color: "cyan",
-    Icon: Fish,
-  },
-  {
-    label: "PNBP terhitung",
-    value: "Rp 4,4 M",
-    delta: "6,8% dari bulan lalu",
-    color: "purple",
-    Icon: Coins,
-  },
-];
-
 export function AdminDashboard() {
-  const [kpis, setKpis] = useState<KpiItem[]>(defaultKpis);
+  const [loading, setLoading] = useState(true);
+  const [metrics, setMetrics] = useState<DashboardMetrics>({
+    activeShipsCount: 0,
+    totalShipsCount: 0,
+    totalCatchesCount: 0,
+    totalVolumeStr: "0 kg",
+    totalPnbpStr: "Rp 0",
+  });
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function loadStats() {
+      setLoading(true);
       try {
         const [ships, catches, chartRes] = await Promise.all([
           shipsService.getAll().catch(() => []),
@@ -61,69 +38,58 @@ export function AdminDashboard() {
           pnbpService.getUnifiedChartData().catch(() => null),
         ]);
 
-        const activeShipsCount = ships.filter((s) => s.active !== false).length;
-        const totalCatchesCount = catches.length;
+        const activeShips = ships.filter((s) => s.active !== false).length;
+        const totalCatches = catches.length;
 
         const summary = chartRes?.charts_data?.summary_stats;
-        let totalPnbpStr = "Rp 4,4 M";
-        let totalVolumeStr = "842 ton";
+        let pnbpStr = "Rp 0";
+        let volumeStr = "0 kg";
 
-        if (summary?.total_pnbp_sum) {
+        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0) {
           const sum = summary.total_pnbp_sum;
           if (sum >= 1_000_000_000) {
-            totalPnbpStr = `Rp ${(sum / 1_000_000_000).toFixed(1)} M`;
+            pnbpStr = `Rp ${(sum / 1_000_000_000).toFixed(1)} M`;
+          } else if (sum >= 1_000_000) {
+            pnbpStr = `Rp ${(sum / 1_000_000).toFixed(1)} jt`;
           } else {
-            totalPnbpStr = `Rp ${(sum / 1_000_000).toFixed(0)} jt`;
+            pnbpStr = `Rp ${Number(sum).toLocaleString("id-ID")}`;
           }
         }
 
-        if (summary?.total_volume_sum) {
+        if (summary?.total_volume_sum && summary.total_volume_sum > 0) {
           const vol = summary.total_volume_sum;
           if (vol >= 1000) {
-            totalVolumeStr = `${(vol / 1000).toFixed(0)} ton`;
+            volumeStr = `${(vol / 1000).toFixed(1)} ton`;
           } else {
-            totalVolumeStr = `${vol} kg`;
+            volumeStr = `${vol} kg`;
+          }
+        } else if (catches.length > 0) {
+          const sumQty = catches.reduce((acc, c) => {
+            const detailQty = (c.catch_details || []).reduce(
+              (dAcc, d) => dAcc + (parseFloat(String(d.quantity)) || 0),
+              0,
+            );
+            return acc + detailQty;
+          }, 0);
+          if (sumQty > 0) {
+            volumeStr =
+              sumQty >= 1000
+                ? `${(sumQty / 1000).toFixed(1)} ton`
+                : `${sumQty} kg`;
           }
         }
 
-        setKpis([
-          {
-            label: "Kapal aktif",
-            value:
-              activeShipsCount > 0
-                ? activeShipsCount.toLocaleString("id-ID")
-                : "1.284",
-            delta: `${ships.length} total armada nasional`,
-            color: "blue",
-            Icon: Ship,
-          },
-          {
-            label: "Total laporan tangkapan",
-            value:
-              totalCatchesCount > 0
-                ? totalCatchesCount.toLocaleString("id-ID")
-                : "3.472",
-            delta: "Tercatat di blockchain",
-            color: "emerald",
-            Icon: ClipboardList,
-          },
-          {
-            label: "Total volume tangkapan",
-            value: totalVolumeStr,
-            delta: "Akumulasi produksi nasional",
-            color: "cyan",
-            Icon: Fish,
-          },
-          {
-            label: "PNBP terhitung",
-            value: totalPnbpStr,
-            delta: "Penerimaan resmi KKP",
-            color: "purple",
-            Icon: Coins,
-          },
-        ]);
+        setMetrics({
+          activeShipsCount: activeShips,
+          totalShipsCount: ships.length,
+          totalCatchesCount: totalCatches,
+          totalVolumeStr: volumeStr,
+          totalPnbpStr: pnbpStr,
+        });
       } catch {
-        // Fallback to default
+        // Keeps 0 metrics on error
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -162,18 +128,44 @@ export function AdminDashboard() {
         </div>
       </div>
 
-      {/* Global KPIs */}
+      {/* Realtime Global KPIs from APIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        {kpis.map((k) => (
-          <KpiCard
-            key={k.label}
-            label={k.label}
-            value={k.value}
-            delta={k.delta}
-            color={k.color}
-            Icon={k.Icon}
-          />
-        ))}
+        <KpiCard
+          label="Kapal aktif"
+          value={metrics.activeShipsCount.toLocaleString("id-ID")}
+          delta={`${metrics.totalShipsCount} total armada nasional`}
+          color="blue"
+          Icon={Ship}
+          loading={loading}
+        />
+        <KpiCard
+          label="Total laporan tangkapan"
+          value={metrics.totalCatchesCount.toLocaleString("id-ID")}
+          delta={
+            metrics.totalCatchesCount > 0
+              ? "Tercatat di blockchain"
+              : "Belum ada laporan"
+          }
+          color="emerald"
+          Icon={ClipboardList}
+          loading={loading}
+        />
+        <KpiCard
+          label="Total volume tangkapan"
+          value={metrics.totalVolumeStr}
+          delta="Akumulasi produksi nasional"
+          color="cyan"
+          Icon={Fish}
+          loading={loading}
+        />
+        <KpiCard
+          label="PNBP terhitung"
+          value={metrics.totalPnbpStr}
+          delta="Penerimaan resmi KKP"
+          color="purple"
+          Icon={Coins}
+          loading={loading}
+        />
       </div>
 
       {/* PNBP Graph & Blockchain Status */}

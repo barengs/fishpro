@@ -1,24 +1,121 @@
 import { useEffect, useState } from "react";
 import {
   pnbpService,
+  type PnbpHistoryRecord,
   type UnifiedChartSummaryStats,
 } from "../../../services/pnbp";
+import { Loader2, TrendingUp } from "lucide-react";
+
+interface MonthlyPoint {
+  label: string;
+  value: number; // in Rupiah
+  isPrediction?: boolean;
+}
 
 export function PnbpChart() {
   const [stats, setStats] = useState<UnifiedChartSummaryStats | null>(null);
+  const [points, setPoints] = useState<MonthlyPoint[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     pnbpService
       .getUnifiedChartData()
       .then((res) => {
-        if (res.charts_data?.summary_stats) {
-          setStats(res.charts_data.summary_stats);
+        const chartsData = res.charts_data;
+        if (chartsData?.summary_stats) {
+          setStats(chartsData.summary_stats);
         }
+
+        const historyList: PnbpHistoryRecord[] =
+          chartsData?.historical_pnbp?.data || [];
+        const predData = chartsData?.pnbp_predictions?.data;
+
+        const dynamicPoints: MonthlyPoint[] = [];
+
+        // 1. Group history by month if available
+        if (historyList.length > 0) {
+          const monthlyMap: Record<string, number> = {};
+          for (const item of historyList) {
+            if (item.date) {
+              const d = new Date(item.date);
+              const mName = d.toLocaleDateString("id-ID", { month: "short" });
+              monthlyMap[mName] =
+                (monthlyMap[mName] || 0) +
+                (item.total_pnbp ? Number(item.total_pnbp) : 0);
+            }
+          }
+          for (const [mName, val] of Object.entries(monthlyMap)) {
+            dynamicPoints.push({
+              label: mName,
+              value: val,
+              isPrediction: false,
+            });
+          }
+        }
+
+        // 2. Add forecast points if available
+        const forecasts = predData?.monthly_forecasts || [];
+        if (forecasts.length > 0) {
+          for (const f of forecasts.slice(0, 4)) {
+            dynamicPoints.push({
+              label: f.month || f.month_name || "Forecast",
+              value: f.predicted_pnbp || 0,
+              isPrediction: true,
+            });
+          }
+        }
+
+        setPoints(dynamicPoints);
       })
       .catch(() => {
-        // Fallback to static visualization
+        setPoints([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
+
+  const hasData = points.length > 0 && points.some((p) => p.value > 0);
+
+  // SVG dimensions
+  const svgWidth = 640;
+  const svgHeight = 240;
+  const padLeft = 60;
+  const padRight = 30;
+  const padTop = 30;
+  const padBottom = 40;
+  const plotWidth = svgWidth - padLeft - padRight;
+  const plotHeight = svgHeight - padTop - padBottom;
+
+  const maxValue = hasData ? Math.max(...points.map((p) => p.value), 1) : 1;
+
+  // Calculate SVG coordinates
+  const coords = points.map((p, idx) => {
+    const x =
+      points.length > 1
+        ? padLeft + (idx / (points.length - 1)) * plotWidth
+        : padLeft + plotWidth / 2;
+    const y = padTop + plotHeight - (p.value / maxValue) * plotHeight;
+    return { ...p, x, y };
+  });
+
+  const actualPoints = coords.filter((p) => !p.isPrediction);
+  const predPoints = coords.filter((p) => p.isPrediction);
+
+  // Path generators
+  const actualPolyline = actualPoints.map((p) => `${p.x},${p.y}`).join(" ");
+  const predPolyline =
+    actualPoints.length > 0 && predPoints.length > 0
+      ? `${actualPoints[actualPoints.length - 1].x},${actualPoints[actualPoints.length - 1].y} ` +
+        predPoints.map((p) => `${p.x},${p.y}`).join(" ")
+      : predPoints.map((p) => `${p.x},${p.y}`).join(" ");
+
+  const formatRupiahShort = (val: number) => {
+    if (val >= 1_000_000_000) return `${(val / 1_000_000_000).toFixed(1)} M`;
+    if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(0)} jt`;
+    if (val >= 1_000) return `${(val / 1_000).toFixed(0)} rb`;
+    return `${val}`;
+  };
 
   return (
     <section className="surface-card border rounded-2xl p-6 shadow-xs">
@@ -28,16 +125,20 @@ export function PnbpChart() {
             PNBP bulanan: aktual dan prediksi
           </h2>
           {stats &&
-            stats.total_pnbp_sum !== undefined &&
-            stats.total_pnbp_sum > 0 && (
-              <div className="text-xs text-soft mt-1">
-                Akumulasi tercatat:{" "}
-                <span className="font-semibold text-fco-blue tabular-nums">
-                  Rp {Number(stats.total_pnbp_sum).toLocaleString("id-ID")}
-                </span>
-                {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
-              </div>
-            )}
+          stats.total_pnbp_sum !== undefined &&
+          stats.total_pnbp_sum > 0 ? (
+            <div className="text-xs text-soft mt-1">
+              Akumulasi tercatat:{" "}
+              <span className="font-semibold text-fco-blue tabular-nums">
+                Rp {Number(stats.total_pnbp_sum).toLocaleString("id-ID")}
+              </span>
+              {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
+            </div>
+          ) : (
+            <div className="text-xs text-soft mt-1">
+              Visualisasi deret waktu berbasis data transaksi laporan tangkapan
+            </div>
+          )}
         </div>
         <div className="flex gap-4 text-xs text-soft">
           <span className="flex items-center gap-1.5">
@@ -66,188 +167,117 @@ export function PnbpChart() {
                 strokeDasharray="4 3"
               />
             </svg>
-            Prediksi
+            Prediksi AI
           </span>
         </div>
       </div>
 
-      <svg
-        viewBox="0 0 640 260"
-        role="img"
-        aria-label="Grafik garis PNBP bulanan"
-        className="w-full h-auto block"
-      >
-        <rect x="406" y="30" width="210" height="190" fill="#F3F7FE" />
-        <text x="414" y="48" fontSize="12" fontWeight="600" fill="#5B6B86">
-          Prediksi
-        </text>
-        <line
-          x1="56"
-          y1="40"
-          x2="616"
-          y2="40"
-          stroke="#E6EDF8"
-          strokeWidth="1"
-        />
-        <line
-          x1="56"
-          y1="100"
-          x2="616"
-          y2="100"
-          stroke="#E6EDF8"
-          strokeWidth="1"
-        />
-        <line
-          x1="56"
-          y1="160"
-          x2="616"
-          y2="160"
-          stroke="#E6EDF8"
-          strokeWidth="1"
-        />
-        <line
-          x1="56"
-          y1="220"
-          x2="616"
-          y2="220"
-          stroke="#CBD8EE"
-          strokeWidth="1"
-        />
-        <text x="44" y="44" fontSize="12" fill="#5B6B86" textAnchor="end">
-          6
-        </text>
-        <text x="44" y="104" fontSize="12" fill="#5B6B86" textAnchor="end">
-          4
-        </text>
-        <text x="44" y="164" fontSize="12" fill="#5B6B86" textAnchor="end">
-          2
-        </text>
-        <text x="44" y="224" fontSize="12" fill="#5B6B86" textAnchor="end">
-          0
-        </text>
-        <text x="0" y="14" fontSize="12" fill="#5B6B86">
-          Rp miliar
-        </text>
-        <path
-          d="M56,142 L126,127 L196,133 L266,112 L336,103 L406,88 L406,220 L56,220 Z"
-          fill="#E8F0FE"
-        />
-        <polyline
-          points="56,142 126,127 196,133 266,112 336,103 406,88"
-          fill="none"
-          stroke="#1A56DB"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <polyline
-          points="406,88 476,76 546,67 616,55"
-          fill="none"
-          stroke="#3F82E8"
-          strokeWidth="2.5"
-          strokeDasharray="6 6"
-          strokeLinecap="round"
-        />
-        <circle
-          cx="56"
-          cy="142"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="126"
-          cy="127"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="196"
-          cy="133"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="266"
-          cy="112"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="336"
-          cy="103"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="406"
-          cy="88"
-          r="4.5"
-          fill="#1A56DB"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-        />
-        <circle
-          cx="476"
-          cy="76"
-          r="4.5"
-          fill="#FFFFFF"
-          stroke="#3F82E8"
-          strokeWidth="2"
-        />
-        <circle
-          cx="546"
-          cy="67"
-          r="4.5"
-          fill="#FFFFFF"
-          stroke="#3F82E8"
-          strokeWidth="2"
-        />
-        <circle
-          cx="616"
-          cy="55"
-          r="4.5"
-          fill="#FFFFFF"
-          stroke="#3F82E8"
-          strokeWidth="2"
-        />
-        <text x="56" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Mei
-        </text>
-        <text x="126" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Jun
-        </text>
-        <text x="196" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Jul
-        </text>
-        <text x="266" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Agu
-        </text>
-        <text x="336" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Sep
-        </text>
-        <text x="406" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Okt
-        </text>
-        <text x="476" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Nov
-        </text>
-        <text x="546" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Des
-        </text>
-        <text x="616" y="244" fontSize="12" fill="#5B6B86" textAnchor="middle">
-          Jan
-        </text>
-      </svg>
+      {loading ? (
+        <div className="py-20 flex flex-col items-center justify-center gap-2 text-sm text-soft">
+          <Loader2 size={24} className="animate-spin text-fco-blue" />
+          <span>Memuat grafik tren PNBP...</span>
+        </div>
+      ) : !hasData ? (
+        <div className="py-16 px-4 flex flex-col items-center justify-center text-center gap-3 border border-dashed border-fco-border rounded-xl">
+          <div className="w-12 h-12 rounded-xl bg-fco-blue-light dark:bg-fco-blue/15 text-fco-blue flex items-center justify-center">
+            <TrendingUp size={24} aria-hidden="true" />
+          </div>
+          <div>
+            <h3 className="m-0 text-sm font-bold text-strong">
+              Belum Ada Transaksi Tangkapan untuk Grafik PNBP
+            </h3>
+            <p className="m-0 text-xs text-soft max-w-md mt-1 leading-relaxed">
+              Saat laporan penangkapan ikan dicatat di sistem, kurva aktual dan
+              proyeksi 4 model analitis AI akan terbentuk secara otomatis di
+              sini.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <svg
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          role="img"
+          aria-label="Grafik garis PNBP bulanan"
+          className="w-full h-auto block"
+        >
+          {/* Y Axis Grid Lines */}
+          {[0, 0.33, 0.66, 1].map((ratio) => {
+            const y = padTop + plotHeight * (1 - ratio);
+            const val = maxValue * ratio;
+            return (
+              <g key={ratio}>
+                <line
+                  x1={padLeft}
+                  y1={y}
+                  x2={svgWidth - padRight}
+                  y2={y}
+                  stroke="#E6EDF8"
+                  strokeWidth="1"
+                  className="dark:stroke-slate-800"
+                />
+                <text
+                  x={padLeft - 10}
+                  y={y + 4}
+                  fontSize="11"
+                  fill="#5B6B86"
+                  textAnchor="end"
+                  className="font-mono text-soft"
+                >
+                  {formatRupiahShort(val)}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Actual Polyline */}
+          {actualPolyline && (
+            <polyline
+              points={actualPolyline}
+              fill="none"
+              stroke="#1A56DB"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+
+          {/* Prediction Polyline (Dashed) */}
+          {predPolyline && (
+            <polyline
+              points={predPolyline}
+              fill="none"
+              stroke="#3F82E8"
+              strokeWidth="2.5"
+              strokeDasharray="6 6"
+              strokeLinecap="round"
+            />
+          )}
+
+          {/* Points circles and X labels */}
+          {coords.map((p, i) => (
+            <g key={i}>
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={4.5}
+                fill={p.isPrediction ? "#FFFFFF" : "#1A56DB"}
+                stroke={p.isPrediction ? "#3F82E8" : "#FFFFFF"}
+                strokeWidth="2"
+              />
+              <text
+                x={p.x}
+                y={svgHeight - 12}
+                fontSize="11"
+                fill="#5B6B86"
+                textAnchor="middle"
+                className="font-semibold text-soft"
+              >
+                {p.label}
+              </text>
+            </g>
+          ))}
+        </svg>
+      )}
     </section>
   );
 }

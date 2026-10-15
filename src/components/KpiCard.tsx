@@ -6,12 +6,13 @@ export type KpiColor =
 
 interface KpiCardProps {
   label: string;
-  value: string;
+  value?: string;
   delta?: string;
   note?: string;
   trendUp?: boolean;
   color?: KpiColor;
   Icon?: LucideIcon;
+  loading?: boolean;
 }
 
 const colorMap: Record<
@@ -49,18 +50,19 @@ const colorMap: Record<
 
 export function KpiCard({
   label,
-  value,
+  value = "0",
   delta,
   note,
   trendUp = true,
   color = "blue",
   Icon,
+  loading = false,
 }: KpiCardProps) {
   const styles = colorMap[color];
 
   return (
     <div
-      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none ${styles.card}`}
+      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none min-h-[140px] ${styles.card}`}
     >
       {/* Decorative background glow circles */}
       <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none transition-transform group-hover:scale-125 duration-300" />
@@ -77,33 +79,44 @@ export function KpiCard({
         )}
       </div>
 
-      <div className="text-2xl sm:text-3xl font-extrabold tracking-tight my-1 tabular-nums text-white relative z-10">
-        {value}
-      </div>
-
-      {delta && (
-        <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1 relative z-10 font-medium">
-          {trendUp ? (
-            <TrendingUp
-              size={14}
-              className="text-white shrink-0"
-              strokeWidth={2.6}
-              aria-hidden="true"
-            />
-          ) : (
-            <TrendingDown
-              size={14}
-              className="text-white shrink-0"
-              strokeWidth={2.6}
-              aria-hidden="true"
-            />
-          )}
-          <span>{delta}</span>
+      {loading ? (
+        <div className="space-y-2 py-1 animate-pulse relative z-10">
+          <div className="h-8 bg-white/25 rounded-lg w-28" />
+          <div className="h-3.5 bg-white/20 rounded w-40" />
         </div>
-      )}
+      ) : (
+        <>
+          <div className="text-2xl sm:text-3xl font-extrabold tracking-tight my-1 tabular-nums text-white relative z-10">
+            {value}
+          </div>
 
-      {note && (
-        <div className="text-xs text-white/80 mt-1 relative z-10">{note}</div>
+          {delta && (
+            <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1 relative z-10 font-medium">
+              {trendUp ? (
+                <TrendingUp
+                  size={14}
+                  className="text-white shrink-0"
+                  strokeWidth={2.6}
+                  aria-hidden="true"
+                />
+              ) : (
+                <TrendingDown
+                  size={14}
+                  className="text-white shrink-0"
+                  strokeWidth={2.6}
+                  aria-hidden="true"
+                />
+              )}
+              <span>{delta}</span>
+            </div>
+          )}
+
+          {note && (
+            <div className="text-xs text-white/80 mt-1 relative z-10">
+              {note}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BarChart3, Coins, Fish, Ship } from "lucide-react";
-import { KpiCard, type KpiColor } from "../../components/KpiCard";
+import { KpiCard } from "../../components/KpiCard";
 import { FleetTable } from "./components/FleetTable";
 import { PnbpPredictionBars } from "./components/PnbpPredictionBars";
 import { AiAdviceCard } from "./components/AiAdviceCard";
@@ -9,47 +9,25 @@ import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
 import { authService } from "../../services/auth";
 
-interface KpiItem {
-  label: string;
-  value: string;
-  note?: string;
-  color: KpiColor;
-  Icon: typeof Ship;
+interface OwnerMetrics {
+  shipsCount: number;
+  unassignedCaptainsCount: number;
+  catchesCount: number;
+  catchStr: string;
+  pnbpStr: string;
+  avgQuota: number;
 }
 
-const defaultKpis: KpiItem[] = [
-  {
-    label: "Jumlah kapal",
-    value: "5",
-    note: "1 kapal belum punya nahkoda",
-    color: "blue",
-    Icon: Ship,
-  },
-  {
-    label: "Tangkapan bulan ini",
-    value: "24,6 ton",
-    note: "Dari seluruh armada",
-    color: "emerald",
-    Icon: Fish,
-  },
-  {
-    label: "PNBP bulan ini",
-    value: "Rp 31,2 jt",
-    note: "Terhitung otomatis dari laporan",
-    color: "purple",
-    Icon: Coins,
-  },
-  {
-    label: "Sisa kuota gabungan",
-    value: "49%",
-    note: "Rata-rata seluruh armada",
-    color: "amber",
-    Icon: BarChart3,
-  },
-];
-
 export function OwnerDashboard() {
-  const [kpis, setKpis] = useState<KpiItem[]>(defaultKpis);
+  const [loading, setLoading] = useState(true);
+  const [metrics, setMetrics] = useState<OwnerMetrics>({
+    shipsCount: 0,
+    unassignedCaptainsCount: 0,
+    catchesCount: 0,
+    catchStr: "0 kg",
+    pnbpStr: "Rp 0",
+    avgQuota: 0,
+  });
   const [ships, setShips] = useState<ShipType[]>([]);
 
   const currentUser = authService.getStoredUser();
@@ -57,6 +35,7 @@ export function OwnerDashboard() {
 
   useEffect(() => {
     async function loadOwnerStats() {
+      setLoading(true);
       try {
         let ownerShips: ShipType[] = [];
         if (ownerId) {
@@ -79,22 +58,22 @@ export function OwnerDashboard() {
         ).length;
 
         // Calculate average remaining quota percentage
-        let avgQuota = 50;
+        let avgQuota = 0;
         if (shipsCount > 0) {
           const totalPct = ownerShips.reduce((acc, s) => {
             const p = s.current_year_quota
               ? s.current_year_quota.quota_percentage
-              : 70;
+              : 0;
             return acc + p;
           }, 0);
           avgQuota = Math.round(totalPct / shipsCount);
         }
 
         const summary = chartRes?.charts_data?.summary_stats;
-        let pnbpStr = "Rp 31,2 jt";
-        let catchStr = "24,6 ton";
+        let pnbpStr = "Rp 0";
+        let catchStr = "0 kg";
 
-        if (summary?.total_pnbp_sum) {
+        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0) {
           const sum = summary.total_pnbp_sum;
           pnbpStr =
             sum >= 1_000_000_000
@@ -102,47 +81,38 @@ export function OwnerDashboard() {
               : `Rp ${(sum / 1_000_000).toFixed(1)} jt`;
         }
 
-        if (summary?.total_volume_sum) {
+        if (summary?.total_volume_sum && summary.total_volume_sum > 0) {
           const vol = summary.total_volume_sum;
           catchStr =
             vol >= 1000 ? `${(vol / 1000).toFixed(1)} ton` : `${vol} kg`;
+        } else if (catches.length > 0) {
+          const sumQty = catches.reduce((acc, c) => {
+            const detailQty = (c.catch_details || []).reduce(
+              (dAcc, d) => dAcc + (parseFloat(String(d.quantity)) || 0),
+              0,
+            );
+            return acc + detailQty;
+          }, 0);
+          if (sumQty > 0) {
+            catchStr =
+              sumQty >= 1000
+                ? `${(sumQty / 1000).toFixed(1)} ton`
+                : `${sumQty} kg`;
+          }
         }
 
-        setKpis([
-          {
-            label: "Jumlah armada kapal",
-            value: shipsCount > 0 ? `${shipsCount}` : "5",
-            note:
-              unassignedCaptainsCount > 0
-                ? `${unassignedCaptainsCount} kapal belum ada nahkoda`
-                : "Semua kapal memiliki nahkoda",
-            color: "blue",
-            Icon: Ship,
-          },
-          {
-            label: "Tangkapan terverifikasi",
-            value: catchStr,
-            note: `${catches.length} laporan masuk ke sistem`,
-            color: "emerald",
-            Icon: Fish,
-          },
-          {
-            label: "PNBP terhitung",
-            value: pnbpStr,
-            note: "Perhitungan resmi berbasis GT",
-            color: "purple",
-            Icon: Coins,
-          },
-          {
-            label: "Sisa kuota gabungan",
-            value: `${avgQuota}%`,
-            note: `Rata-rata ${shipsCount || 5} kapal armada`,
-            color: "amber",
-            Icon: BarChart3,
-          },
-        ]);
+        setMetrics({
+          shipsCount,
+          unassignedCaptainsCount,
+          catchesCount: catches.length,
+          catchStr,
+          pnbpStr,
+          avgQuota,
+        });
       } catch {
-        // Fallback to default
+        // Keeps 0 metrics on error
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -160,17 +130,54 @@ export function OwnerDashboard() {
         </div>
       </div>
 
+      {/* Realtime Owner KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        {kpis.map((k) => (
-          <KpiCard
-            key={k.label}
-            label={k.label}
-            value={k.value}
-            note={k.note}
-            color={k.color}
-            Icon={k.Icon}
-          />
-        ))}
+        <KpiCard
+          label="Jumlah armada kapal"
+          value={`${metrics.shipsCount}`}
+          note={
+            metrics.shipsCount === 0
+              ? "Belum ada kapal terdaftar"
+              : metrics.unassignedCaptainsCount > 0
+                ? `${metrics.unassignedCaptainsCount} kapal belum ada nahkoda`
+                : "Semua kapal memiliki nahkoda"
+          }
+          color="blue"
+          Icon={Ship}
+          loading={loading}
+        />
+        <KpiCard
+          label="Tangkapan terverifikasi"
+          value={metrics.catchStr}
+          note={
+            metrics.catchesCount > 0
+              ? `${metrics.catchesCount} laporan masuk ke sistem`
+              : "Belum ada laporan tangkapan"
+          }
+          color="emerald"
+          Icon={Fish}
+          loading={loading}
+        />
+        <KpiCard
+          label="PNBP terhitung"
+          value={metrics.pnbpStr}
+          note="Perhitungan resmi berbasis GT"
+          color="purple"
+          Icon={Coins}
+          loading={loading}
+        />
+        <KpiCard
+          label="Sisa kuota gabungan"
+          value={metrics.shipsCount > 0 ? `${metrics.avgQuota}%` : "—"}
+          note={
+            metrics.shipsCount > 0
+              ? `Rata-rata ${metrics.shipsCount} kapal armada`
+              : "Belum ada alokasi kuota"
+          }
+          color="amber"
+          Icon={BarChart3}
+          loading={loading}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">

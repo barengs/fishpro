@@ -12,69 +12,18 @@ import { shipsService } from "../../services/ships";
 import { blockchainService } from "../../services/blockchain";
 import { pnbpService } from "../../services/pnbp";
 
-const fallbackShips: ShipQuotaItem[] = [
-  {
-    name: "KM Bahari Satu",
-    reg: "REG-0087",
-    owner: "PT Samudra Biru",
-    allocatedQuota: "15.000 kg",
-    usedQuota: "12.900 kg",
-    percentRemaining: "14%",
-    aiRecommendedQuota: "18.500 kg",
-    status: "Mendekati Batas",
-    statusBg: "#FFF1E0",
-    statusColor: "#B54708",
-  },
-  {
-    name: "KM Cahaya Timur",
-    reg: "REG-0319",
-    owner: "CV Bahari Jaya",
-    allocatedQuota: "10.000 kg",
-    usedQuota: "9.100 kg",
-    percentRemaining: "9%",
-    aiRecommendedQuota: "12.000 kg",
-    status: "Kritis",
-    statusBg: "#FFF1E0",
-    statusColor: "#B54708",
-  },
-  {
-    name: "KM Mutiara Laut",
-    reg: "REG-0233",
-    owner: "PT Mina Perkasa",
-    allocatedQuota: "25.000 kg",
-    usedQuota: "19.500 kg",
-    percentRemaining: "22%",
-    aiRecommendedQuota: "24.000 kg",
-    status: "Waspada",
-    statusBg: "#E8F0FE",
-    statusColor: "#1A56DB",
-  },
-  {
-    name: "KM Samudra Jaya",
-    reg: "REG-0412",
-    owner: "PT Laut Nusantara",
-    allocatedQuota: "12.000 kg",
-    usedQuota: "3.600 kg",
-    percentRemaining: "70%",
-    aiRecommendedQuota: "14.000 kg",
-    status: "Normal",
-    statusBg: "#E8F0FE",
-    statusColor: "#1A56DB",
-  },
-];
-
 export function RegulatorDashboard() {
-  const [ships, setShips] = useState<ShipQuotaItem[]>(fallbackShips);
+  const [ships, setShips] = useState<ShipQuotaItem[]>([]);
   const [selectedShip, setSelectedShip] = useState<ShipQuotaItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Dynamic KPI states
-  const [totalMonitored, setTotalMonitored] = useState<number>(1284);
-  const [criticalCount, setCriticalCount] = useState<number>(2);
+  const [totalMonitored, setTotalMonitored] = useState<number>(0);
+  const [criticalCount, setCriticalCount] = useState<number>(0);
   const [blockchainValid, setBlockchainValid] = useState<boolean>(true);
-  const [pnbpStr, setPnbpStr] = useState<string>("Rp 4,4 M");
+  const [pnbpStr, setPnbpStr] = useState<string>("Rp 0");
 
   useEffect(() => {
     let ignore = false;
@@ -89,9 +38,9 @@ export function RegulatorDashboard() {
 
         if (ignore) return;
 
-        if (shipsData.length > 0) {
-          setTotalMonitored(shipsData.length);
+        setTotalMonitored(shipsData.length);
 
+        if (shipsData.length > 0) {
           const mapped: ShipQuotaItem[] = shipsData.map((s) => {
             const q = s.current_year_quota;
             const pct = q ? q.quota_percentage : 70;
@@ -103,9 +52,7 @@ export function RegulatorDashboard() {
             return {
               name: s.name,
               reg: s.registration_number,
-              owner:
-                s.owner_name ||
-                (s.owner ? `Owner #${s.owner}` : "PT Laut Nusantara"),
+              owner: s.owner_name || (s.owner ? `Owner #${s.owner}` : "—"),
               allocatedQuota: `${totalQ.toLocaleString("id-ID")} kg`,
               usedQuota: `${usedQ.toLocaleString("id-ID")} kg`,
               percentRemaining: `${pct}%`,
@@ -122,6 +69,9 @@ export function RegulatorDashboard() {
             (s) => (s.current_year_quota?.quota_percentage ?? 70) < 15,
           ).length;
           setCriticalCount(critCount);
+        } else {
+          setShips([]);
+          setCriticalCount(0);
         }
 
         if (chainStatus && !ignore) {
@@ -129,16 +79,20 @@ export function RegulatorDashboard() {
         }
 
         const summary = chartRes?.charts_data?.summary_stats;
-        if (summary?.total_pnbp_sum && !ignore) {
+        if (summary?.total_pnbp_sum && summary.total_pnbp_sum > 0 && !ignore) {
           const sum = summary.total_pnbp_sum;
           setPnbpStr(
             sum >= 1_000_000_000
               ? `Rp ${(sum / 1_000_000_000).toFixed(1)} M`
-              : `Rp ${(sum / 1_000_000).toFixed(0)} jt`,
+              : sum >= 1_000_000
+                ? `Rp ${(sum / 1_000_000).toFixed(0)} jt`
+                : `Rp ${Number(sum).toLocaleString("id-ID")}`,
           );
+        } else if (!ignore) {
+          setPnbpStr("Rp 0");
         }
       } catch {
-        // Ignored: keep fallback
+        // Ignored: keep empty state
       }
     }
 
@@ -241,7 +195,11 @@ export function RegulatorDashboard() {
           label="Kapal Over-Quota / Kritis"
           value={`${criticalCount}`}
           delta={
-            criticalCount > 0 ? "Perlu tindakan override" : "Semua kapal patuh"
+            criticalCount > 0
+              ? "Perlu tindakan override"
+              : totalMonitored > 0
+                ? "Semua kapal patuh"
+                : "Belum ada kapal"
           }
           trendUp={criticalCount === 0}
           color="rose"
