@@ -1,17 +1,17 @@
 interface ProgressBarProps {
-  width: string
-  height?: number
-  trackBg?: string
-  barBg?: string
-  showText?: boolean
+  width: string;
+  height?: number;
+  trackBg?: string;
+  barBg?: string;
+  showText?: boolean;
 }
 
 export function ProgressBar({
   width,
   height = 6,
-  trackBg = '#E8F0FE',
-  barBg = '#1A56DB',
-  showText = false
+  trackBg = "#E8F0FE",
+  barBg = "#1A56DB",
+  showText = false,
 }: ProgressBarProps) {
   return (
     <div className="flex items-center gap-3 w-full">
@@ -30,5 +30,5 @@ export function ProgressBar({
         </span>
       )}
     </div>
-  )
+  );
 }

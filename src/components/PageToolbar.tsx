@@ -1,22 +1,22 @@
-import { Plus } from 'lucide-react'
-import { PageHeader } from './PageHeader'
+import { Plus } from "lucide-react";
+import { PageHeader } from "./PageHeader";
 
 interface SubTab {
-  key: string
-  label: string
+  key: string;
+  label: string;
 }
 
 interface PageToolbarProps {
-  title: string
-  desc: string
-  searchPlaceholder?: string
-  searchValue?: string
-  onSearchChange?: (val: string) => void
-  tabs?: SubTab[]
-  activeTab?: string
-  onTabChange?: (key: string) => void
-  addLabel: string
-  onAdd: () => void
+  title: string;
+  desc: string;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (val: string) => void;
+  tabs?: SubTab[];
+  activeTab?: string;
+  onTabChange?: (key: string) => void;
+  addLabel: string;
+  onAdd: () => void;
 }
 
 export function PageToolbar({
@@ -52,7 +52,10 @@ export function PageToolbar({
         }
       />
       {tabs && tabs.length > 1 && (
-        <div className="flex gap-1.5 mb-6 p-1 surface-inset border rounded-xl w-fit" role="tablist">
+        <div
+          className="flex gap-1.5 mb-6 p-1 surface-inset border rounded-xl w-fit"
+          role="tablist"
+        >
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -62,8 +65,8 @@ export function PageToolbar({
               onClick={() => onTabChange?.(t.key)}
               className={`h-9.5 px-5 rounded-lg text-sm font-semibold border-none cursor-pointer transition-all ${
                 activeTab === t.key
-                  ? 'bg-fco-blue text-white shadow-xs'
-                  : 'bg-transparent text-soft hover:text-strong'
+                  ? "bg-fco-blue text-white shadow-xs"
+                  : "bg-transparent text-soft hover:text-strong"
               }`}
             >
               {t.label}
@@ -72,5 +75,5 @@ export function PageToolbar({
         </div>
       )}
     </div>
-  )
+  );
 }

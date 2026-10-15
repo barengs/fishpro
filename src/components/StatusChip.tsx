@@ -1,15 +1,15 @@
 interface StatusChipProps {
-  label: string
-  bg?: string
-  color?: string
-  icon?: React.ReactNode
+  label: string;
+  bg?: string;
+  color?: string;
+  icon?: React.ReactNode;
 }
 
 export function StatusChip({
   label,
-  bg = '#E8F0FE',
-  color = '#1A56DB',
-  icon
+  bg = "#E8F0FE",
+  color = "#1A56DB",
+  icon,
 }: StatusChipProps) {
   return (
     <span
@@ -19,5 +19,5 @@ export function StatusChip({
       {icon}
       {label}
     </span>
-  )
+  );
 }

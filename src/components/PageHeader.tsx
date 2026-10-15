@@ -1,13 +1,13 @@
-import { Search } from 'lucide-react'
+import { Search } from "lucide-react";
 
 interface PageHeaderProps {
-  title: string
-  desc: string
-  actions?: React.ReactNode
-  showSearch?: boolean
-  searchPlaceholder?: string
-  searchValue?: string
-  onSearchChange?: (val: string) => void
+  title: string;
+  desc: string;
+  actions?: React.ReactNode;
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (val: string) => void;
 }
 
 export function PageHeader({
@@ -36,9 +36,9 @@ export function PageHeader({
             />
             <input
               type="search"
-              value={searchValue ?? ''}
+              value={searchValue ?? ""}
               onChange={(e) => onSearchChange?.(e.target.value)}
-              placeholder={searchPlaceholder ?? 'Cari...'}
+              placeholder={searchPlaceholder ?? "Cari..."}
               className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors"
             />
           </div>
@@ -46,5 +46,5 @@ export function PageHeader({
         {actions}
       </div>
     </div>
-  )
+  );
 }

@@ -1,72 +1,80 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { FormField, inputCls } from './FormField'
-import { emptyShipForm, type ShipFormData } from './shipFormTypes'
-import { ownersService, type Owner } from '../services/owners'
-import { captainsService, type Captain } from '../services/captains'
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { FormField, inputCls } from "./FormField";
+import { emptyShipForm, type ShipFormData } from "./shipFormTypes";
+import { ownersService, type Owner } from "../services/owners";
+import { captainsService, type Captain } from "../services/captains";
 
 const steps = [
-  { num: 1, title: 'Identitas' },
-  { num: 2, title: 'Spesifikasi' },
-  { num: 3, title: 'Cek' }
-]
+  { num: 1, title: "Identitas" },
+  { num: 2, title: "Spesifikasi" },
+  { num: 3, title: "Cek" },
+];
 
 interface ShipFormWizardProps {
-  onSubmit: (data: ShipFormData) => void
-  fixedOwnerId?: number
+  onSubmit: (data: ShipFormData) => void;
+  fixedOwnerId?: number;
 }
 
-export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) {
-  const [currentStep, setCurrentStep] = useState(1)
+export function ShipFormWizard({
+  onSubmit,
+  fixedOwnerId,
+}: ShipFormWizardProps) {
+  const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState<ShipFormData>({
     ...emptyShipForm,
-    owner: fixedOwnerId ? String(fixedOwnerId) : '',
-  })
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [owners, setOwners] = useState<Owner[]>([])
-  const [captains, setCaptains] = useState<Captain[]>([])
+    owner: fixedOwnerId ? String(fixedOwnerId) : "",
+  });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [owners, setOwners] = useState<Owner[]>([]);
+  const [captains, setCaptains] = useState<Captain[]>([]);
 
   useEffect(() => {
     // Load available owners and captains in background for easy selection
-    Promise.all([ownersService.getAll().catch(() => []), captainsService.getAll().catch(() => [])]).then(
-      ([ownersData, captainsData]) => {
-        setOwners(ownersData)
-        setCaptains(captainsData)
-      }
-    )
-  }, [])
+    Promise.all([
+      ownersService.getAll().catch(() => []),
+      captainsService.getAll().catch(() => []),
+    ]).then(([ownersData, captainsData]) => {
+      setOwners(ownersData);
+      setCaptains(captainsData);
+    });
+  }, []);
 
   const handleNext = () => {
-    setErrorMsg(null)
+    setErrorMsg(null);
     if (currentStep === 1) {
       if (!form.name.trim()) {
-        setErrorMsg('Nama kapal masih kosong.')
-        return
+        setErrorMsg("Nama kapal masih kosong.");
+        return;
       }
       if (!form.registration_number.trim()) {
-        setErrorMsg('Nomor registrasi masih kosong.')
-        return
+        setErrorMsg("Nomor registrasi masih kosong.");
+        return;
       }
     }
-    setCurrentStep((p) => Math.min(3, p + 1))
-  }
+    setCurrentStep((p) => Math.min(3, p + 1));
+  };
 
   const handlePrev = () => {
-    setErrorMsg(null)
-    setCurrentStep((p) => Math.max(1, p - 1))
-  }
+    setErrorMsg(null);
+    setCurrentStep((p) => Math.max(1, p - 1));
+  };
 
   const handleSubmit = () => {
-    onSubmit({ ...form })
-    setForm(emptyShipForm)
-    setCurrentStep(1)
-    setErrorMsg(null)
-  }
+    onSubmit({ ...form });
+    setForm(emptyShipForm);
+    setCurrentStep(1);
+    setErrorMsg(null);
+  };
 
   const selectedOwnerName =
-    owners.find((o) => String(o.id) === String(form.owner))?.full_name || form.owner || '—'
+    owners.find((o) => String(o.id) === String(form.owner))?.full_name ||
+    form.owner ||
+    "—";
   const selectedCaptainName =
-    captains.find((c) => String(c.id) === String(form.captain))?.full_name || form.captain || '—'
+    captains.find((c) => String(c.id) === String(form.captain))?.full_name ||
+    form.captain ||
+    "—";
 
   return (
     <div>
@@ -76,35 +84,45 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
           <div className="absolute left-6 right-6 top-4 h-0.5 bg-fco-border z-0" />
           <div
             className="absolute left-6 top-4 h-0.5 bg-fco-blue z-0 transition-all duration-300"
-            style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 88}%` }}
+            style={{
+              width: `${((currentStep - 1) / (steps.length - 1)) * 88}%`,
+            }}
           />
           {steps.map((s) => {
-            const isPassed = currentStep > s.num
-            const isCurrent = currentStep === s.num
+            const isPassed = currentStep > s.num;
+            const isCurrent = currentStep === s.num;
             return (
-              <div key={s.num} className="flex flex-col items-center gap-1.5 relative px-1">
+              <div
+                key={s.num}
+                className="flex flex-col items-center gap-1.5 relative px-1"
+              >
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
                     isCurrent
-                      ? 'bg-fco-blue text-white ring-4 ring-fco-blue/15'
+                      ? "bg-fco-blue text-white ring-4 ring-fco-blue/15"
                       : isPassed
-                      ? 'bg-fco-blue text-white'
-                      : 'surface-card border-2 border-fco-border text-soft'
+                        ? "bg-fco-blue text-white"
+                        : "surface-card border-2 border-fco-border text-soft"
                   }`}
                 >
-                  {isPassed ? '✓' : s.num}
+                  {isPassed ? "✓" : s.num}
                 </div>
-                <span className={`text-xs font-semibold ${isCurrent ? 'text-fco-blue' : isPassed ? 'text-strong' : 'text-fco-placeholder'}`}>
+                <span
+                  className={`text-xs font-semibold ${isCurrent ? "text-fco-blue" : isPassed ? "text-strong" : "text-fco-placeholder"}`}
+                >
                   {s.title}
                 </span>
               </div>
-            )
+            );
           })}
         </div>
       </div>
 
       {errorMsg && (
-        <div role="alert" className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
+        <div
+          role="alert"
+          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20"
+        >
           {errorMsg}
         </div>
       )}
@@ -115,7 +133,7 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
           initial={{ opacity: 0, x: 32 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -32 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
         >
           {/* STEP 1: IDENTITAS */}
           {currentStep === 1 && (
@@ -129,11 +147,18 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                   className={inputCls}
                 />
               </FormField>
-              <FormField label="Nomor registrasi" htmlFor="wz-reg" required hint="Unik, format: REG-XXXX">
+              <FormField
+                label="Nomor registrasi"
+                htmlFor="wz-reg"
+                required
+                hint="Unik, format: REG-XXXX"
+              >
                 <input
                   id="wz-reg"
                   value={form.registration_number}
-                  onChange={(e) => setForm({ ...form, registration_number: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, registration_number: e.target.value })
+                  }
                   placeholder="Contoh: REG-0412"
                   className={inputCls}
                 />
@@ -144,23 +169,28 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                   {owners.length > 0 && !fixedOwnerId ? (
                     <select
                       id="wz-owner"
-                      value={form.owner || ''}
-                      onChange={(e) => setForm({ ...form, owner: e.target.value })}
+                      value={form.owner || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, owner: e.target.value })
+                      }
                       className={inputCls}
                     >
                       <option value="">— Pilih Pemilik —</option>
                       {owners.map((o) => (
                         <option key={o.id} value={o.id}>
-                          {o.full_name} ({o.owner_type === 'company' ? 'PT' : 'Pribadi'})
+                          {o.full_name} (
+                          {o.owner_type === "company" ? "PT" : "Pribadi"})
                         </option>
                       ))}
                     </select>
                   ) : (
                     <input
                       id="wz-owner"
-                      value={form.owner || ''}
+                      value={form.owner || ""}
                       disabled={Boolean(fixedOwnerId)}
-                      onChange={(e) => setForm({ ...form, owner: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, owner: e.target.value })
+                      }
                       placeholder="ID atau Nama Pemilik"
                       className={inputCls}
                     />
@@ -171,8 +201,10 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                   {captains.length > 0 ? (
                     <select
                       id="wz-captain"
-                      value={form.captain || ''}
-                      onChange={(e) => setForm({ ...form, captain: e.target.value })}
+                      value={form.captain || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, captain: e.target.value })
+                      }
                       className={inputCls}
                     >
                       <option value="">— Pilih Nahkoda (Boleh Kosong) —</option>
@@ -185,8 +217,10 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                   ) : (
                     <input
                       id="wz-captain"
-                      value={form.captain || ''}
-                      onChange={(e) => setForm({ ...form, captain: e.target.value })}
+                      value={form.captain || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, captain: e.target.value })
+                      }
                       placeholder="Nama nahkoda"
                       className={inputCls}
                     />
@@ -206,7 +240,9 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                     type="number"
                     step="0.01"
                     value={form.length}
-                    onChange={(e) => setForm({ ...form, length: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, length: e.target.value })
+                    }
                     placeholder="18.0"
                     className={inputCls}
                   />
@@ -217,18 +253,26 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                     type="number"
                     step="0.01"
                     value={form.width}
-                    onChange={(e) => setForm({ ...form, width: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, width: e.target.value })
+                    }
                     placeholder="5.2"
                     className={inputCls}
                   />
                 </FormField>
-                <FormField label="GT" htmlFor="wz-gt" hint="Menentukan tarif PNBP">
+                <FormField
+                  label="GT"
+                  htmlFor="wz-gt"
+                  hint="Menentukan tarif PNBP"
+                >
                   <input
                     id="wz-gt"
                     type="number"
                     step="0.01"
                     value={form.gross_tonnage}
-                    onChange={(e) => setForm({ ...form, gross_tonnage: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, gross_tonnage: e.target.value })
+                    }
                     placeholder="42.5"
                     className={inputCls}
                   />
@@ -240,7 +284,9 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                     id="wz-year"
                     type="number"
                     value={form.year_built}
-                    onChange={(e) => setForm({ ...form, year_built: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, year_built: e.target.value })
+                    }
                     placeholder="2018"
                     className={inputCls}
                   />
@@ -249,7 +295,9 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
                   <input
                     id="wz-port"
                     value={form.home_port}
-                    onChange={(e) => setForm({ ...form, home_port: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, home_port: e.target.value })
+                    }
                     placeholder="Benoa / Muara Baru"
                     className={inputCls}
                   />
@@ -258,12 +306,18 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
               <FormField label="Status kapal" htmlFor="wz-status">
                 <select
                   id="wz-status"
-                  value={form.active ? 'active' : 'inactive'}
-                  onChange={(e) => setForm({ ...form, active: e.target.value === 'active' })}
+                  value={form.active ? "active" : "inactive"}
+                  onChange={(e) =>
+                    setForm({ ...form, active: e.target.value === "active" })
+                  }
                   className={inputCls}
                 >
-                  <option value="active">Aktif — beroperasi & bisa melapor</option>
-                  <option value="inactive">Nonaktif — dok / izin mati / dijual</option>
+                  <option value="active">
+                    Aktif — beroperasi & bisa melapor
+                  </option>
+                  <option value="inactive">
+                    Nonaktif — dok / izin mati / dijual
+                  </option>
                 </select>
               </FormField>
             </div>
@@ -272,25 +326,37 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
           {/* STEP 3: CEK */}
           {currentStep === 3 && (
             <div>
-              <h3 className="m-0 mb-1 text-lg font-extrabold text-strong">Cek ringkasan kapal</h3>
-              <p className="m-0 mb-4 text-sm text-soft">Pastikan nama dan nomor registrasi sudah benar.</p>
+              <h3 className="m-0 mb-1 text-lg font-extrabold text-strong">
+                Cek ringkasan kapal
+              </h3>
+              <p className="m-0 mb-4 text-sm text-soft">
+                Pastikan nama dan nomor registrasi sudah benar.
+              </p>
               <dl className="m-0 p-4 rounded-2xl surface-inset border text-sm flex flex-col gap-2.5">
                 <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
                   <dt className="text-soft">Kapal</dt>
-                  <dd className="m-0 font-bold text-strong text-right">{form.name} · {form.registration_number}</dd>
+                  <dd className="m-0 font-bold text-strong text-right">
+                    {form.name} · {form.registration_number}
+                  </dd>
                 </div>
                 <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
                   <dt className="text-soft">Pemilik</dt>
-                  <dd className="m-0 text-strong text-right">{selectedOwnerName}</dd>
+                  <dd className="m-0 text-strong text-right">
+                    {selectedOwnerName}
+                  </dd>
                 </div>
                 <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
                   <dt className="text-soft">Nahkoda</dt>
-                  <dd className="m-0 text-strong text-right">{selectedCaptainName}</dd>
+                  <dd className="m-0 text-strong text-right">
+                    {selectedCaptainName}
+                  </dd>
                 </div>
                 <div className="flex justify-between gap-3 py-1">
                   <dt className="text-soft">Dimensi / GT / Status</dt>
                   <dd className="m-0 text-strong text-right tabular-nums">
-                    {form.length || '—'} × {form.width || '—'} m · {form.gross_tonnage || '—'} GT · {form.active ? 'Aktif' : 'Nonaktif'}
+                    {form.length || "—"} × {form.width || "—"} m ·{" "}
+                    {form.gross_tonnage || "—"} GT ·{" "}
+                    {form.active ? "Aktif" : "Nonaktif"}
                   </dd>
                 </div>
               </dl>
@@ -330,5 +396,5 @@ export function ShipFormWizard({ onSubmit, fixedOwnerId }: ShipFormWizardProps) 
         )}
       </div>
     </div>
-  )
+  );
 }

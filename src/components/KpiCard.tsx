@@ -1,47 +1,51 @@
-import type { LucideIcon } from 'lucide-react'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import type { LucideIcon } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
-export type KpiColor = 'blue' | 'emerald' | 'amber' | 'purple' | 'cyan' | 'rose'
+export type KpiColor =
+  "blue" | "emerald" | "amber" | "purple" | "cyan" | "rose";
 
 interface KpiCardProps {
-  label: string
-  value: string
-  delta?: string
-  note?: string
-  trendUp?: boolean
-  color?: KpiColor
-  Icon?: LucideIcon
+  label: string;
+  value: string;
+  delta?: string;
+  note?: string;
+  trendUp?: boolean;
+  color?: KpiColor;
+  Icon?: LucideIcon;
 }
 
-const colorMap: Record<KpiColor, {
-  card: string
-  iconBg: string
-}> = {
+const colorMap: Record<
+  KpiColor,
+  {
+    card: string;
+    iconBg: string;
+  }
+> = {
   blue: {
-    card: 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20",
+    iconBg: "bg-white/20 text-white",
   },
   emerald: {
-    card: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20",
+    iconBg: "bg-white/20 text-white",
   },
   amber: {
-    card: 'bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20",
+    iconBg: "bg-white/20 text-white",
   },
   purple: {
-    card: 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20",
+    iconBg: "bg-white/20 text-white",
   },
   cyan: {
-    card: 'bg-gradient-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-gradient-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20",
+    iconBg: "bg-white/20 text-white",
   },
   rose: {
-    card: 'bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20',
-    iconBg: 'bg-white/20 text-white'
-  }
-}
+    card: "bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20",
+    iconBg: "bg-white/20 text-white",
+  },
+};
 
 export function KpiCard({
   label,
@@ -49,10 +53,10 @@ export function KpiCard({
   delta,
   note,
   trendUp = true,
-  color = 'blue',
-  Icon
+  color = "blue",
+  Icon,
 }: KpiCardProps) {
-  const styles = colorMap[color]
+  const styles = colorMap[color];
 
   return (
     <div
@@ -65,7 +69,9 @@ export function KpiCard({
       <div className="flex items-center justify-between gap-3 mb-2 relative z-10">
         <div className="text-sm font-semibold text-white/85">{label}</div>
         {Icon && (
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-200 ${styles.iconBg}`}>
+          <div
+            className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-200 ${styles.iconBg}`}
+          >
             <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
           </div>
         )}
@@ -78,15 +84,27 @@ export function KpiCard({
       {delta && (
         <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1 relative z-10 font-medium">
           {trendUp ? (
-            <TrendingUp size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
+            <TrendingUp
+              size={14}
+              className="text-white shrink-0"
+              strokeWidth={2.6}
+              aria-hidden="true"
+            />
           ) : (
-            <TrendingDown size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
+            <TrendingDown
+              size={14}
+              className="text-white shrink-0"
+              strokeWidth={2.6}
+              aria-hidden="true"
+            />
           )}
           <span>{delta}</span>
         </div>
       )}
 
-      {note && <div className="text-xs text-white/80 mt-1 relative z-10">{note}</div>}
+      {note && (
+        <div className="text-xs text-white/80 mt-1 relative z-10">{note}</div>
+      )}
     </div>
-  )
+  );
 }
