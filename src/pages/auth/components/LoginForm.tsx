@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
+import { useToast } from "../../../components/toast";
 
 export function LoginForm() {
   const [identifier, setIdentifier] = useState("");
@@ -10,6 +11,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,10 @@ export function LoginForm() {
         username: identifier.trim(),
         password,
       });
+
+      toast.success(
+        `Login berhasil. Selamat datang kembali, ${data.username}!`,
+      );
 
       // Navigate based on backend user_as or roles
       const role = data.user_as || (data.roles && data.roles[0]) || "owner";

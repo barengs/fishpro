@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
+import { ToastProvider } from "./components/toast";
 import { OnboardingPage } from "./pages/auth/OnboardingPage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
@@ -31,54 +32,56 @@ import { MyShipPage } from "./pages/captain/MyShipPage";
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/onboard" replace />} />
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/onboard" replace />} />
 
-          {/* Standalone auth pages */}
-          <Route path="/onboard" element={<OnboardingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+            {/* Standalone auth pages */}
+            <Route path="/onboard" element={<OnboardingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Admin: Ship, Owner, Captain, FishCatch+Detail, Species+Price, Area, Quota+Tariff, Blockchain, Role/Menu */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="ships" element={<ShipsPage />} />
-            <Route path="owners" element={<OwnersTab />} />
-            <Route path="captains" element={<CaptainsTab />} />
-            <Route path="catches" element={<CatchesPage />} />
-            <Route path="species" element={<SpeciesPage />} />
-            <Route path="areas" element={<AreasPage />} />
-            <Route path="quota" element={<QuotaPnbpPage />} />
-            <Route path="blockchain" element={<BlockchainPage />} />
-            <Route path="roles" element={<RolesMenusPage />} />
-          </Route>
+            {/* Admin: Ship, Owner, Captain, FishCatch+Detail, Species+Price, Area, Quota+Tariff, Blockchain, Role/Menu */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="ships" element={<ShipsPage />} />
+              <Route path="owners" element={<OwnersTab />} />
+              <Route path="captains" element={<CaptainsTab />} />
+              <Route path="catches" element={<CatchesPage />} />
+              <Route path="species" element={<SpeciesPage />} />
+              <Route path="areas" element={<AreasPage />} />
+              <Route path="quota" element={<QuotaPnbpPage />} />
+              <Route path="blockchain" element={<BlockchainPage />} />
+              <Route path="roles" element={<RolesMenusPage />} />
+            </Route>
 
-          {/* Regulator: audit quota + verifikasi blockchain */}
-          <Route path="/regulator" element={<RegulatorLayout />}>
-            <Route index element={<RegulatorDashboard />} />
-            <Route path="audit" element={<QuotaAuditPage />} />
-            <Route path="verify" element={<VerifyBlockchainPage />} />
-          </Route>
+            {/* Regulator: audit quota + verifikasi blockchain */}
+            <Route path="/regulator" element={<RegulatorLayout />}>
+              <Route index element={<RegulatorDashboard />} />
+              <Route path="audit" element={<QuotaAuditPage />} />
+              <Route path="verify" element={<VerifyBlockchainPage />} />
+            </Route>
 
-          {/* Owner: armada + nahkoda */}
-          <Route path="/owner" element={<OwnerLayout />}>
-            <Route index element={<OwnerDashboard />} />
-            <Route path="fleet" element={<FleetPage />} />
-            <Route path="captains" element={<CaptainsPage />} />
-          </Route>
+            {/* Owner: armada + nahkoda */}
+            <Route path="/owner" element={<OwnerLayout />}>
+              <Route index element={<OwnerDashboard />} />
+              <Route path="fleet" element={<FleetPage />} />
+              <Route path="captains" element={<CaptainsPage />} />
+            </Route>
 
-          {/* Captain: riwayat + kapal */}
-          <Route path="/captain" element={<CaptainLayout />}>
-            <Route index element={<CaptainDashboard />} />
-            <Route path="catches" element={<MyCatchesPage />} />
-            <Route path="ship" element={<MyShipPage />} />
-          </Route>
+            {/* Captain: riwayat + kapal */}
+            <Route path="/captain" element={<CaptainLayout />}>
+              <Route index element={<CaptainDashboard />} />
+              <Route path="catches" element={<MyCatchesPage />} />
+              <Route path="ship" element={<MyShipPage />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/onboard" replace />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<Navigate to="/onboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

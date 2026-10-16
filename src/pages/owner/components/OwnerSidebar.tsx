@@ -8,6 +8,7 @@ import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
+import { useToast } from "../../../components/toast";
 
 const navItems = [
   { label: "Beranda", to: "/owner", end: true, Icon: House },
@@ -63,10 +64,12 @@ export function OwnerSidebar() {
 export function OwnerLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
   const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
+    toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
   };
 

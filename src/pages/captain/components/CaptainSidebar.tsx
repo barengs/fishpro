@@ -8,6 +8,7 @@ import { MobileTopbar } from "../../../components/MobileTopbar";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
+import { useToast } from "../../../components/toast";
 
 const navItems = [
   { label: "Ringkasan", to: "/captain", end: true, Icon: LayoutDashboard },
@@ -67,10 +68,12 @@ export function CaptainSidebar() {
 export function CaptainLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
   const userInfo = getUserDisplayInfo();
 
   const handleLogout = async () => {
     await authService.logout();
+    toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
   };
 
