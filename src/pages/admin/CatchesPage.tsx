@@ -259,42 +259,45 @@ export function CatchesPage() {
       <CrudModal
         open={open}
         title="Buat Laporan Tangkapan Ikan"
-        subtitle="FishCatch (kapal, tanggal, lokasi GPS) + CatchDetail (spesies, volume, WPP)."
+        subtitle="Catat hasil tangkapan kapal, lokasi GPS, dan rincian tangkapan."
         onClose={closeModal}
         hideFooter
       >
-        <div className="mb-4">
-          <FormField
-            label="Pilih Kapal Terdaftar (Ship)"
-            htmlFor="ct-ship"
-            required
-          >
-            {ships.length > 0 ? (
-              <select
-                id="ct-ship"
-                value={selectedShipReg}
-                onChange={(e) => setSelectedShipReg(e.target.value)}
-                className={inputCls}
-              >
-                {ships.map((s) => (
-                  <option key={s.id} value={s.registration_number}>
-                    {s.name} ({s.registration_number}) · {s.gross_tonnage || 0}{" "}
-                    GT
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id="ct-ship"
-                value={selectedShipReg}
-                onChange={(e) => setSelectedShipReg(e.target.value)}
-                placeholder="Contoh: REG-0412"
-                className={inputCls}
-              />
-            )}
-          </FormField>
-        </div>
-        <CatchReportWizard onSubmit={handleSubmit} onCancel={closeModal} />
+        <CatchReportWizard
+          onSubmit={handleSubmit}
+          onCancel={closeModal}
+          shipSelector={
+            <FormField
+              label="Pilih Kapal Terdaftar (Ship)"
+              htmlFor="ct-ship"
+              required
+            >
+              {ships.length > 0 ? (
+                <select
+                  id="ct-ship"
+                  value={selectedShipReg}
+                  onChange={(e) => setSelectedShipReg(e.target.value)}
+                  className={inputCls}
+                >
+                  {ships.map((s) => (
+                    <option key={s.id} value={s.registration_number}>
+                      {s.name} ({s.registration_number}) ·{" "}
+                      {s.gross_tonnage || 0} GT
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id="ct-ship"
+                  value={selectedShipReg}
+                  onChange={(e) => setSelectedShipReg(e.target.value)}
+                  placeholder="Contoh: REG-0412"
+                  className={inputCls}
+                />
+              )}
+            </FormField>
+          }
+        />
       </CrudModal>
 
       <ConfirmDeleteModal

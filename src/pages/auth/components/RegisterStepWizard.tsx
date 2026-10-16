@@ -194,7 +194,7 @@ export function RegisterStepWizard() {
                 className="flex flex-col items-center gap-1 z-10 px-0.5 sm:px-1"
               >
                 <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center font-bold text-xs sm:text-sm transition-all ${
                     isCurrent
                       ? "bg-fco-blue text-white ring-2 ring-fco-blue/15"
                       : isPassed
@@ -202,7 +202,9 @@ export function RegisterStepWizard() {
                         : "surface-card border-2 border-fco-border text-soft"
                   }`}
                 >
-                  {isPassed ? "✓" : s.num}
+                  <span className="leading-none tabular-nums select-none flex items-center justify-center text-center">
+                    {isPassed ? "✓" : s.num}
+                  </span>
                 </div>
                 <span
                   className={`text-fco-xs sm:text-xs font-semibold whitespace-nowrap ${
