@@ -56,7 +56,7 @@ export function StepIdentity({
                       setOwnerType(t.key as "individual" | "company")
                     }
                     aria-pressed={isSelected}
-                    className={`flex flex-col items-center justify-center gap-2.5 p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all aspect-square max-h-36 sm:max-h-40 w-full text-center group ${
+                    className={`flex flex-col items-center justify-center gap-2.5 p-4 sm:p-5 rounded-xl border-2 cursor-pointer transition-all aspect-square max-h-36 sm:max-h-40 w-full text-center group ${
                       isSelected
                         ? "border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue shadow-xs"
                         : "border-fco-border surface-card text-strong hover:border-fco-blue/40"

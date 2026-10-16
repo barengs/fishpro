@@ -23,10 +23,10 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
             transition={{ delay: i * 0.08, duration: 0.3 }}
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
-            className={`flex sm:flex-col items-center sm:justify-center text-left sm:text-center gap-3.5 sm:gap-0 p-4 sm:py-6 sm:px-4 rounded-2xl text-white w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
+            className={`flex sm:flex-col items-center sm:justify-center text-left sm:text-center gap-3.5 sm:gap-0 p-4 sm:py-6 sm:px-4 rounded-xl text-white w-full cursor-pointer border-none shadow-lg transition-colors ${card}`}
           >
             <motion.span
-              className={`w-12 h-12 rounded-xl sm:rounded-2xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-3`}
+              className={`w-12 h-12 rounded-lg sm:rounded-xl ${iconBox} text-white flex items-center justify-center shrink-0 sm:mb-3`}
               whileHover={{ rotate: -6, scale: 1.08 }}
             >
               <Icon size={24} aria-hidden="true" />

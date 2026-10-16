@@ -332,7 +332,7 @@ export function ShipFormWizard({
               <p className="m-0 mb-4 text-sm text-soft">
                 Pastikan nama dan nomor registrasi sudah benar.
               </p>
-              <dl className="m-0 p-4 rounded-2xl surface-inset border text-sm flex flex-col gap-2.5">
+              <dl className="m-0 p-4 rounded-xl surface-inset border text-sm flex flex-col gap-2.5">
                 <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
                   <dt className="text-soft">Kapal</dt>
                   <dd className="m-0 font-bold text-strong text-right">

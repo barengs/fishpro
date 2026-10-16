@@ -176,7 +176,7 @@ export function ShipsPage() {
         </div>
       )}
 
-      <section className="surface-card border rounded-2xl p-6 shadow-xs">
+      <section className="surface-card border rounded-xl p-6 shadow-xs">
         <DataTable
           columns={columns}
           rows={rows}

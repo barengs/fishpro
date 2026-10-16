@@ -169,7 +169,7 @@ export function CaptainsTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-2xl p-6 shadow-xs">
+      <section className="surface-card border rounded-xl p-6 shadow-xs">
         <DataTable
           columns={cols}
           rows={rows}

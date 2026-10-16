@@ -35,7 +35,7 @@ export function StepReview({
       <p className="m-0 mb-5 text-sm text-soft">
         Pastikan tidak ada salah ketik.
       </p>
-      <dl className="m-0 mb-5 p-3.5 sm:p-5 rounded-2xl surface-inset border text-xs sm:text-sm flex flex-col gap-2.5">
+      <dl className="m-0 mb-5 p-3.5 sm:p-5 rounded-xl surface-inset border text-xs sm:text-sm flex flex-col gap-2.5">
         <div className="flex justify-between items-center gap-2 py-1 border-b border-fco-border">
           <dt className="text-soft shrink-0">Peran</dt>
           <dd className="m-0 font-bold text-fco-blue text-right">

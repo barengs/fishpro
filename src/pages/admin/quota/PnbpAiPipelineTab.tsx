@@ -70,7 +70,7 @@ export function PnbpAiPipelineTab() {
       />
 
       {/* Header Action Card */}
-      <div className="surface-card border rounded-2xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="surface-card border rounded-xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Sparkles size={18} className="text-fco-blue" aria-hidden="true" />
@@ -105,7 +105,7 @@ export function PnbpAiPipelineTab() {
 
       {/* 4 AI Models Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="surface-card border rounded-2xl p-5 shadow-xs border-t-4 border-t-blue-500">
+        <div className="surface-card border rounded-xl p-5 shadow-xs border-t-4 border-t-blue-500">
           <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center mb-3">
             <LineChart size={20} aria-hidden="true" />
           </div>
@@ -122,7 +122,7 @@ export function PnbpAiPipelineTab() {
           </div>
         </div>
 
-        <div className="surface-card border rounded-2xl p-5 shadow-xs border-t-4 border-t-purple-500">
+        <div className="surface-card border rounded-xl p-5 shadow-xs border-t-4 border-t-purple-500">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-3">
             <Brain size={20} aria-hidden="true" />
           </div>
@@ -139,7 +139,7 @@ export function PnbpAiPipelineTab() {
           </div>
         </div>
 
-        <div className="surface-card border rounded-2xl p-5 shadow-xs border-t-4 border-t-emerald-500">
+        <div className="surface-card border rounded-xl p-5 shadow-xs border-t-4 border-t-emerald-500">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-3">
             <Cpu size={20} aria-hidden="true" />
           </div>
@@ -156,7 +156,7 @@ export function PnbpAiPipelineTab() {
           </div>
         </div>
 
-        <div className="surface-card border rounded-2xl p-5 shadow-xs border-t-4 border-t-amber-500">
+        <div className="surface-card border rounded-xl p-5 shadow-xs border-t-4 border-t-amber-500">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-3">
             <BarChart3 size={20} aria-hidden="true" />
           </div>
@@ -175,7 +175,7 @@ export function PnbpAiPipelineTab() {
       </div>
 
       {/* Results Display */}
-      <div className="surface-card border rounded-2xl p-6 shadow-xs">
+      <div className="surface-card border rounded-xl p-6 shadow-xs">
         <h3 className="m-0 text-base font-bold text-strong mb-2">
           Hasil Prediksi Terakhir
         </h3>

@@ -69,7 +69,7 @@ export function CriticalQuotaTable() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-2">
         <h2 className="m-0 text-base font-bold text-strong">
           Kuota hampir habis (Kapal Prioritas)

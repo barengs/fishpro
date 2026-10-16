@@ -23,7 +23,7 @@ export function TariffConfigTab() {
         onAdd={tariffModal.openModal}
       />
 
-      <section className="surface-card border rounded-2xl p-6 shadow-xs max-w-220">
+      <section className="surface-card border rounded-xl p-6 shadow-xs max-w-220">
         <h2 className="m-0 mb-1 text-base font-bold">Tarif PNBP Aktif</h2>
         <p className="m-0 mb-4 text-sm text-soft">
           GT ≤ {t.gt_threshold} → {Number(t.rate_small) * 100}% · GT &gt;{" "}

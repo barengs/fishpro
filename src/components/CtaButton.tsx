@@ -33,7 +33,7 @@ export function CtaButton({
 
   const cls = [
     "group relative inline-flex items-center justify-center gap-2.5",
-    "min-h-13 px-8 py-3.5 rounded-2xl",
+    "min-h-13 px-8 py-3.5 rounded-xl",
     "bg-gradient-to-b from-fco-blue to-fco-blue-hover text-white",
     "text-fco-md font-bold tracking-tight no-underline whitespace-nowrap",
     "shadow-lg shadow-fco-blue/30",
@@ -55,7 +55,7 @@ export function CtaButton({
       {pulse && !isDisabled && (
         <span
           aria-hidden="true"
-          className="absolute inset-0 rounded-2xl bg-fco-blue/40 animate-ping pointer-events-none"
+          className="absolute inset-0 rounded-xl bg-fco-blue/40 animate-ping pointer-events-none"
           style={{ animationDuration: "2.2s" }}
         />
       )}

@@ -71,7 +71,7 @@ const faqs = [
 
 function ReportMockup() {
   return (
-    <div className="surface-card border rounded-3xl shadow-xl overflow-hidden max-w-120 w-full">
+    <div className="surface-card border rounded-xl shadow-xl overflow-hidden max-w-120 w-full">
       <div className="flex items-center gap-2 px-5 py-3.5 border-b border-fco-border">
         <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
         <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
@@ -250,7 +250,7 @@ export function OnboardingPage() {
             {howItWorks.map((s, i) => (
               <article
                 key={s.step}
-                className="surface-card border rounded-2xl p-6 sm:p-7 shadow-xs relative"
+                className="surface-card border rounded-xl p-6 sm:p-7 shadow-xs relative"
               >
                 <span
                   className="absolute top-5 right-6 text-5xl font-extrabold text-fco-border dark:text-fco-border-dark tabular-nums select-none"
@@ -279,7 +279,7 @@ export function OnboardingPage() {
             <h2 className="m-0 mb-8 text-2xl sm:text-3xl font-extrabold tracking-tight">
               Masuk sesuai peran.
             </h2>
-            <div className="surface-card border rounded-2xl overflow-hidden">
+            <div className="surface-card border rounded-xl overflow-hidden">
               {roleRows.map((r, i) => (
                 <Link
                   key={r.name}
@@ -313,7 +313,7 @@ export function OnboardingPage() {
               return (
                 <div
                   key={f.q}
-                  className="surface-card border rounded-2xl overflow-hidden"
+                  className="surface-card border rounded-xl overflow-hidden"
                 >
                   <button
                     type="button"

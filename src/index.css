@@ -32,8 +32,8 @@
   --leading-fco-tight: 1.1;
   --leading-fco-snug: 1.15;
   --radius-fco: 0.625rem;
-  --radius-fco-lg: 1.25rem;
-  --radius-fco-xl: 1.75rem;
+  --radius-fco-lg: 0.75rem;
+  --radius-fco-xl: 1rem;
   /* Dark surfaces — cool slate, subtle blue */
   --color-fco-surface-dark: #161e29;
   --color-fco-card-dark: #1e2836;

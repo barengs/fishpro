@@ -67,9 +67,9 @@ export function MobileTopbar({
             onClick={onToggle}
             aria-label={open ? "Tutup menu" : "Buka menu"}
             aria-expanded={open}
-            className="w-10 h-10 rounded-fco border border-fco-border bg-white hover:surface-page text-strong flex items-center justify-center cursor-pointer shrink-0 transition-colors"
+            className="w-10 h-10 rounded-fco border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-soft hover:text-strong dark:text-fco-muted-dark dark:hover:text-fco-text-dark flex items-center justify-center cursor-pointer shrink-0 transition-colors"
           >
-            <Menu size={22} strokeWidth={2.2} aria-hidden="true" />
+            <Menu size={20} strokeWidth={2} aria-hidden="true" />
           </button>
           <div className="flex items-center gap-2">
             <FullscreenToggle compact />
@@ -98,19 +98,21 @@ export function MobileTopbar({
               {accountOpen && (
                 <div
                   role="menu"
-                  className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-2xl shadow-xl p-2 z-50"
+                  className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-xl shadow-lg p-1.5 z-50"
                 >
-                  <div className="px-3 py-2.5 border-b border-fco-border-subtle mb-1">
-                    <div className="text-sm font-bold text-strong truncate">
+                  <div className="px-3 py-2 border-b border-fco-border-subtle mb-1">
+                    <div className="text-sm font-semibold tracking-tight text-strong truncate">
                       {profile.name}
                     </div>
-                    <div className="text-xs text-soft">{profile.role}</div>
+                    <div className="text-xs text-soft mt-0.5">
+                      {profile.role}
+                    </div>
                   </div>
                   <a
                     href="#profil"
                     role="menuitem"
                     onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-strong hover:surface-page no-underline transition-colors"
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-strong hover:surface-page no-underline transition-colors"
                   >
                     <User size={16} className="text-soft" aria-hidden="true" />
                     Profil saya
@@ -123,7 +125,7 @@ export function MobileTopbar({
                         setAccountOpen(false);
                         onLogout();
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left"
                     >
                       <LogOut size={16} aria-hidden="true" />
                       Keluar
@@ -159,14 +161,9 @@ export function MobileTopbar({
               type="button"
               onClick={onClose}
               aria-label="Tutup menu"
-              className="ml-auto w-9 h-9 rounded-fco border border-fco-border bg-white flex items-center justify-center cursor-pointer hover:surface-page transition-colors shrink-0"
+              className="ml-auto w-9 h-9 rounded-fco border border-fco-border dark:border-fco-border-dark surface-card flex items-center justify-center cursor-pointer hover:surface-page transition-colors shrink-0 text-soft hover:text-strong dark:text-fco-muted-dark dark:hover:text-fco-text-dark"
             >
-              <X
-                size={18}
-                className="text-strong"
-                strokeWidth={2}
-                aria-hidden="true"
-              />
+              <X size={18} strokeWidth={2} aria-hidden="true" />
             </button>
           </div>
           {children}

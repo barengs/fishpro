@@ -37,7 +37,7 @@ export function FullscreenToggle({ compact = false }: { compact?: boolean }) {
       title={isFullscreen ? "Layar normal" : "Layar penuh"}
       className={`${
         compact ? "w-9 h-9" : "w-10 h-10"
-      } rounded-fco border border-fco-border surface-card hover:surface-page flex items-center justify-center cursor-pointer transition-colors text-strong shrink-0`}
+      } rounded-fco border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page flex items-center justify-center cursor-pointer transition-colors text-soft hover:text-strong dark:text-fco-muted-dark dark:hover:text-fco-text-dark shrink-0`}
     >
       {isFullscreen ? (
         <Minimize

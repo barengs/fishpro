@@ -35,7 +35,7 @@ export function ManualQuotaModal({
 
   return (
     <div className="fixed inset-0 bg-fco-dark/50 backdrop-blur-xs flex items-center justify-center z-50 p-5">
-      <div className="surface-card rounded-fco-lg p-7 sm:p-8 max-w-120 w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+      <div className="surface-card rounded-xl p-7 sm:p-8 max-w-120 w-full shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-extrabold m-0 text-strong">
             Penyesuaian Manual Kuota

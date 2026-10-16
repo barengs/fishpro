@@ -74,7 +74,7 @@ export function WppBarChart() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xl p-6 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <h2 className="m-0 text-base font-bold text-strong">
           Tangkapan per WPP

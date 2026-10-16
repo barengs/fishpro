@@ -46,10 +46,10 @@ export function CrudModal({
         onClick={onClose}
       />
       <div
-        className={`relative w-full ${wide ? "max-w-220" : "max-w-135"} overflow-y-auto surface-card border rounded-3xl shadow-2xl`}
+        className={`relative w-full ${wide ? "max-w-220" : "max-w-135"} overflow-y-auto surface-card border rounded-xl shadow-2xl`}
         style={{ maxHeight: "90vh" }}
       >
-        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-5 sm:px-6 py-4 flex items-start justify-between gap-4 rounded-t-2xl">
+        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-5 sm:px-6 py-4 flex items-start justify-between gap-4 rounded-t-xl">
           <div>
             <h2 className="m-0 text-lg font-extrabold tracking-tight">
               {title}

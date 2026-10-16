@@ -95,7 +95,7 @@ export function MyShipPage() {
         desc="Informasi kapal dan kuota resmi yang Anda nahkodai terintegrasi API backend."
       />
 
-      <section className="surface-card border rounded-2xl p-8 shadow-xs">
+      <section className="surface-card border rounded-xl p-8 shadow-xs">
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-2 text-sm text-soft">
             <Loader2
@@ -107,7 +107,7 @@ export function MyShipPage() {
           </div>
         ) : !ship ? (
           <div className="py-12 flex flex-col items-center justify-center text-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-fco-blue-light dark:bg-fco-blue/20 flex items-center justify-center text-fco-blue">
+            <div className="w-14 h-14 rounded-xl bg-fco-blue-light dark:bg-fco-blue/20 flex items-center justify-center text-fco-blue">
               <ShipIcon size={28} aria-hidden="true" />
             </div>
             <h2 className="text-lg font-extrabold text-strong m-0">

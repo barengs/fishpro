@@ -186,7 +186,7 @@ export function BlockchainPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-xl p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <h2 className="m-0 text-base font-bold text-strong">
               Blok Blockchain ({blocks.length})
@@ -202,7 +202,7 @@ export function BlockchainPage() {
           />
         </section>
 
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
+        <section className="surface-card border rounded-xl p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <h2 className="m-0 text-base font-bold text-strong">
               Transaksi Tangkapan ({transactions.length})

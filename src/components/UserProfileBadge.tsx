@@ -70,9 +70,9 @@ export function UserProfileBadge({
       {dropdownOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-2xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-xl shadow-lg p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
         >
-          <div className="px-3 py-2.5 border-b border-fco-border-subtle mb-1">
+          <div className="px-3 py-2 border-b border-fco-border-subtle mb-1">
             <div className="text-sm font-semibold tracking-tight text-strong truncate">
               {name}
             </div>
@@ -82,7 +82,7 @@ export function UserProfileBadge({
             href="#profil"
             role="menuitem"
             onClick={() => setDropdownOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-strong hover:surface-page no-underline transition-colors"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-strong hover:surface-page no-underline transition-colors"
           >
             <User
               size={16}
@@ -100,7 +100,7 @@ export function UserProfileBadge({
                 setDropdownOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left"
             >
               <LogOut size={16} strokeWidth={1.8} aria-hidden="true" />
               Keluar

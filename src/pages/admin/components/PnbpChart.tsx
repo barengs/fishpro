@@ -112,7 +112,7 @@ export function PnbpChart() {
       : predPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
-    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xl p-6 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div>
           <h2 className="m-0 text-base font-bold text-strong">

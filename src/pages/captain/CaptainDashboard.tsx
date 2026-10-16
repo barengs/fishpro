@@ -290,7 +290,7 @@ export function CaptainDashboard() {
           />
         </div>
         <div className="lg:col-span-2">
-          <section className="surface-card border rounded-2xl p-6 shadow-xs flex flex-col justify-between h-full">
+          <section className="surface-card border rounded-xl p-6 shadow-xs flex flex-col justify-between h-full">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="m-0 text-base font-bold text-strong">

@@ -70,7 +70,7 @@ export function PnbpPredictionBars() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xl p-6 shadow-xs">
       <div className="flex justify-between items-start mb-1">
         <h2 className="m-0 text-base font-bold text-strong">
           Prediksi PNBP Armada

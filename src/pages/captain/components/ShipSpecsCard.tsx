@@ -9,7 +9,7 @@ interface ShipSpecsCardProps {
 
 export function ShipSpecsCard({ specs }: ShipSpecsCardProps) {
   return (
-    <section className="surface-card border rounded-2xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xl p-6 shadow-xs">
       <h2 className="mt-0 mb-4 text-base font-bold text-strong">
         Detail kapal
       </h2>
