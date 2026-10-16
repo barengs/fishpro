@@ -8,6 +8,7 @@ import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 import { AdminLayout } from "./pages/admin/components/AdminSidebar";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { ShipsPage } from "./pages/admin/ShipsPage";
+import { UsersPage } from "./pages/admin/UsersPage";
 import { OwnersTab } from "./pages/admin/OwnersTab";
 import { CaptainsTab } from "./pages/admin/CaptainsTab";
 import { CatchesPage } from "./pages/admin/CatchesPage";
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="ships" element={<ShipsPage />} />
+              <Route path="users" element={<UsersPage />} />
               <Route path="owners" element={<OwnersTab />} />
               <Route path="captains" element={<CaptainsTab />} />
               <Route path="catches" element={<CatchesPage />} />

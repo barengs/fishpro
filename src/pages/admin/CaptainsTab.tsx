@@ -161,8 +161,6 @@ export function CaptainsTab() {
   return (
     <div>
       <PageToolbar
-        title="Nahkoda"
-        desc="Kelola data nahkoda kapal dan lisensi resmi terintegrasi API backend."
         searchPlaceholder="Cari nahkoda / lisensi..."
         searchValue={search}
         onSearchChange={setSearch}

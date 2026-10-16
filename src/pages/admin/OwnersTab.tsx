@@ -150,8 +150,6 @@ export function OwnersTab() {
   return (
     <div>
       <PageToolbar
-        title="Pemilik"
-        desc="Kelola data pemilik kapal (perorangan atau perusahaan) terintegrasi API backend."
         searchPlaceholder="Cari pemilik kapal..."
         searchValue={search}
         onSearchChange={setSearch}
