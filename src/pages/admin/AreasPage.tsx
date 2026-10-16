@@ -150,35 +150,47 @@ export function AreasPage() {
         onSearchChange={setSearch}
         addLabel="Tambah Wilayah"
         onAdd={handleOpenAdd}
+        extraActions={
+          <>
+            <a
+              href={regionsService.getDownloadTemplateUrl("csv")}
+              download
+              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
+            >
+              <Download
+                size={14}
+                className="text-fco-blue"
+                aria-hidden="true"
+              />
+              <span>Template CSV</span>
+            </a>
+            <a
+              href={regionsService.getDownloadTemplateUrl("excel")}
+              download
+              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
+            >
+              <Download
+                size={14}
+                className="text-emerald-600 dark:text-emerald-400"
+                aria-hidden="true"
+              />
+              <span>Template Excel</span>
+            </a>
+            <button
+              type="button"
+              onClick={importModal.openModal}
+              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+            >
+              <FileUp
+                size={14}
+                className="text-emerald-600 dark:text-emerald-400"
+                aria-hidden="true"
+              />
+              <span>Impor WPP</span>
+            </button>
+          </>
+        }
       />
-
-      {/* CSV Actions */}
-      <div className="flex gap-2.5 mb-5 flex-wrap">
-        <a
-          href={regionsService.getDownloadTemplateUrl("csv")}
-          download
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-fco-border surface-card hover:surface-inset transition-colors no-underline text-strong shadow-2xs"
-        >
-          <Download size={14} className="text-fco-blue" aria-hidden="true" />
-          <span>Unduh Template CSV WPP</span>
-        </a>
-        <a
-          href={regionsService.getDownloadTemplateUrl("excel")}
-          download
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-fco-border surface-card hover:surface-inset transition-colors no-underline text-strong shadow-2xs"
-        >
-          <Download size={14} className="text-emerald-600" aria-hidden="true" />
-          <span>Unduh Template Excel WPP</span>
-        </a>
-        <button
-          type="button"
-          onClick={importModal.openModal}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-fco-border surface-card hover:surface-inset transition-colors cursor-pointer text-strong shadow-2xs"
-        >
-          <FileUp size={14} className="text-emerald-600" aria-hidden="true" />
-          <span>Impor WPP dari CSV</span>
-        </button>
-      </div>
 
       <AlertBanner
         variant="success"
