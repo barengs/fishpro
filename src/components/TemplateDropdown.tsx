@@ -37,6 +37,28 @@ export function TemplateDropdown({
     };
   }, [open]);
 
+  const handleDownload = async (e: React.MouseEvent, opt: TemplateOption) => {
+    e.preventDefault();
+    setOpen(false);
+    try {
+      const res = await fetch(opt.url);
+      if (!res.ok) throw new Error("Gagal mengunduh file template");
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download =
+        opt.filename || `template.${opt.format === "excel" ? "xlsx" : "csv"}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      // Fallback direct open
+      window.open(opt.url, "_blank");
+    }
+  };
+
   return (
     <div ref={containerRef} className="relative inline-block text-left">
       <button
@@ -71,9 +93,9 @@ export function TemplateDropdown({
                 key={opt.url}
                 href={opt.url}
                 download={opt.filename}
-                onClick={() => setOpen(false)}
+                onClick={(e) => handleDownload(e, opt)}
                 role="menuitem"
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-strong hover:surface-page no-underline transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-strong hover:surface-page no-underline transition-colors cursor-pointer"
               >
                 {opt.format === "csv" ? (
                   <FileText

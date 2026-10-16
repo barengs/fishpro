@@ -83,10 +83,13 @@ export const regionsService = {
   },
 
   /**
-   * GET /api/regions/fishing-areas/download_template/ - Download template CSV/Excel area penangkapan
+   * GET /api/regions/fishing-areas/download_template/ - Download template CSV/Excel area penangkapan langsung dari backend
    */
   getDownloadTemplateUrl(format: "csv" | "excel" = "csv"): string {
-    return `${API_ENDPOINTS.REGIONS.FISHING_AREAS}download_template/?format=${format}`;
+    if (format === "excel") {
+      return `${API_ENDPOINTS.REGIONS.FISHING_AREAS}download_template/?type=excel`;
+    }
+    return `${API_ENDPOINTS.REGIONS.FISHING_AREAS}download_template/`;
   },
 
   /**
