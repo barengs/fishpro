@@ -16,7 +16,9 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!identifier.trim() || !password) {
-      setErrorMsg("Harap isi nama pengguna dan kata sandi.");
+      const msg = "Harap isi nama pengguna dan kata sandi.";
+      setErrorMsg(msg);
+      toast.warning(msg);
       return;
     }
 
@@ -50,6 +52,7 @@ export function LoginForm() {
           ? err.message
           : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
       setErrorMsg(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

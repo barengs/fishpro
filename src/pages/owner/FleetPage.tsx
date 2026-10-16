@@ -9,6 +9,7 @@ import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { ShipFormWizard } from "../../components/ShipFormWizard";
+import { useToast } from "../../components/toast";
 import type { ShipFormData } from "../../components/shipFormTypes";
 import {
   shipsService,
@@ -22,7 +23,7 @@ export function FleetPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const toast = useToast();
   const [deleting, setDeleting] = useState(false);
   const { open, openModal, closeModal } = useCrudModal();
   const {
@@ -73,13 +74,13 @@ export function FleetPage() {
     setDeleting(true);
     try {
       await shipsService.delete(deleteTarget.id);
-      setToastMsg(`Kapal "${deleteTarget.name}" berhasil dihapus.`);
-      setTimeout(() => setToastMsg(null), 3000);
+      toast.success(`Kapal "${deleteTarget.name}" berhasil dihapus.`);
       cancelDelete();
       fetchFleet(search);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Gagal menghapus kapal";
       setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setDeleting(false);
     }
@@ -104,14 +105,13 @@ export function FleetPage() {
       };
 
       await shipsService.create(payload);
-      setToastMsg(`Kapal "${data.name}" berhasil didaftarkan ke armada.`);
-      setTimeout(() => setToastMsg(null), 3000);
+      toast.success(`Kapal "${data.name}" berhasil didaftarkan ke armada.`);
       closeModal();
       fetchFleet(search);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Gagal mendaftarkan kapal";
-      alert(msg);
+      toast.error(msg);
     }
   };
 
@@ -196,12 +196,6 @@ export function FleetPage() {
         addLabel="Tambah kapal"
         onAdd={openModal}
       />
-
-      {toastMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
-          ✓ {toastMsg}
-        </div>
-      )}
 
       {errorMsg && (
         <div className="p-3.5 px-4.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">

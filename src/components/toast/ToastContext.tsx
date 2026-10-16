@@ -16,7 +16,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const showToast = useCallback(
-    (message: string, type: ToastType = "info", duration = 3500) => {
+    (message: string, type: ToastType = "success", duration = 3500) => {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       setToasts((prev) => [...prev, { id, type, message, duration }]);
       return id;
@@ -42,23 +42,16 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     [showToast],
   );
 
-  const info = useCallback(
-    (message: string, duration?: number) =>
-      showToast(message, "info", duration),
-    [showToast],
-  );
-
   const value = useMemo(
     () => ({
       showToast,
       success,
       error,
       warning,
-      info,
       dismissToast,
       clearAll,
     }),
-    [showToast, success, error, warning, info, dismissToast, clearAll],
+    [showToast, success, error, warning, dismissToast, clearAll],
   );
 
   return (

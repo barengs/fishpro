@@ -1,12 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  X,
-} from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle2, X } from "lucide-react";
 import type { Toast, ToastType } from "./types";
 
 interface ToastItemProps {
@@ -44,18 +38,11 @@ const toastStyles: Record<
     iconCls: "text-amber-600 dark:text-amber-400",
     barCls: "bg-amber-500 dark:bg-amber-400",
   },
-  info: {
-    icon: Info,
-    container:
-      "border-blue-500/20 bg-blue-50/95 dark:bg-blue-950/85 text-blue-950 dark:text-blue-100",
-    iconCls: "text-fco-blue dark:text-blue-400",
-    barCls: "bg-fco-blue dark:bg-blue-400",
-  },
 };
 
 export function ToastItem({ toast, onDismiss }: ToastItemProps) {
   const { id, type, message, duration = 3500 } = toast;
-  const cfg = toastStyles[type] || toastStyles.info;
+  const cfg = toastStyles[type] || toastStyles.success;
   const Icon = cfg.icon;
 
   useEffect(() => {
