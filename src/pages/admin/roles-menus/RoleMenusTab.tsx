@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { AlertTriangle, Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
@@ -244,12 +244,26 @@ export function RoleMenusTab() {
       <CrudModal
         open={assignMenuModal.open}
         title="Tetapkan Menu ke Peran"
-        subtitle="Tentukan izin spesifik (lihat, buat, ubah, hapus) untuk peran ini."
+        subtitle="Tentukan izin akses menu (lihat, tambah, ubah, hapus) untuk peran ini."
         onClose={assignMenuModal.closeModal}
         onSubmit={handleAssignMenuSubmit}
         submitLabel={submitting ? "Menetapkan..." : "Tetapkan Menu"}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {menus.length === 0 && (
+          <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-900 dark:text-amber-200 text-xs flex items-center gap-2.5 mb-3">
+            <AlertTriangle
+              size={16}
+              className="text-amber-600 dark:text-amber-400 shrink-0"
+              aria-hidden="true"
+            />
+            <span className="leading-relaxed">
+              Database menu masih kosong. Tambahkan menu di tab{" "}
+              <strong>Menu Navigasi</strong> terlebih dahulu.
+            </span>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
           <SelectField
             label="Pilih Peran"
             id="as-role"
@@ -281,7 +295,13 @@ export function RoleMenusTab() {
               })
             }
             options={[
-              { value: "", label: "— Pilih Menu —" },
+              {
+                value: "",
+                label:
+                  menus.length === 0
+                    ? "— Menu Belum Tersedia —"
+                    : "— Pilih Menu —",
+              },
               ...menus.map((m) => ({
                 value: m.id,
                 label: `${m.name} (${m.url || "—"})`,
@@ -290,12 +310,12 @@ export function RoleMenusTab() {
           />
         </div>
 
-        <div className="mt-2">
+        <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-soft uppercase tracking-wider">
-              Hak Akses Menu (CRUD)
-            </span>
-            <div className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-strong">
+              Hak Akses Menu
+            </label>
+            <div className="flex items-center gap-2 text-xs">
               <button
                 type="button"
                 onClick={() =>
@@ -309,11 +329,11 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="text-2xs font-semibold text-fco-blue hover:underline bg-transparent border-none cursor-pointer p-0"
+                className="font-semibold text-fco-blue hover:underline bg-transparent border-none cursor-pointer p-0"
               >
                 Pilih Semua
               </button>
-              <span className="text-soft text-2xs">·</span>
+              <span className="text-soft">·</span>
               <button
                 type="button"
                 onClick={() =>
@@ -327,7 +347,7 @@ export function RoleMenusTab() {
                     },
                   })
                 }
-                className="text-2xs font-semibold text-soft hover:text-strong bg-transparent border-none cursor-pointer p-0"
+                className="font-medium text-soft hover:text-strong bg-transparent border-none cursor-pointer p-0"
               >
                 Hanya Lihat
               </button>
@@ -396,7 +416,7 @@ export function RoleMenusTab() {
                         {item.label}
                       </span>
                     </div>
-                    <p className="m-0 text-2xs text-soft mt-0.5 leading-snug">
+                    <p className="m-0 text-xs text-soft mt-0.5 leading-snug">
                       {item.desc}
                     </p>
                   </div>

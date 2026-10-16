@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions, FormField, inputCls } from "../../components/FormField";
+import { SelectField } from "../../components/ui";
 import { StatusChip } from "../../components/StatusChip";
 import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
@@ -267,26 +268,24 @@ export function CatchesPage() {
           onSubmit={handleSubmit}
           onCancel={closeModal}
           shipSelector={
-            <FormField
-              label="Pilih Kapal Terdaftar (Ship)"
-              htmlFor="ct-ship"
-              required
-            >
-              {ships.length > 0 ? (
-                <select
-                  id="ct-ship"
-                  value={selectedShipReg}
-                  onChange={(e) => setSelectedShipReg(e.target.value)}
-                  className={inputCls}
-                >
-                  {ships.map((s) => (
-                    <option key={s.id} value={s.registration_number}>
-                      {s.name} ({s.registration_number}) ·{" "}
-                      {s.gross_tonnage || 0} GT
-                    </option>
-                  ))}
-                </select>
-              ) : (
+            ships.length > 0 ? (
+              <SelectField
+                label="Pilih Kapal Terdaftar (Ship)"
+                id="ct-ship"
+                required
+                value={selectedShipReg}
+                onChange={(e) => setSelectedShipReg(e.target.value)}
+                options={ships.map((s) => ({
+                  value: s.registration_number,
+                  label: `${s.name} (${s.registration_number}) · ${s.gross_tonnage || 0} GT`,
+                }))}
+              />
+            ) : (
+              <FormField
+                label="Pilih Kapal Terdaftar (Ship)"
+                htmlFor="ct-ship"
+                required
+              >
                 <input
                   id="ct-ship"
                   value={selectedShipReg}
@@ -294,8 +293,8 @@ export function CatchesPage() {
                   placeholder="Contoh: REG-0412"
                   className={inputCls}
                 />
-              )}
-            </FormField>
+              </FormField>
+            )
           }
         />
       </CrudModal>

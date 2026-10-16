@@ -1,4 +1,25 @@
 import { useEffect, useState } from "react";
+import {
+  Anchor,
+  BarChart3,
+  Building2,
+  ClipboardList,
+  Coins,
+  Compass,
+  Database,
+  FileText,
+  Fish,
+  LayoutDashboard,
+  Link2,
+  MapPin,
+  Navigation,
+  Package,
+  Scale,
+  Settings,
+  ShieldCheck,
+  Ship,
+  Users,
+} from "lucide-react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
@@ -7,13 +28,98 @@ import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { StatusChip } from "../../../components/StatusChip";
-import { AlertBanner, TextField } from "../../../components/ui";
+import { AlertBanner, SelectField, TextField } from "../../../components/ui";
 import { menuSchema } from "../../../utils/schemas";
 import {
   menusService,
   type CreateMenuPayload,
   type Menu,
 } from "../../../services/admin";
+
+const iconMap: Record<string, React.ReactNode> = {
+  LayoutDashboard: <LayoutDashboard size={16} />,
+  Ship: <Ship size={16} />,
+  Building2: <Building2 size={16} />,
+  Anchor: <Anchor size={16} />,
+  ClipboardList: <ClipboardList size={16} />,
+  Fish: <Fish size={16} />,
+  MapPin: <MapPin size={16} />,
+  BarChart3: <BarChart3 size={16} />,
+  Coins: <Coins size={16} />,
+  Link2: <Link2 size={16} />,
+  ShieldCheck: <ShieldCheck size={16} />,
+  Users: <Users size={16} />,
+  Scale: <Scale size={16} />,
+  Compass: <Compass size={16} />,
+  Navigation: <Navigation size={16} />,
+  Package: <Package size={16} />,
+  FileText: <FileText size={16} />,
+  Database: <Database size={16} />,
+  Settings: <Settings size={16} />,
+};
+
+const availableMenuIcons = [
+  { value: "", label: "— Tanpa Ikon —" },
+  {
+    value: "LayoutDashboard",
+    label: "Dashboard / Ringkasan",
+    icon: <LayoutDashboard size={16} />,
+  },
+  { value: "Ship", label: "Kapal Armada", icon: <Ship size={16} /> },
+  {
+    value: "Building2",
+    label: "Pemilik / Perusahaan",
+    icon: <Building2 size={16} />,
+  },
+  { value: "Anchor", label: "Nahkoda / Kelautan", icon: <Anchor size={16} /> },
+  {
+    value: "ClipboardList",
+    label: "Laporan Tangkapan",
+    icon: <ClipboardList size={16} />,
+  },
+  { value: "Fish", label: "Spesies Ikan", icon: <Fish size={16} /> },
+  { value: "MapPin", label: "Wilayah (WPP)", icon: <MapPin size={16} /> },
+  {
+    value: "BarChart3",
+    label: "Kuota & Statistik",
+    icon: <BarChart3 size={16} />,
+  },
+  { value: "Coins", label: "Tarif & PNBP", icon: <Coins size={16} /> },
+  { value: "Link2", label: "Blockchain & Hash", icon: <Link2 size={16} /> },
+  {
+    value: "ShieldCheck",
+    label: "Peran & Akses",
+    icon: <ShieldCheck size={16} />,
+  },
+  { value: "Users", label: "Pengguna / Tim", icon: <Users size={16} /> },
+  {
+    value: "Scale",
+    label: "Regulasi & Timbangan",
+    icon: <Scale size={16} />,
+  },
+  {
+    value: "Compass",
+    label: "Katalog & Navigasi",
+    icon: <Compass size={16} />,
+  },
+  {
+    value: "Navigation",
+    label: "GPS & Lokasi",
+    icon: <Navigation size={16} />,
+  },
+  { value: "Package", label: "Logistik & Muatan", icon: <Package size={16} /> },
+  {
+    value: "FileText",
+    label: "Dokumen & Sertifikat",
+    icon: <FileText size={16} />,
+  },
+  { value: "Database", label: "Master Data", icon: <Database size={16} /> },
+  {
+    value: "Settings",
+    label: "Pengaturan Sistem",
+    icon: <Settings size={16} />,
+  },
+];
 
 export function MenusTab() {
   const [menus, setMenus] = useState<Menu[]>([]);
@@ -87,7 +193,7 @@ export function MenusTab() {
         setToastMsg(`Menu "${mForm.name}" berhasil diperbarui.`);
       } else {
         await menusService.create(mForm);
-        setToastMsg(`Menu baru "${mForm.name}" berhasil ditambahkan.`);
+        setToastMsg(`Menu baru "${mForm.name}" berhasil dibuat.`);
       }
       setTimeout(() => setToastMsg(null), 3000);
       menuModal.closeModal();
@@ -118,12 +224,19 @@ export function MenusTab() {
   const menuCols: Column<Menu>[] = [
     {
       key: "name",
-      header: "Nama Menu / Ikon",
+      header: "Nama Menu",
       flex: 2,
       render: (r) => (
-        <div>
-          <div className="text-sm font-semibold">{r.name}</div>
-          {r.icon && <div className="text-xs text-soft">Ikon: {r.icon}</div>}
+        <div className="flex items-center gap-2.5">
+          {r.icon && iconMap[r.icon] && (
+            <span className="w-7 h-7 rounded-lg surface-inset flex items-center justify-center text-fco-blue shrink-0">
+              {iconMap[r.icon]}
+            </span>
+          )}
+          <div>
+            <div className="text-sm font-semibold">{r.name}</div>
+            {r.icon && <div className="text-xs text-soft">{r.icon}</div>}
+          </div>
         </div>
       ),
     },
@@ -245,7 +358,7 @@ export function MenusTab() {
           onChange={(e) => setMForm({ ...mForm, name: e.target.value })}
           placeholder="Contoh: Logistik Tangkapan"
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <TextField
             label="URL Rute"
             id="mn-url"
@@ -255,17 +368,17 @@ export function MenusTab() {
             onChange={(e) => setMForm({ ...mForm, url: e.target.value })}
             placeholder="/admin/logistik"
           />
-          <TextField
-            label="Ikon (Lucide Name)"
+          <SelectField
+            label="Pilih Ikon Menu"
             id="mn-icon"
             optional
             disabled={submitting}
             value={mForm.icon || ""}
             onChange={(e) => setMForm({ ...mForm, icon: e.target.value })}
-            placeholder="Package / Ship / FileText"
+            options={availableMenuIcons}
           />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <TextField
             label="Urutan Tampil"
             id="mn-order"

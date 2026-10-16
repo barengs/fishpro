@@ -1,4 +1,5 @@
 import type { Role } from "./types";
+import { SelectField } from "../../../../components/ui";
 
 interface StepOperationalProps {
   role: Role;
@@ -168,25 +169,19 @@ export function StepOperational({
                 className={inputCls}
               />
             </div>
-            <div>
-              <label htmlFor="rg-wpp" className={labelCls}>
-                WPP
-                <span className="text-soft font-normal text-xs ml-1.5">
-                  (optional)
-                </span>
-              </label>
-              <select
-                id="rg-wpp"
-                value={wpp}
-                onChange={(e) => setWpp(e.target.value)}
-                className={inputCls}
-              >
-                <option value="WPP 573">573 — Hindia Selatan Jawa</option>
-                <option value="WPP 711">711 — Karimata & Natuna</option>
-                <option value="WPP 712">712 — Laut Jawa</option>
-                <option value="WPP 713">713 — Makassar & Flores</option>
-              </select>
-            </div>
+            <SelectField
+              label="WPP"
+              id="rg-wpp"
+              optional
+              value={wpp}
+              onChange={(e) => setWpp(e.target.value)}
+              options={[
+                { value: "WPP 573", label: "573 — Hindia Selatan Jawa" },
+                { value: "WPP 711", label: "711 — Karimata & Natuna" },
+                { value: "WPP 712", label: "712 — Laut Jawa" },
+                { value: "WPP 713", label: "713 — Makassar & Flores" },
+              ]}
+            />
           </div>
         </div>
       )}

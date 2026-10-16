@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Navigation } from "lucide-react";
 import { FormField, inputCls } from "./FormField";
+import { SelectField } from "./ui";
 import { emptyCatchForm, type CatchReportFormData } from "./catchReportTypes";
 import { catchStep1Schema, catchStep2Schema } from "../utils/schemas";
 
@@ -229,20 +230,20 @@ export function CatchReportWizard({
                     className={inputCls}
                   />
                 </FormField>
-                <FormField label="Jenis" htmlFor="cr-type" required>
-                  <select
-                    id="cr-type"
-                    value={form.catch_type}
-                    onChange={(e) =>
-                      setForm({ ...form, catch_type: e.target.value })
-                    }
-                    className={inputCls}
-                  >
-                    <option value="pelagic">Pelagis</option>
-                    <option value="demersal">Demersal</option>
-                    <option value="reef">Terumbu Karang</option>
-                  </select>
-                </FormField>
+                <SelectField
+                  label="Jenis Tangkapan"
+                  id="cr-type"
+                  required
+                  value={form.catch_type}
+                  onChange={(e) =>
+                    setForm({ ...form, catch_type: e.target.value })
+                  }
+                  options={[
+                    { value: "pelagic", label: "Pelagis" },
+                    { value: "demersal", label: "Demersal" },
+                    { value: "reef", label: "Terumbu Karang" },
+                  ]}
+                />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -345,17 +346,16 @@ export function CatchReportWizard({
                     className={inputCls}
                   />
                 </FormField>
-                <FormField label="Satuan" htmlFor="cr-u">
-                  <select
-                    id="cr-u"
-                    value={form.unit}
-                    onChange={(e) => setForm({ ...form, unit: e.target.value })}
-                    className={inputCls}
-                  >
-                    <option value="kg">kg</option>
-                    <option value="ton">ton</option>
-                  </select>
-                </FormField>
+                <SelectField
+                  label="Satuan"
+                  id="cr-u"
+                  value={form.unit}
+                  onChange={(e) => setForm({ ...form, unit: e.target.value })}
+                  options={[
+                    { value: "kg", label: "kg (Kilogram)" },
+                    { value: "ton", label: "ton (Ton)" },
+                  ]}
+                />
               </div>
               <FormField
                 label="Nilai (Rp)"

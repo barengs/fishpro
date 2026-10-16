@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FormField, inputCls } from "./FormField";
+import { SelectField } from "./ui";
 import { emptyShipForm, type ShipFormData } from "./shipFormTypes";
 import { ownersService, type Owner } from "../services/owners";
 import { captainsService, type Captain } from "../services/captains";
@@ -195,26 +196,25 @@ export function ShipFormWizard({
                 />
               </FormField>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <FormField label="Pemilik (Owner)" htmlFor="wz-owner">
-                  {owners.length > 0 && !fixedOwnerId ? (
-                    <select
-                      id="wz-owner"
-                      value={form.owner || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, owner: e.target.value })
-                      }
-                      className={inputCls}
-                    >
-                      <option value="">— Pilih Pemilik —</option>
-                      {owners.map((o) => (
-                        <option key={o.id} value={o.id}>
-                          {o.full_name} (
-                          {o.owner_type === "company" ? "PT" : "Pribadi"})
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {owners.length > 0 && !fixedOwnerId ? (
+                  <SelectField
+                    label="Pemilik (Owner)"
+                    id="wz-owner"
+                    value={form.owner || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, owner: e.target.value })
+                    }
+                    options={[
+                      { value: "", label: "— Pilih Pemilik —" },
+                      ...owners.map((o) => ({
+                        value: o.id,
+                        label: `${o.full_name} (${o.owner_type === "company" ? "PT" : "Pribadi"})`,
+                      })),
+                    ]}
+                  />
+                ) : (
+                  <FormField label="Pemilik (Owner)" htmlFor="wz-owner">
                     <input
                       id="wz-owner"
                       value={form.owner || ""}
@@ -225,38 +225,38 @@ export function ShipFormWizard({
                       placeholder="ID atau Nama Pemilik"
                       className={inputCls}
                     />
-                  )}
-                </FormField>
+                  </FormField>
+                )}
 
-                <FormField label="Nahkoda (Captain)" htmlFor="wz-captain">
-                  {captains.length > 0 ? (
-                    <select
-                      id="wz-captain"
-                      value={form.captain || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, captain: e.target.value })
-                      }
-                      className={inputCls}
-                    >
-                      <option value="">— Pilih Nahkoda (Boleh Kosong) —</option>
-                      {captains.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.full_name} ({c.license_number})
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+                {captains.length > 0 ? (
+                  <SelectField
+                    label="Nahkoda (Captain)"
+                    id="wz-captain"
+                    value={form.captain || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, captain: e.target.value })
+                    }
+                    options={[
+                      { value: "", label: "— Tanpa Nahkoda —" },
+                      ...captains.map((c) => ({
+                        value: c.id,
+                        label: `${c.full_name} (${c.license_number})`,
+                      })),
+                    ]}
+                  />
+                ) : (
+                  <FormField label="Nahkoda (Captain)" htmlFor="wz-captain">
                     <input
                       id="wz-captain"
                       value={form.captain || ""}
                       onChange={(e) =>
                         setForm({ ...form, captain: e.target.value })
                       }
-                      placeholder="Nama nahkoda"
+                      placeholder="ID atau Nama Nahkoda"
                       className={inputCls}
                     />
-                  )}
-                </FormField>
+                  </FormField>
+                )}
               </div>
             </div>
           )}
@@ -334,23 +334,24 @@ export function ShipFormWizard({
                   />
                 </FormField>
               </div>
-              <FormField label="Status kapal" htmlFor="wz-status">
-                <select
-                  id="wz-status"
-                  value={form.active ? "active" : "inactive"}
-                  onChange={(e) =>
-                    setForm({ ...form, active: e.target.value === "active" })
-                  }
-                  className={inputCls}
-                >
-                  <option value="active">
-                    Aktif — beroperasi & bisa melapor
-                  </option>
-                  <option value="inactive">
-                    Nonaktif — dok / izin mati / dijual
-                  </option>
-                </select>
-              </FormField>
+              <SelectField
+                label="Status kapal"
+                id="wz-status"
+                value={form.active ? "active" : "inactive"}
+                onChange={(e) =>
+                  setForm({ ...form, active: e.target.value === "active" })
+                }
+                options={[
+                  {
+                    value: "active",
+                    label: "Aktif — beroperasi & bisa melapor",
+                  },
+                  {
+                    value: "inactive",
+                    label: "Nonaktif — dok / izin mati / dijual",
+                  },
+                ]}
+              />
             </div>
           )}
 
