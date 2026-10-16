@@ -3,6 +3,8 @@ import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
 import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { AlertBanner } from "../../components/ui";
 import { OwnerModal } from "../../components/modals/OwnerModal";
 import {
@@ -18,6 +20,13 @@ export function OwnersTab() {
   const [editingOwner, setEditingOwner] = useState<Owner | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const ownerModal = useCrudModal();
 
@@ -55,18 +64,21 @@ export function OwnersTab() {
     ownerModal.openModal();
   };
 
-  const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus pemilik "${name}"?`)) return;
-
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await ownersService.delete(id);
-      setToastMsg(`Pemilik "${name}" berhasil dihapus.`);
+      await ownersService.delete(deleteTarget.id);
+      setToastMsg(`Pemilik "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchOwners(search);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Gagal menghapus data pemilik";
-      alert(msg);
+      setErrorMsg(msg);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -129,7 +141,7 @@ export function OwnersTab() {
       render: (r) => (
         <CrudActions
           onEdit={() => handleOpenEdit(r)}
-          onDelete={() => handleDelete(r.id, r.full_name)}
+          onDelete={() => requestDelete({ id: r.id, name: r.full_name })}
         />
       ),
     },
@@ -173,6 +185,16 @@ export function OwnersTab() {
         onClose={ownerModal.closeModal}
         onSubmit={handleModalSubmit}
         editingOwner={editingOwner}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Data Pemilik"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus data pemilik ini? Seluruh kapal yang terhubung akan kehilangan data relasi pemilik."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

@@ -3,6 +3,8 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
 import {
@@ -18,6 +20,13 @@ export function RolesTab() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const roleModal = useCrudModal();
   const [rForm, setRForm] = useState<CreateRolePayload>({
@@ -68,15 +77,19 @@ export function RolesTab() {
     }
   };
 
-  const handleDeleteRole = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus peran "${name}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await rolesService.delete(id);
-      setToastMsg(`Peran "${name}" berhasil dihapus.`);
+      await rolesService.delete(deleteTarget.id);
+      setToastMsg(`Peran "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchRoles(search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus peran");
+      setErrorMsg(err instanceof Error ? err.message : "Gagal menghapus peran");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -119,7 +132,7 @@ export function RolesTab() {
             setRForm({ name: r.name, description: r.description || "" });
             roleModal.openModal();
           }}
-          onDelete={() => handleDeleteRole(r.id, r.name)}
+          onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
     },
@@ -195,6 +208,16 @@ export function RolesTab() {
           placeholder="Penjelasan wewenang dan tanggung jawab peran..."
         />
       </CrudModal>
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Peran Pengguna"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus peran ini? Seluruh izin akses dan penugasan peran pada pengguna akan dicabut."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

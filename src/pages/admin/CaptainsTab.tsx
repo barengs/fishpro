@@ -3,6 +3,8 @@ import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
 import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { AlertBanner } from "../../components/ui";
 import { CaptainModal } from "../../components/modals/CaptainModal";
 import {
@@ -20,6 +22,13 @@ export function CaptainsTab() {
   const [editingCaptain, setEditingCaptain] = useState<Captain | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const captainModal = useCrudModal();
 
@@ -61,18 +70,21 @@ export function CaptainsTab() {
     captainModal.openModal();
   };
 
-  const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus nahkoda "${name}"?`)) return;
-
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await captainsService.delete(id);
-      setToastMsg(`Nahkoda "${name}" berhasil dihapus.`);
+      await captainsService.delete(deleteTarget.id);
+      setToastMsg(`Nahkoda "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchCaptains(search);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Gagal menghapus data nahkoda";
-      alert(msg);
+      setErrorMsg(msg);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -140,7 +152,7 @@ export function CaptainsTab() {
       render: (r) => (
         <CrudActions
           onEdit={() => handleOpenEdit(r)}
-          onDelete={() => handleDelete(r.id, r.full_name)}
+          onDelete={() => requestDelete({ id: r.id, name: r.full_name })}
         />
       ),
     },
@@ -185,6 +197,16 @@ export function CaptainsTab() {
         onSubmit={handleModalSubmit}
         editingCaptain={editingCaptain}
         ownersList={ownersList}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Data Nahkoda"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus data nahkoda ini? Kapal yang sedang dinahkodai oleh akun ini akan kehilangan relasi nahkoda."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

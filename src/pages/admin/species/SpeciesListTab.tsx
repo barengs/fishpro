@@ -3,6 +3,8 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
 import { CsvImportModal } from "./CsvImportModal";
@@ -20,6 +22,13 @@ export function SpeciesListTab() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const speciesModal = useCrudModal();
   const importModal = useCrudModal();
@@ -77,15 +86,21 @@ export function SpeciesListTab() {
     }
   };
 
-  const handleDeleteSpecies = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus spesies "${name}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await fishSpeciesService.delete(id);
-      setToastMsg(`Spesies "${name}" berhasil dihapus.`);
+      await fishSpeciesService.delete(deleteTarget.id);
+      setToastMsg(`Spesies "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchSpecies(search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus spesies");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menghapus spesies",
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -136,7 +151,7 @@ export function SpeciesListTab() {
             });
             speciesModal.openModal();
           }}
-          onDelete={() => handleDeleteSpecies(r.id, r.name)}
+          onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
     },
@@ -258,6 +273,16 @@ export function SpeciesListTab() {
         }
         onClose={importModal.closeModal}
         onImport={handleImportCsv}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Spesies Ikan"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus katalog spesies ini? Data tangkapan dan acuan harga yang merujuk spesies ini dapat terpengaruh."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

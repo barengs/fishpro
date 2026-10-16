@@ -5,6 +5,8 @@ import { CrudActions, FormField, inputCls } from "../../components/FormField";
 import { StatusChip } from "../../components/StatusChip";
 import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { CatchReportWizard } from "../../components/CatchReportWizard";
 import type { CatchReportFormData } from "../../components/catchReportTypes";
 import { catchesService, type FishCatch } from "../../services/catches";
@@ -20,7 +22,14 @@ export function CatchesPage() {
   const [selectedShipReg, setSelectedShipReg] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { open, openModal, closeModal } = useCrudModal();
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name?: string }>();
 
   const fetchCatches = useCallback(
     async (query?: string) => {
@@ -58,22 +67,23 @@ export function CatchesPage() {
     return () => clearTimeout(timer);
   }, [search, fetchCatches]);
 
-  const handleDelete = async (id: number, shipName?: string) => {
-    if (
-      !window.confirm(`Hapus laporan tangkapan untuk ${shipName || `#${id}`}?`)
-    )
-      return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await catchesService.delete(id);
+      await catchesService.delete(deleteTarget.id);
       setToastMsg("Laporan tangkapan berhasil dihapus.");
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchCatches(search);
     } catch (err: unknown) {
-      alert(
+      setErrorMsg(
         err instanceof Error
           ? err.message
           : "Gagal menghapus laporan tangkapan",
       );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -200,7 +210,14 @@ export function CatchesPage() {
       flex: 1,
       align: "right",
       render: (r) => (
-        <CrudActions onDelete={() => handleDelete(r.id, r.ship_name)} />
+        <CrudActions
+          onDelete={() =>
+            requestDelete({
+              id: r.id,
+              name: `Laporan kapal ${r.ship_name || `#${r.ship}`}`,
+            })
+          }
+        />
       ),
     },
   ];
@@ -279,6 +296,16 @@ export function CatchesPage() {
         </div>
         <CatchReportWizard onSubmit={handleSubmit} onCancel={closeModal} />
       </CrudModal>
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Laporan Tangkapan"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus data laporan tangkapan ini dari sistem?"
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

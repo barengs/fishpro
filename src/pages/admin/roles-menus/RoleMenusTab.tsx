@@ -3,6 +3,8 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, SelectField } from "../../../components/ui";
 import {
@@ -23,6 +25,13 @@ export function RoleMenusTab() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const assignMenuModal = useCrudModal();
   const [assignForm, setAssignForm] = useState<AssignMenuPayload>({
@@ -111,15 +120,21 @@ export function RoleMenusTab() {
     }
   };
 
-  const handleDeleteRoleMenu = async (id: number) => {
-    if (!window.confirm("Hapus relasi hak akses menu ini?")) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await roleMenusService.delete(id);
+      await roleMenusService.delete(deleteTarget.id);
       setToastMsg("Relasi menu berhasil dihapus.");
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchData();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus relasi menu");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menghapus relasi menu",
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -173,7 +188,14 @@ export function RoleMenusTab() {
       flex: 1,
       align: "right",
       render: (r) => (
-        <CrudActions onDelete={() => handleDeleteRoleMenu(r.id)} />
+        <CrudActions
+          onDelete={() =>
+            requestDelete({
+              id: r.id,
+              name: `Hak akses "${r.menu}" untuk peran "${r.role}"`,
+            })
+          }
+        />
       ),
     },
   ];
@@ -345,6 +367,16 @@ export function RoleMenusTab() {
           </div>
         </div>
       </CrudModal>
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Hak Akses Menu"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus hak akses menu ini untuk peran terkait?"
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

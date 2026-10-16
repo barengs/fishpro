@@ -6,6 +6,8 @@ import { StatusChip } from "../../components/StatusChip";
 import { ProgressBar } from "../../components/ProgressBar";
 import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { ShipFormWizard } from "../../components/ShipFormWizard";
 import type { ShipFormData } from "../../components/shipFormTypes";
 import {
@@ -21,7 +23,14 @@ export function FleetPage() {
   const [search, setSearch] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { open, openModal, closeModal } = useCrudModal();
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const currentUser = authService.getStoredUser();
   const currentOwnerId = currentUser?.id;
@@ -59,18 +68,20 @@ export function FleetPage() {
     return () => clearTimeout(timer);
   }, [search, fetchFleet]);
 
-  const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus kapal "${name}" dari armada?`))
-      return;
-
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await shipsService.delete(id);
-      setToastMsg(`Kapal "${name}" berhasil dihapus.`);
+      await shipsService.delete(deleteTarget.id);
+      setToastMsg(`Kapal "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchFleet(search);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Gagal menghapus kapal";
-      alert(msg);
+      setErrorMsg(msg);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -167,7 +178,9 @@ export function FleetPage() {
       flex: 1,
       align: "right",
       render: (r) => (
-        <CrudActions onDelete={() => handleDelete(r.id, r.name)} />
+        <CrudActions
+          onDelete={() => requestDelete({ id: r.id, name: r.name })}
+        />
       ),
     },
   ];
@@ -215,6 +228,16 @@ export function FleetPage() {
       >
         <ShipFormWizard onSubmit={handleSubmit} fixedOwnerId={currentOwnerId} />
       </CrudModal>
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Kapal dari Armada"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus kapal ini dari armada? Seluruh histori dan penugasan nahkoda akan terputus."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

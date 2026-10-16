@@ -3,6 +3,8 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import {
   AlertBanner,
@@ -27,6 +29,13 @@ export function FishListTab() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const fishModal = useCrudModal();
   const importModal = useCrudModal();
@@ -119,16 +128,21 @@ export function FishListTab() {
     }
   };
 
-  const handleDeleteFish = async (id: number, name?: string | null) => {
-    const label = name || `#${id}`;
-    if (!window.confirm(`Yakin ingin menghapus data ikan ${label}?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await fishService.delete(id);
-      setToastMsg(`Data ikan ${label} berhasil dihapus.`);
+      await fishService.delete(deleteTarget.id);
+      setToastMsg(`Data ikan ${deleteTarget.name} berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchData();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus data ikan");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menghapus data ikan",
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -193,7 +207,12 @@ export function FishListTab() {
             });
             fishModal.openModal();
           }}
-          onDelete={() => handleDeleteFish(r.id, r.name)}
+          onDelete={() =>
+            requestDelete({
+              id: r.id,
+              name: r.name || `Sampel #${r.id}`,
+            })
+          }
         />
       ),
     },
@@ -340,6 +359,16 @@ export function FishListTab() {
         }
         onClose={importModal.closeModal}
         onImport={handleImportCsv}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Data Sampel Ikan"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus data sampel ikan ini?"
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

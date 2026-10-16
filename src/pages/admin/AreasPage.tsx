@@ -3,6 +3,8 @@ import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
 import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { AlertBanner } from "../../components/ui";
 import { AreaModal } from "../../components/modals/AreaModal";
 import { CsvImportModal } from "./species/CsvImportModal";
@@ -20,6 +22,13 @@ export function AreasPage() {
   const [editingArea, setEditingArea] = useState<FishingArea | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const areaModal = useCrudModal();
   const importModal = useCrudModal();
@@ -56,15 +65,21 @@ export function AreasPage() {
     areaModal.openModal();
   };
 
-  const handleDelete = async (id: number, nama: string) => {
-    if (!window.confirm(`Yakin ingin menghapus wilayah "${nama}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await regionsService.delete(id);
-      setToastMsg(`Wilayah "${nama}" berhasil dihapus.`);
+      await regionsService.delete(deleteTarget.id);
+      setToastMsg(`Wilayah "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchAreas(search);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus wilayah");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal menghapus wilayah",
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -119,7 +134,7 @@ export function AreasPage() {
       render: (r) => (
         <CrudActions
           onEdit={() => handleOpenEdit(r)}
-          onDelete={() => handleDelete(r.id, r.nama)}
+          onDelete={() => requestDelete({ id: r.id, name: r.nama })}
         />
       ),
     },
@@ -203,6 +218,16 @@ export function AreasPage() {
         }
         onClose={importModal.closeModal}
         onImport={handleCsvImport}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Wilayah Tangkapan (WPP)"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus data wilayah pengelolaan perikanan ini?"
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

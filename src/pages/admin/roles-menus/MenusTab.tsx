@@ -3,6 +3,8 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { StatusChip } from "../../../components/StatusChip";
 import { AlertBanner, TextField } from "../../../components/ui";
@@ -18,6 +20,13 @@ export function MenusTab() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
 
   const menuModal = useCrudModal();
   const [mForm, setMForm] = useState<CreateMenuPayload>({
@@ -85,15 +94,19 @@ export function MenusTab() {
     }
   };
 
-  const handleDeleteMenu = async (id: number, name: string) => {
-    if (!window.confirm(`Yakin ingin menghapus menu "${name}"?`)) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await menusService.delete(id);
-      setToastMsg(`Menu "${name}" berhasil dihapus.`);
+      await menusService.delete(deleteTarget.id);
+      setToastMsg(`Menu "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
       fetchMenus();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus menu");
+      setErrorMsg(err instanceof Error ? err.message : "Gagal menghapus menu");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -159,7 +172,7 @@ export function MenusTab() {
             });
             menuModal.openModal();
           }}
-          onDelete={() => handleDeleteMenu(r.id, r.name)}
+          onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
     },
@@ -277,6 +290,16 @@ export function MenusTab() {
           </div>
         </div>
       </CrudModal>
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Menu Navigasi"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus menu navigasi ini? Seluruh konfigurasi hak akses menu pada setiap peran akan dihapus."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
