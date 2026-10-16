@@ -27,16 +27,19 @@ export const rolesService = {
   async create(payload: CreateRolePayload): Promise<Role> {
     return apiClient<Role>(API_ENDPOINTS.ADMIN.ROLES, {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        permissions_ids: payload.permissions_ids ?? [],
+      }),
     });
   },
 
   /**
-   * PUT /api/admin/roles/{id}/ - Perbarui peran
+   * PATCH/PUT /api/admin/roles/{id}/ - Perbarui peran
    */
-  async update(id: number, payload: CreateRolePayload): Promise<Role> {
+  async update(id: number, payload: Partial<CreateRolePayload>): Promise<Role> {
     return apiClient<Role>(`${API_ENDPOINTS.ADMIN.ROLES}${id}/`, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(payload),
     });
   },

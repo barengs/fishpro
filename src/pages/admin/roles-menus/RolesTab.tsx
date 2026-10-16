@@ -65,11 +65,19 @@ export function RolesTab() {
     }
     setSubmitting(true);
     try {
+      const payload: CreateRolePayload = {
+        name: rForm.name.trim(),
+        description: rForm.description?.trim() || "",
+        ...(rForm.permissions_ids && rForm.permissions_ids.length > 0
+          ? { permissions_ids: rForm.permissions_ids }
+          : {}),
+      };
+
       if (editingRoleId) {
-        await rolesService.update(editingRoleId, rForm);
+        await rolesService.update(editingRoleId, payload);
         setToastMsg(`Peran "${rForm.name}" berhasil diperbarui.`);
       } else {
-        await rolesService.create(rForm);
+        await rolesService.create(payload);
         setToastMsg(`Peran baru "${rForm.name}" berhasil dibuat.`);
       }
       setTimeout(() => setToastMsg(null), 3000);
@@ -115,15 +123,22 @@ export function RolesTab() {
     },
     {
       key: "perms",
-      header: "Hak Akses (Permissions)",
+      header: "Tingkat Akses",
       flex: 2,
-      render: (r) => (
-        <span className="text-xs text-soft">
-          {r.permissions && r.permissions.length > 0
-            ? `${r.permissions.length} Izin aktif`
-            : "Default"}
-        </span>
-      ),
+      render: (r) => {
+        const isAdmin = r.name.toLowerCase() === "admin";
+        return (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+              isAdmin
+                ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
+                : "bg-blue-500/10 text-fco-blue dark:text-blue-400"
+            }`}
+          >
+            {isAdmin ? "Akses Penuh (Super Admin)" : "Akses Menu Terbatas"}
+          </span>
+        );
+      },
     },
     {
       key: "aksi",
@@ -134,7 +149,15 @@ export function RolesTab() {
         <CrudActions
           onEdit={() => {
             setEditingRoleId(r.id);
-            setRForm({ name: r.name, description: r.description || "" });
+            const existingPerms =
+              r.permissions?.map((p) => (typeof p === "number" ? p : p.id)) ||
+              r.permissions_ids ||
+              [];
+            setRForm({
+              name: r.name,
+              description: r.description || "",
+              permissions_ids: existingPerms,
+            });
             roleModal.openModal();
           }}
           onDelete={() => requestDelete({ id: r.id, name: r.name })}
@@ -180,7 +203,7 @@ export function RolesTab() {
 
       <CrudModal
         open={roleModal.open}
-        title={editingRoleId ? "Ubah Peran" : "Buat Peran Baru"}
+        title={editingRoleId ? "Ubah Nama Peran" : "Buat Peran Baru"}
         subtitle="Kelola nama peran pengguna dan deskripsinya."
         onClose={roleModal.closeModal}
         onSubmit={handleRoleSubmit}
