@@ -7,13 +7,14 @@ import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { AlertBanner } from "../../components/ui";
 import { AreaModal } from "../../components/modals/AreaModal";
+import { TemplateDropdown } from "../../components/TemplateDropdown";
 import { CsvImportModal } from "./species/CsvImportModal";
 import {
   regionsService,
   type CreateFishingAreaPayload,
   type FishingArea,
 } from "../../services/regions";
-import { Download, FileUp } from "lucide-react";
+import { FileUp } from "lucide-react";
 
 export function AreasPage() {
   const [rows, setRows] = useState<FishingArea[]>([]);
@@ -152,30 +153,23 @@ export function AreasPage() {
         onAdd={handleOpenAdd}
         extraActions={
           <>
-            <a
-              href={regionsService.getDownloadTemplateUrl("csv")}
-              download
-              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
-            >
-              <Download
-                size={14}
-                className="text-fco-blue"
-                aria-hidden="true"
-              />
-              <span>Template CSV</span>
-            </a>
-            <a
-              href={regionsService.getDownloadTemplateUrl("excel")}
-              download
-              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
-            >
-              <Download
-                size={14}
-                className="text-emerald-600 dark:text-emerald-400"
-                aria-hidden="true"
-              />
-              <span>Template Excel</span>
-            </a>
+            <TemplateDropdown
+              label="Unduh Template"
+              options={[
+                {
+                  label: "Template WPP (CSV)",
+                  format: "csv",
+                  url: regionsService.getDownloadTemplateUrl("csv"),
+                  filename: "template_wpp.csv",
+                },
+                {
+                  label: "Template WPP (Excel)",
+                  format: "excel",
+                  url: regionsService.getDownloadTemplateUrl("excel"),
+                  filename: "template_wpp.xlsx",
+                },
+              ]}
+            />
             <button
               type="button"
               onClick={importModal.openModal}
@@ -186,7 +180,7 @@ export function AreasPage() {
                 className="text-emerald-600 dark:text-emerald-400"
                 aria-hidden="true"
               />
-              <span>Impor WPP</span>
+              <span>Impor File CSV</span>
             </button>
           </>
         }
