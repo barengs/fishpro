@@ -8,6 +8,7 @@ import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { StatusChip } from "../../../components/StatusChip";
 import { AlertBanner, TextField } from "../../../components/ui";
+import { menuSchema } from "../../../utils/schemas";
 import {
   menusService,
   type CreateMenuPayload,
@@ -74,7 +75,11 @@ export function MenusTab() {
 
   const handleMenuSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!mForm.name.trim()) return;
+    const parsed = menuSchema.safeParse(mForm);
+    if (!parsed.success) {
+      setErrorMsg(parsed.error.issues[0]?.message || "Input menu belum valid.");
+      return;
+    }
     setSubmitting(true);
     try {
       if (editingMenuId) {

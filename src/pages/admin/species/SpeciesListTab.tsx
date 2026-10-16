@@ -7,6 +7,7 @@ import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
+import { speciesSchema } from "../../../utils/schemas";
 import { CsvImportModal } from "./CsvImportModal";
 import {
   fishSpeciesService,
@@ -63,7 +64,13 @@ export function SpeciesListTab() {
 
   const handleSpeciesSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!speciesForm.name.trim()) return;
+    const parsed = speciesSchema.safeParse(speciesForm);
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Nama spesies belum valid.",
+      );
+      return;
+    }
     setSubmitting(true);
     setErrorMsg(null);
     try {

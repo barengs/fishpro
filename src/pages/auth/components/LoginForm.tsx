@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
+import { loginSchema } from "../../../utils/schemas";
 
 export function LoginForm() {
   const [identifier, setIdentifier] = useState("");
@@ -15,8 +16,14 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!identifier.trim() || !password) {
-      const msg = "Harap isi nama pengguna dan kata sandi.";
+
+    const parsed = loginSchema.safeParse({
+      username: identifier,
+      password,
+    });
+
+    if (!parsed.success) {
+      const msg = parsed.error.issues[0]?.message || "Input tidak valid.";
       setErrorMsg(msg);
       toast.warning(msg);
       return;
@@ -26,10 +33,7 @@ export function LoginForm() {
     setLoading(true);
 
     try {
-      const data = await authService.login({
-        username: identifier.trim(),
-        password,
-      });
+      const data = await authService.login(parsed.data);
 
       toast.success(
         `Login berhasil. Selamat datang kembali, ${data.username}!`,

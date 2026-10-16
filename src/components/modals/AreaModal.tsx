@@ -5,6 +5,7 @@ import {
   type CreateFishingAreaPayload,
   type FishingArea,
 } from "../../services/regions";
+import { areaSchema } from "../../utils/schemas";
 
 interface AreaModalProps {
   open: boolean;
@@ -32,8 +33,11 @@ function AreaForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!f.nama.trim() || !f.code.trim()) {
-      setErrorMsg("Nama wilayah dan kode wilayah wajib diisi.");
+    const parsed = areaSchema.safeParse(f);
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Input wilayah tidak valid.",
+      );
       return;
     }
     setSubmitting(true);

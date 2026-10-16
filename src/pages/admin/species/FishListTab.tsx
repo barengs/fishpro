@@ -12,6 +12,7 @@ import {
   TextField,
   TextareaField,
 } from "../../../components/ui";
+import { fishSchema } from "../../../utils/schemas";
 import { CsvImportModal } from "./CsvImportModal";
 import {
   fishService,
@@ -98,8 +99,11 @@ export function FishListTab() {
 
   const handleFishSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fishForm.species) {
-      setErrorMsg("Harap pilih jenis spesies ikan.");
+    const parsed = fishSchema.safeParse(fishForm);
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Input sampel ikan belum valid.",
+      );
       return;
     }
     setSubmitting(true);

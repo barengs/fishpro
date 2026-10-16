@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Navigation } from "lucide-react";
 import { FormField, inputCls } from "./FormField";
 import { emptyCatchForm, type CatchReportFormData } from "./catchReportTypes";
+import { catchStep1Schema, catchStep2Schema } from "../utils/schemas";
 
 const steps = [
   { num: 1, title: "Waktu & Lokasi" },
@@ -106,21 +107,19 @@ export function CatchReportWizard({
   const handleNext = () => {
     setErrorMsg(null);
     if (currentStep === 1) {
-      if (!form.catch_date) {
-        setErrorMsg("Tanggal masih kosong.");
-        return;
-      }
-      if (!form.location_latitude.trim() || !form.location_longitude.trim()) {
-        setErrorMsg("Koordinat masih kosong.");
+      const parsed = catchStep1Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Data langkah 1 belum valid.",
+        );
         return;
       }
     } else if (currentStep === 2) {
-      if (!form.fish_species.trim()) {
-        setErrorMsg("Spesies masih kosong.");
-        return;
-      }
-      if (!form.quantity.trim() || Number(form.quantity) <= 0) {
-        setErrorMsg("Jumlah harus lebih dari 0.");
+      const parsed = catchStep2Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Data langkah 2 belum valid.",
+        );
         return;
       }
     }

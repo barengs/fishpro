@@ -4,6 +4,7 @@ import { FormField, inputCls } from "./FormField";
 import { emptyShipForm, type ShipFormData } from "./shipFormTypes";
 import { ownersService, type Owner } from "../services/owners";
 import { captainsService, type Captain } from "../services/captains";
+import { shipFormSchema } from "../utils/schemas";
 
 const steps = [
   { num: 1, title: "Identitas" },
@@ -43,12 +44,26 @@ export function ShipFormWizard({
   const handleNext = () => {
     setErrorMsg(null);
     if (currentStep === 1) {
-      if (!form.name.trim()) {
-        setErrorMsg("Nama kapal masih kosong.");
+      const step1Schema = shipFormSchema.pick({
+        name: true,
+        registration_number: true,
+      });
+      const parsed = step1Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Identitas kapal belum valid.",
+        );
         return;
       }
-      if (!form.registration_number.trim()) {
-        setErrorMsg("Nomor registrasi masih kosong.");
+    } else if (currentStep === 2) {
+      const step2Schema = shipFormSchema.pick({
+        gross_tonnage: true,
+      });
+      const parsed = step2Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Spesifikasi kapal belum valid.",
+        );
         return;
       }
     }

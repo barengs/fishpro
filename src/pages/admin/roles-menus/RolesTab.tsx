@@ -7,6 +7,7 @@ import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
+import { roleSchema } from "../../../utils/schemas";
 import {
   rolesService,
   type CreateRolePayload,
@@ -57,7 +58,11 @@ export function RolesTab() {
 
   const handleRoleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!rForm.name.trim()) return;
+    const parsed = roleSchema.safeParse(rForm);
+    if (!parsed.success) {
+      setErrorMsg(parsed.error.issues[0]?.message || "Nama peran belum valid.");
+      return;
+    }
     setSubmitting(true);
     try {
       if (editingRoleId) {

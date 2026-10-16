@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CrudModal } from "../CrudModal";
 import { SelectField, TextField, TextareaField } from "../ui";
 import { type CreateOwnerPayload, type Owner } from "../../services/owners";
+import { ownerSchema } from "../../utils/schemas";
 import { Loader2 } from "lucide-react";
 
 interface OwnerModalProps {
@@ -34,8 +35,11 @@ function OwnerForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.full_name.trim()) {
-      setErrorMsg("Nama lengkap / nama perusahaan wajib diisi.");
+    const parsed = ownerSchema.safeParse(form);
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Input pemilik tidak valid.",
+      );
       return;
     }
     setSubmitting(true);

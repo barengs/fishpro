@@ -6,6 +6,7 @@ import {
   type CreateCaptainPayload,
   type Owner,
 } from "../../services/owners";
+import { captainSchema } from "../../utils/schemas";
 import { Loader2 } from "lucide-react";
 
 interface CaptainModalProps {
@@ -49,12 +50,15 @@ function CaptainForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.full_name.trim() || !form.license_number.trim()) {
-      setErrorMsg("Nama nahkoda dan nomor lisensi wajib diisi.");
-      return;
-    }
-    if (!fixedOwnerId && !form.owner) {
-      setErrorMsg("Pemilik kapal wajib dipilih.");
+    const finalOwner = fixedOwnerId || form.owner;
+    const parsed = captainSchema.safeParse({
+      ...form,
+      owner: finalOwner,
+    });
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Input nahkoda tidak valid.",
+      );
       return;
     }
 
@@ -63,7 +67,7 @@ function CaptainForm({
     try {
       await onSubmit({
         ...form,
-        owner: fixedOwnerId || form.owner,
+        owner: finalOwner,
       });
       onClose();
     } catch (err: unknown) {

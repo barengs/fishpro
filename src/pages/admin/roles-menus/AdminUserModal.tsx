@@ -6,6 +6,7 @@ import {
   type RegisterRegulatorPayload,
   type Role,
 } from "../../../services/admin";
+import { adminUserSchema } from "../../../utils/schemas";
 import { Loader2 } from "lucide-react";
 
 interface AdminUserModalProps {
@@ -29,6 +30,7 @@ export function AdminUserModal({
     "admin" | "regulator"
   >("admin");
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [adminForm, setAdminForm] = useState<RegisterAdminPayload>({
     username: "",
@@ -53,10 +55,24 @@ export function AdminUserModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const target = userRegisterType === "admin" ? adminForm : regulatorForm;
+    const parsed = adminUserSchema.safeParse(target);
+    if (!parsed.success) {
+      setErrorMsg(
+        parsed.error.issues[0]?.message || "Input akun belum lengkap/valid.",
+      );
+      return;
+    }
+
     setSubmitting(true);
+    setErrorMsg(null);
     try {
       await onSubmit(userRegisterType, adminForm, regulatorForm);
       onClose();
+    } catch (err: unknown) {
+      setErrorMsg(
+        err instanceof Error ? err.message : "Gagal mendaftarkan akun.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -80,6 +96,15 @@ export function AdminUserModal({
       submitLabel={submitting ? "Mendaftarkan..." : "Selesaikan Pendaftaran"}
       wide
     >
+      {errorMsg && (
+        <div
+          role="alert"
+          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold mb-4 border border-red-200 dark:border-red-500/20"
+        >
+          ⚠ {errorMsg}
+        </div>
+      )}
+
       <div className="flex gap-2 p-1 bg-fco-blue-light/50 dark:bg-fco-blue/15 rounded-xl mb-4 w-fit">
         <button
           type="button"
