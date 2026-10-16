@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { Fish, Tag } from "lucide-react";
 import { SpeciesListTab } from "./species/SpeciesListTab";
 import { FishListTab } from "./species/FishListTab";
 
 type SpeciesTab = "species" | "individual";
 
-const tabs: { key: SpeciesTab; label: string }[] = [
-  { key: "species", label: "Katalog Spesies" },
-  { key: "individual", label: "Sampel Ikan Individu" },
+const tabs: {
+  key: SpeciesTab;
+  label: string;
+  Icon: typeof Fish;
+}[] = [
+  { key: "species", label: "Katalog Spesies", Icon: Fish },
+  { key: "individual", label: "Sampel Ikan Individu", Icon: Tag },
 ];
 
 export function SpeciesPage() {
@@ -23,28 +28,43 @@ export function SpeciesPage() {
           spesimen individu.
         </p>
 
-        {/* Tab Switcher */}
-        <div
-          className="flex gap-1.5 mt-5 p-1 surface-inset border dark:border-fco-border-dark rounded-xl w-fit flex-wrap"
-          role="tablist"
-          aria-label="Katalog perikanan"
-        >
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              role="tab"
-              aria-selected={tab === t.key}
-              onClick={() => setTab(t.key)}
-              className={`h-9.5 px-4.5 rounded-lg text-sm font-semibold border-none cursor-pointer transition-all ${
-                tab === t.key
-                  ? "bg-fco-blue text-white shadow-xs"
-                  : "bg-transparent text-soft hover:text-strong hover:surface-page"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+        {/* Style 1: Underline Tab Bar (GitHub / Vercel style) */}
+        <div className="border-b border-fco-border dark:border-fco-border-dark mt-6">
+          <nav
+            className="-mb-px flex gap-6 overflow-x-auto"
+            role="tablist"
+            aria-label="Katalog perikanan"
+          >
+            {tabs.map((t) => {
+              const active = tab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setTab(t.key)}
+                  className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                    active
+                      ? "border-b-fco-blue text-fco-blue"
+                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
+                  }`}
+                >
+                  <t.Icon
+                    size={17}
+                    className={`shrink-0 transition-colors ${
+                      active
+                        ? "text-fco-blue"
+                        : "text-soft group-hover:text-strong"
+                    }`}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                  <span className="whitespace-nowrap">{t.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
       </div>
 

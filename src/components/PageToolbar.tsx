@@ -51,26 +51,28 @@ export function PageToolbar({
       )}
 
       {tabs && tabs.length > 1 && (
-        <div
-          className="flex gap-1.5 mb-5 p-1 surface-inset border dark:border-fco-border-dark rounded-xl w-fit flex-wrap"
-          role="tablist"
-        >
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === t.key}
-              onClick={() => onTabChange?.(t.key)}
-              className={`h-9.5 px-4.5 rounded-lg text-sm font-semibold border-none cursor-pointer transition-all ${
-                activeTab === t.key
-                  ? "bg-fco-blue text-white shadow-xs"
-                  : "bg-transparent text-soft hover:text-strong hover:surface-page"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+        <div className="border-b border-fco-border dark:border-fco-border-dark mb-5">
+          <nav className="-mb-px flex gap-6 overflow-x-auto" role="tablist">
+            {tabs.map((t) => {
+              const active = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => onTabChange?.(t.key)}
+                  className={`inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                    active
+                      ? "border-b-fco-blue text-fco-blue"
+                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
+                  }`}
+                >
+                  <span className="whitespace-nowrap">{t.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
       )}
 

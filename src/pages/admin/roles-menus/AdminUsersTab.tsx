@@ -140,8 +140,6 @@ export function AdminUsersTab() {
   return (
     <div>
       <PageToolbar
-        title="Pengguna Admin & Regulator"
-        desc="Manajemen akun administrator KKP dan pendaftaran petugas regulator pengawas kuota."
         searchPlaceholder="Cari pengguna admin..."
         searchValue={search}
         onSearchChange={setSearch}

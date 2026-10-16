@@ -203,9 +203,7 @@ export function RoleMenusTab() {
   return (
     <div>
       <PageToolbar
-        title="Hak Akses Menu (Role-Menus)"
-        desc="Pengaturan matriks hak akses menu (melihat, membuat, mengedit, menghapus) untuk masing-masing peran."
-        addLabel="Tetapkan Menu"
+        addLabel="Tetapkan Hak Akses Menu"
         onAdd={() => {
           setAssignForm({
             role_id: roles.length > 0 ? roles[0].id : 0,

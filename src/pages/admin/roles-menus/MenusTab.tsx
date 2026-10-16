@@ -186,8 +186,6 @@ export function MenusTab() {
   return (
     <div>
       <PageToolbar
-        title="Menu Navigasi (Menus)"
-        desc="Daftar semua menu frontend yang aktif dan dapat dikustomisasi hak aksesnya."
         addLabel="Tambah Menu"
         onAdd={() => {
           setEditingMenuId(null);

@@ -146,9 +146,7 @@ export function RolesTab() {
   return (
     <div>
       <PageToolbar
-        title="Peran Pengguna (Roles)"
-        desc="Daftar semua peran pengguna dalam sistem. Setiap peran memiliki izin dan menu yang berbeda."
-        searchPlaceholder="Cari peran..."
+        searchPlaceholder="Cari nama peran..."
         searchValue={search}
         onSearchChange={setSearch}
         addLabel="Tambah Peran"

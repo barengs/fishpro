@@ -16,12 +16,7 @@ export function TariffConfigTab() {
 
   return (
     <div>
-      <PageToolbar
-        title="Konfigurasi Tarif PNBP"
-        desc="Pengaturan ambang batas GT dan tarif persentase pungutan hasil perikanan resmi KKP."
-        addLabel="Ubah Tarif"
-        onAdd={tariffModal.openModal}
-      />
+      <PageToolbar addLabel="Ubah Tarif" onAdd={tariffModal.openModal} />
 
       <section className="surface-card border rounded-xl p-6 shadow-xs max-w-220">
         <h2 className="m-0 mb-1 text-base font-bold">Tarif PNBP Aktif</h2>

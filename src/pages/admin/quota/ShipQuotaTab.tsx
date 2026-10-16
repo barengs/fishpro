@@ -90,8 +90,6 @@ export function ShipQuotaTab() {
   return (
     <div>
       <PageToolbar
-        title="Kuota Kapal Tahunan"
-        desc="Alokasi kuota penangkapan ikan per kapal per tahun resmi terdaftar di sistem KKP."
         searchPlaceholder="Cari kapal..."
         addLabel="Tambah Kuota"
         onAdd={quotaModal.openModal}
