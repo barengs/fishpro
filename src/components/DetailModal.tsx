@@ -43,67 +43,73 @@ export function DetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+      {/* Backdrop — true scrim, no glow */}
       <div
-        className="absolute inset-0 bg-fco-dark/50 backdrop-blur-xs transition-opacity"
+        className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Dialog */}
-      <div className="relative w-full max-w-140 surface-card border dark:border-fco-border-dark rounded-xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="p-5 sm:p-6 border-b border-fco-border-subtle flex items-start justify-between gap-4 shrink-0">
+      {/* Sheet Dialog — refined rect, no pill, controlled width */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="relative w-full max-w-140 surface-card border dark:border-fco-border-dark rounded-2xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[88vh]"
+      >
+        {/* Header: editorial rhythm, generous whitespace */}
+        <div className="px-6 sm:px-7 pt-6 sm:pt-7 pb-5 border-b border-fco-border-subtle flex items-start justify-between gap-5 shrink-0">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="m-0 text-lg sm:text-xl font-extrabold tracking-tight text-strong truncate">
+            {subtitle && (
+              <p className="m-0 mb-1.5 text-2xs font-bold text-fco-blue uppercase tracking-widest">
+                {subtitle}
+              </p>
+            )}
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="m-0 text-xl sm:text-2xl font-extrabold tracking-tight text-strong text-balance">
                 {title}
               </h2>
               {badge}
             </div>
-            {subtitle && (
-              <p className="m-0 mt-1 text-xs text-soft leading-relaxed">
-                {subtitle}
-              </p>
-            )}
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Tutup"
-            className="p-1.5 -mr-1 -mt-1 rounded-lg text-soft hover:text-strong hover:surface-page border-none bg-transparent cursor-pointer transition-colors"
+            aria-label="Tutup detail"
+            className="w-8 h-8 rounded-full surface-inset border dark:border-fco-border-dark text-soft hover:text-strong hover:surface-page flex items-center justify-center cursor-pointer transition-colors shrink-0"
           >
-            <X size={18} aria-hidden="true" />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Content Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Content: hairline definition list, no card-in-card noise */}
+        <div className="px-6 sm:px-7 py-2 overflow-y-auto flex-1">
+          <dl className="m-0 divide-y divide-[var(--color-fco-border-subtle)]">
             {fields.map((f, idx) => (
               <div
                 key={idx}
-                className={`p-3.5 rounded-xl surface-inset border dark:border-fco-border-dark ${
-                  f.fullWidth ? "sm:col-span-2" : ""
+                className={`grid grid-cols-1 gap-0.5 sm:gap-3 py-3.5 ${
+                  f.fullWidth
+                    ? ""
+                    : "sm:grid-cols-[180px_minmax(0,1fr)] sm:items-baseline"
                 }`}
               >
-                <div className="text-2xs font-bold text-soft uppercase tracking-wider mb-1">
+                <dt className="text-xs font-medium text-soft leading-relaxed">
                   {f.label}
-                </div>
-                <div className="text-sm font-semibold text-strong break-words leading-relaxed">
+                </dt>
+                <dd className="m-0 text-sm font-semibold text-strong break-words leading-relaxed min-w-0">
                   {f.value || "—"}
-                </div>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
 
-        {/* Footer */}
-        <div className="p-4 px-5 sm:px-6 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-page">
+        {/* Footer: quiet actions, subtle top rule */}
+        <div className="px-6 sm:px-7 py-4 border-t border-fco-border-subtle flex items-center justify-end gap-2 shrink-0 surface-card">
           {actions}
           <button
             type="button"
             onClick={onClose}
-            className="h-10 px-4.5 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-strong cursor-pointer transition-colors"
+            className="h-9 px-4 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-xs sm:text-sm font-semibold text-soft hover:text-strong cursor-pointer transition-colors"
           >
             Tutup
           </button>
