@@ -4,8 +4,8 @@
 
 @theme {
   --font-sans:
-    "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
-    sans-serif;
+    "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --color-fco-blue: #1a56db;
   --color-fco-blue-hover: #123fa8;
   --color-fco-blue-light: #e8f0fe;
@@ -153,4 +153,6 @@ body {
   font-family: var(--font-sans);
   color: var(--color-fco-dark);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
