@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import type { Toast, ToastType } from "./types";
 import { ToastContext } from "./toastContext";
 import { ToastItem } from "./ToastItem";
@@ -65,11 +66,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div
         aria-label="Notifikasi sistem"
-        className="fixed bottom-5 right-5 z-60 pointer-events-none flex flex-col gap-2.5 items-end max-w-full"
+        className="fixed top-5 right-5 z-60 pointer-events-none flex flex-col gap-2.5 items-end max-w-full"
       >
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onDismiss={dismissToast} />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {toasts.map((toast) => (
+            <ToastItem key={toast.id} toast={toast} onDismiss={dismissToast} />
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
