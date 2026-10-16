@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
@@ -289,79 +290,119 @@ export function RoleMenusTab() {
           />
         </div>
 
-        <div>
-          <span className="block text-sm font-semibold text-strong mb-2.5">
-            Izin Akses Granular
-          </span>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl surface-inset border">
-            <label className="flex items-center gap-2 text-sm font-semibold text-strong cursor-pointer">
-              <input
-                type="checkbox"
-                checked={assignForm.permissions?.can_view ?? true}
-                onChange={(e) =>
+        <div className="mt-2">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-soft uppercase tracking-wider">
+              Hak Akses Menu (CRUD)
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
                   setAssignForm({
                     ...assignForm,
                     permissions: {
-                      ...assignForm.permissions,
-                      can_view: e.target.checked,
+                      can_view: true,
+                      can_create: true,
+                      can_edit: true,
+                      can_delete: true,
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-              />
-              Dapat Melihat
-            </label>
-            <label className="flex items-center gap-2 text-sm font-semibold text-strong cursor-pointer">
-              <input
-                type="checkbox"
-                checked={assignForm.permissions?.can_create ?? false}
-                onChange={(e) =>
+                className="text-2xs font-semibold text-fco-blue hover:underline bg-transparent border-none cursor-pointer p-0"
+              >
+                Pilih Semua
+              </button>
+              <span className="text-soft text-2xs">·</span>
+              <button
+                type="button"
+                onClick={() =>
                   setAssignForm({
                     ...assignForm,
                     permissions: {
-                      ...assignForm.permissions,
-                      can_create: e.target.checked,
+                      can_view: true,
+                      can_create: false,
+                      can_edit: false,
+                      can_delete: false,
                     },
                   })
                 }
-                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-              />
-              Dapat Membuat
-            </label>
-            <label className="flex items-center gap-2 text-sm font-semibold text-strong cursor-pointer">
-              <input
-                type="checkbox"
-                checked={assignForm.permissions?.can_edit ?? false}
-                onChange={(e) =>
-                  setAssignForm({
-                    ...assignForm,
-                    permissions: {
-                      ...assignForm.permissions,
-                      can_edit: e.target.checked,
-                    },
-                  })
-                }
-                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-              />
-              Dapat Mengedit
-            </label>
-            <label className="flex items-center gap-2 text-sm font-semibold text-strong cursor-pointer">
-              <input
-                type="checkbox"
-                checked={assignForm.permissions?.can_delete ?? false}
-                onChange={(e) =>
-                  setAssignForm({
-                    ...assignForm,
-                    permissions: {
-                      ...assignForm.permissions,
-                      can_delete: e.target.checked,
-                    },
-                  })
-                }
-                className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-              />
-              Dapat Menghapus
-            </label>
+                className="text-2xs font-semibold text-soft hover:text-strong bg-transparent border-none cursor-pointer p-0"
+              >
+                Hanya Lihat
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {[
+              {
+                key: "can_view" as const,
+                label: "Melihat (View)",
+                desc: "Akses membaca & membuka halaman",
+                Icon: Eye,
+              },
+              {
+                key: "can_create" as const,
+                label: "Membuat (Create)",
+                desc: "Izin menambah data baru",
+                Icon: PlusCircle,
+              },
+              {
+                key: "can_edit" as const,
+                label: "Mengubah (Edit)",
+                desc: "Izin memperbarui data yang ada",
+                Icon: Pencil,
+              },
+              {
+                key: "can_delete" as const,
+                label: "Menghapus (Delete)",
+                desc: "Izin menghapus data dari sistem",
+                Icon: Trash2,
+              },
+            ].map((item) => {
+              const checked = Boolean(assignForm.permissions?.[item.key]);
+              return (
+                <label
+                  key={item.key}
+                  className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                    checked
+                      ? "border-fco-blue bg-fco-blue-light/40 dark:bg-fco-blue/10 shadow-2xs"
+                      : "border-fco-border dark:border-fco-border-dark surface-card hover:surface-page"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) =>
+                      setAssignForm({
+                        ...assignForm,
+                        permissions: {
+                          ...assignForm.permissions,
+                          [item.key]: e.target.checked,
+                        },
+                      })
+                    }
+                    className="mt-0.5 w-4 h-4 rounded text-fco-blue accent-fco-blue shrink-0 cursor-pointer"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <item.Icon
+                        size={15}
+                        className={checked ? "text-fco-blue" : "text-soft"}
+                        aria-hidden="true"
+                      />
+                      <span className="text-sm font-semibold text-strong truncate">
+                        {item.label}
+                      </span>
+                    </div>
+                    <p className="m-0 text-2xs text-soft mt-0.5 leading-snug">
+                      {item.desc}
+                    </p>
+                  </div>
+                </label>
+              );
+            })}
           </div>
         </div>
       </CrudModal>
