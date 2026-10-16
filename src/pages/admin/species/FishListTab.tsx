@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
+import { Download, FileUp } from "lucide-react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
-import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { PageToolbar } from "../../../components/PageToolbar";
-import {
-  AlertBanner,
-  SelectField,
-  TextField,
-  TextareaField,
-} from "../../../components/ui";
-import { fishSchema } from "../../../utils/schemas";
+import { AlertBanner } from "../../../components/ui";
 import { CsvImportModal } from "./CsvImportModal";
+import { FishModal } from "./FishModal";
 import {
   fishService,
   fishSpeciesService,
@@ -21,7 +16,6 @@ import {
   type Fish,
   type FishSpecies,
 } from "../../../services/fish";
-import { Download, FileUp } from "lucide-react";
 
 export function FishListTab() {
   const [fishList, setFishList] = useState<Fish[]>([]);
@@ -29,8 +23,7 @@ export function FishListTab() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [editingFish, setEditingFish] = useState<Fish | null>(null);
   const {
     target: deleteTarget,
     open: isDeleteOpen,
@@ -40,13 +33,6 @@ export function FishListTab() {
 
   const fishModal = useCrudModal();
   const importModal = useCrudModal();
-  const [editingFishId, setEditingFishId] = useState<number | null>(null);
-  const [fishForm, setFishForm] = useState<CreateFishPayload>({
-    species: 0,
-    name: "",
-    weight: "",
-    notes: "",
-  });
 
   const fetchData = async () => {
     setLoading(true);
@@ -97,44 +83,32 @@ export function FishListTab() {
     };
   }, []);
 
-  const handleFishSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = fishSchema.safeParse(fishForm);
-    if (!parsed.success) {
-      setErrorMsg(
-        parsed.error.issues[0]?.message || "Input sampel ikan belum valid.",
-      );
-      return;
+  const handleFishSubmit = async (payload: CreateFishPayload) => {
+    if (editingFish) {
+      await fishService.update(editingFish.id, payload);
+      setToastMsg("Data ikan berhasil diperbarui.");
+    } else {
+      await fishService.create(payload);
+      setToastMsg("Data ikan baru berhasil ditambahkan.");
     }
-    setSubmitting(true);
-    setErrorMsg(null);
-    try {
-      const payload: CreateFishPayload = {
-        ...fishForm,
-        weight: fishForm.weight ? parseFloat(String(fishForm.weight)) : null,
-      };
-      if (editingFishId) {
-        await fishService.update(editingFishId, payload);
-        setToastMsg("Data ikan berhasil diperbarui.");
-      } else {
-        await fishService.create(payload);
-        setToastMsg("Data ikan individu baru berhasil ditambahkan.");
-      }
-      setTimeout(() => setToastMsg(null), 3000);
-      fishModal.closeModal();
-      fetchData();
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal menyimpan data ikan",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    setTimeout(() => setToastMsg(null), 3000);
+    fetchData();
+  };
+
+  const handleImportCsv = async (
+    csvText: string,
+    clearExisting: boolean,
+  ): Promise<void> => {
+    const res = await fishService.importFish(csvText, clearExisting);
+    setToastMsg(
+      res.message || `Berhasil mengimpor ${res.created || 0} sampel ikan.`,
+    );
+    setTimeout(() => setToastMsg(null), 3000);
+    fetchData();
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    setDeleting(true);
     try {
       await fishService.delete(deleteTarget.id);
       setToastMsg(`Data ikan ${deleteTarget.name} berhasil dihapus.`);
@@ -145,53 +119,56 @@ export function FishListTab() {
       setErrorMsg(
         err instanceof Error ? err.message : "Gagal menghapus data ikan",
       );
-    } finally {
-      setDeleting(false);
     }
-  };
-
-  const handleImportCsv = async (csvData: string, clearExisting: boolean) => {
-    const res = await fishService.importFish(csvData, clearExisting);
-    setToastMsg(
-      `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`,
-    );
-    setTimeout(() => setToastMsg(null), 4000);
-    fetchData();
   };
 
   const fishCols: Column<Fish>[] = [
     {
-      key: "name",
-      header: "Nama Ikan / Spesies",
-      flex: 3,
+      key: "id",
+      header: "ID",
+      flex: 1,
       render: (r) => (
-        <div>
-          <div className="text-sm font-semibold">
-            {r.name || "Ikan Tanpa Label"}
-          </div>
-          <div className="text-xs text-fco-blue font-medium">
-            {r.species_name || `Spesies #${r.species}`}
-          </div>
+        <span className="font-mono text-xs text-soft">#{r.id}</span>
+      ),
+    },
+    {
+      key: "species",
+      header: "Spesies",
+      flex: 2,
+      render: (r) => (
+        <div className="font-semibold text-strong">
+          {r.species_name || `Spesies #${r.species}`}
         </div>
       ),
     },
     {
-      key: "weight",
-      header: "Berat",
+      key: "name",
+      header: "Nama / Label",
       flex: 2,
-      align: "right",
       render: (r) => (
-        <span className="text-sm tabular-nums font-semibold">
-          {r.weight ? `${r.weight} kg` : "—"}
-        </span>
+        <span className="text-strong font-medium">{r.name || "—"}</span>
       ),
+    },
+    {
+      key: "weight",
+      header: "Berat (kg)",
+      flex: 1,
+      align: "right",
+      render: (r) =>
+        r.weight !== null && r.weight !== undefined ? (
+          <span className="font-mono font-semibold">
+            {Number(r.weight).toLocaleString("id-ID")} kg
+          </span>
+        ) : (
+          <span className="text-soft">—</span>
+        ),
     },
     {
       key: "notes",
       header: "Catatan",
       flex: 3,
       render: (r) => (
-        <span className="text-xs text-soft">{r.notes || "—"}</span>
+        <span className="text-xs text-soft line-clamp-1">{r.notes || "—"}</span>
       ),
     },
     {
@@ -202,13 +179,7 @@ export function FishListTab() {
       render: (r) => (
         <CrudActions
           onEdit={() => {
-            setEditingFishId(r.id);
-            setFishForm({
-              species: r.species,
-              name: r.name || "",
-              weight: r.weight ?? "",
-              notes: r.notes || "",
-            });
+            setEditingFish(r);
             fishModal.openModal();
           }}
           onDelete={() =>
@@ -227,13 +198,7 @@ export function FishListTab() {
       <PageToolbar
         addLabel="Tambah Ikan"
         onAdd={() => {
-          setEditingFishId(null);
-          setFishForm({
-            species: speciesList.length > 0 ? speciesList[0].id : 0,
-            name: "",
-            weight: "",
-            notes: "",
-          });
+          setEditingFish(null);
           fishModal.openModal();
         }}
         extraActions={
@@ -287,78 +252,13 @@ export function FishListTab() {
         />
       </section>
 
-      <CrudModal
+      <FishModal
         open={fishModal.open}
-        title={editingFishId ? "Ubah Data Ikan" : "Tambah Ikan Individu"}
-        subtitle="Catat sampel ikan individu dengan spesifikasi berat."
+        editingFish={editingFish}
+        speciesList={speciesList}
         onClose={fishModal.closeModal}
         onSubmit={handleFishSubmit}
-        submitLabel={
-          submitting
-            ? "Menyimpan..."
-            : editingFishId
-              ? "Perbarui Data"
-              : "Simpan Data"
-        }
-      >
-        <SelectField
-          label="Spesies Ikan"
-          id="fi-species"
-          required
-          disabled={submitting || speciesList.length === 0}
-          value={fishForm.species}
-          onChange={(e) =>
-            setFishForm({ ...fishForm, species: Number(e.target.value) })
-          }
-          options={
-            speciesList.length === 0
-              ? [
-                  {
-                    value: "",
-                    label: "Belum ada spesies (tambahkan spesies dulu)",
-                  },
-                ]
-              : speciesList.map((sp) => ({
-                  value: sp.id,
-                  label: `${sp.name} ${sp.scientific_name ? `(${sp.scientific_name})` : ""}`,
-                }))
-          }
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <TextField
-            label="Nama / Label Sampel"
-            id="fi-name"
-            optional
-            disabled={submitting}
-            value={fishForm.name || ""}
-            onChange={(e) => setFishForm({ ...fishForm, name: e.target.value })}
-            placeholder="Contoh: Tuna Grade A"
-          />
-          <TextField
-            label="Berat (kg)"
-            id="fi-weight"
-            type="number"
-            step="0.01"
-            optional
-            disabled={submitting}
-            value={fishForm.weight ?? ""}
-            onChange={(e) =>
-              setFishForm({ ...fishForm, weight: e.target.value })
-            }
-            placeholder="Contoh: 15.5"
-          />
-        </div>
-        <TextareaField
-          label="Catatan Kualitas / Kondisi"
-          id="fi-notes"
-          optional
-          rows={2}
-          disabled={submitting}
-          value={fishForm.notes || ""}
-          onChange={(e) => setFishForm({ ...fishForm, notes: e.target.value })}
-          placeholder="Kualitas kesegaran, lokasi penangkapan khusus, dll..."
-        />
-      </CrudModal>
+      />
 
       <CsvImportModal
         open={importModal.open}
@@ -377,7 +277,6 @@ export function FishListTab() {
         title="Hapus Data Sampel Ikan"
         itemName={deleteTarget?.name}
         message="Apakah Anda yakin ingin menghapus data sampel ikan ini?"
-        loading={deleting}
         onClose={cancelDelete}
         onConfirm={handleConfirmDelete}
       />
