@@ -47,14 +47,14 @@ export function RegulatorSidebar() {
   return (
     <nav
       aria-label="Menu utama Regulator"
-      className="hidden lg:flex flex-col basis-62 shrink-0 surface-topbar border-r p-4"
+      className="hidden lg:flex flex-col basis-62 shrink-0 surface-topbar border-r p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto"
     >
-      <div className="px-2 pb-7">
+      <div className="px-2 pb-7 shrink-0">
         <Link to="/regulator" className="no-underline">
           <Logo />
         </Link>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <SidebarBody />
       </div>
     </nav>
