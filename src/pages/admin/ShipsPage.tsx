@@ -7,6 +7,8 @@ import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { ShipFormWizard } from "../../components/ShipFormWizard";
 import type { ShipFormData } from "../../components/shipFormTypes";
 import {
@@ -29,6 +31,12 @@ export function ShipsPage() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedShip,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Ship>();
 
   const fetchShips = async (query?: string) => {
     setLoading(true);
@@ -160,6 +168,7 @@ export function ShipsPage() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
@@ -197,8 +206,63 @@ export function ShipsPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data kapal terdaftar di server."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedShip?.name || "Detail Kapal"}
+        subtitle="Spesifikasi teknis, identitas registrasi, dan penugasan kapal."
+        badge={
+          selectedShip ? (
+            <StatusChip
+              label={selectedShip.active ? "Aktif Beroperasi" : "Nonaktif"}
+              bg={selectedShip.active ? undefined : "#EEF1F6"}
+              color={selectedShip.active ? undefined : "#4A5872"}
+            />
+          ) : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Nomor Registrasi",
+            value: selectedShip?.registration_number,
+          },
+          {
+            label: "Gross Tonnage (GT)",
+            value: `${selectedShip?.gross_tonnage ?? "—"} GT`,
+          },
+          {
+            label: "Pemilik (Owner)",
+            value:
+              selectedShip?.owner_name ||
+              (selectedShip?.owner ? `#${selectedShip?.owner}` : "—"),
+          },
+          {
+            label: "Nahkoda (Captain)",
+            value:
+              selectedShip?.captain_name ||
+              (selectedShip?.captain ? `#${selectedShip?.captain}` : "—"),
+          },
+          {
+            label: "Dimensi Kapal (P x L)",
+            value:
+              selectedShip?.length && selectedShip?.width
+                ? `${selectedShip.length} m x ${selectedShip.width} m`
+                : "—",
+          },
+          {
+            label: "Tahun Pembuatan",
+            value: selectedShip?.year_built || "—",
+          },
+          {
+            label: "Pelabuhan Pangkalan",
+            value: selectedShip?.home_port || "—",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CrudModal
         open={open}

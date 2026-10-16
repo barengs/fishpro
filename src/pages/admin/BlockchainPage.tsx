@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "../../components/PageHeader";
 import { DataTable, type Column } from "../../components/DataTable";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { StatusChip } from "../../components/StatusChip";
 import {
   blockchainService,
@@ -16,6 +18,18 @@ export function BlockchainPage() {
   const [loading, setLoading] = useState(true);
   const [statusValid, setStatusValid] = useState<boolean | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const {
+    selected: selectedBlock,
+    open: isBlockDetailOpen,
+    openDetail: openBlockDetail,
+    closeDetail: closeBlockDetail,
+  } = useDetailModal<BlockchainBlock>();
+  const {
+    selected: selectedTx,
+    open: isTxDetailOpen,
+    openDetail: openTxDetail,
+    closeDetail: closeTxDetail,
+  } = useDetailModal<FishCatchTransaction>();
 
   useEffect(() => {
     async function loadBlockchainData() {
@@ -199,6 +213,7 @@ export function BlockchainPage() {
             rowKey={(r) => String(r.index)}
             loading={loading}
             emptyText="Belum ada blok tercatat di jaringan blockchain."
+            onRowClick={openBlockDetail}
           />
         </section>
 
@@ -215,9 +230,115 @@ export function BlockchainPage() {
             rowKey={(r) => String(r.id)}
             loading={loading}
             emptyText="Belum ada transaksi tangkapan tersegel di blockchain."
+            onRowClick={openTxDetail}
           />
         </section>
       </div>
+
+      <DetailModal
+        open={isBlockDetailOpen}
+        title={
+          selectedBlock
+            ? `Blok Blockchain #${selectedBlock.index}`
+            : "Detail Blok Blockchain"
+        }
+        subtitle="Hash SHA-256, nonce, dan tautan rantai blok yang tidak dapat dimanipulasi."
+        badge={
+          <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            Index: #{selectedBlock?.index}
+          </span>
+        }
+        onClose={closeBlockDetail}
+        fields={[
+          {
+            label: "Hash Blok (SHA-256)",
+            value: (
+              <span className="font-mono font-bold text-fco-blue break-all">
+                {selectedBlock?.hash}
+              </span>
+            ),
+            fullWidth: true,
+          },
+          {
+            label: "Hash Blok Sebelumnya",
+            value: (
+              <span className="font-mono font-medium text-strong break-all">
+                {selectedBlock?.previous_hash || "Genesis Block"}
+              </span>
+            ),
+            fullWidth: true,
+          },
+          {
+            label: "Nonce Penambangan",
+            value: selectedBlock?.nonce ?? "—",
+          },
+          {
+            label: "Waktu Penambangan",
+            value: selectedBlock?.timestamp
+              ? new Date(selectedBlock.timestamp).toLocaleString("id-ID")
+              : "—",
+          },
+          {
+            label: "Data Blok",
+            value:
+              selectedBlock?.data || "Tidak ada payload tambahan di blok ini.",
+            fullWidth: true,
+          },
+        ]}
+      />
+
+      <DetailModal
+        open={isTxDetailOpen}
+        title={
+          selectedTx
+            ? `Transaksi: ${selectedTx.ship_registration_number}`
+            : "Detail Transaksi Blockchain"
+        }
+        subtitle="Laporan tangkapan ikan yang tersegel permanen dalam rantai blok."
+        badge={<StatusChip label="Tersegel SHA-256" />}
+        onClose={closeTxDetail}
+        fields={[
+          {
+            label: "Kapal (Nomor Registrasi)",
+            value: (
+              <span className="font-mono font-bold text-strong">
+                {selectedTx?.ship_registration_number}
+              </span>
+            ),
+          },
+          {
+            label: "Kode Area (WPP)",
+            value: selectedTx?.fishing_area_code || "—",
+          },
+          {
+            label: "Nama Ikan (Spesies)",
+            value: selectedTx?.fish_name,
+          },
+          {
+            label: "Jumlah Tangkapan",
+            value: selectedTx
+              ? `${selectedTx.quantity} ${selectedTx.unit}`
+              : "—",
+          },
+          {
+            label: "ID Blok",
+            value: (
+              <span className="font-mono font-bold text-fco-blue">
+                #{selectedTx?.block_id || selectedTx?.block_data?.index || "—"}
+              </span>
+            ),
+          },
+          {
+            label: "Hash Transaksi",
+            value: (
+              <span className="font-mono text-xs font-medium text-strong break-all">
+                {selectedTx?.block_data?.hash || "—"}
+              </span>
+            ),
+            fullWidth: true,
+          },
+        ]}
+      />
     </div>
   );
 }

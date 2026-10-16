@@ -5,6 +5,8 @@ import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
+import { DetailModal } from "../../../components/DetailModal";
+import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
 import { speciesSchema } from "../../../utils/schemas";
@@ -30,6 +32,12 @@ export function SpeciesListTab() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedSpecies,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<FishSpecies>();
 
   const speciesModal = useCrudModal();
   const importModal = useCrudModal();
@@ -139,7 +147,12 @@ export function SpeciesListTab() {
       header: "Deskripsi / Karakteristik",
       flex: 4,
       render: (r) => (
-        <span className="text-sm text-soft">{r.description || "—"}</span>
+        <span
+          className="text-sm text-soft line-clamp-2 max-w-md block"
+          title={r.description || ""}
+        >
+          {r.description || "—"}
+        </span>
       ),
     },
     {
@@ -149,6 +162,7 @@ export function SpeciesListTab() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onEdit={() => {
             setEditingSpeciesId(r.id);
             setSpeciesForm({
@@ -224,8 +238,44 @@ export function SpeciesListTab() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data spesies ikan terdaftar di server."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedSpecies?.name || "Detail Spesies Ikan"}
+        subtitle="Data taksonomi dan deskripsi spesies dalam katalog resmi nasional."
+        badge={
+          selectedSpecies?.scientific_name ? (
+            <span className="italic text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+              {selectedSpecies.scientific_name}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Nama Lokal Nusantara",
+            value: selectedSpecies?.name,
+          },
+          {
+            label: "Nama Ilmiah (Taksonomi)",
+            value: (
+              <span className="italic font-semibold text-strong">
+                {selectedSpecies?.scientific_name || "Belum terdaftar"}
+              </span>
+            ),
+          },
+          {
+            label: "Deskripsi Morfologi & Habitat",
+            value:
+              selectedSpecies?.description ||
+              "Tidak ada deskripsi karakteristik spesies.",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CrudModal
         open={speciesModal.open}

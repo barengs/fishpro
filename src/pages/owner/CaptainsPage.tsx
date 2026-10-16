@@ -4,6 +4,8 @@ import { DataTable, type Column } from "../../components/DataTable";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { CrudActions } from "../../components/FormField";
 import { AlertBanner } from "../../components/ui";
 import { CaptainModal } from "../../components/modals/CaptainModal";
@@ -28,6 +30,12 @@ export function CaptainsPage() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedCaptain,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Captain>();
 
   const captainModal = useCrudModal();
 
@@ -143,6 +151,7 @@ export function CaptainsPage() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onEdit={() => handleOpenEdit(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.full_name })}
         />
@@ -180,8 +189,63 @@ export function CaptainsPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada nahkoda ditunjuk dalam armada Anda."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedCaptain?.full_name || "Detail Nahkoda Armada"}
+        subtitle="Profil nahkoda, nomor lisensi resmi, dan kapal yang dikendalikan."
+        badge={
+          selectedCaptain ? (
+            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+              Lisensi: {selectedCaptain.license_number}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        actions={
+          selectedCaptain && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedCaptain;
+                closeDetail();
+                handleOpenEdit(target);
+              }}
+              className="h-10 px-4 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
+        fields={[
+          {
+            label: "Nama Lengkap",
+            value: selectedCaptain?.full_name,
+          },
+          {
+            label: "Pengalaman Berlayar",
+            value: selectedCaptain?.years_of_experience
+              ? `${selectedCaptain.years_of_experience} Tahun`
+              : "—",
+          },
+          {
+            label: "Nomor Telepon",
+            value:
+              selectedCaptain?.phone || selectedCaptain?.contact_info || "—",
+          },
+          {
+            label: "Kapal yang Dikelola",
+            value:
+              (selectedCaptain?.ships || []).length > 0
+                ? (selectedCaptain?.ships || []).map((s) => s.name).join(", ")
+                : "Belum ditugaskan ke kapal armada",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CaptainModal
         open={captainModal.open}

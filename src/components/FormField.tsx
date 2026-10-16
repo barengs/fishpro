@@ -116,19 +116,33 @@ export function SegmentedControl<T extends string>({
 }
 
 export function CrudActions({
+  onDetail,
   onEdit,
   onDelete,
 }: {
+  onDetail?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
   return (
-    <div className="flex gap-2 justify-end">
+    <div
+      className="flex gap-1.5 justify-end"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {onDetail && (
+        <button
+          type="button"
+          onClick={onDetail}
+          className="px-2.5 py-1.5 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong text-xs font-semibold cursor-pointer transition-colors"
+        >
+          Detail
+        </button>
+      )}
       {onEdit && (
         <button
           type="button"
           onClick={onEdit}
-          className="px-3 py-1.5 rounded-lg border border-fco-border bg-white hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors"
+          className="px-2.5 py-1.5 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors"
         >
           Ubah
         </button>
@@ -137,7 +151,7 @@ export function CrudActions({
         <button
           type="button"
           onClick={onDelete}
-          className="px-3 py-1.5 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-semibold cursor-pointer transition-colors"
+          className="px-2.5 py-1.5 rounded-lg border border-red-200 dark:border-red-500/20 surface-card hover:bg-red-50 dark:hover:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold cursor-pointer transition-colors"
         >
           Hapus
         </button>

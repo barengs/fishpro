@@ -8,6 +8,8 @@ import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { CatchReportWizard } from "../../components/CatchReportWizard";
 import type { CatchReportFormData } from "../../components/catchReportTypes";
 import { catchesService, type FishCatch } from "../../services/catches";
@@ -31,6 +33,12 @@ export function CatchesPage() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name?: string }>();
+  const {
+    selected: selectedCatch,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<FishCatch>();
 
   const fetchCatches = useCallback(
     async (query?: string) => {
@@ -212,6 +220,7 @@ export function CatchesPage() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onDelete={() =>
             requestDelete({
               id: r.id,
@@ -254,8 +263,89 @@ export function CatchesPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data laporan penangkapan ikan di server."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={
+          selectedCatch
+            ? `Laporan Tangkapan: ${selectedCatch.ship_name || `#${selectedCatch.ship}`}`
+            : "Detail Laporan Tangkapan"
+        }
+        subtitle="Data hasil tangkapan ikan, koordinat penangkapan GPS, dan hitungan PNBP."
+        badge={
+          selectedCatch ? <StatusChip label="Tercatat Resmi" /> : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Kapal Penangkap",
+            value:
+              selectedCatch?.ship_name ||
+              (selectedCatch?.ship ? `#${selectedCatch.ship}` : "—"),
+          },
+          {
+            label: "Tanggal Penangkapan",
+            value: selectedCatch?.catch_date || "—",
+          },
+          {
+            label: "Jenis Tangkapan",
+            value: selectedCatch?.catch_type?.toUpperCase() || "PELAGIC",
+          },
+          {
+            label: "Koordinat GPS",
+            value: selectedCatch
+              ? `${selectedCatch.location_latitude}, ${selectedCatch.location_longitude}`
+              : "—",
+          },
+          {
+            label: "Rincian Hasil Tangkapan & Spesies",
+            fullWidth: true,
+            value: (
+              <div className="flex flex-col gap-2 pt-1">
+                {(selectedCatch?.catch_details || []).length === 0 ? (
+                  <span className="text-soft text-xs">
+                    Belum ada rincian spesies.
+                  </span>
+                ) : (
+                  (selectedCatch?.catch_details || []).map((d, i) => (
+                    <div
+                      key={i}
+                      className="p-2.5 rounded-lg surface-card border dark:border-fco-border-dark flex items-center justify-between text-xs"
+                    >
+                      <div>
+                        <div className="font-bold text-strong">
+                          {d.fish_species_name || `Spesies #${d.fish_species}`}
+                        </div>
+                        <div className="text-soft text-2xs mt-0.5">
+                          Wilayah WPP: {d.wpp || "—"}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-strong">
+                          {d.quantity} {d.unit}
+                        </div>
+                        {d.pnbp && (
+                          <div className="text-fco-blue font-mono font-medium text-2xs">
+                            PNBP: Rp {Number(d.pnbp).toLocaleString("id-ID")}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            ),
+          },
+          {
+            label: "Catatan Lokasi",
+            value: selectedCatch?.description || "Tidak ada catatan tambahan.",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CrudModal
         open={open}

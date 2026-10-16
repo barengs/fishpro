@@ -5,6 +5,8 @@ import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
+import { DetailModal } from "../../../components/DetailModal";
+import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
 import { roleSchema } from "../../../utils/schemas";
@@ -28,6 +30,12 @@ export function RolesTab() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedRole,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Role>();
 
   const roleModal = useCrudModal();
   const [rForm, setRForm] = useState<CreateRolePayload>({
@@ -147,6 +155,7 @@ export function RolesTab() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onEdit={() => {
             setEditingRoleId(r.id);
             const existingPerms =
@@ -198,8 +207,48 @@ export function RolesTab() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data peran terdaftar di server."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedRole?.name || "Detail Peran Pengguna"}
+        subtitle="Definisi master peran, deskripsi wewenang, dan tingkat aksesnya."
+        badge={
+          selectedRole ? (
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                selectedRole.name.toLowerCase() === "admin"
+                  ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
+                  : "bg-blue-500/10 text-fco-blue dark:text-blue-400"
+              }`}
+            >
+              {selectedRole.name.toLowerCase() === "admin"
+                ? "Akses Penuh (Super Admin)"
+                : "Akses Menu Terbatas"}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Nama Peran (Role Key)",
+            value: (
+              <span className="font-mono font-bold text-strong">
+                {selectedRole?.name}
+              </span>
+            ),
+          },
+          {
+            label: "Deskripsi Wewenang",
+            value:
+              selectedRole?.description ||
+              "Tidak ada deskripsi wewenang peran.",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CrudModal
         open={roleModal.open}

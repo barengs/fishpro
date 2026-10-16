@@ -8,6 +8,8 @@ import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { ShipFormWizard } from "../../components/ShipFormWizard";
 import { useToast } from "../../components/toast";
 import type { ShipFormData } from "../../components/shipFormTypes";
@@ -32,6 +34,12 @@ export function FleetPage() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedShip,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Ship>();
 
   const currentUser = authService.getStoredUser();
   const currentOwnerId = currentUser?.id;
@@ -179,6 +187,7 @@ export function FleetPage() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
@@ -210,8 +219,77 @@ export function FleetPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada kapal terdaftar dalam armada Anda."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedShip?.name || "Detail Kapal Armada"}
+        subtitle="Data registrasi, spesifikasi kapal, dan kesiapan operasi armada Anda."
+        badge={
+          selectedShip ? (
+            <StatusChip
+              label={
+                !selectedShip.active
+                  ? "Nonaktif"
+                  : !selectedShip.captain
+                    ? "Tanpa Nahkoda"
+                    : "Siap Operasi"
+              }
+              bg={
+                !selectedShip.active || !selectedShip.captain
+                  ? "#FFF1E0"
+                  : undefined
+              }
+              color={
+                !selectedShip.active || !selectedShip.captain
+                  ? "#B54708"
+                  : undefined
+              }
+            />
+          ) : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Nomor Registrasi (SIPI)",
+            value: (
+              <span className="font-mono font-bold text-fco-blue">
+                {selectedShip?.registration_number}
+              </span>
+            ),
+          },
+          {
+            label: "Nahkoda Bertugas",
+            value:
+              selectedShip?.captain_name ||
+              (selectedShip?.captain
+                ? `#${selectedShip?.captain}`
+                : "Belum ditugaskan"),
+          },
+          {
+            label: "Gross Tonnage (GT)",
+            value: `${selectedShip?.gross_tonnage ?? "—"} GT`,
+          },
+          {
+            label: "Dimensi Kapal",
+            value:
+              selectedShip?.length && selectedShip?.width
+                ? `${selectedShip.length} m x ${selectedShip.width} m`
+                : "—",
+          },
+          {
+            label: "Sisa Kuota Tahunan",
+            value:
+              selectedShip?.current_year_quota &&
+              typeof selectedShip.current_year_quota === "object"
+                ? `${Number(selectedShip.current_year_quota.remaining_quota).toLocaleString("id-ID")} kg (dari ${Number(selectedShip.current_year_quota.total_quota).toLocaleString("id-ID")} kg)`
+                : "Tidak ada data kuota aktif",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <CrudModal
         open={open}

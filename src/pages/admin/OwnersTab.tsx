@@ -5,6 +5,8 @@ import { CrudActions } from "../../components/FormField";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { AlertBanner } from "../../components/ui";
 import { OwnerModal } from "../../components/modals/OwnerModal";
 import {
@@ -27,6 +29,12 @@ export function OwnersTab() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedOwner,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Owner>();
 
   const ownerModal = useCrudModal();
 
@@ -140,6 +148,7 @@ export function OwnersTab() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onEdit={() => handleOpenEdit(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.full_name })}
         />
@@ -175,8 +184,74 @@ export function OwnersTab() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data pemilik terdaftar di server."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedOwner?.full_name || "Detail Pemilik Kapal"}
+        subtitle="Identitas legalitas pemilik kapal atau perusahaan perikanan."
+        badge={
+          selectedOwner ? (
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+              {selectedOwner.owner_type === "company"
+                ? "Perusahaan (PT/CV)"
+                : "Perorangan"}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        actions={
+          selectedOwner && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedOwner;
+                closeDetail();
+                handleOpenEdit(target);
+              }}
+              className="h-10 px-4 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
+        fields={[
+          {
+            label: "Nama Lengkap / Perusahaan",
+            value: selectedOwner?.full_name,
+          },
+          {
+            label: "Tipe Kepemilikan",
+            value:
+              selectedOwner?.owner_type === "company"
+                ? "Perusahaan Resmi"
+                : "Perorangan / Pribadi",
+          },
+          {
+            label: "Email",
+            value: selectedOwner?.email || "—",
+          },
+          {
+            label: "Nomor Telepon",
+            value: selectedOwner?.phone || "—",
+          },
+          {
+            label: "Alamat Kantor / Domisili",
+            value: selectedOwner?.address || "Tidak ada alamat terdaftar.",
+            fullWidth: true,
+          },
+          {
+            label: "Armada Kapal Terdaftar",
+            value:
+              (selectedOwner?.ships || []).length > 0
+                ? `${selectedOwner?.ships?.length} Kapal Terdaftar`
+                : "Belum memiliki kapal",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <OwnerModal
         open={ownerModal.open}

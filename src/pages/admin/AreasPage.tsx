@@ -5,6 +5,7 @@ import { CrudActions } from "../../components/FormField";
 import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
 import { AlertBanner } from "../../components/ui";
 import { AreaModal } from "../../components/modals/AreaModal";
 import { TemplateDropdown } from "../../components/TemplateDropdown";
@@ -21,6 +22,8 @@ export function AreasPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [editingArea, setEditingArea] = useState<FishingArea | null>(null);
+  const [selectedDetailArea, setSelectedDetailArea] =
+    useState<FishingArea | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -124,7 +127,12 @@ export function AreasPage() {
       header: "Deskripsi Cakupan",
       flex: 4,
       render: (r) => (
-        <span className="text-sm text-soft">{r.deskripsi || "—"}</span>
+        <span
+          className="text-sm text-soft line-clamp-1 max-w-md block"
+          title={r.deskripsi || ""}
+        >
+          {r.deskripsi || "—"}
+        </span>
       ),
     },
     {
@@ -134,6 +142,7 @@ export function AreasPage() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => setSelectedDetailArea(r)}
           onEdit={() => handleOpenEdit(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.nama })}
         />
@@ -204,8 +213,59 @@ export function AreasPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada wilayah penangkapan terdaftar di server."
+          onRowClick={(r) => setSelectedDetailArea(r)}
         />
       </section>
+
+      <DetailModal
+        open={Boolean(selectedDetailArea)}
+        title={selectedDetailArea?.nama || "Detail Wilayah (WPP)"}
+        subtitle="Rincian informasi Wilayah Pengelolaan Perikanan Negara Republik Indonesia."
+        badge={
+          selectedDetailArea ? (
+            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+              Kode: {selectedDetailArea.code}
+            </span>
+          ) : undefined
+        }
+        onClose={() => setSelectedDetailArea(null)}
+        actions={
+          selectedDetailArea && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedDetailArea;
+                setSelectedDetailArea(null);
+                handleOpenEdit(target);
+              }}
+              className="h-10 px-4 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
+        fields={[
+          {
+            label: "Nama Wilayah Resmi",
+            value: selectedDetailArea?.nama,
+          },
+          {
+            label: "Kode Singkat / Wilayah",
+            value: (
+              <span className="font-mono font-bold text-fco-blue">
+                {selectedDetailArea?.code}
+              </span>
+            ),
+          },
+          {
+            label: "Deskripsi Lengkap Cakupan Geografis",
+            value:
+              selectedDetailArea?.deskripsi ||
+              "Tidak ada deskripsi cakupan wilayah.",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <AreaModal
         open={areaModal.open}

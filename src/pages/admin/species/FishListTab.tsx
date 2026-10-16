@@ -5,6 +5,8 @@ import { CrudActions } from "../../../components/FormField";
 import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
 import { useConfirmDelete } from "../../../components/useConfirmDelete";
+import { DetailModal } from "../../../components/DetailModal";
+import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner } from "../../../components/ui";
 import { CsvImportModal } from "./CsvImportModal";
@@ -30,6 +32,12 @@ export function FishListTab() {
     requestDelete,
     cancelDelete,
   } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedFish,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Fish>();
 
   const fishModal = useCrudModal();
   const importModal = useCrudModal();
@@ -178,6 +186,7 @@ export function FishListTab() {
       align: "right",
       render: (r) => (
         <CrudActions
+          onDetail={() => openDetail(r)}
           onEdit={() => {
             setEditingFish(r);
             fishModal.openModal();
@@ -249,8 +258,42 @@ export function FishListTab() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data sampel ikan individu."
+          onRowClick={openDetail}
         />
       </section>
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedFish?.name || `Sampel Ikan #${selectedFish?.id}`}
+        subtitle="Data spesimen ikan individu, berat, dan kondisi kualitasnya."
+        badge={
+          selectedFish ? (
+            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+              Spesies: {selectedFish.species_name || `#${selectedFish.species}`}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        fields={[
+          {
+            label: "Nama / Label Sampel",
+            value: selectedFish?.name || `Sampel #${selectedFish?.id}`,
+          },
+          {
+            label: "Berat Ikan",
+            value: selectedFish?.weight
+              ? `${Number(selectedFish.weight).toLocaleString("id-ID")} kg`
+              : "—",
+          },
+          {
+            label: "Catatan Kualitas & Kondisi",
+            value:
+              selectedFish?.notes ||
+              "Tidak ada catatan kualitas pada sampel ini.",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <FishModal
         open={fishModal.open}

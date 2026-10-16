@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
 import { StatusChip } from "../../components/StatusChip";
 import { ProgressBar } from "../../components/ProgressBar";
 import { AlertBanner } from "../../components/ui";
@@ -19,6 +21,12 @@ export function QuotaAuditPage() {
   const [search, setSearch] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const {
+    selected: selectedAuditShip,
+    open: isAuditDetailOpen,
+    openDetail: openAuditDetail,
+    closeDetail: closeAuditDetail,
+  } = useDetailModal<Ship>();
 
   // Manual Quota Override Modal
   const [isOverrideOpen, setIsOverrideOpen] = useState(false);
@@ -235,8 +243,73 @@ export function QuotaAuditPage() {
           rowKey={(r) => String(r.id)}
           loading={loading}
           emptyText="Belum ada data kapal terdaftar di server."
+          onRowClick={openAuditDetail}
         />
       </section>
+
+      <DetailModal
+        open={isAuditDetailOpen}
+        title={
+          selectedAuditShip
+            ? `Audit Kuota: ${selectedAuditShip.name}`
+            : "Detail Audit Kuota Kapal"
+        }
+        subtitle="Realisasi penangkapan, sisa kuota tahunan, dan status kepatuhan resmi."
+        badge={
+          selectedAuditShip
+            ? (() => {
+                const q = selectedAuditShip.current_year_quota;
+                const pct =
+                  typeof q === "object" && q ? q.quota_percentage : 70;
+                return pct < 15 ? (
+                  <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
+                ) : (
+                  <StatusChip label="Aman" />
+                );
+              })()
+            : undefined
+        }
+        onClose={closeAuditDetail}
+        fields={[
+          {
+            label: "Nomor Registrasi",
+            value: (
+              <span className="font-mono font-bold text-fco-blue">
+                {selectedAuditShip?.registration_number}
+              </span>
+            ),
+          },
+          {
+            label: "Pemilik Kapal",
+            value: selectedAuditShip?.owner_name || "—",
+          },
+          {
+            label: "Kuota Total Tahunan",
+            value:
+              selectedAuditShip?.current_year_quota &&
+              typeof selectedAuditShip.current_year_quota === "object"
+                ? `${Number(selectedAuditShip.current_year_quota.total_quota).toLocaleString("id-ID")} kg`
+                : "—",
+          },
+          {
+            label: "Realisasi Tangkapan",
+            value:
+              selectedAuditShip?.current_year_quota &&
+              typeof selectedAuditShip.current_year_quota === "object"
+                ? `${Number(selectedAuditShip.current_year_quota.used_quota).toLocaleString("id-ID")} kg (${selectedAuditShip.current_year_quota.quota_percentage}%)`
+                : "—",
+          },
+          {
+            label: "Sisa Kuota Resmi",
+            value:
+              selectedAuditShip?.current_year_quota &&
+              typeof selectedAuditShip.current_year_quota === "object"
+                ? `${Number(selectedAuditShip.current_year_quota.remaining_quota).toLocaleString("id-ID")} kg`
+                : "—",
+            fullWidth: true,
+          },
+        ]}
+      />
 
       <ManualQuotaModal
         isOpen={isOverrideOpen}

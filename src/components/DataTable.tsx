@@ -14,6 +14,7 @@ interface DataTableProps<T> {
   rowKey: (row: T) => string;
   emptyText?: string;
   loading?: boolean;
+  onRowClick?: (row: T) => void;
 }
 
 export function DataTable<T>({
@@ -22,11 +23,12 @@ export function DataTable<T>({
   rowKey,
   emptyText = "Belum ada data.",
   loading = false,
+  onRowClick,
 }: DataTableProps<T>) {
   return (
     <div className="overflow-x-auto">
       <div className="min-w-180">
-        <div className="flex items-center py-2.5 text-xs font-semibold text-soft">
+        <div className="flex items-center py-2.5 text-xs font-semibold text-soft px-2">
           {columns.map((c) => (
             <div
               key={c.key}
@@ -58,7 +60,12 @@ export function DataTable<T>({
           rows.map((row) => (
             <div
               key={rowKey(row)}
-              className="flex items-center py-4 border-t border-fco-border-subtle"
+              onClick={() => onRowClick?.(row)}
+              className={`flex items-center py-3.5 px-2 rounded-xl border-t border-fco-border-subtle transition-colors ${
+                onRowClick
+                  ? "cursor-pointer hover:bg-fco-blue-light/30 dark:hover:bg-fco-blue/10"
+                  : ""
+              }`}
             >
               {columns.map((c) => (
                 <div
