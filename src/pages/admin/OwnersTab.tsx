@@ -108,8 +108,10 @@ export function OwnersTab() {
       header: "Nama / Tipe",
       flex: 3,
       render: (r) => (
-        <div>
-          <div className="text-sm font-semibold">{r.full_name}</div>
+        <div className="min-w-0">
+          <div className="text-sm font-semibold truncate" title={r.full_name}>
+            {r.full_name}
+          </div>
           <div className="text-xs text-soft">
             {r.owner_type === "company" ? "Perusahaan" : "Perorangan"}
             {r.ships && r.ships.length > 0 && ` · ${r.ships.length} Kapal`}
@@ -121,14 +123,26 @@ export function OwnersTab() {
       key: "email",
       header: "Email",
       flex: 2,
-      render: (r) => <span className="text-sm">{r.email || "—"}</span>,
+      render: (r) => (
+        <span
+          className="text-sm truncate block max-w-full"
+          title={r.email || ""}
+        >
+          {r.email || "—"}
+        </span>
+      ),
     },
     {
       key: "phone",
       header: "Telepon",
       flex: 2,
       render: (r) => (
-        <span className="text-sm tabular-nums">{r.phone || "—"}</span>
+        <span
+          className="text-sm tabular-nums truncate block max-w-full"
+          title={r.phone || ""}
+        >
+          {r.phone || "—"}
+        </span>
       ),
     },
     {
@@ -136,7 +150,10 @@ export function OwnersTab() {
       header: "Alamat",
       flex: 2,
       render: (r) => (
-        <span className="text-xs text-soft truncate max-w-40 block">
+        <span
+          className="text-xs text-soft truncate block max-w-full"
+          title={r.address || ""}
+        >
           {r.address || "—"}
         </span>
       ),
