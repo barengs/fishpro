@@ -75,8 +75,10 @@ export function OwnersTab() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await ownersService.delete(deleteTarget.id);
+      await ownersService.delete(targetId);
+      setRows((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Pemilik "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

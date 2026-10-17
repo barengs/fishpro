@@ -169,6 +169,11 @@ export async function apiClient<T = unknown>(
       headers,
     });
 
+    // Mutations invalidate relevant GET cache immediately
+    if (!isGet) {
+      clearApiCache();
+    }
+
     if (response.status === 204) {
       return {} as T;
     }
@@ -185,11 +190,6 @@ export async function apiClient<T = unknown>(
     // Cache successful GET requests
     if (isGet && !options.bypassCache && data !== null) {
       apiCache.set(cacheKey, { data, timestamp: Date.now() });
-    }
-
-    // Mutations invalidate relevant GET cache
-    if (!isGet) {
-      clearApiCache();
     }
 
     return data as T;

@@ -104,8 +104,10 @@ export function SpeciesListTab() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await fishSpeciesService.delete(deleteTarget.id);
+      await fishSpeciesService.delete(targetId);
+      setSpeciesList((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Spesies "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

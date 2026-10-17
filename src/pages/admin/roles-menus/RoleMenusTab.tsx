@@ -97,8 +97,10 @@ export function RoleMenusTab() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await roleMenusService.delete(deleteTarget.id);
+      await roleMenusService.delete(targetId);
+      setRoleMenus((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg("Relasi menu berhasil dihapus.");
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

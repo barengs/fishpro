@@ -72,8 +72,10 @@ export function AreasPage() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await regionsService.delete(deleteTarget.id);
+      await regionsService.delete(targetId);
+      setRows((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Wilayah "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

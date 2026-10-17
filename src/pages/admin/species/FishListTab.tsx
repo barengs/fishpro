@@ -117,8 +117,10 @@ export function FishListTab() {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    const targetId = deleteTarget.id;
     try {
-      await fishService.delete(deleteTarget.id);
+      await fishService.delete(targetId);
+      setFishList((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Data ikan ${deleteTarget.name} berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

@@ -77,8 +77,10 @@ export function MenusTab() {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    const targetId = deleteTarget.id;
     try {
-      await menusService.delete(deleteTarget.id);
+      await menusService.delete(targetId);
+      setMenus((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Menu "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

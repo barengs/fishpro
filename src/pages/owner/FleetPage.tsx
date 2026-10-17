@@ -80,8 +80,10 @@ export function FleetPage() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await shipsService.delete(deleteTarget.id);
+      await shipsService.delete(targetId);
+      setRows((prev) => prev.filter((r) => r.id !== targetId));
       toast.success(`Kapal "${deleteTarget.name}" berhasil dihapus.`);
       cancelDelete();
       fetchFleet(search);

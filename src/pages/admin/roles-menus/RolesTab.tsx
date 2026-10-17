@@ -101,8 +101,10 @@ export function RolesTab() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await rolesService.delete(deleteTarget.id);
+      await rolesService.delete(targetId);
+      setRoles((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg(`Peran "${deleteTarget.name}" berhasil dihapus.`);
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();

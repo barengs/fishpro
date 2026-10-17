@@ -79,8 +79,10 @@ export function CatchesPage() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
+    const targetId = deleteTarget.id;
     try {
-      await catchesService.delete(deleteTarget.id);
+      await catchesService.delete(targetId);
+      setRows((prev) => prev.filter((r) => r.id !== targetId));
       setToastMsg("Laporan tangkapan berhasil dihapus.");
       setTimeout(() => setToastMsg(null), 3000);
       cancelDelete();
