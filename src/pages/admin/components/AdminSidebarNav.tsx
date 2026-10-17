@@ -31,7 +31,7 @@ const navItems = [
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
   return (
-    <nav className="flex flex-col gap-1 py-1" aria-label="Navigasi Admin">
+    <nav className="flex flex-col gap-1 py-1 pb-4" aria-label="Navigasi Admin">
       {navItems.map((item) => (
         <NavLink
           key={item.to}

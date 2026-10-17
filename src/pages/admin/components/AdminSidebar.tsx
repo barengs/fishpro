@@ -39,35 +39,37 @@ export function AdminLayout() {
       {/* 1. Desktop Left Sidebar (Deep Navy Oceanic Blue) */}
       <aside
         aria-label="Menu Navigasi Admin"
-        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 justify-between shrink-0 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
-          sidebarOpen ? "w-64 border-r border-[#1a3875]" : "w-0 border-r-0"
+        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out ${
+          sidebarOpen
+            ? "w-64 border-r border-[#1a3875]"
+            : "w-0 border-r-0 overflow-hidden"
         }`}
       >
-        <div className="min-w-64">
+        <div className="w-64 flex flex-col h-full shrink-0">
           {/* Brand Header */}
-          <div className="h-16 px-5 border-b border-white/10 flex items-center">
+          <div className="h-16 px-5 border-b border-white/10 flex items-center shrink-0">
             <Link to="/admin" className="no-underline">
               <Logo variant="dark" size={28} />
             </Link>
           </div>
 
           {/* Navigation Links */}
-          <div className="p-3 overflow-y-auto max-h-[calc(100vh-8.5rem)]">
+          <div className="flex-1 overflow-y-auto p-3 min-h-0">
             <AdminSidebarNav />
           </div>
-        </div>
 
-        {/* Bottom-left: Clean System Status Indicator */}
-        <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 min-w-64">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-semibold text-white text-2xs uppercase tracking-wider">
-              Sistem KKP
+          {/* Bottom-left: Clean System Status Indicator */}
+          <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-semibold text-white text-2xs uppercase tracking-wider">
+                Sistem KKP
+              </span>
+            </div>
+            <span className="text-2xs font-mono text-blue-200 px-1.5 py-0.5 rounded bg-white/10 border border-white/10">
+              v1.0.0
             </span>
           </div>
-          <span className="text-2xs font-mono text-blue-200 px-1.5 py-0.5 rounded bg-white/10 border border-white/10">
-            v1.0.0
-          </span>
         </div>
       </aside>
 
@@ -90,29 +92,28 @@ export function AdminLayout() {
         <div
           role="dialog"
           aria-label="Menu navigasi mobile"
-          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col justify-between shadow-2xl z-10 transition-transform duration-300 ease-in-out ${
+          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div>
-            <div className="h-16 px-4 border-b border-white/10 flex items-center justify-between">
-              <Link to="/admin" className="no-underline">
-                <Logo variant="dark" size={28} />
-              </Link>
-              <button
-                type="button"
-                onClick={() => setMobileOpen(false)}
-                className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white/80 hover:text-white border-none cursor-pointer transition-colors"
-              >
-                <X size={18} aria-hidden="true" />
-              </button>
-            </div>
-            <div className="p-3 overflow-y-auto max-h-[calc(100vh-8.5rem)]">
-              <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
-            </div>
+          <div className="h-16 px-4 border-b border-white/10 flex items-center justify-between shrink-0">
+            <Link to="/admin" className="no-underline">
+              <Logo variant="dark" size={28} />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white/80 hover:text-white border-none cursor-pointer transition-colors"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
           </div>
 
-          <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80">
+          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+            <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
+          </div>
+
+          <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 shrink-0">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="font-semibold text-white text-2xs uppercase tracking-wider">

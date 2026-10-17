@@ -43,58 +43,57 @@ export function DetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop — true scrim, no glow */}
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity"
+        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
-      {/* Sheet Dialog — refined rect, no pill, controlled width */}
+      {/* Modal Dialog */}
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-140 surface-card border dark:border-fco-border-dark rounded-2xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[88vh]"
+        className="relative w-full max-w-130 surface-card border dark:border-fco-border-dark rounded-xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]"
       >
-        {/* Header: editorial rhythm, generous whitespace */}
-        <div className="px-6 sm:px-7 pt-6 sm:pt-7 pb-5 border-b border-fco-border-subtle flex items-start justify-between gap-5 shrink-0">
+        {/* Clean, Focused Header */}
+        <div className="px-6 py-4 border-b border-fco-border-subtle flex items-center justify-between gap-4 shrink-0">
           <div className="min-w-0 flex-1">
-            {subtitle && (
-              <p className="m-0 mb-1.5 text-2xs font-bold text-fco-blue uppercase tracking-widest">
-                {subtitle}
-              </p>
-            )}
-            <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="m-0 text-xl sm:text-2xl font-extrabold tracking-tight text-strong text-balance">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h2 className="m-0 text-base sm:text-lg font-bold tracking-tight text-strong truncate">
                 {title}
               </h2>
               {badge}
             </div>
+            {subtitle && (
+              <p className="m-0 mt-0.5 text-xs text-soft font-normal truncate">
+                {subtitle}
+              </p>
+            )}
           </div>
+
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup detail"
-            className="w-8 h-8 rounded-full surface-inset border dark:border-fco-border-dark text-soft hover:text-strong hover:surface-page flex items-center justify-center cursor-pointer transition-colors shrink-0"
+            className="w-8 h-8 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-colors shrink-0"
           >
             <X size={16} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Content: hairline definition list, no card-in-card noise */}
-        <div className="px-6 sm:px-7 py-2 overflow-y-auto flex-1">
+        {/* Content: Clean Definition Rows */}
+        <div className="px-6 py-2 overflow-y-auto flex-1">
           <dl className="m-0 divide-y divide-fco-border-subtle">
             {fields.map((f, idx) => (
               <div
                 key={idx}
-                className={`grid grid-cols-1 gap-0.5 sm:gap-3 py-3.5 ${
+                className={`py-3 ${
                   f.fullWidth
-                    ? ""
-                    : "sm:grid-cols-[180px_minmax(0,1fr)] sm:items-baseline"
+                    ? "flex flex-col gap-1"
+                    : "grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-1 sm:gap-3 sm:items-baseline"
                 }`}
               >
-                <dt className="text-xs font-medium text-soft leading-relaxed">
-                  {f.label}
-                </dt>
+                <dt className="text-xs text-soft font-medium">{f.label}</dt>
                 <dd className="m-0 text-sm font-semibold text-strong wrap-break-word leading-relaxed min-w-0">
                   {f.value || "—"}
                 </dd>
@@ -103,13 +102,13 @@ export function DetailModal({
           </dl>
         </div>
 
-        {/* Footer: quiet actions, subtle top rule */}
-        <div className="px-6 sm:px-7 py-4 border-t border-fco-border-subtle flex items-center justify-end gap-2 shrink-0 surface-card">
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-card">
           {actions}
           <button
             type="button"
             onClick={onClose}
-            className="h-9 px-4 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-xs sm:text-sm font-semibold text-soft hover:text-strong cursor-pointer transition-colors"
+            className="h-9 px-4 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
           >
             Tutup
           </button>

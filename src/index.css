@@ -12,9 +12,9 @@
   --color-fco-blue-border: #bcd3f8;
   --color-fco-dark: #0f1f3d;
   --color-fco-navy: #0f2a63;
-  --color-fco-border: #dce6f5;
-  --color-fco-border-subtle: #eef3fb;
-  --color-fco-bg: #f6f9fe;
+  --color-fco-border: #cbd5e1;
+  --color-fco-border-subtle: #e2e8f0;
+  --color-fco-bg: #f8fafc;
   --color-fco-muted: #5b6b86;
   --color-fco-placeholder: #7d8ca6;
   --color-fco-ice: #cfe0fa;
@@ -39,7 +39,7 @@
   --color-fco-card-dark: #1e2836;
   --color-fco-text-dark: #e8eef6;
   --color-fco-muted-dark: #9fb0c7;
-  --color-fco-border-dark: #2d3b4f;
+  --color-fco-border-dark: #33435c;
   --color-fco-track-dark: #33445c;
 }
 

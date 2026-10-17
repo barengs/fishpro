@@ -221,8 +221,7 @@ export function AreasPage() {
 
       <DetailModal
         open={Boolean(selectedDetailArea)}
-        title={selectedDetailArea?.nama || "Detail Wilayah (WPP)"}
-        subtitle="Rincian informasi Wilayah Pengelolaan Perikanan Negara Republik Indonesia."
+        title={selectedDetailArea?.nama || "Detail Wilayah"}
         badge={
           selectedDetailArea ? (
             <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
@@ -240,7 +239,7 @@ export function AreasPage() {
                 setSelectedDetailArea(null);
                 handleOpenEdit(target);
               }}
-              className="h-10 px-4 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-fco-blue cursor-pointer transition-colors"
+              className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
             >
               Ubah Data
             </button>
@@ -248,11 +247,11 @@ export function AreasPage() {
         }
         fields={[
           {
-            label: "Nama Wilayah Resmi",
+            label: "Nama Wilayah",
             value: selectedDetailArea?.nama,
           },
           {
-            label: "Kode Singkat / Wilayah",
+            label: "Kode WPP",
             value: (
               <span className="font-mono font-bold text-fco-blue">
                 {selectedDetailArea?.code}
@@ -260,7 +259,7 @@ export function AreasPage() {
             ),
           },
           {
-            label: "Deskripsi Lengkap Cakupan Geografis",
+            label: "Cakupan Geografis",
             value:
               selectedDetailArea?.deskripsi ||
               "Tidak ada deskripsi cakupan wilayah.",
