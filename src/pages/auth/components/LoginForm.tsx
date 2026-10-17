@@ -102,7 +102,7 @@ export function LoginForm() {
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="REG-0412 atau admin_kkp"
             disabled={loading}
-            className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
+            className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
           />
         </div>
       </div>
@@ -144,7 +144,7 @@ export function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Masukkan kata sandi"
             disabled={loading}
-            className="w-full h-12 rounded-xl pl-11 pr-12 text-sm sm:text-fco-md field-input transition-colors"
+            className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-12 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
           />
           <button
             type="button"

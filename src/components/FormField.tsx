@@ -17,28 +17,26 @@ export function FormField({
   optional,
   children,
 }: FormFieldProps) {
-  const isOptional = optional ?? !required;
+  const isOptional = Boolean(optional);
 
   return (
     <div>
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-semibold text-strong mb-2"
+        className="block text-sm font-semibold text-strong mb-1.5"
       >
         {label}
         {required && (
           <span
             className="text-red-500 ml-1 font-bold"
-            aria-label="mandatory"
-            title="Mandatory"
+            aria-label="wajib diisi"
+            title="Wajib diisi"
           >
             *
           </span>
         )}
         {isOptional && (
-          <span className="text-soft font-normal text-xs ml-1.5">
-            (optional)
-          </span>
+          <span className="text-soft font-normal text-xs ml-1">(opsional)</span>
         )}
       </label>
       {children}
@@ -48,7 +46,7 @@ export function FormField({
 }
 
 export const inputCls =
-  "w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-hidden focus:border-fco-blue transition-colors";
+  "w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft";
 
 interface SegmentedControlProps<T extends string> {
   label: string;

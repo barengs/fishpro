@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
+import { AlertCircle } from "lucide-react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
-import { SelectField } from "../../components/ui";
+import { AlertBanner, SelectField } from "../../components/ui";
 import { StatusChip } from "../../components/StatusChip";
 import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
@@ -246,17 +247,16 @@ export function CatchesPage() {
         onAdd={openModal}
       />
 
-      {toastMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
-          ✓ {toastMsg}
-        </div>
-      )}
-
-      {errorMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
-          ⚠ {errorMsg}
-        </div>
-      )}
+      <AlertBanner
+        variant="success"
+        message={toastMsg || ""}
+        onDismiss={() => setToastMsg(null)}
+      />
+      <AlertBanner
+        variant="error"
+        message={errorMsg || ""}
+        onDismiss={() => setErrorMsg(null)}
+      />
 
       <section className="surface-card border rounded-xl p-6 shadow-xs">
         <DataTable
@@ -390,10 +390,17 @@ export function CatchesPage() {
                 }
               />
               {ships.length === 0 && (
-                <p className="m-0 text-xs text-amber-600 dark:text-amber-400">
-                  ⚠ Belum ada data kapal di sistem. Silakan tambahkan data di
-                  menu <strong>Kapal</strong> terlebih dahulu agar dapat dipilih
-                  di sini.
+                <p className="m-0 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 mt-1">
+                  <AlertCircle
+                    size={14}
+                    className="shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    Belum ada data kapal di sistem. Silakan tambahkan data di
+                    menu <strong>Kapal</strong> terlebih dahulu agar dapat
+                    dipilih di sini.
+                  </span>
                 </p>
               )}
             </div>

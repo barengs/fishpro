@@ -142,3 +142,31 @@ export const adminUserSchema = z.object({
   email: z.string().trim().email("Format email tidak valid."),
   full_name: z.string().trim().min(2, "Nama lengkap minimal 2 karakter."),
 });
+
+export const registerStep1Schema = z.object({
+  role: z.enum(["owner", "captain"]),
+  fullName: z.string().trim().min(2, "Nama lengkap minimal 2 karakter."),
+  companyName: z.string().trim().optional(),
+});
+
+export const registerStep2Schema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .min(3, "Nama pengguna minimal 3 karakter.")
+      .regex(
+        /^[a-zA-Z0-9_]+$/,
+        "Nama pengguna hanya boleh berupa huruf, angka, dan garis bawah (_).",
+      ),
+    email: z.string().trim().email("Format email tidak valid."),
+    phone: z.string().trim().min(8, "Nomor telepon minimal 8 digit."),
+    password: z.string().min(8, "Kata sandi minimal 8 karakter."),
+    passwordConfirm: z
+      .string()
+      .min(8, "Konfirmasi kata sandi minimal 8 karakter."),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: "Konfirmasi kata sandi tidak cocok.",
+    path: ["passwordConfirm"],
+  });

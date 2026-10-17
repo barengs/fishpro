@@ -122,7 +122,7 @@ export function SelectField({
           onClick={handleToggle}
           aria-haspopup="listbox"
           aria-expanded={open}
-          className={`w-full h-11 border border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm surface-card flex items-center justify-between text-left cursor-pointer transition-colors focus:outline-hidden focus:border-fco-blue disabled:opacity-60 disabled:cursor-not-allowed ${className} ${
+          className={`w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm surface-card flex items-center justify-between text-left cursor-pointer transition-all focus:outline-hidden focus:border-fco-blue disabled:opacity-60 disabled:cursor-not-allowed ${className} ${
             open ? "border-fco-blue ring-2 ring-fco-blue/15" : ""
           }`}
         >

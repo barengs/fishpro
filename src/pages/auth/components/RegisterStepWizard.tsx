@@ -1,82 +1,103 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, Ship } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Loader2,
+} from "lucide-react";
 import { authService, type RegisterPayload } from "../../../services/auth";
-import { roleCards, roleLabel, type Role } from "./register/types";
-import { RoleSelector } from "./register/RoleSelector";
+import { useToast } from "../../../components/toast";
+import { type Role } from "./register/types";
 import { StepIdentity } from "./register/StepIdentity";
 import { StepAccount } from "./register/StepAccount";
 import { StepOperational } from "./register/StepOperational";
 import { StepReview } from "./register/StepReview";
+import {
+  registerStep1Schema,
+  registerStep2Schema,
+} from "../../../utils/schemas";
 
 const steps = [
-  { num: 1, title: "Data diri" },
+  { num: 1, title: "Identitas" },
   { num: 2, title: "Akun" },
-  { num: 3, title: "Detail" },
-  { num: 4, title: "Cek" },
+  { num: 3, title: "Operasional" },
+  { num: 4, title: "Konfirmasi" },
 ];
 
 export function RegisterStepWizard() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<Role | null>(null);
+  const toast = useToast();
+
+  // Role and Step state
+  const [role, setRole] = useState<Role>("owner");
   const [currentStep, setCurrentStep] = useState(1);
 
+  // Step 1: Identity fields
   const [ownerType, setOwnerType] = useState<"individual" | "company">(
     "company",
   );
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
 
+  // Step 2: Account credentials
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const [licenseNumber, setLicenseNumber] = useState("");
+  // Step 3: Operational data
   const [experienceYears, setExperienceYears] = useState("5");
   const [shipReg, setShipReg] = useState("");
   const [shipName, setShipName] = useState("");
   const [homePort, setHomePort] = useState("Pelabuhan Benoa");
   const [wpp, setWpp] = useState("WPP 573");
-  const [department, setDepartment] = useState(
-    "Direktorat Pengawasan Sumber Daya Kelautan",
-  );
-  const [nip, setNip] = useState("");
 
+  // Step 4: Terms & submission
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const pickRole = (r: Role) => {
-    setRole(r);
-    setCurrentStep(1);
-    setErrorMsg(null);
-  };
-
-  const changeRole = () => {
-    setRole(null);
-    setCurrentStep(1);
-    setErrorMsg(null);
-  };
-
   const handleNext = () => {
     setErrorMsg(null);
-    if (currentStep === 2) {
-      if (!username.trim() || !email.trim() || !password) {
-        setErrorMsg("Lengkapi username, email, dan sandi.");
-        return;
-      }
-      if (password.length < 8) {
-        setErrorMsg("Sandi minimal 8 karakter.");
-        return;
-      }
-      if (password !== passwordConfirm) {
-        setErrorMsg("Sandi tidak sama, coba lagi.");
+
+    // Step 1 Validation
+    if (currentStep === 1) {
+      const parsed = registerStep1Schema.safeParse({
+        role,
+        fullName,
+        companyName,
+      });
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message ||
+            "Harap lengkapi formulir identitas dengan benar.",
+        );
         return;
       }
     }
+
+    // Step 2 Validation
+    if (currentStep === 2) {
+      const parsed = registerStep2Schema.safeParse({
+        username,
+        email,
+        phone,
+        password,
+        passwordConfirm,
+      });
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message ||
+            "Harap lengkapi kredensial akun dengan benar.",
+        );
+        return;
+      }
+    }
+
     setCurrentStep((prev) => Math.min(4, prev + 1));
   };
 
@@ -87,13 +108,8 @@ export function RegisterStepWizard() {
 
   const handleSubmit = async () => {
     if (!agreeTerms) {
-      setErrorMsg("Centang persetujuan dulu untuk lanjut.");
-      return;
-    }
-
-    if (role === "regulator") {
       setErrorMsg(
-        "Pendaftaran mandiri diperuntukkan bagi Pemilik Kapal dan Nahkoda. Akun Pengawas/Regulator diterbitkan langsung oleh Administrator KKP.",
+        "Centang persetujuan syarat & ketentuan untuk menyelesaikan pendaftaran.",
       );
       return;
     }
@@ -117,6 +133,10 @@ export function RegisterStepWizard() {
       };
 
       const res = await authService.register(payload);
+      toast.success(
+        `Pendaftaran berhasil! Selamat datang, ${fullName.trim() || username}.`,
+      );
+
       if (res.role === "captain") {
         navigate("/captain");
       } else {
@@ -128,91 +148,63 @@ export function RegisterStepWizard() {
           ? err.message
           : "Pendaftaran gagal. Periksa kembali isian formulir.";
       setErrorMsg(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Gate: Role Selection
-  if (!role) {
-    return <RoleSelector onSelect={pickRole} />;
-  }
-
-  const foundRoleCard = roleCards.find((c) => c.key === role);
-  const RoleIcon = foundRoleCard?.Icon ?? Ship;
-  const roleBg =
-    role === "owner"
-      ? "bg-fco-blue"
-      : role === "captain"
-        ? "bg-emerald-600"
-        : "bg-amber-500";
-
   return (
     <div className="max-w-full w-full">
-      {/* Header identitas peran terpilih */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-fco-border">
-        <div className="flex items-center gap-3 min-w-0">
-          <span
-            className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-xs`}
-          >
-            <RoleIcon size={20} aria-hidden="true" />
-          </span>
-          <div className="min-w-0">
-            <span className="text-xs text-soft font-medium block">
-              Mendaftar sebagai
-            </span>
-            <span className="text-base font-extrabold text-strong truncate block">
-              {roleLabel[role]}
-            </span>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={changeRole}
-          className="text-xs sm:text-sm font-semibold text-fco-blue hover:text-fco-blue-hover hover:underline bg-transparent border-none cursor-pointer py-1 px-2.5 rounded-lg hover:surface-inset transition-colors shrink-0"
-        >
-          Ganti peran
-        </button>
-      </div>
-
-      {/* Stepper */}
-      <div className="mb-5">
-        <div className="flex items-center justify-between relative mb-2">
-          <div className="absolute left-4 right-4 sm:left-6 sm:right-6 top-4 sm:top-4.5 h-0.5 bg-fco-border z-0" />
-          <div
-            className="absolute left-4 sm:left-6 top-4 sm:top-4.5 h-0.5 bg-fco-blue z-0 transition-all duration-300"
-            style={{
-              width: `${((currentStep - 1) / (steps.length - 1)) * 88}%`,
-            }}
-          />
-          {steps.map((s) => {
+      {/* 1. Circle Stepper with Text Underneath and Connecting Line */}
+      <div
+        className="relative mb-5 sm:mb-7 pt-1"
+        aria-label="Tahapan Pendaftaran"
+      >
+        <div className="flex items-center justify-between">
+          {steps.map((s, idx) => {
             const isPassed = currentStep > s.num;
             const isCurrent = currentStep === s.num;
+            const isLast = idx === steps.length - 1;
+
             return (
               <div
                 key={s.num}
-                className="flex flex-col items-center gap-1 z-10 px-0.5 sm:px-1"
+                className="flex-1 relative flex flex-col items-center min-w-0"
               >
+                {/* Connecting track between steps */}
+                {!isLast && (
+                  <div className="absolute top-4 sm:top-4.5 -translate-y-1/2 left-1/2 w-full h-0.5 bg-fco-border dark:bg-fco-border-dark z-0">
+                    <div
+                      className="h-full bg-fco-blue transition-all duration-300"
+                      style={{ width: currentStep > s.num ? "100%" : "0%" }}
+                    />
+                  </div>
+                )}
+
+                {/* Step Circle */}
                 <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center font-bold text-xs sm:text-sm transition-all ${
+                  className={`relative z-1 w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center font-bold text-xs sm:text-sm transition-all ${
                     isCurrent
-                      ? "bg-fco-blue text-white ring-2 ring-fco-blue/15"
+                      ? "border-2 border-fco-blue bg-fco-blue text-white ring-4 ring-fco-blue/15"
                       : isPassed
-                        ? "bg-fco-blue text-white"
-                        : "surface-card border-2 border-fco-border text-soft"
+                        ? "border-2 border-fco-blue bg-fco-blue text-white"
+                        : "border-2 border-fco-border dark:border-fco-border-dark surface-card text-soft"
                   }`}
                 >
                   <span className="leading-none tabular-nums select-none flex items-center justify-center text-center">
                     {isPassed ? "✓" : s.num}
                   </span>
                 </div>
+
+                {/* Step Title Label Underneath */}
                 <span
-                  className={`text-fco-xs sm:text-xs font-semibold whitespace-nowrap ${
+                  className={`mt-1.5 sm:mt-2 text-[10px] sm:text-xs font-semibold tracking-tight text-center truncate max-w-full px-0.5 ${
                     isCurrent
-                      ? "text-fco-blue"
+                      ? "text-fco-blue font-bold"
                       : isPassed
                         ? "text-strong"
-                        : "text-fco-placeholder"
+                        : "text-soft"
                   }`}
                 >
                   {s.title}
@@ -223,28 +215,37 @@ export function RegisterStepWizard() {
         </div>
       </div>
 
-      <div>
+      {/* 2. Streamlined Form Card */}
+      <div className="surface-card border dark:border-fco-border-dark rounded-xl sm:rounded-2xl p-4 sm:p-7 lg:p-8 shadow-xs">
+        {/* Contextual In-Card Alert Banner */}
         {errorMsg && (
           <div
             role="alert"
-            className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20"
+            className="flex items-center gap-2.5 p-3 px-3.5 sm:px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs sm:text-sm font-semibold mb-4 sm:mb-5 border border-red-200 dark:border-red-500/20"
           >
-            {errorMsg}
+            <AlertCircle
+              size={16}
+              className="shrink-0 text-red-600 dark:text-red-400"
+              aria-hidden="true"
+            />
+            <span>{errorMsg}</span>
           </div>
         )}
 
+        {/* Dynamic Form Step */}
         <AnimatePresence mode="wait">
           <motion.div
             key={role + currentStep}
-            initial={{ opacity: 0, x: 32 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -32 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="max-w-full w-full"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="w-full"
           >
             {currentStep === 1 && (
               <StepIdentity
                 role={role}
+                setRole={setRole}
                 ownerType={ownerType}
                 setOwnerType={setOwnerType}
                 fullName={fullName}
@@ -272,8 +273,6 @@ export function RegisterStepWizard() {
             {currentStep === 3 && (
               <StepOperational
                 role={role}
-                licenseNumber={licenseNumber}
-                setLicenseNumber={setLicenseNumber}
                 experienceYears={experienceYears}
                 setExperienceYears={setExperienceYears}
                 shipReg={shipReg}
@@ -284,10 +283,6 @@ export function RegisterStepWizard() {
                 setHomePort={setHomePort}
                 wpp={wpp}
                 setWpp={setWpp}
-                department={department}
-                setDepartment={setDepartment}
-                nip={nip}
-                setNip={setNip}
               />
             )}
 
@@ -300,8 +295,8 @@ export function RegisterStepWizard() {
                 phone={phone}
                 shipReg={shipReg}
                 shipName={shipName}
-                licenseNumber={licenseNumber}
-                nip={nip}
+                homePort={homePort}
+                wpp={wpp}
                 agreeTerms={agreeTerms}
                 setAgreeTerms={setAgreeTerms}
               />
@@ -309,42 +304,57 @@ export function RegisterStepWizard() {
           </motion.div>
         </AnimatePresence>
 
-        <div className="flex gap-3 mt-6">
+        {/* 3. Streamlined Navigation Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 mt-6 sm:mt-7 pt-4 sm:pt-6 border-t border-fco-border-subtle">
           {currentStep > 1 && (
             <button
               type="button"
               onClick={handlePrev}
-              className="flex-1 h-11 rounded-xl text-sm border border-fco-border surface-card text-strong font-semibold cursor-pointer transition-colors"
+              disabled={isLoading}
+              className="h-10 sm:h-11 px-3.5 sm:px-5 rounded-xl text-xs sm:text-sm border border-fco-border surface-card hover:surface-page text-strong font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5 sm:gap-2 shrink-0"
             >
-              Kembali
+              <ArrowLeft size={16} aria-hidden="true" />
+              <span>Sebelumnya</span>
             </button>
           )}
+
+          <div className="flex-1" />
+
           {currentStep < 4 ? (
-            <motion.button
+            <button
               type="button"
               onClick={handleNext}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
+              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs inline-flex items-center justify-center gap-1.5 sm:gap-2 shrink-0"
             >
-              Lanjut
-            </motion.button>
+              <span>Lanjut</span>
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
           ) : (
-            <motion.button
+            <button
               type="button"
               onClick={handleSubmit}
               disabled={isLoading}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
             >
-              {isLoading && (
-                <Loader2
-                  size={16}
-                  className="animate-spin"
-                  aria-hidden="true"
-                />
+              {isLoading ? (
+                <>
+                  <Loader2
+                    size={16}
+                    className="animate-spin"
+                    aria-hidden="true"
+                  />
+                  <span>Mendaftarkan...</span>
+                </>
+              ) : (
+                <>
+                  <Check size={16} strokeWidth={2.5} aria-hidden="true" />
+                  <span className="hidden sm:inline">
+                    Selesaikan Pendaftaran
+                  </span>
+                  <span className="sm:hidden">Daftar</span>
+                </>
               )}
-              <span>{isLoading ? "Mendaftarkan..." : "Buat akun"}</span>
-            </motion.button>
+            </button>
           )}
         </div>
       </div>

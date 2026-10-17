@@ -131,7 +131,7 @@ export function ResetPasswordWizard({
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
               />
             </div>
           </div>
@@ -228,7 +228,7 @@ export function ResetPasswordWizard({
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
               />
             </div>
           </div>
@@ -260,7 +260,7 @@ export function ResetPasswordWizard({
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi kata sandi baru"
-                className="w-full h-12 rounded-xl pl-11 pr-4 text-sm sm:text-fco-md field-input transition-colors"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
               />
             </div>
           </div>

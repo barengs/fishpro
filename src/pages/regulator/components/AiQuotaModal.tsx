@@ -1,6 +1,6 @@
 import { CrudModal } from "../../../components/CrudModal";
 import type { PredictShipQuotaResponse, Ship } from "../../../services/ships";
-import { Loader2, Sparkles } from "lucide-react";
+import { AlertCircle, Loader2, Sparkles } from "lucide-react";
 
 interface AiQuotaModalProps {
   open: boolean;
@@ -54,8 +54,9 @@ export function AiQuotaModal({
             <span>Mengeksekusi model LSTM & NSGA-III di backend...</span>
           </div>
         ) : error ? (
-          <div className="p-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20">
-            ⚠ {error}
+          <div className="flex items-center gap-2 p-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20">
+            <AlertCircle size={16} className="shrink-0" aria-hidden="true" />
+            <span>{error}</span>
           </div>
         ) : result ? (
           <div className="flex flex-col gap-3.5">

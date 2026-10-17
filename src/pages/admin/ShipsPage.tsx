@@ -10,6 +10,7 @@ import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { DetailModal } from "../../components/DetailModal";
 import { useDetailModal } from "../../components/useDetailModal";
 import { ShipFormWizard } from "../../components/ShipFormWizard";
+import { AlertBanner } from "../../components/ui";
 import type { ShipFormData } from "../../components/shipFormTypes";
 import {
   shipsService,
@@ -189,17 +190,16 @@ export function ShipsPage() {
         onAdd={openModal}
       />
 
-      {toastMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
-          ✓ {toastMsg}
-        </div>
-      )}
-
-      {errorMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
-          ⚠ {errorMsg}
-        </div>
-      )}
+      <AlertBanner
+        variant="success"
+        message={toastMsg || ""}
+        onDismiss={() => setToastMsg(null)}
+      />
+      <AlertBanner
+        variant="error"
+        message={errorMsg || ""}
+        onDismiss={() => setErrorMsg(null)}
+      />
 
       <section className="surface-card border rounded-xl p-6 shadow-xs">
         <DataTable

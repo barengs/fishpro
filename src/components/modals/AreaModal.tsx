@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AlertCircle } from "lucide-react";
 import { CrudModal } from "../CrudModal";
 import { TextField, TextareaField } from "../ui";
 import {
@@ -59,9 +60,10 @@ function AreaForm({
       {errorMsg && (
         <div
           role="alert"
-          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold mb-1 border border-red-200 dark:border-red-500/20"
+          className="flex items-center gap-2 p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold mb-1 border border-red-200 dark:border-red-500/20"
         >
-          ⚠ {errorMsg}
+          <AlertCircle size={15} className="shrink-0" aria-hidden="true" />
+          <span>{errorMsg}</span>
         </div>
       )}
 

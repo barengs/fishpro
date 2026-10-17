@@ -6,6 +6,7 @@ import { StatusChip } from "../../components/StatusChip";
 import { CrudModal } from "../../components/CrudModal";
 import { useCrudModal } from "../../components/useCrudModal";
 import { CatchReportWizard } from "../../components/CatchReportWizard";
+import { AlertBanner } from "../../components/ui";
 import type { CatchReportFormData } from "../../components/catchReportTypes";
 import { QuotaHeroCard } from "./components/QuotaHeroCard";
 import { ShipSpecsCard } from "./components/ShipSpecsCard";
@@ -207,11 +208,11 @@ export function CaptainDashboard() {
         </div>
       </div>
 
-      {toast && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
-          ✓ {toast}
-        </div>
-      )}
+      <AlertBanner
+        variant="success"
+        message={toast || ""}
+        onDismiss={() => setToast(null)}
+      />
 
       {/* 4 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
