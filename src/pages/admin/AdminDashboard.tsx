@@ -96,7 +96,7 @@ export function AdminDashboard() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari kapal atau pemilik..."
-              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors"
+              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
             />
           </div>
         </div>

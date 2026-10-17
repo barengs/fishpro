@@ -144,7 +144,7 @@ export function MobileTopbar({
       >
         <div
           onClick={onClose}
-          className={`absolute inset-0 bg-fco-dark/50 backdrop-blur-sm transition-opacity duration-300 ease-out ${open ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-fco-dark/50 backdrop-blur-xs transition-opacity duration-300 ease-out ${open ? "opacity-100" : "opacity-0"}`}
         />
         <div
           role="dialog"

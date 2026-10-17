@@ -34,13 +34,13 @@ export function CtaButton({
   const cls = [
     "group relative inline-flex items-center justify-center gap-2.5",
     "min-h-13 px-8 py-3.5 rounded-xl",
-    "bg-gradient-to-b from-fco-blue to-fco-blue-hover text-white",
+    "bg-linear-to-b from-fco-blue to-fco-blue-hover text-white",
     "text-fco-md font-bold tracking-tight no-underline whitespace-nowrap",
     "shadow-lg shadow-fco-blue/30",
     "transition-all duration-200 ease-out",
     "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-fco-blue/40 hover:brightness-110",
     "active:translate-y-0 active:scale-98 active:shadow-md",
-    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-fco-blue/40",
+    "focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-fco-blue/40",
     fullWidth ? "w-full" : "",
     isDisabled
       ? "opacity-60 cursor-not-allowed hover:translate-y-0 hover:shadow-lg hover:brightness-100 active:scale-100 pointer-events-none"

@@ -46,7 +46,7 @@ export function FormField({
 }
 
 export const inputCls =
-  "w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-none focus:border-fco-blue transition-colors";
+  "w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-hidden focus:border-fco-blue transition-colors";
 
 interface SegmentedControlProps<T extends string> {
   label: string;

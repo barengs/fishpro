@@ -12,7 +12,7 @@ export function QuotaHeroCard({
   validUntil = "—",
 }: Partial<QuotaHeroCardProps>) {
   return (
-    <section className="bg-fco-blue text-white rounded-xl p-7 relative overflow-hidden shadow-sm">
+    <section className="bg-fco-blue text-white rounded-xl p-7 relative overflow-hidden shadow-xs">
       {/* Decorative concentric rings */}
       <div className="absolute w-80 h-80 rounded-full border border-white/18 -right-25 -top-30 pointer-events-none" />
       <div className="absolute w-50 h-50 rounded-full border border-white/18 -right-7.5 -top-15 pointer-events-none" />

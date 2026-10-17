@@ -30,7 +30,7 @@ export function TextareaField({
         id={id}
         required={required}
         rows={rows}
-        className={`w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue resize-none disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
+        className={`w-full border rounded-xl p-3 text-fco-md field-input focus:outline-hidden focus:border-fco-blue resize-none disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
         {...textareaProps}
       />
     </FormField>

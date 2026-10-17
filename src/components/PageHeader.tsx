@@ -39,7 +39,7 @@ export function PageHeader({
               value={searchValue ?? ""}
               onChange={(e) => onSearchChange?.(e.target.value)}
               placeholder={searchPlaceholder ?? "Cari..."}
-              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors"
+              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
             />
           </div>
         )}

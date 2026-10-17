@@ -159,7 +159,7 @@ export function ResetPasswordWizard({
                 onChange={(e) => handleOtpChange(i, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                 aria-label={`Digit ${i + 1}`}
-                className="w-11 sm:w-12 h-13 sm:h-14 border border-fco-border rounded-xl text-center text-xl font-bold field-input focus:outline-none focus:border-fco-blue transition"
+                className="w-11 sm:w-12 h-13 sm:h-14 border border-fco-border rounded-xl text-center text-xl font-bold field-input focus:outline-hidden focus:border-fco-blue transition"
               />
             ))}
           </div>

@@ -29,7 +29,7 @@ export function TextField({
       <input
         id={id}
         required={required}
-        className={`w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-none focus:border-fco-blue transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
+        className={`w-full h-13 border rounded-xl px-3.5 text-fco-md field-input focus:outline-hidden focus:border-fco-blue transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
         {...inputProps}
       />
     </FormField>

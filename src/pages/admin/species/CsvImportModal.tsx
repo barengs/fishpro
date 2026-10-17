@@ -172,7 +172,7 @@ export function CsvImportModal({
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={placeholderText}
-            className="w-full border dark:border-fco-border-dark rounded-xl p-3 text-xs font-mono field-input focus:outline-none focus:border-fco-blue resize-none"
+            className="w-full border dark:border-fco-border-dark rounded-xl p-3 text-xs font-mono field-input focus:outline-hidden focus:border-fco-blue resize-none"
           />
         </FormField>
 

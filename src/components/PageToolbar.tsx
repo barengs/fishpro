@@ -91,7 +91,7 @@ export function PageToolbar({
                 value={searchValue ?? ""}
                 onChange={(e) => onSearchChange?.(e.target.value)}
                 placeholder={searchPlaceholder ?? "Cari data..."}
-                className="w-full h-10 border dark:border-fco-border-dark rounded-fco pl-10 pr-3.5 text-sm field-input focus:outline-none focus:border-fco-blue transition-colors"
+                className="w-full h-10 border dark:border-fco-border-dark rounded-fco pl-10 pr-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
               />
             </div>
           ) : (

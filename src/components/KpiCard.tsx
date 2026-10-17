@@ -23,27 +23,27 @@ const colorMap: Record<
   }
 > = {
   blue: {
-    card: "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20",
+    card: "bg-linear-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20",
     iconBg: "bg-white/20 text-white",
   },
   emerald: {
-    card: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20",
+    card: "bg-linear-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20",
     iconBg: "bg-white/20 text-white",
   },
   amber: {
-    card: "bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20",
+    card: "bg-linear-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20",
     iconBg: "bg-white/20 text-white",
   },
   purple: {
-    card: "bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20",
+    card: "bg-linear-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20",
     iconBg: "bg-white/20 text-white",
   },
   cyan: {
-    card: "bg-gradient-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20",
+    card: "bg-linear-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20",
     iconBg: "bg-white/20 text-white",
   },
   rose: {
-    card: "bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20",
+    card: "bg-linear-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20",
     iconBg: "bg-white/20 text-white",
   },
 };

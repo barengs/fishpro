@@ -5,7 +5,7 @@ import { LoginForm } from "./components/LoginForm";
 export function LoginPage() {
   return (
     <CenteredAuth>
-      <div className="surface-card border rounded-xl p-5 sm:p-8 shadow-sm">
+      <div className="surface-card border rounded-xl p-5 sm:p-8 shadow-xs">
         <div className="mb-5 sm:mb-6 text-center">
           <h1 className="m-0 mb-1 text-xl sm:text-2xl font-extrabold tracking-tight">
             Masuk

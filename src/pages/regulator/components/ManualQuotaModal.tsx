@@ -72,7 +72,7 @@ export function ManualQuotaModal({
               value={shipReg}
               onChange={(e) => setShipReg(e.target.value)}
               placeholder="Contoh: REG-0087"
-              className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
+              className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-hidden focus:border-fco-blue"
             />
           </div>
 
@@ -93,7 +93,7 @@ export function ManualQuotaModal({
                 required
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
+                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-hidden focus:border-fco-blue"
               />
             </div>
             <div>
@@ -112,7 +112,7 @@ export function ManualQuotaModal({
                 required
                 value={newQuota}
                 onChange={(e) => setNewQuota(Number(e.target.value))}
-                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-none focus:border-fco-blue"
+                className="w-full h-10.5 border border-fco-border rounded-fco px-3 text-sm focus:outline-hidden focus:border-fco-blue"
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export function ManualQuotaModal({
               rows={3}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full border border-fco-border rounded-fco p-2.5 text-fco-sm focus:outline-none focus:border-fco-blue resize-none"
+              className="w-full border border-fco-border rounded-fco p-2.5 text-fco-sm focus:outline-hidden focus:border-fco-blue resize-none"
             />
           </div>
 

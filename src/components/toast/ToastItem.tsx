@@ -68,6 +68,7 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
       role="status"
       aria-live="polite"
       className={`pointer-events-auto relative overflow-hidden flex flex-col w-84 max-w-[calc(100vw-2rem)] rounded-xl border backdrop-blur-md shadow-xl ${cfg.container}`}
+      style={{ maxWidth: "calc(100vw - 2rem)" }}
     >
       <div className="flex items-start gap-3 p-3.5">
         <Icon
@@ -75,7 +76,7 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
           className={`shrink-0 mt-0.5 ${cfg.iconCls}`}
           aria-hidden="true"
         />
-        <div className="flex-1 text-sm font-medium leading-snug break-words">
+        <div className="flex-1 text-sm font-medium leading-snug wrap-break-word">
           {message}
         </div>
         <button

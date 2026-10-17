@@ -8,7 +8,7 @@ export function ResetPasswordPage() {
 
   return (
     <CenteredAuth>
-      <div className="surface-card border rounded-xl p-5 sm:p-8 shadow-sm">
+      <div className="surface-card border rounded-xl p-5 sm:p-8 shadow-xs">
         <ResetPasswordWizard step={step} setStep={setStep} />
         {step !== 4 && (
           <p className="m-0 mt-7 text-center text-sm text-soft">

@@ -153,7 +153,7 @@ export function RegisterStepWizard() {
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-fco-border">
         <div className="flex items-center gap-3 min-w-0">
           <span
-            className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-sm`}
+            className={`w-10 h-10 rounded-xl ${roleBg} text-white flex items-center justify-center shrink-0 shadow-xs`}
           >
             <RoleIcon size={20} aria-hidden="true" />
           </span>

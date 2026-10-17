@@ -12,7 +12,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       aria-label={isDark ? "Beralih ke mode terang" : "Beralih ke mode gelap"}
       aria-pressed={isDark}
       title={isDark ? "Mode terang" : "Mode gelap"}
-      className={`${compact ? "w-9 h-9" : "w-10 h-10"} rounded-fco border-none outline-none focus:outline-none surface-card hover:surface-page dark:hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors relative overflow-hidden`}
+      className={`${compact ? "w-9 h-9" : "w-10 h-10"} rounded-fco border-none outline-hidden focus:outline-hidden surface-card hover:surface-page dark:hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors relative overflow-hidden`}
     >
       <span
         className={`absolute transition-all duration-300 ease-out ${isDark ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"}`}

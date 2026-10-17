@@ -82,7 +82,7 @@ export function DetailModal({
 
         {/* Content: hairline definition list, no card-in-card noise */}
         <div className="px-6 sm:px-7 py-2 overflow-y-auto flex-1">
-          <dl className="m-0 divide-y divide-[var(--color-fco-border-subtle)]">
+          <dl className="m-0 divide-y divide-fco-border-subtle">
             {fields.map((f, idx) => (
               <div
                 key={idx}
@@ -95,7 +95,7 @@ export function DetailModal({
                 <dt className="text-xs font-medium text-soft leading-relaxed">
                   {f.label}
                 </dt>
-                <dd className="m-0 text-sm font-semibold text-strong break-words leading-relaxed min-w-0">
+                <dd className="m-0 text-sm font-semibold text-strong wrap-break-word leading-relaxed min-w-0">
                   {f.value || "—"}
                 </dd>
               </div>
