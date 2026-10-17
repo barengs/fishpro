@@ -22,6 +22,7 @@ export function ShipsPage() {
   const [rows, setRows] = useState<Ship[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [editingShip, setEditingShip] = useState<Ship | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -80,6 +81,16 @@ export function ShipsPage() {
     }
   };
 
+  const handleOpenAdd = () => {
+    setEditingShip(null);
+    openModal();
+  };
+
+  const handleOpenEdit = (ship: Ship) => {
+    setEditingShip(ship);
+    openModal();
+  };
+
   const handleSubmit = async (data: ShipFormData) => {
     try {
       const payload: CreateShipPayload = {
@@ -97,14 +108,19 @@ export function ShipsPage() {
         active: data.active,
       };
 
-      await shipsService.create(payload);
-      setToastMsg(`Kapal "${data.name}" berhasil didaftarkan.`);
+      if (editingShip) {
+        await shipsService.update(editingShip.id, payload);
+        setToastMsg(`Data kapal "${data.name}" berhasil diperbarui.`);
+      } else {
+        await shipsService.create(payload);
+        setToastMsg(`Kapal "${data.name}" berhasil didaftarkan.`);
+      }
       setTimeout(() => setToastMsg(null), 3000);
       closeModal();
       fetchShips(search);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Gagal menyimpan kapal";
-      alert(msg);
+      setErrorMsg(msg);
     }
   };
 
@@ -172,6 +188,7 @@ export function ShipsPage() {
       render: (r) => (
         <CrudActions
           onDetail={() => openDetail(r)}
+          onEdit={() => handleOpenEdit(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
@@ -187,7 +204,7 @@ export function ShipsPage() {
         searchValue={search}
         onSearchChange={setSearch}
         addLabel="Tambah kapal"
-        onAdd={openModal}
+        onAdd={handleOpenAdd}
       />
 
       <AlertBanner
@@ -226,6 +243,21 @@ export function ShipsPage() {
           ) : undefined
         }
         onClose={closeDetail}
+        actions={
+          selectedShip && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedShip;
+                closeDetail();
+                handleOpenEdit(target);
+              }}
+              className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
         fields={[
           {
             label: "Nomor Registrasi",
@@ -268,12 +300,16 @@ export function ShipsPage() {
 
       <CrudModal
         open={open}
-        title="Tambah kapal baru"
+        title={editingShip ? "Ubah Data Kapal" : "Tambah Kapal Baru"}
         subtitle="3 langkah: identitas, spesifikasi teknis, cek ringkasan."
         onClose={closeModal}
         hideFooter
       >
-        <ShipFormWizard onSubmit={handleSubmit} />
+        <ShipFormWizard
+          key={editingShip?.id ?? "new"}
+          initialData={editingShip}
+          onSubmit={handleSubmit}
+        />
       </CrudModal>
 
       <ConfirmDeleteModal

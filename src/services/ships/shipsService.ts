@@ -72,11 +72,11 @@ export const shipsService = {
   },
 
   /**
-   * PUT /api/ships/ships/{id}/ - Memperbarui data kapal
+   * PATCH/PUT /api/ships/ships/{id}/ - Memperbarui data kapal
    */
-  async update(id: number, payload: CreateShipPayload): Promise<Ship> {
+  async update(id: number, payload: Partial<CreateShipPayload>): Promise<Ship> {
     return apiClient<Ship>(`${API_ENDPOINTS.SHIPS.LIST}${id}/`, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(payload),
     });
   },

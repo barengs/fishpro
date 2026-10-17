@@ -6,6 +6,7 @@ import { emptyShipForm, type ShipFormData } from "./shipFormTypes";
 import { ownersService, type Owner } from "../services/owners";
 import { captainsService, type Captain } from "../services/captains";
 import { shipFormSchema } from "../utils/schemas";
+import type { Ship } from "../services/ships";
 
 const steps = [
   { num: 1, title: "Identitas" },
@@ -16,16 +17,57 @@ const steps = [
 interface ShipFormWizardProps {
   onSubmit: (data: ShipFormData) => void;
   fixedOwnerId?: number;
+  initialData?: Ship | null;
+  submitLabel?: string;
 }
 
 export function ShipFormWizard({
   onSubmit,
   fixedOwnerId,
+  initialData,
+  submitLabel,
 }: ShipFormWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [form, setForm] = useState<ShipFormData>({
-    ...emptyShipForm,
-    owner: fixedOwnerId ? String(fixedOwnerId) : "",
+  const [form, setForm] = useState<ShipFormData>(() => {
+    if (initialData) {
+      return {
+        name: initialData.name || "",
+        registration_number: initialData.registration_number || "",
+        owner: initialData.owner
+          ? String(initialData.owner)
+          : fixedOwnerId
+            ? String(fixedOwnerId)
+            : "",
+        captain: initialData.captain ? String(initialData.captain) : "",
+        length:
+          initialData.length !== null && initialData.length !== undefined
+            ? String(initialData.length)
+            : "",
+        width:
+          initialData.width !== null && initialData.width !== undefined
+            ? String(initialData.width)
+            : "",
+        gross_tonnage:
+          initialData.gross_tonnage !== null &&
+          initialData.gross_tonnage !== undefined
+            ? String(initialData.gross_tonnage)
+            : "",
+        engine_power: "",
+        vessel_type: "purse_seine",
+        fuel_type: "diesel",
+        year_built:
+          initialData.year_built !== null &&
+          initialData.year_built !== undefined
+            ? String(initialData.year_built)
+            : "",
+        home_port: initialData.home_port || "",
+        active: initialData.active ?? true,
+      };
+    }
+    return {
+      ...emptyShipForm,
+      owner: fixedOwnerId ? String(fixedOwnerId) : "",
+    };
   });
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [owners, setOwners] = useState<Owner[]>([]);
@@ -427,7 +469,7 @@ export function ShipFormWizard({
             whileTap={{ scale: 0.97 }}
             className="flex-1 h-11 rounded-xl text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors"
           >
-            Simpan kapal
+            {submitLabel || (initialData ? "Perbarui Kapal" : "Simpan Kapal")}
           </motion.button>
         )}
       </div>
