@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Check, ChevronDown, Search } from "lucide-react";
 import { FormField } from "../FormField";
 
 export interface SelectOption {
@@ -23,6 +23,8 @@ export interface SelectFieldProps {
   className?: string;
   name?: string;
   children?: ReactNode;
+  searchable?: boolean;
+  searchPlaceholder?: string;
 }
 
 export function SelectField({
@@ -38,9 +40,19 @@ export function SelectField({
   disabled = false,
   className = "",
   name,
+  searchable = false,
+  searchPlaceholder = "Ketik untuk mencari...",
 }: SelectFieldProps) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !query.trim()) return options;
+    const q = query.trim().toLowerCase();
+    return options.filter((opt) => opt.label.toLowerCase().includes(q));
+  }, [options, query, searchable]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -49,24 +61,41 @@ export function SelectField({
         !containerRef.current.contains(e.target as Node)
       ) {
         setOpen(false);
+        setQuery("");
       }
     };
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
+      if (searchable) {
+        const t = setTimeout(() => searchInputRef.current?.focus(), 50);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+          clearTimeout(t);
+        };
+      }
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [open, searchable]);
 
   // Find currently selected option
   const selectedOption = options.find(
     (opt) => String(opt.value) === String(value),
   );
 
+  const handleToggle = () => {
+    if (disabled) return;
+    setOpen((prev) => {
+      if (prev) setQuery("");
+      return !prev;
+    });
+  };
+
   const handleSelect = (opt: SelectOption) => {
     if (opt.disabled || disabled) return;
     setOpen(false);
+    setQuery("");
     if (onChange) {
       onChange({
         target: {
@@ -90,7 +119,7 @@ export function SelectField({
           type="button"
           id={id}
           disabled={disabled}
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={handleToggle}
           aria-haspopup="listbox"
           aria-expanded={open}
           className={`w-full h-11 border border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm surface-card flex items-center justify-between text-left cursor-pointer transition-colors focus:outline-hidden focus:border-fco-blue disabled:opacity-60 disabled:cursor-not-allowed ${className} ${
@@ -129,12 +158,39 @@ export function SelectField({
             aria-labelledby={id}
             className="absolute left-0 right-0 top-full mt-1.5 surface-card border dark:border-fco-border-dark rounded-xl shadow-xl p-1 z-50 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100"
           >
-            {options.length === 0 ? (
+            {searchable && (
+              <div
+                className="sticky top-0 surface-card pb-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="relative">
+                  <Search
+                    size={15}
+                    className="text-soft absolute left-3 top-2.5 pointer-events-none"
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                  <input
+                    ref={searchInputRef}
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    placeholder={searchPlaceholder}
+                    aria-label={`Cari ${label}`}
+                    className="w-full h-9 border border-fco-border dark:border-fco-border-dark rounded-lg pl-8.5 pr-2.5 text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue"
+                  />
+                </div>
+              </div>
+            )}
+            {filteredOptions.length === 0 ? (
               <div className="px-3 py-2 text-xs text-soft text-center">
-                Tidak ada opsi tersedia
+                {searchable && query.trim()
+                  ? `Tidak ada hasil untuk "${query.trim()}"`
+                  : "Tidak ada opsi tersedia"}
               </div>
             ) : (
-              options.map((opt) => {
+              filteredOptions.map((opt) => {
                 const isSelected = String(opt.value) === String(value);
                 return (
                   <div

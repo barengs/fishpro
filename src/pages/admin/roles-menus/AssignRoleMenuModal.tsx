@@ -101,6 +101,8 @@ export function AssignRoleMenuModal({
           label="Pilih Peran"
           id="as-role"
           required
+          searchable
+          searchPlaceholder="Cari nama peran..."
           disabled={submitting || roles.length === 0}
           value={form.role_id}
           onChange={(e) =>
@@ -119,6 +121,8 @@ export function AssignRoleMenuModal({
           label="Pilih Menu"
           id="as-menu"
           required
+          searchable
+          searchPlaceholder="Cari nama menu atau URL..."
           disabled={submitting || menus.length === 0}
           value={form.menu_id}
           onChange={(e) =>

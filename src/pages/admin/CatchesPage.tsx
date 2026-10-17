@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
-import { CrudActions, FormField, inputCls } from "../../components/FormField";
+import { CrudActions } from "../../components/FormField";
 import { SelectField } from "../../components/ui";
 import { StatusChip } from "../../components/StatusChip";
 import { CrudModal } from "../../components/CrudModal";
@@ -358,33 +358,43 @@ export function CatchesPage() {
           onSubmit={handleSubmit}
           onCancel={closeModal}
           shipSelector={
-            ships.length > 0 ? (
+            <div className="flex flex-col gap-1.5">
               <SelectField
                 label="Pilih Kapal Terdaftar (Ship)"
                 id="ct-ship"
                 required
+                searchable
+                searchPlaceholder="Cari nama kapal atau nomor registrasi..."
+                placeholder={
+                  ships.length === 0
+                    ? "— Belum ada kapal terdaftar di database —"
+                    : "— Pilih Kapal Terdaftar —"
+                }
                 value={selectedShipReg}
                 onChange={(e) => setSelectedShipReg(e.target.value)}
-                options={ships.map((s) => ({
-                  value: s.registration_number,
-                  label: `${s.name} (${s.registration_number}) · ${s.gross_tonnage || 0} GT`,
-                }))}
+                options={
+                  ships.length === 0
+                    ? [
+                        {
+                          value: "",
+                          label: "Belum ada kapal terdaftar di database",
+                          disabled: true,
+                        },
+                      ]
+                    : ships.map((s) => ({
+                        value: s.registration_number,
+                        label: `${s.name} (${s.registration_number}) · ${s.gross_tonnage || 0} GT`,
+                      }))
+                }
               />
-            ) : (
-              <FormField
-                label="Pilih Kapal Terdaftar (Ship)"
-                htmlFor="ct-ship"
-                required
-              >
-                <input
-                  id="ct-ship"
-                  value={selectedShipReg}
-                  onChange={(e) => setSelectedShipReg(e.target.value)}
-                  placeholder="Contoh: REG-0412"
-                  className={inputCls}
-                />
-              </FormField>
-            )
+              {ships.length === 0 && (
+                <p className="m-0 text-xs text-amber-600 dark:text-amber-400">
+                  ⚠ Belum ada data kapal di sistem. Silakan tambahkan data di
+                  menu <strong>Kapal</strong> terlebih dahulu agar dapat dipilih
+                  di sini.
+                </p>
+              )}
+            </div>
           }
         />
       </CrudModal>

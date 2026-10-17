@@ -118,6 +118,8 @@ function CaptainForm({
             label="Pemilik kapal (Owner)"
             id="c-owner"
             required
+            searchable
+            searchPlaceholder="Cari nama pemilik..."
             disabled={submitting || ownersList.length === 0}
             value={form.owner || ""}
             onChange={(e) =>

@@ -201,6 +201,8 @@ export function ShipFormWizard({
                   <SelectField
                     label="Pemilik (Owner)"
                     id="wz-owner"
+                    searchable
+                    searchPlaceholder="Cari nama pemilik..."
                     value={form.owner || ""}
                     onChange={(e) =>
                       setForm({ ...form, owner: e.target.value })
@@ -232,6 +234,8 @@ export function ShipFormWizard({
                   <SelectField
                     label="Nahkoda (Captain)"
                     id="wz-captain"
+                    searchable
+                    searchPlaceholder="Cari nama atau nomor lisensi..."
                     value={form.captain || ""}
                     onChange={(e) =>
                       setForm({ ...form, captain: e.target.value })

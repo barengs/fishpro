@@ -90,6 +90,8 @@ function FishFormContent({
         label="Spesies Ikan"
         id="fi-species"
         required
+        searchable
+        searchPlaceholder="Cari nama spesies atau ilmiah..."
         disabled={submitting || speciesList.length === 0}
         value={form.species}
         onChange={(e) => setForm({ ...form, species: Number(e.target.value) })}

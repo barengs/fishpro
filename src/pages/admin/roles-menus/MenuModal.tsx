@@ -86,6 +86,8 @@ function MenuFormContent({
           label="Pilih Ikon Menu"
           id="mn-icon"
           optional
+          searchable
+          searchPlaceholder="Cari ikon menu..."
           disabled={submitting}
           value={form.icon || ""}
           onChange={(e) => setForm({ ...form, icon: e.target.value })}

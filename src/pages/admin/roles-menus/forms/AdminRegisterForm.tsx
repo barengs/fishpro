@@ -104,6 +104,8 @@ export function AdminRegisterForm({
               label="Penugasan Peran Khusus"
               id="ad-role"
               optional
+              searchable
+              searchPlaceholder="Cari peran..."
               disabled={disabled || roles.length === 0}
               value={form.role || ""}
               onChange={(e) =>
