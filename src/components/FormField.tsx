@@ -1,3 +1,5 @@
+import { Eye, Pencil, Trash2 } from "lucide-react";
+
 interface FormFieldProps {
   label: string;
   htmlFor: string;
@@ -126,34 +128,40 @@ export function CrudActions({
 }) {
   return (
     <div
-      className="flex gap-1.5 justify-end"
+      className="flex items-center gap-1.5 justify-end shrink-0"
       onClick={(e) => e.stopPropagation()}
     >
       {onDetail && (
         <button
           type="button"
           onClick={onDetail}
-          className="px-2.5 py-1.5 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong text-xs font-semibold cursor-pointer transition-colors"
+          title="Lihat Detail"
+          aria-label="Lihat Detail"
+          className="w-8 h-8 rounded-lg border border-blue-200 dark:border-blue-700/60 bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-300 hover:bg-fco-blue hover:text-white hover:border-fco-blue dark:hover:bg-fco-blue dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
         >
-          Detail
+          <Eye size={15} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
       {onEdit && (
         <button
           type="button"
           onClick={onEdit}
-          className="px-2.5 py-1.5 rounded-lg border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors"
+          title="Ubah Data"
+          aria-label="Ubah Data"
+          className="w-8 h-8 rounded-lg border border-amber-200 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 hover:bg-amber-500 hover:text-white hover:border-amber-500 dark:hover:bg-amber-500 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
         >
-          Ubah
+          <Pencil size={14} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
       {onDelete && (
         <button
           type="button"
           onClick={onDelete}
-          className="px-2.5 py-1.5 rounded-lg border border-red-200 dark:border-red-500/20 surface-card hover:bg-red-50 dark:hover:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold cursor-pointer transition-colors"
+          title="Hapus Data"
+          aria-label="Hapus Data"
+          className="w-8 h-8 rounded-lg border border-rose-200 dark:border-rose-700/60 bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white hover:border-rose-600 dark:hover:bg-rose-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
         >
-          Hapus
+          <Trash2 size={14} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
     </div>

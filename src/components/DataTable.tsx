@@ -27,8 +27,8 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-200">
-        <div className="flex items-center py-2.5 text-xs font-semibold text-soft px-2 gap-3">
+      <div className="min-w-full">
+        <div className="flex items-center py-2.5 px-3 text-xs font-semibold text-soft gap-3 bg-black/2 dark:bg-white/2 rounded-t-lg">
           {columns.map((c) => {
             const isAction = c.key === "aksi";
             return (
@@ -36,7 +36,7 @@ export function DataTable<T>({
                 key={c.key}
                 style={
                   isAction
-                    ? { flex: "0 0 auto", minWidth: 168 }
+                    ? { flex: "0 0 auto", minWidth: 112 }
                     : { flex: c.flex ?? 1 }
                 }
                 className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${
@@ -70,9 +70,9 @@ export function DataTable<T>({
             <div
               key={rowKey(row)}
               onClick={() => onRowClick?.(row)}
-              className={`flex items-center gap-3 py-3.5 px-2 rounded-xl border-t border-fco-border-subtle transition-colors ${
+              className={`flex items-center gap-3 py-3.5 px-3 border-t border-fco-border-subtle transition-colors ${
                 onRowClick
-                  ? "cursor-pointer hover:bg-fco-blue-light/30 dark:hover:bg-fco-blue/10"
+                  ? "cursor-pointer hover:bg-black/3 dark:hover:bg-white/5"
                   : ""
               }`}
             >
@@ -83,7 +83,7 @@ export function DataTable<T>({
                     key={c.key}
                     style={
                       isAction
-                        ? { flex: "0 0 auto", minWidth: 168 }
+                        ? { flex: "0 0 auto", minWidth: 104 }
                         : { flex: c.flex ?? 1 }
                     }
                     className={`${isAction ? "shrink-0 flex justify-end" : "min-w-0 overflow-hidden"} ${

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ProgressBar } from "../../../components/ProgressBar";
 import { StatusChip } from "../../../components/StatusChip";
 import { shipsService, type Ship } from "../../../services/ships";
-import { Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 interface CriticalShipItem {
   name: string;
@@ -69,61 +69,86 @@ export function CriticalQuotaTable() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-xl p-6 shadow-xs">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="m-0 text-base font-bold text-strong">
-          Kuota hampir habis (Kapal Prioritas)
-        </h2>
+    <section className="surface-card border rounded-lg shadow-xs overflow-hidden">
+      {/* SB Admin Card Header */}
+      <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <AlertTriangle
+            size={16}
+            className="text-amber-500 shrink-0"
+            aria-hidden="true"
+          />
+          <h2 className="m-0 text-sm font-bold text-strong">
+            Peringatan Kuota Kapal (Prioritas)
+          </h2>
+        </div>
         <Link
           to="/admin/ships"
-          className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
+          className="text-xs font-semibold text-fco-blue hover:underline no-underline"
         >
-          Semua kapal →
+          Lihat Semua Kapal →
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <div className="min-w-115">
-          <div className="flex items-center py-2.5 text-xs font-semibold text-soft">
-            <div className="basis-3/8">Kapal</div>
-            <div className="basis-3/8">Sisa kuota</div>
-            <div className="basis-2/8 text-right">Status</div>
-          </div>
+      <div className="p-5 sm:p-6">
+        <div className="overflow-x-auto">
+          <div className="min-w-115">
+            <div className="flex items-center py-2 text-xs font-semibold text-soft">
+              <div className="basis-3/8">Kapal</div>
+              <div className="basis-3/8">Sisa kuota</div>
+              <div className="basis-2/8 text-right">Status</div>
+            </div>
 
-          {loading ? (
-            <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
-              <Loader2 size={18} className="animate-spin text-fco-blue" />
-              <span>Memuat status kuota kapal...</span>
-            </div>
-          ) : rows.length === 0 ? (
-            <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle">
-              Belum ada data kapal terdaftar di database KKP.
-            </div>
-          ) : (
-            rows.map((q) => (
-              <div
-                key={q.reg}
-                className="flex items-center py-3.5 border-t border-fco-border-subtle"
-              >
-                <div className="basis-3/8">
-                  <div className="text-sm font-semibold text-strong">
-                    {q.name}
-                  </div>
-                  <div className="text-xs text-soft tabular-nums">{q.reg}</div>
-                </div>
-                <div className="basis-3/8 pr-6">
-                  <ProgressBar width={q.width} showText />
-                </div>
-                <div className="basis-2/8 text-right">
-                  <StatusChip
-                    label={q.chip}
-                    bg={q.chipBg}
-                    color={q.chipColor}
-                  />
-                </div>
+            {loading ? (
+              <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
+                <Loader2 size={18} className="animate-spin text-fco-blue" />
+                <span>Memuat status kuota kapal...</span>
               </div>
-            ))
-          )}
+            ) : rows.length === 0 ? (
+              <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle">
+                Belum ada data kapal terdaftar di database KKP.
+              </div>
+            ) : (
+              rows.map((q) => (
+                <div
+                  key={q.reg}
+                  className="flex items-center py-3 border-t border-fco-border-subtle text-sm gap-2"
+                >
+                  <div className="basis-3/8 min-w-0">
+                    <div className="font-semibold text-strong truncate">
+                      {q.name}
+                    </div>
+                    <div className="text-2xs text-soft font-mono truncate">
+                      {q.reg}
+                    </div>
+                  </div>
+                  <div className="basis-3/8">
+                    <div className="text-xs font-medium text-soft mb-1 tabular-nums">
+                      {q.pct}% tersisa
+                    </div>
+                    <ProgressBar
+                      width={q.width}
+                      height={6}
+                      barBg={
+                        q.pct < 15
+                          ? "#EF4444"
+                          : q.pct < 30
+                            ? "#F59E0B"
+                            : "#1A56DB"
+                      }
+                    />
+                  </div>
+                  <div className="basis-2/8 text-right">
+                    <StatusChip
+                      label={q.chip}
+                      bg={q.chipBg}
+                      color={q.chipColor}
+                    />
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </section>

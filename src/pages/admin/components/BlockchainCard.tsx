@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, ShieldAlert } from "lucide-react";
+import { Check, Link2, ShieldAlert } from "lucide-react";
 import { StatusChip } from "../../../components/StatusChip";
 import {
   blockchainService,
@@ -62,12 +62,20 @@ export function BlockchainCard() {
   ];
 
   return (
-    <section className="surface-card border rounded-xl p-6 flex flex-col justify-between shadow-xs h-full">
+    <section className="surface-card border rounded-lg shadow-xs overflow-hidden flex flex-col justify-between h-full">
       <div>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="m-0 text-base font-bold text-strong">
-            Status blockchain
-          </h2>
+        {/* SB Admin Card Header */}
+        <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link2
+              size={16}
+              className="text-fco-blue shrink-0"
+              aria-hidden="true"
+            />
+            <h2 className="m-0 text-sm font-bold text-strong">
+              Integritas Blockchain
+            </h2>
+          </div>
           <StatusChip
             label={
               status
@@ -104,14 +112,14 @@ export function BlockchainCard() {
           />
         </div>
 
-        <div className="flex flex-col">
+        <div className="p-5 sm:p-6 flex flex-col">
           {chain.map((c) => (
             <div
               key={c.label}
-              className="flex items-center justify-between py-3.5 border-t border-fco-border-subtle"
+              className="flex items-center justify-between py-3 border-t first:border-t-0 border-fco-border-subtle text-xs sm:text-sm"
             >
-              <span className="text-fco-sm text-soft">{c.label}</span>
-              <span className="text-sm font-semibold tabular-nums text-strong font-mono">
+              <span className="text-soft">{c.label}</span>
+              <span className="font-semibold tabular-nums text-strong font-mono">
                 {c.value}
               </span>
             </div>
@@ -119,12 +127,14 @@ export function BlockchainCard() {
         </div>
       </div>
 
-      <Link
-        to="/admin/blockchain"
-        className="mt-4 pt-3 border-t border-fco-border-subtle text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline block"
-      >
-        Lihat semua blok & transaksi →
-      </Link>
+      <div className="p-4 px-5 sm:px-6 border-t border-fco-border-subtle surface-inset">
+        <Link
+          to="/admin/blockchain"
+          className="text-xs font-semibold text-fco-blue hover:underline no-underline block text-center"
+        >
+          Buka Penjelajah Blockchain →
+        </Link>
+      </div>
     </section>
   );
 }

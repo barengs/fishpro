@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ClipboardList, Coins, Fish, Search, Ship } from "lucide-react";
+import { ClipboardList, Coins, Fish, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { PnbpChart } from "./components/PnbpChart";
 import { BlockchainCard } from "./components/BlockchainCard";
@@ -32,7 +32,6 @@ export function AdminDashboard() {
     totalVolumeStr: "0 kg",
     totalPnbpStr: "Rp 0",
   });
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function loadStats() {
@@ -72,48 +71,42 @@ export function AdminDashboard() {
 
   return (
     <div>
-      {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
-        <div>
-          <h1 className="m-0 text-3xl font-extrabold tracking-tight">
-            Ringkasan nasional
-          </h1>
-          <div className="text-sm text-soft mt-1">
-            Tangkapan, PNBP, dan kuota seluruh kapal terintegrasi backend.
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search
-              size={18}
-              className="text-soft absolute left-3 top-2.5 pointer-events-none"
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari kapal atau pemilik..."
-              className="w-full sm:w-65 h-10 border rounded-fco pl-9.5 pr-3 text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
-            />
-          </div>
+      {/* Page Title & Breadcrumb (SB Admin Style) */}
+      <div className="mb-6">
+        <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          Dashboard
+        </h1>
+        <div className="mt-3 p-3 px-4 rounded-md surface-inset border dark:border-fco-border-dark flex items-center gap-2 text-xs text-soft">
+          <span className="font-semibold text-strong">Dashboard</span>
+          <span>/</span>
+          <span>Ringkasan Nasional</span>
         </div>
       </div>
 
-      {/* Realtime Global KPIs from APIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      {/* 4 Realtime Cards (SB Admin Style: Primary Blue, Warning Amber, Success Emerald, Danger Rose) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
-          label="Kapal aktif"
+          label="Kapal Aktif"
           value={formatNumber(metrics.activeShipsCount)}
-          delta={`${metrics.totalShipsCount} total armada nasional`}
+          delta={`${metrics.totalShipsCount} armada nasional`}
           color="blue"
           Icon={Ship}
           loading={loading}
+          href="/admin/ships"
+          linkText="Lihat Detail Kapal"
         />
         <KpiCard
-          label="Total laporan tangkapan"
+          label="Total Volume Tangkapan"
+          value={metrics.totalVolumeStr}
+          delta="Akumulasi produksi nasional"
+          color="amber"
+          Icon={Fish}
+          loading={loading}
+          href="/admin/catches"
+          linkText="Lihat Detail Tangkapan"
+        />
+        <KpiCard
+          label="Total Laporan Tangkapan"
           value={formatNumber(metrics.totalCatchesCount)}
           delta={
             metrics.totalCatchesCount > 0
@@ -123,22 +116,18 @@ export function AdminDashboard() {
           color="emerald"
           Icon={ClipboardList}
           loading={loading}
+          href="/admin/catches"
+          linkText="Lihat Detail Laporan"
         />
         <KpiCard
-          label="Total volume tangkapan"
-          value={metrics.totalVolumeStr}
-          delta="Akumulasi produksi nasional"
-          color="cyan"
-          Icon={Fish}
-          loading={loading}
-        />
-        <KpiCard
-          label="PNBP terhitung"
+          label="PNBP Terhitung"
           value={metrics.totalPnbpStr}
-          delta="Penerimaan resmi KKP"
-          color="purple"
+          delta="Penerimaan resmi negara"
+          color="rose"
           Icon={Coins}
           loading={loading}
+          href="/admin/quota"
+          linkText="Lihat Detail PNBP"
         />
       </div>
 

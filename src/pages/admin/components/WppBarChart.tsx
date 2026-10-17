@@ -3,7 +3,7 @@ import { ProgressBar } from "../../../components/ProgressBar";
 import { regionsService, type FishingArea } from "../../../services/regions";
 import { catchesService } from "../../../services/catches";
 import { formatWeight } from "../../../utils";
-import { Loader2 } from "lucide-react";
+import { BarChart3, Loader2 } from "lucide-react";
 
 interface WppItem {
   label: string;
@@ -74,36 +74,48 @@ export function WppBarChart() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-xl p-6 shadow-xs">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="m-0 text-base font-bold text-strong">
-          Tangkapan per WPP
-        </h2>
-        <span className="text-xs text-soft">Wilayah Tangkapan</span>
+    <section className="surface-card border rounded-lg shadow-xs overflow-hidden">
+      {/* SB Admin Card Header */}
+      <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BarChart3
+            size={16}
+            className="text-fco-blue shrink-0"
+            aria-hidden="true"
+          />
+          <h2 className="m-0 text-sm font-bold text-strong">
+            Tangkapan per Wilayah (WPP)
+          </h2>
+        </div>
+        <span className="text-2xs font-semibold text-soft uppercase tracking-wider">
+          Distribusi Zona
+        </span>
       </div>
 
-      {loading ? (
-        <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
-          <Loader2 size={18} className="animate-spin text-fco-blue" />
-          <span>Memuat statistik WPP...</span>
-        </div>
-      ) : items.length === 0 ? (
-        <div className="py-8 text-center text-sm text-soft">
-          Belum ada data wilayah tangkapan tercatat.
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4.5">
-          {items.map((w) => (
-            <div key={w.label}>
-              <div className="flex justify-between mb-2 text-fco-sm">
-                <span className="font-semibold text-strong">{w.label}</span>
-                <span className="text-soft tabular-nums">{w.value}</span>
+      <div className="p-5 sm:p-6">
+        {loading ? (
+          <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
+            <Loader2 size={18} className="animate-spin text-fco-blue" />
+            <span>Memuat statistik WPP...</span>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="py-8 text-center text-sm text-soft">
+            Belum ada data wilayah tangkapan tercatat.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {items.map((w) => (
+              <div key={w.label}>
+                <div className="flex justify-between mb-1.5 text-xs sm:text-sm">
+                  <span className="font-semibold text-strong">{w.label}</span>
+                  <span className="text-soft tabular-nums">{w.value}</span>
+                </div>
+                <ProgressBar width={w.width} height={8} />
               </div>
-              <ProgressBar width={w.width} height={8} />
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -5,7 +5,7 @@ import {
   type UnifiedChartSummaryStats,
 } from "../../../services/pnbp";
 import { formatRupiah } from "../../../utils";
-import { Loader2, TrendingUp } from "lucide-react";
+import { LineChart, Loader2, TrendingUp } from "lucide-react";
 
 interface MonthlyPoint {
   label: string;
@@ -112,31 +112,23 @@ export function PnbpChart() {
       : predPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
-    <section className="surface-card border rounded-xl p-6 shadow-xs">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <div>
-          <h2 className="m-0 text-base font-bold text-strong">
-            PNBP bulanan: aktual dan prediksi
+    <section className="surface-card border rounded-lg shadow-xs overflow-hidden">
+      {/* SB Admin Card Header */}
+      <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <LineChart
+            size={16}
+            className="text-fco-blue shrink-0"
+            aria-hidden="true"
+          />
+          <h2 className="m-0 text-sm font-bold text-strong">
+            PNBP Bulanan: Aktual dan Prediksi
           </h2>
-          {stats &&
-          stats.total_pnbp_sum !== undefined &&
-          stats.total_pnbp_sum > 0 ? (
-            <div className="text-xs text-soft mt-1">
-              Akumulasi tercatat:{" "}
-              <span className="font-semibold text-fco-blue tabular-nums">
-                {formatRupiah(stats.total_pnbp_sum, false)}
-              </span>
-              {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
-            </div>
-          ) : (
-            <div className="text-xs text-soft mt-1">
-              Visualisasi deret waktu berbasis data transaksi laporan tangkapan
-            </div>
-          )}
         </div>
-        <div className="flex gap-4 text-xs text-soft">
+
+        <div className="flex items-center gap-4 text-xs text-soft">
           <span className="flex items-center gap-1.5">
-            <svg width="20" height="4" viewBox="0 0 20 4" aria-hidden="true">
+            <svg width="18" height="4" viewBox="0 0 20 4" aria-hidden="true">
               <line
                 x1="0"
                 y1="2"
@@ -147,10 +139,10 @@ export function PnbpChart() {
                 strokeLinecap="round"
               />
             </svg>
-            Aktual
+            <span>Aktual</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <svg width="20" height="4" viewBox="0 0 20 4" aria-hidden="true">
+            <svg width="18" height="4" viewBox="0 0 20 4" aria-hidden="true">
               <line
                 x1="0"
                 y1="2"
@@ -161,117 +153,135 @@ export function PnbpChart() {
                 strokeDasharray="4 3"
               />
             </svg>
-            Prediksi AI
+            <span>Prediksi AI</span>
           </span>
         </div>
       </div>
 
-      {loading ? (
-        <div className="py-20 flex flex-col items-center justify-center gap-2 text-sm text-soft">
-          <Loader2 size={24} className="animate-spin text-fco-blue" />
-          <span>Memuat grafik tren PNBP...</span>
-        </div>
-      ) : !hasData ? (
-        <div className="py-16 px-4 flex flex-col items-center justify-center text-center gap-3 border border-dashed border-fco-border rounded-xl">
-          <div className="w-12 h-12 rounded-xl bg-fco-blue-light dark:bg-fco-blue/15 text-fco-blue flex items-center justify-center">
-            <TrendingUp size={24} aria-hidden="true" />
+      <div className="p-5 sm:p-6">
+        {stats &&
+        stats.total_pnbp_sum !== undefined &&
+        stats.total_pnbp_sum > 0 ? (
+          <div className="text-xs text-soft mb-4">
+            Akumulasi tercatat:{" "}
+            <span className="font-semibold text-fco-blue tabular-nums">
+              {formatRupiah(stats.total_pnbp_sum, false)}
+            </span>
+            {stats.unique_ships ? ` dari ${stats.unique_ships} kapal` : ""}
           </div>
-          <div>
-            <h3 className="m-0 text-sm font-bold text-strong">
-              Belum Ada Transaksi Tangkapan untuk Grafik PNBP
-            </h3>
-            <p className="m-0 text-xs text-soft max-w-md mt-1 leading-relaxed">
-              Saat laporan penangkapan ikan dicatat di sistem, kurva aktual dan
-              proyeksi 4 model analitis AI akan terbentuk secara otomatis di
-              sini.
-            </p>
+        ) : (
+          <div className="text-xs text-soft mb-4">
+            Visualisasi deret waktu berbasis data transaksi laporan tangkapan
           </div>
-        </div>
-      ) : (
-        <svg
-          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          role="img"
-          aria-label="Grafik garis PNBP bulanan"
-          className="w-full h-auto block"
-        >
-          {/* Y Axis Grid Lines */}
-          {[0, 0.33, 0.66, 1].map((ratio) => {
-            const y = padTop + plotHeight * (1 - ratio);
-            const val = maxValue * ratio;
-            return (
-              <g key={ratio}>
-                <line
-                  x1={padLeft}
-                  y1={y}
-                  x2={svgWidth - padRight}
-                  y2={y}
-                  stroke="#E6EDF8"
-                  strokeWidth="1"
-                  className="dark:stroke-slate-800"
+        )}
+
+        {loading ? (
+          <div className="py-20 flex flex-col items-center justify-center gap-2 text-sm text-soft">
+            <Loader2 size={24} className="animate-spin text-fco-blue" />
+            <span>Memuat grafik tren PNBP...</span>
+          </div>
+        ) : !hasData ? (
+          <div className="py-16 px-4 flex flex-col items-center justify-center text-center gap-3 border border-dashed border-fco-border rounded-xl">
+            <div className="w-12 h-12 rounded-xl bg-fco-blue-light dark:bg-fco-blue/15 text-fco-blue flex items-center justify-center">
+              <TrendingUp size={24} aria-hidden="true" />
+            </div>
+            <div>
+              <h3 className="m-0 text-sm font-bold text-strong">
+                Belum Ada Transaksi Tangkapan untuk Grafik PNBP
+              </h3>
+              <p className="m-0 text-xs text-soft max-w-md mt-1 leading-relaxed">
+                Saat laporan penangkapan ikan dicatat di sistem, kurva aktual
+                dan proyeksi 4 model analitis AI akan terbentuk secara otomatis
+                di sini.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <svg
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            role="img"
+            aria-label="Grafik garis PNBP bulanan"
+            className="w-full h-auto block"
+          >
+            {/* Y Axis Grid Lines */}
+            {[0, 0.33, 0.66, 1].map((ratio) => {
+              const y = padTop + plotHeight * (1 - ratio);
+              const val = maxValue * ratio;
+              return (
+                <g key={ratio}>
+                  <line
+                    x1={padLeft}
+                    y1={y}
+                    x2={svgWidth - padRight}
+                    y2={y}
+                    stroke="#E6EDF8"
+                    strokeWidth="1"
+                    className="dark:stroke-slate-800"
+                  />
+                  <text
+                    x={padLeft - 10}
+                    y={y + 4}
+                    fontSize="11"
+                    fill="#5B6B86"
+                    textAnchor="end"
+                    className="font-mono text-soft"
+                  >
+                    {formatRupiah(val).replace("Rp ", "")}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Actual Polyline */}
+            {actualPolyline && (
+              <polyline
+                points={actualPolyline}
+                fill="none"
+                stroke="#1A56DB"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            )}
+
+            {/* Prediction Polyline (Dashed) */}
+            {predPolyline && (
+              <polyline
+                points={predPolyline}
+                fill="none"
+                stroke="#3F82E8"
+                strokeWidth="2.5"
+                strokeDasharray="6 6"
+                strokeLinecap="round"
+              />
+            )}
+
+            {/* Points circles and X labels */}
+            {coords.map((p, i) => (
+              <g key={i}>
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={4.5}
+                  fill={p.isPrediction ? "#FFFFFF" : "#1A56DB"}
+                  stroke={p.isPrediction ? "#3F82E8" : "#FFFFFF"}
+                  strokeWidth="2"
                 />
                 <text
-                  x={padLeft - 10}
-                  y={y + 4}
+                  x={p.x}
+                  y={svgHeight - 12}
                   fontSize="11"
                   fill="#5B6B86"
-                  textAnchor="end"
-                  className="font-mono text-soft"
+                  textAnchor="middle"
+                  className="font-semibold text-soft"
                 >
-                  {formatRupiah(val).replace("Rp ", "")}
+                  {p.label}
                 </text>
               </g>
-            );
-          })}
-
-          {/* Actual Polyline */}
-          {actualPolyline && (
-            <polyline
-              points={actualPolyline}
-              fill="none"
-              stroke="#1A56DB"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          )}
-
-          {/* Prediction Polyline (Dashed) */}
-          {predPolyline && (
-            <polyline
-              points={predPolyline}
-              fill="none"
-              stroke="#3F82E8"
-              strokeWidth="2.5"
-              strokeDasharray="6 6"
-              strokeLinecap="round"
-            />
-          )}
-
-          {/* Points circles and X labels */}
-          {coords.map((p, i) => (
-            <g key={i}>
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r={4.5}
-                fill={p.isPrediction ? "#FFFFFF" : "#1A56DB"}
-                stroke={p.isPrediction ? "#3F82E8" : "#FFFFFF"}
-                strokeWidth="2"
-              />
-              <text
-                x={p.x}
-                y={svgHeight - 12}
-                fontSize="11"
-                fill="#5B6B86"
-                textAnchor="middle"
-                className="font-semibold text-soft"
-              >
-                {p.label}
-              </text>
-            </g>
-          ))}
-        </svg>
-      )}
+            ))}
+          </svg>
+        )}
+      </div>
     </section>
   );
 }
