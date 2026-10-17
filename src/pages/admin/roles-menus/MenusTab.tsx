@@ -96,15 +96,17 @@ export function MenusTab() {
       header: "Nama Menu",
       flex: 2,
       render: (r) => (
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 min-w-0">
           {r.icon && iconMap[r.icon] && (
             <span className="w-7 h-7 rounded-lg surface-inset flex items-center justify-center text-fco-blue shrink-0">
               {iconMap[r.icon]}
             </span>
           )}
-          <div>
-            <div className="text-sm font-semibold">{r.name}</div>
-            {r.icon && <div className="text-xs text-soft">{r.icon}</div>}
+          <div className="min-w-0">
+            <div className="text-sm font-semibold truncate">{r.name}</div>
+            <div className="sm:hidden text-2xs text-soft font-mono truncate">
+              {r.url || "—"}
+            </div>
           </div>
         </div>
       ),
@@ -113,6 +115,7 @@ export function MenusTab() {
       key: "url",
       header: "URL Rute",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <code className="text-xs bg-fco-blue-light/50 dark:bg-fco-blue/15 px-2 py-1 rounded-md text-fco-blue font-mono">
           {r.url || "—"}
@@ -124,6 +127,7 @@ export function MenusTab() {
       header: "Urutan",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums font-semibold">{r.order}</span>
       ),
@@ -133,6 +137,7 @@ export function MenusTab() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         r.is_active ? (
           <StatusChip label="Aktif" />

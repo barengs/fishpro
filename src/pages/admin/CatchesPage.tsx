@@ -176,6 +176,7 @@ export function CatchesPage() {
       key: "loc",
       header: "Lokasi Koordinat",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs text-soft font-mono">
           {r.location_latitude}, {r.location_longitude}
@@ -186,6 +187,7 @@ export function CatchesPage() {
       key: "details",
       header: "Detail Tangkapan",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => {
         const details = r.catch_details || [];
         if (details.length === 0)
@@ -214,6 +216,7 @@ export function CatchesPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: () => <StatusChip label="Tercatat" />,
     },
     {

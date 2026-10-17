@@ -91,8 +91,17 @@ export function AdminUsersTab() {
       flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold">
-            {r.admin_profile?.full_name || r.username}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm font-semibold">
+              {r.admin_profile?.full_name || r.username}
+            </span>
+            <span className="sm:hidden">
+              <StatusChip
+                label={r.is_active ? "Aktif" : "Nonaktif"}
+                bg={r.is_active ? undefined : "#EEF1F6"}
+                color={r.is_active ? undefined : "#4A5872"}
+              />
+            </span>
           </div>
           <div className="text-xs text-soft">
             @{r.username} · {r.email || "—"}
@@ -104,6 +113,7 @@ export function AdminUsersTab() {
       key: "dept",
       header: "Departemen / Posisi",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => (
         <div>
           <div className="text-sm">{r.admin_profile?.department || "—"}</div>
@@ -117,6 +127,7 @@ export function AdminUsersTab() {
       key: "phone",
       header: "Telepon",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">
           {r.admin_profile?.phone || "—"}
@@ -128,6 +139,7 @@ export function AdminUsersTab() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         r.is_active ? (
           <StatusChip label="Aktif" />

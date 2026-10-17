@@ -148,7 +148,22 @@ export function FleetPage() {
       flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold">{r.name}</div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm font-semibold">{r.name}</span>
+            <span className="sm:hidden">
+              <StatusChip
+                label={
+                  !r.active
+                    ? "Nonaktif"
+                    : !r.captain
+                      ? "Tanpa nahkoda"
+                      : "Aktif"
+                }
+                bg={!r.active || !r.captain ? "#FFF1E0" : undefined}
+                color={!r.active || !r.captain ? "#B54708" : undefined}
+              />
+            </span>
+          </div>
           <div className="text-xs text-soft tabular-nums">
             {r.registration_number}
             {r.home_port && ` · ${r.home_port}`}
@@ -160,6 +175,7 @@ export function FleetPage() {
       key: "cap",
       header: "Nahkoda",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm">
           {r.captain_name || (
@@ -174,6 +190,7 @@ export function FleetPage() {
       key: "q",
       header: "Sisa Kuota",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => {
         const quota = r.current_year_quota;
         return (
@@ -189,6 +206,7 @@ export function FleetPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         !r.active ? (
           <StatusChip label="Nonaktif" bg="#EEF1F6" color="#4A5872" />

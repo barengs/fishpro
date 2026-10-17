@@ -131,7 +131,16 @@ export function ShipsPage() {
       flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold">{r.name}</div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm font-semibold">{r.name}</span>
+            <span className="sm:hidden">
+              <StatusChip
+                label={r.active ? "Aktif" : "Nonaktif"}
+                bg={r.active ? undefined : "#EEF1F6"}
+                color={r.active ? undefined : "#4A5872"}
+              />
+            </span>
+          </div>
           <div className="text-xs text-soft tabular-nums">
             {r.registration_number}
             {r.home_port && ` · ${r.home_port}`}
@@ -143,6 +152,7 @@ export function ShipsPage() {
       key: "owner",
       header: "Pemilik",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm">
           {r.owner_name || (r.owner ? `Owner #${r.owner}` : "—")}
@@ -153,6 +163,7 @@ export function ShipsPage() {
       key: "captain",
       header: "Nahkoda",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm">
           {r.captain_name || (r.captain ? `Captain #${r.captain}` : "—")}
@@ -164,6 +175,7 @@ export function ShipsPage() {
       header: "GT",
       flex: 1,
       align: "right",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">{r.gross_tonnage ?? "—"}</span>
       ),
@@ -173,6 +185,7 @@ export function ShipsPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         r.active ? (
           <StatusChip label="Aktif" />

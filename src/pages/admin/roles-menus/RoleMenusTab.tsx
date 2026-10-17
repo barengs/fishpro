@@ -117,20 +117,29 @@ export function RoleMenusTab() {
   const rmCols: Column<RoleMenu>[] = [
     {
       key: "role",
-      header: "Peran",
-      flex: 2,
-      render: (r) => <span className="text-sm font-bold">{r.role}</span>,
+      header: "Peran / Menu",
+      flex: 3,
+      render: (r) => (
+        <div>
+          <div className="text-sm font-bold text-strong">{r.role}</div>
+          <div className="sm:hidden text-xs text-soft font-medium">
+            Menu: {r.menu}
+          </div>
+        </div>
+      ),
     },
     {
       key: "menu",
       header: "Menu",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => <span className="text-sm font-semibold">{r.menu}</span>,
     },
     {
       key: "permissions",
       header: "Izin Akses",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => (
         <div className="flex gap-1.5 flex-wrap">
           {r.can_view && (

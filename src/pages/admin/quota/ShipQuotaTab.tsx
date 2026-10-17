@@ -53,24 +53,40 @@ export function ShipQuotaTab() {
       key: "ship",
       header: "Kapal / Tahun",
       flex: 3,
-      render: (r) => (
-        <div>
-          <div className="text-sm font-semibold">{r.ship}</div>
-          <div className="text-xs text-soft tabular-nums">{r.year}</div>
-        </div>
-      ),
+      render: (r) => {
+        const isCritical = Number.parseInt(r.pct) < 15;
+        return (
+          <div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-semibold">{r.ship}</span>
+              <span className="sm:hidden">
+                {isCritical ? (
+                  <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
+                ) : (
+                  <StatusChip label="Aman" />
+                )}
+              </span>
+            </div>
+            <div className="text-xs text-soft tabular-nums">
+              Tahun {r.year} · Sisa: {r.remaining} ({r.pct})
+            </div>
+          </div>
+        );
+      },
     },
     {
       key: "quota",
       header: "Kuota",
       flex: 2,
       align: "right",
+      hideOnMobile: true,
       render: (r) => <span className="text-sm tabular-nums">{r.quota}</span>,
     },
     {
       key: "rem",
       header: "Sisa",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => <ProgressBar width={r.pct} showText />,
     },
     {
@@ -78,6 +94,7 @@ export function ShipQuotaTab() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         Number.parseInt(r.pct) < 15 ? (
           <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />

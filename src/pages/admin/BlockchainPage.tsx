@@ -82,6 +82,7 @@ export function BlockchainPage() {
       key: "prev",
       header: "Previous Hash",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-xs font-mono text-soft truncate block max-w-44"
@@ -96,6 +97,7 @@ export function BlockchainPage() {
       header: "Nonce",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs tabular-nums text-soft">{r.nonce}</span>
       ),
@@ -152,6 +154,7 @@ export function BlockchainPage() {
       header: "Blok ID",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs font-bold text-fco-blue tabular-nums">
           #{r.block_id || (r.block_data ? r.block_data.index : "—")}
@@ -163,6 +166,7 @@ export function BlockchainPage() {
       header: "Integritas",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: () => (
         <StatusChip
           label="Tercatat"

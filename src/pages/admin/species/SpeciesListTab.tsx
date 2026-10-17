@@ -148,6 +148,7 @@ export function SpeciesListTab() {
       key: "desc",
       header: "Deskripsi / Karakteristik",
       flex: 4,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-sm text-soft line-clamp-2 max-w-md block"

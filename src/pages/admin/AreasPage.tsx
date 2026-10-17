@@ -128,6 +128,7 @@ export function AreasPage() {
       key: "desc",
       header: "Deskripsi Cakupan",
       flex: 4,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-sm text-soft line-clamp-1 max-w-md block"

@@ -121,20 +121,33 @@ export function RolesTab() {
       key: "name",
       header: "Nama Peran",
       flex: 2,
-      render: (r) => <span className="text-sm font-bold">{r.name}</span>,
+      render: (r) => (
+        <div>
+          <span className="text-sm font-bold text-strong">{r.name}</span>
+          <div className="sm:hidden text-2xs text-soft mt-0.5 line-clamp-1">
+            {r.name.toLowerCase() === "admin"
+              ? "Super Administrator"
+              : r.description || "Akses terbatas"}
+          </div>
+        </div>
+      ),
     },
     {
       key: "desc",
       header: "Deskripsi",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => (
-        <span className="text-sm text-soft">{r.description || "—"}</span>
+        <span className="text-sm text-soft line-clamp-1">
+          {r.description || "—"}
+        </span>
       ),
     },
     {
       key: "perms",
       header: "Tingkat Akses",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => {
         const isAdmin = r.name.toLowerCase() === "admin";
         return (

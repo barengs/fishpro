@@ -6,6 +6,9 @@ export interface Column<T> {
   flex?: number;
   align?: "left" | "center" | "right";
   render: (row: T) => React.ReactNode;
+  hideOnMobile?: boolean;
+  hideOnTablet?: boolean;
+  className?: string;
 }
 
 interface DataTableProps<T> {
@@ -31,21 +34,27 @@ export function DataTable<T>({
         <div className="flex items-center py-2.5 px-3 text-xs font-semibold text-soft gap-3 bg-black/2 dark:bg-white/2 rounded-t-lg">
           {columns.map((c) => {
             const isAction = c.key === "aksi";
+            const hideCls = c.hideOnMobile
+              ? "hidden sm:block"
+              : c.hideOnTablet
+                ? "hidden md:block"
+                : "";
+
             return (
               <div
                 key={c.key}
                 style={
                   isAction
-                    ? { flex: "0 0 auto", minWidth: 112 }
+                    ? { flex: "0 0 auto", minWidth: 104 }
                     : { flex: c.flex ?? 1 }
                 }
-                className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${
+                className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${hideCls} ${
                   c.align === "right"
                     ? "text-right"
                     : c.align === "center"
                       ? "text-center"
                       : ""
-                }`}
+                } ${c.className || ""}`}
               >
                 <span className={`block ${isAction ? "" : "truncate"}`}>
                   {c.header}
@@ -78,6 +87,21 @@ export function DataTable<T>({
             >
               {columns.map((c) => {
                 const isAction = c.key === "aksi";
+                const isCentered = !isAction && c.align === "center";
+                const isRight = !isAction && c.align === "right";
+
+                const hideCls = c.hideOnMobile
+                  ? isAction || isCentered || isRight
+                    ? "hidden sm:flex"
+                    : "hidden sm:block"
+                  : c.hideOnTablet
+                    ? isAction || isCentered || isRight
+                      ? "hidden md:flex"
+                      : "hidden md:block"
+                    : isAction || isCentered || isRight
+                      ? "flex"
+                      : "";
+
                 return (
                   <div
                     key={c.key}
@@ -86,13 +110,13 @@ export function DataTable<T>({
                         ? { flex: "0 0 auto", minWidth: 104 }
                         : { flex: c.flex ?? 1 }
                     }
-                    className={`${isAction ? "shrink-0 flex justify-end" : "min-w-0 overflow-hidden"} ${
-                      !isAction && c.align === "right"
-                        ? "flex justify-end"
-                        : !isAction && c.align === "center"
-                          ? "flex justify-center"
+                    className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                      isRight
+                        ? "justify-end text-right"
+                        : isCentered
+                          ? "justify-center text-center"
                           : ""
-                    }`}
+                    } ${c.className || ""}`}
                   >
                     {c.render(row)}
                   </div>

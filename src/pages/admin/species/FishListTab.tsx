@@ -137,6 +137,7 @@ export function FishListTab() {
       key: "id",
       header: "ID",
       flex: 1,
+      hideOnMobile: true,
       render: (r) => (
         <span className="font-mono text-xs text-soft">#{r.id}</span>
       ),
@@ -146,8 +147,14 @@ export function FishListTab() {
       header: "Spesies",
       flex: 2,
       render: (r) => (
-        <div className="font-semibold text-strong">
-          {r.species_name || `Spesies #${r.species}`}
+        <div>
+          <div className="font-semibold text-strong">
+            {r.species_name || `Spesies #${r.species}`}
+          </div>
+          <div className="sm:hidden text-2xs text-soft">
+            {r.name ? `${r.name} · ` : ""}
+            {r.weight ? `${Number(r.weight).toLocaleString("id-ID")} kg` : ""}
+          </div>
         </div>
       ),
     },
@@ -155,6 +162,7 @@ export function FishListTab() {
       key: "name",
       header: "Nama / Label",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-strong font-medium">{r.name || "—"}</span>
       ),
@@ -164,6 +172,7 @@ export function FishListTab() {
       header: "Berat (kg)",
       flex: 1,
       align: "right",
+      hideOnMobile: true,
       render: (r) =>
         r.weight !== null && r.weight !== undefined ? (
           <span className="font-mono font-semibold">
@@ -177,6 +186,7 @@ export function FishListTab() {
       key: "notes",
       header: "Catatan",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs text-soft line-clamp-1">{r.notes || "—"}</span>
       ),

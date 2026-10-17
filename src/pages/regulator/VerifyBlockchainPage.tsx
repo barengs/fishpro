@@ -82,6 +82,7 @@ export function VerifyBlockchainPage() {
       header: "Jumlah",
       flex: 2,
       align: "right",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums font-semibold">
           {r.quantity} {r.unit}
@@ -93,6 +94,7 @@ export function VerifyBlockchainPage() {
       header: "PNBP Terhitung",
       flex: 2,
       align: "right",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums font-mono text-fco-blue">
           {r.pnbp ? formatRupiah(r.pnbp, false) : "—"}

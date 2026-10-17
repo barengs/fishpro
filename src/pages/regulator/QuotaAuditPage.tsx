@@ -127,20 +127,34 @@ export function QuotaAuditPage() {
       key: "ship",
       header: "Kapal / Registrasi",
       flex: 3,
-      render: (r) => (
-        <div>
-          <div className="text-sm font-semibold">{r.name}</div>
-          <div className="text-xs text-soft tabular-nums">
-            {r.registration_number} · {r.home_port || "—"}
+      render: (r) => {
+        const q = r.current_year_quota;
+        const pct = q ? q.quota_percentage : 70;
+        return (
+          <div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-semibold">{r.name}</span>
+              <span className="sm:hidden">
+                {pct < 15 ? (
+                  <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
+                ) : (
+                  <StatusChip label="Aman" />
+                )}
+              </span>
+            </div>
+            <div className="text-xs text-soft tabular-nums">
+              {r.registration_number} · {r.home_port || "—"}
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "quota",
       header: "Alokasi Kuota (kg)",
       flex: 2,
       align: "right",
+      hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
         return (
@@ -156,6 +170,7 @@ export function QuotaAuditPage() {
       key: "rem",
       header: "Sisa Kuota",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
         const pct = q ? `${q.quota_percentage}%` : "70%";
@@ -166,6 +181,7 @@ export function QuotaAuditPage() {
       key: "owner",
       header: "Pemilik",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs text-soft">{r.owner_name || "—"}</span>
       ),
@@ -175,6 +191,7 @@ export function QuotaAuditPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
         const pct = q ? q.quota_percentage : 70;
@@ -191,20 +208,23 @@ export function QuotaAuditPage() {
       flex: 3,
       align: "right",
       render: (r) => (
-        <div className="flex gap-2 justify-end">
+        <div
+          className="flex items-center gap-1.5 sm:gap-2 justify-end"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             type="button"
             onClick={() => handleOpenAiPrediction(r)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-fco-border surface-card hover:surface-inset text-purple-600 dark:text-purple-400 text-xs font-semibold cursor-pointer transition-colors"
+            className="w-8 h-8 sm:w-auto sm:h-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-fco-border surface-card hover:surface-inset text-purple-600 dark:text-purple-400 text-xs font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0"
             title="Prediksi kuota LSTM + NSGA-III"
           >
-            <Brain size={14} aria-hidden="true" />
-            <span>AI Predict</span>
+            <Brain size={15} aria-hidden="true" />
+            <span className="hidden sm:inline">AI Predict</span>
           </button>
           <button
             type="button"
             onClick={() => handleOpenOverride(r)}
-            className="px-2.5 py-1.5 rounded-lg border border-fco-border bg-white hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors"
+            className="h-8 sm:h-auto px-2.5 py-1 sm:py-1.5 rounded-lg border border-fco-border bg-white hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors shrink-0"
           >
             Sesuaikan
           </button>

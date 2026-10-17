@@ -130,6 +130,7 @@ export function CaptainsPage() {
       header: "Pengalaman",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">
           {r.years_of_experience ? `${r.years_of_experience} th` : "—"}
@@ -140,6 +141,7 @@ export function CaptainsPage() {
       key: "phone",
       header: "Kontak",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">
           {r.phone || r.contact_info || "—"}

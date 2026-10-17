@@ -125,6 +125,7 @@ export function OwnersTab() {
       key: "email",
       header: "Email",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-sm truncate block max-w-full"
@@ -138,6 +139,7 @@ export function OwnersTab() {
       key: "phone",
       header: "Telepon",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-sm tabular-nums truncate block max-w-full"
@@ -151,6 +153,7 @@ export function OwnersTab() {
       key: "address",
       header: "Alamat",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span
           className="text-xs text-soft truncate block max-w-full"

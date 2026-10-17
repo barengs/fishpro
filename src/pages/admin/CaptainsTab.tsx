@@ -131,6 +131,7 @@ export function CaptainsTab() {
       key: "owner",
       header: "Pemilik",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm">{r.owner_name || `Owner #${r.owner}`}</span>
       ),
@@ -140,6 +141,7 @@ export function CaptainsTab() {
       header: "Pengalaman",
       flex: 1,
       align: "right",
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">
           {r.years_of_experience ? `${r.years_of_experience} th` : "—"}
@@ -150,6 +152,7 @@ export function CaptainsTab() {
       key: "phone",
       header: "Telepon",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">{r.phone || "—"}</span>
       ),

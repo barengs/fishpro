@@ -123,27 +123,42 @@ export function MyCatchesPage() {
   const cols: Column<FishCatch>[] = [
     {
       key: "date",
-      header: "Tanggal / Jenis",
-      flex: 2,
-      render: (r) => (
-        <div>
-          <div className="text-sm font-semibold tabular-nums">
-            {r.catch_date}
+      header: "Tanggal / Hasil",
+      flex: 3,
+      render: (r) => {
+        const details = r.catch_details || [];
+        const summary = details
+          .map(
+            (d) => `${d.fish_species_name || "Ikan"}: ${d.quantity} ${d.unit}`,
+          )
+          .join(", ");
+        return (
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-semibold tabular-nums">
+                {r.catch_date}
+              </span>
+              <span className="sm:hidden">
+                <StatusChip label="Tercatat" />
+              </span>
+            </div>
+            <div className="text-xs text-soft line-clamp-1">
+              {r.catch_type === "pelagic"
+                ? "Pelagis"
+                : r.catch_type === "demersal"
+                  ? "Demersal"
+                  : "Terumbu Karang"}
+              {summary ? ` · ${summary}` : ""}
+            </div>
           </div>
-          <div className="text-xs text-soft">
-            {r.catch_type === "pelagic"
-              ? "Pelagis"
-              : r.catch_type === "demersal"
-                ? "Demersal"
-                : "Terumbu Karang"}
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "details",
       header: "Hasil Tangkapan",
       flex: 3,
+      hideOnMobile: true,
       render: (r) => {
         const details = r.catch_details || [];
         if (details.length === 0)
@@ -171,6 +186,7 @@ export function MyCatchesPage() {
       key: "loc",
       header: "Koordinat GPS",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <span className="text-xs text-soft font-mono">
           {r.location_latitude}, {r.location_longitude}
@@ -182,6 +198,7 @@ export function MyCatchesPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: () => <StatusChip label="Tercatat" />,
     },
   ];
