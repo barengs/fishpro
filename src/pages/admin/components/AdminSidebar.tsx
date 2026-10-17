@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Menu, Search, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
@@ -17,10 +17,21 @@ export {
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.innerWidth >= 1024,
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 
   const handleLogout = async () => {
     await authService.logout();
@@ -136,21 +147,34 @@ export function AdminLayout() {
         {/* Top Header Bar */}
         <header className="h-16 px-4 sm:px-7 surface-card border-b border-fco-border-subtle sticky top-0 z-20 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            {/* Hamburger Toggle Button (Active for Desktop and Mobile) */}
+            {/* Hamburger / Close Toggle Button */}
             <button
               type="button"
               onClick={() => {
-                if (window.innerWidth >= 1024) {
+                if (isDesktop) {
                   setSidebarOpen((prev) => !prev);
                 } else {
-                  setMobileOpen(true);
+                  setMobileOpen((prev) => !prev);
                 }
               }}
-              title="Toggle Sidebar"
-              aria-label="Toggle Sidebar"
-              className="w-9 h-9 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-colors shrink-0"
+              title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-expanded={isOpen}
+              className="w-9 h-9 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-all duration-200 shrink-0"
             >
-              <Menu size={18} aria-hidden="true" />
+              {isOpen ? (
+                <X
+                  size={18}
+                  className="animate-in fade-in zoom-in-75 duration-150 text-strong"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Menu
+                  size={18}
+                  className="animate-in fade-in zoom-in-75 duration-150"
+                  aria-hidden="true"
+                />
+              )}
             </button>
 
             {/* Clean Top Search Bar */}
