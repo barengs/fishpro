@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { CrudModal } from "../../../components/CrudModal";
 import { useCrudModal } from "../../../components/useCrudModal";
-import { TextField } from "../../../components/ui";
+import { TextField, ToggleSwitch } from "../../../components/ui";
 
 export function TariffConfigTab() {
   const [t, setT] = useState({
@@ -97,17 +97,12 @@ export function TariffConfigTab() {
             onChange={(e) => setT({ ...t, rate_large: e.target.value })}
           />
         </div>
-        <div className="pt-2">
-          <label className="flex items-center gap-2.5 text-sm cursor-pointer text-strong">
-            <input
-              type="checkbox"
-              checked={t.is_active}
-              onChange={(e) => setT({ ...t, is_active: e.target.checked })}
-              className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-            />
-            Tarif Aktif Digunakan
-          </label>
-        </div>
+        <ToggleSwitch
+          id="tf-status-toggle"
+          checked={t.is_active}
+          onChange={(checked) => setT({ ...t, is_active: checked })}
+          label="Status Tarif Berlaku"
+        />
       </CrudModal>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FormField, inputCls } from "./FormField";
-import { SelectField } from "./ui";
+import { SelectField, ToggleSwitch } from "./ui";
 import { emptyShipForm, type ShipFormData } from "./shipFormTypes";
 import { ownersService, type Owner } from "../services/owners";
 import { captainsService, type Captain } from "../services/captains";
@@ -380,23 +380,11 @@ export function ShipFormWizard({
                   />
                 </FormField>
               </div>
-              <SelectField
-                label="Status kapal"
-                id="wz-status"
-                value={form.active ? "active" : "inactive"}
-                onChange={(e) =>
-                  setForm({ ...form, active: e.target.value === "active" })
-                }
-                options={[
-                  {
-                    value: "active",
-                    label: "Aktif — beroperasi & bisa melapor",
-                  },
-                  {
-                    value: "inactive",
-                    label: "Nonaktif — dok / izin mati / dijual",
-                  },
-                ]}
+              <ToggleSwitch
+                id="wz-status-toggle"
+                checked={form.active}
+                onChange={(checked) => setForm({ ...form, active: checked })}
+                label="Status Operasional Kapal"
               />
             </div>
           )}

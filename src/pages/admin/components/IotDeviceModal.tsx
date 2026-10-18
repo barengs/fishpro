@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { AlertCircle } from "lucide-react";
 import { CrudModal } from "../../../components/CrudModal";
-import { TextField } from "../../../components/ui";
+import { TextField, ToggleSwitch } from "../../../components/ui";
 import {
   type CreateSmartScalePayload,
   type SmartScale,
@@ -67,12 +68,14 @@ function IotDeviceFormContent({
       {errorMsg && (
         <div
           role="alert"
-          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20"
+          className="flex items-center gap-2 p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20"
         >
-          ⚠ {errorMsg}
+          <AlertCircle size={15} className="shrink-0" aria-hidden="true" />
+          <span>{errorMsg}</span>
         </div>
       )}
 
+      {/* Baris 1: ID Perangkat & Nama Timbangan */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <TextField
           label="ID Perangkat (Device ID)"
@@ -87,7 +90,6 @@ function IotDeviceFormContent({
             })
           }
           placeholder="Contoh: SCALE-BENOAS-01"
-          hint="ID unik perangkat keras untuk konfigurasi ESP32 / mikrokontroler."
         />
 
         <TextField
@@ -101,34 +103,27 @@ function IotDeviceFormContent({
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <TextField
-          label="Lokasi Pelabuhan / Dermaga"
-          id="dev-port"
-          required
-          disabled={submitting}
-          value={form.port_name}
-          onChange={(e) => setForm({ ...form, port_name: e.target.value })}
-          placeholder="Contoh: Pelabuhan Benoa, Bali"
-        />
+      {/* Baris 2: Lokasi Pelabuhan */}
+      <TextField
+        label="Lokasi Pelabuhan / Dermaga"
+        id="dev-port"
+        required
+        disabled={submitting}
+        value={form.port_name}
+        onChange={(e) => setForm({ ...form, port_name: e.target.value })}
+        placeholder="Contoh: Pelabuhan Benoa, Bali"
+      />
 
-        <div className="flex items-center pt-6">
-          <label className="flex items-center gap-2.5 text-sm font-semibold cursor-pointer text-strong">
-            <input
-              type="checkbox"
-              disabled={submitting}
-              checked={form.is_active}
-              onChange={(e) =>
-                setForm({ ...form, is_active: e.target.checked })
-              }
-              className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-            />
-            <span>Status Perangkat Aktif</span>
-          </label>
-        </div>
-      </div>
+      {/* Baris 3: Toggle Status Operasional */}
+      <ToggleSwitch
+        id="dev-status-toggle"
+        checked={Boolean(form.is_active)}
+        disabled={submitting}
+        onChange={(checked) => setForm({ ...form, is_active: checked })}
+        label="Status Operasional Timbangan"
+      />
 
-      <div className="flex gap-2.5 justify-end mt-2 pt-4 border-t border-fco-border-subtle">
+      <div className="flex gap-2.5 justify-end mt-1 pt-4 border-t border-fco-border-subtle">
         <button
           type="button"
           onClick={onClose}

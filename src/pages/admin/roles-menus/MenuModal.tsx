@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { CrudModal } from "../../../components/CrudModal";
-import { SelectField, TextField } from "../../../components/ui";
+import { SelectField, TextField, ToggleSwitch } from "../../../components/ui";
 import { menuSchema } from "../../../utils/schemas";
 import { availableMenuIcons } from "./menuIcons";
 import { type CreateMenuPayload, type Menu } from "../../../services/admin";
@@ -97,31 +97,25 @@ function MenuFormContent({
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <TextField
-          label="Urutan Tampil"
-          id="mn-order"
-          type="number"
-          optional
-          disabled={submitting}
-          value={form.order ?? 0}
-          onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
-        />
-        <div className="flex items-center pt-8">
-          <label className="flex items-center gap-2.5 text-sm font-semibold cursor-pointer text-strong">
-            <input
-              type="checkbox"
-              disabled={submitting}
-              checked={form.is_active}
-              onChange={(e) =>
-                setForm({ ...form, is_active: e.target.checked })
-              }
-              className="w-4 h-4 rounded text-fco-blue accent-fco-blue"
-            />
-            Menu Aktif
-          </label>
-        </div>
-      </div>
+      <TextField
+        label="Urutan Tampil"
+        id="mn-order"
+        type="number"
+        optional
+        disabled={submitting}
+        value={form.order ?? 0}
+        onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+        placeholder="0"
+        hint="Menentukan urutan posisi menu di sidebar navigasi."
+      />
+
+      <ToggleSwitch
+        id="mn-status-toggle"
+        checked={Boolean(form.is_active)}
+        disabled={submitting}
+        onChange={(checked) => setForm({ ...form, is_active: checked })}
+        label="Status Publikasi Menu"
+      />
 
       <div className="flex gap-2.5 justify-end mt-4 pt-4 border-t border-fco-border-subtle">
         <button
