@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProgressBar } from "../../../components/ProgressBar";
 import { StatusChip } from "../../../components/StatusChip";
+import { Skeleton } from "../../../components/ui/Skeleton";
 import { shipsService, type Ship } from "../../../services/ships";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface CriticalShipItem {
   name: string;
@@ -100,10 +101,24 @@ export function CriticalQuotaTable() {
             </div>
 
             {loading ? (
-              <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
-                <Loader2 size={18} className="animate-spin text-fco-blue" />
-                <span>Memuat status kuota kapal...</span>
-              </div>
+              Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={`skel-${i}`}
+                  className="flex items-center py-3 border-t border-fco-border-subtle text-sm gap-2"
+                >
+                  <div className="basis-3/8 space-y-1.5 pr-2">
+                    <Skeleton className="h-4 w-3/4 rounded" />
+                    <Skeleton className="h-3 w-1/2 rounded opacity-60" />
+                  </div>
+                  <div className="basis-3/8 space-y-1.5 pr-2">
+                    <Skeleton className="h-3 w-1/3 rounded" />
+                    <Skeleton className="h-2 w-full rounded-full" />
+                  </div>
+                  <div className="basis-2/8 flex justify-end">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                </div>
+              ))
             ) : rows.length === 0 ? (
               <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle">
                 Belum ada data kapal terdaftar di database KKP.

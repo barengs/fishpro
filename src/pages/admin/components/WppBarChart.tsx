@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { ProgressBar } from "../../../components/ProgressBar";
+import { Skeleton } from "../../../components/ui/Skeleton";
 import { regionsService, type FishingArea } from "../../../services/regions";
 import { catchesService } from "../../../services/catches";
 import { formatWeight } from "../../../utils";
-import { BarChart3, Loader2 } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 
 interface WppItem {
   label: string;
@@ -94,9 +95,16 @@ export function WppBarChart() {
 
       <div className="p-5 sm:p-6">
         {loading ? (
-          <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
-            <Loader2 size={18} className="animate-spin text-fco-blue" />
-            <span>Memuat statistik WPP...</span>
+          <div className="flex flex-col gap-4 py-1">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={`skel-wpp-${i}`} className="space-y-2">
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-28 rounded" />
+                  <Skeleton className="h-4 w-16 rounded" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+            ))}
           </div>
         ) : items.length === 0 ? (
           <div className="py-8 text-center text-sm text-soft">

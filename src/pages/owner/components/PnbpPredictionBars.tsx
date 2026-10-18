@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { pnbpService } from "../../../services/pnbp";
 import { formatRupiah } from "../../../utils";
-import { BarChart3, Loader2 } from "lucide-react";
+import { Skeleton } from "../../../components/ui/Skeleton";
+import { BarChart3 } from "lucide-react";
 
 const past = "#1A56DB";
 const next = "#BCD3F8";
@@ -86,9 +87,16 @@ export function PnbpPredictionBars() {
       </div>
 
       {loading ? (
-        <div className="h-37.5 flex items-center justify-center gap-2 text-sm text-soft">
-          <Loader2 size={18} className="animate-spin text-fco-blue" />
-          <span>Memuat data proyeksi...</span>
+        <div className="flex items-end gap-3 h-37.5 py-1">
+          {["h-16", "h-24", "h-20", "h-28", "h-32", "h-22"].map((h, idx) => (
+            <div
+              key={idx}
+              className="flex-1 h-full flex flex-col justify-end items-center gap-2"
+            >
+              <Skeleton className={`w-full rounded-t-md ${h}`} />
+              <Skeleton className="h-3 w-8 rounded" />
+            </div>
+          ))}
         </div>
       ) : bars.length === 0 ? (
         <div className="py-8 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-fco-border rounded-xl">

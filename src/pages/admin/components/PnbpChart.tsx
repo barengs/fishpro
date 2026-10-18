@@ -5,7 +5,8 @@ import {
   type UnifiedChartSummaryStats,
 } from "../../../services/pnbp";
 import { formatRupiah } from "../../../utils";
-import { LineChart, Loader2, TrendingUp } from "lucide-react";
+import { Skeleton } from "../../../components/ui/Skeleton";
+import { LineChart, TrendingUp } from "lucide-react";
 
 interface MonthlyPoint {
   label: string;
@@ -176,9 +177,17 @@ export function PnbpChart() {
         )}
 
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-2 text-sm text-soft">
-            <Loader2 size={24} className="animate-spin text-fco-blue" />
-            <span>Memuat grafik tren PNBP...</span>
+          <div className="space-y-4 py-2">
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-4 w-32 rounded" />
+              <Skeleton className="h-4 w-20 rounded" />
+            </div>
+            <Skeleton className="h-56 w-full rounded-lg" />
+            <div className="flex justify-between">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-3 w-10 rounded" />
+              ))}
+            </div>
           </div>
         ) : !hasData ? (
           <div className="py-16 px-4 flex flex-col items-center justify-center text-center gap-3 border border-dashed border-fco-border rounded-xl">

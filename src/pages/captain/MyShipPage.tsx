@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "../../components/PageHeader";
+import { Skeleton } from "../../components/ui/Skeleton";
 import { shipsService, type Ship } from "../../services/ships";
 import { authService } from "../../services/auth";
-import { Loader2, Ship as ShipIcon } from "lucide-react";
+import { Ship as ShipIcon } from "lucide-react";
 
 export function MyShipPage() {
   const [ship, setShip] = useState<Ship | null>(null);
@@ -97,13 +98,22 @@ export function MyShipPage() {
 
       <section className="surface-card border rounded-xl p-8 shadow-xs">
         {loading ? (
-          <div className="py-12 flex flex-col items-center justify-center gap-2 text-sm text-soft">
-            <Loader2
-              size={24}
-              className="animate-spin text-fco-blue"
-              aria-hidden="true"
-            />
-            <span>Memuat informasi kapal...</span>
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 pb-6 border-b border-fco-border-subtle">
+              <Skeleton className="w-12 h-12 rounded-xl shrink-0" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-6 w-48 rounded" />
+                <Skeleton className="h-3 w-32 rounded" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-1.5">
+                  <Skeleton className="h-3 w-24 rounded" />
+                  <Skeleton className="h-5 w-40 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : !ship ? (
           <div className="py-12 flex flex-col items-center justify-center text-center gap-3">

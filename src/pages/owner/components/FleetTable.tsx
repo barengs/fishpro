@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProgressBar } from "../../../components/ProgressBar";
 import { StatusChip } from "../../../components/StatusChip";
+import { Skeleton } from "../../../components/ui/Skeleton";
 import { shipsService, type Ship } from "../../../services/ships";
 import { authService } from "../../../services/auth";
-import { Loader2 } from "lucide-react";
 
 interface FleetTableProps {
   ships?: Ship[];
@@ -79,10 +79,27 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
           </div>
 
           {loading ? (
-            <div className="py-8 flex items-center justify-center gap-2 text-sm text-soft">
-              <Loader2 size={18} className="animate-spin text-fco-blue" />
-              <span>Memuat data armada...</span>
-            </div>
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={`skel-fleet-${i}`}
+                className="flex items-center py-3 border-t border-fco-border-subtle text-sm gap-2"
+              >
+                <div className="basis-3/10 space-y-1.5 pr-2">
+                  <Skeleton className="h-4 w-3/4 rounded" />
+                  <Skeleton className="h-3 w-1/2 rounded opacity-60" />
+                </div>
+                <div className="basis-2/10 pr-2">
+                  <Skeleton className="h-4 w-2/3 rounded" />
+                </div>
+                <div className="basis-3/10 space-y-1.5 pr-2">
+                  <Skeleton className="h-3 w-1/3 rounded" />
+                  <Skeleton className="h-2 w-full rounded-full" />
+                </div>
+                <div className="basis-2/10 flex justify-end">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                </div>
+              </div>
+            ))
           ) : ships.length === 0 ? (
             <div className="py-8 text-center text-sm text-soft">
               Belum ada kapal dalam armada Anda.

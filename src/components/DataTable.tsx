@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "./ui/Skeleton";
 
 export interface Column<T> {
   key: string;
@@ -18,6 +18,7 @@ interface DataTableProps<T> {
   emptyText?: string;
   loading?: boolean;
   onRowClick?: (row: T) => void;
+  skeletonCount?: number;
 }
 
 export function DataTable<T>({
@@ -27,6 +28,7 @@ export function DataTable<T>({
   emptyText = "Belum ada data.",
   loading = false,
   onRowClick,
+  skeletonCount = 5,
 }: DataTableProps<T>) {
   return (
     <div className="overflow-x-auto">
@@ -64,14 +66,69 @@ export function DataTable<T>({
           })}
         </div>
         {loading ? (
-          <div className="py-12 flex flex-col items-center justify-center gap-2 text-sm text-soft">
-            <Loader2
-              size={24}
-              className="animate-spin text-fco-blue"
-              aria-hidden="true"
-            />
-            <span>Memuat data...</span>
-          </div>
+          Array.from({ length: skeletonCount }).map((_, rIdx) => (
+            <div
+              key={`skel-${rIdx}`}
+              className="flex items-center gap-3 py-3.5 px-3 border-t border-fco-border-subtle"
+            >
+              {columns.map((c, cIdx) => {
+                const isAction = c.key === "aksi";
+                const isCentered = !isAction && c.align === "center";
+                const isRight = !isAction && c.align === "right";
+
+                const hideCls = c.hideOnMobile
+                  ? isAction || isCentered || isRight
+                    ? "hidden sm:flex"
+                    : "hidden sm:block"
+                  : c.hideOnTablet
+                    ? isAction || isCentered || isRight
+                      ? "hidden md:flex"
+                      : "hidden md:block"
+                    : isAction || isCentered || isRight
+                      ? "flex"
+                      : "";
+
+                return (
+                  <div
+                    key={c.key}
+                    style={
+                      isAction
+                        ? { flex: "0 0 auto", minWidth: 104 }
+                        : { flex: c.flex ?? 1 }
+                    }
+                    className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                      isRight
+                        ? "justify-end"
+                        : isCentered
+                          ? "justify-center"
+                          : ""
+                    } ${c.className || ""}`}
+                  >
+                    {isAction ? (
+                      <div className="flex gap-1.5 justify-end">
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                      </div>
+                    ) : isCentered ? (
+                      <Skeleton className="h-5 w-16 rounded-full" />
+                    ) : isRight ? (
+                      <Skeleton className="h-4 w-14 rounded" />
+                    ) : (
+                      <div className="space-y-1.5 w-full pr-4">
+                        <Skeleton
+                          className={`h-4 rounded ${cIdx === 0 ? "w-3/5" : "w-4/5"}`}
+                        />
+                        <Skeleton
+                          className={`h-3 rounded opacity-60 ${cIdx === 0 ? "w-2/5" : "w-1/2"}`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))
         ) : rows.length === 0 ? (
           <div className="py-10 text-center text-sm text-soft">{emptyText}</div>
         ) : (
