@@ -187,7 +187,18 @@ export default function App() {
               {/* Regulator */}
               <Route path="/regulator" element={<RegulatorLayout />}>
                 <Route index element={<RegulatorDashboard />} />
-                <Route path="audit" element={<QuotaAuditPage />} />
+                <Route
+                  path="audit"
+                  element={<QuotaAuditPage defaultTab="audit" />}
+                />
+                <Route
+                  path="predict-quota"
+                  element={<QuotaAuditPage defaultTab="predict" />}
+                />
+                <Route
+                  path="manual-quota"
+                  element={<QuotaAuditPage defaultTab="manual" />}
+                />
                 <Route path="verify" element={<VerifyBlockchainPage />} />
               </Route>
 

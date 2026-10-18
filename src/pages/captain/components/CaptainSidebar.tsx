@@ -25,7 +25,7 @@ const navItems = [
 export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav
-      className="flex flex-col gap-1 py-1 pb-4"
+      className="flex flex-col gap-1 py-1 pb-4 w-full min-w-0 overflow-hidden"
       aria-label="Navigasi Nahkoda"
     >
       {navItems.map((item) => (
@@ -35,7 +35,7 @@ export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           end={item.end}
           onClick={onNavigate}
           className={({ isActive }) =>
-            `flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-all no-underline cursor-pointer ${
+            `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive
                 ? "bg-white text-[#0e2756] font-bold shadow-sm"
                 : "text-blue-100/75 hover:text-white hover:bg-white/10 font-medium"
@@ -56,37 +56,7 @@ export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 export const SidebarBody = CaptainSidebarNav;
-
-export function CaptainSidebar() {
-  return (
-    <aside
-      aria-label="Menu Navigasi Nahkoda"
-      className="hidden lg:flex flex-col w-64 bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md border-r border-[#1a3875]"
-    >
-      <div className="w-64 flex flex-col h-full shrink-0">
-        <div className="h-16 px-5 border-b border-white/10 flex items-center shrink-0">
-          <Link to="/captain" className="no-underline">
-            <Logo variant="dark" size={28} />
-          </Link>
-        </div>
-        <div className="flex-1 overflow-y-auto p-3 min-h-0">
-          <CaptainSidebarNav />
-        </div>
-        <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-semibold text-white text-2xs uppercase tracking-wider">
-              Operasional Laut
-            </span>
-          </div>
-          <span className="text-2xs font-mono text-blue-200 px-1.5 py-0.5 rounded bg-white/10 border border-white/10">
-            v1.0.0
-          </span>
-        </div>
-      </div>
-    </aside>
-  );
-}
+export const CaptainSidebar = CaptainSidebarNav;
 
 export function CaptainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -126,20 +96,18 @@ export function CaptainLayout() {
       {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Nahkoda"
-        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out ${
-          sidebarOpen
-            ? "w-64 border-r border-[#1a3875]"
-            : "w-0 border-r-0 overflow-hidden"
+        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
+          sidebarOpen ? "w-64 border-r border-[#1a3875]" : "w-0 border-r-0"
         }`}
       >
-        <div className="w-64 flex flex-col h-full shrink-0">
+        <div className="w-64 flex flex-col h-full shrink-0 overflow-hidden">
           <div className="h-16 px-5 border-b border-white/10 flex items-center shrink-0">
             <Link to="/captain" className="no-underline">
               <Logo variant="dark" size={28} />
             </Link>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
             <CaptainSidebarNav />
           </div>
 
@@ -173,7 +141,7 @@ export function CaptainLayout() {
         <div
           role="dialog"
           aria-label="Menu navigasi mobile"
-          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out ${
+          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out overflow-hidden ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -190,7 +158,7 @@ export function CaptainLayout() {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
             <CaptainSidebarNav onNavigate={() => setMobileOpen(false)} />
           </div>
 

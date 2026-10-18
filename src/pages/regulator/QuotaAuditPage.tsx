@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Brain, FileCheck, Scale } from "lucide-react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { DetailModal } from "../../components/DetailModal";
@@ -8,19 +10,60 @@ import { ProgressBar } from "../../components/ProgressBar";
 import { AlertBanner } from "../../components/ui";
 import { ManualQuotaModal } from "./components/ManualQuotaModal";
 import { AiQuotaModal } from "./components/AiQuotaModal";
+import { PredictQuotaTab } from "./components/PredictQuotaTab";
+import { ManualQuotaTab } from "./components/ManualQuotaTab";
 import {
   shipsService,
   type Ship,
   type PredictShipQuotaResponse,
 } from "../../services/ships";
-import { Brain } from "lucide-react";
 
-export function QuotaAuditPage() {
+type QuotaTabKey = "audit" | "predict" | "manual";
+
+const tabItems = [
+  {
+    key: "audit" as const,
+    label: "Audit Kepatuhan Kuota",
+    Icon: FileCheck,
+  },
+  {
+    key: "predict" as const,
+    label: "Prediksi AI (LSTM + NSGA-III)",
+    Icon: Brain,
+  },
+  {
+    key: "manual" as const,
+    label: "Input Kuota Manual",
+    Icon: Scale,
+  },
+];
+
+export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const urlTab = searchParams.get("tab") as QuotaTabKey;
+  const pathTab: QuotaTabKey | null = location.pathname.includes(
+    "predict-quota",
+  )
+    ? "predict"
+    : location.pathname.includes("manual-quota")
+      ? "manual"
+      : null;
+
+  const activeTab: QuotaTabKey =
+    pathTab ||
+    (urlTab === "predict" || urlTab === "manual"
+      ? urlTab
+      : defaultTab || "audit");
+
   const [ships, setShips] = useState<Ship[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
   const {
     selected: selectedAuditShip,
     open: isAuditDetailOpen,
@@ -28,11 +71,11 @@ export function QuotaAuditPage() {
     closeDetail: closeAuditDetail,
   } = useDetailModal<Ship>();
 
-  // Manual Quota Override Modal
+  // Manual Quota Override Modal (Quick modal from table)
   const [isOverrideOpen, setIsOverrideOpen] = useState(false);
   const [selectedShipReg, setSelectedShipReg] = useState("");
 
-  // AI Prediction Modal
+  // AI Prediction Modal (Quick modal from table)
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [selectedShipForAi, setSelectedShipForAi] = useState<Ship | null>(null);
   const [aiPredicting, setAiPredicting] = useState(false);
@@ -40,6 +83,16 @@ export function QuotaAuditPage() {
     null,
   );
   const [aiError, setAiError] = useState<string | null>(null);
+
+  const handleTabChange = (key: QuotaTabKey) => {
+    if (key === "audit") {
+      navigate("/regulator/audit");
+    } else if (key === "predict") {
+      navigate("/regulator/predict-quota");
+    } else if (key === "manual") {
+      navigate("/regulator/manual-quota");
+    }
+  };
 
   const fetchShips = useCallback(async (query?: string) => {
     setLoading(true);
@@ -119,6 +172,29 @@ export function QuotaAuditPage() {
       );
     } finally {
       setAiPredicting(false);
+    }
+  };
+
+  const handleApplyRecommendationFromAiModal = async (quotaVal: number) => {
+    if (!selectedShipForAi) return;
+    try {
+      await shipsService.regulatorManualQuota({
+        ship_registration_number: selectedShipForAi.registration_number,
+        year: 2026,
+        quota_amount: quotaVal,
+      });
+      setIsAiOpen(false);
+      setToast(
+        `Rekomendasi AI ${Number(quotaVal).toLocaleString("id-ID")} kg berhasil diterapkan ke kuota resmi kapal ${selectedShipForAi.registration_number}.`,
+      );
+      setTimeout(() => setToast(null), 4000);
+      fetchShips(search);
+    } catch (err: unknown) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Gagal menerapkan rekomendasi AI ke kuota resmi.",
+      );
     }
   };
 
@@ -215,7 +291,7 @@ export function QuotaAuditPage() {
           <button
             type="button"
             onClick={() => handleOpenAiPrediction(r)}
-            className="w-8 h-8 sm:w-auto sm:h-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-fco-border surface-card hover:surface-inset text-purple-600 dark:text-purple-400 text-xs font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0"
+            className="w-8 h-8 sm:w-auto sm:h-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 text-xs font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0"
             title="Prediksi kuota LSTM + NSGA-III"
           >
             <Brain size={15} aria-hidden="true" />
@@ -224,7 +300,7 @@ export function QuotaAuditPage() {
           <button
             type="button"
             onClick={() => handleOpenOverride(r)}
-            className="h-8 sm:h-auto px-2.5 py-1 sm:py-1.5 rounded-lg border border-fco-border bg-white hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors shrink-0"
+            className="h-8 sm:h-auto px-2.5 py-1 sm:py-1.5 rounded-lg border border-fco-border bg-white dark:bg-slate-800 hover:surface-page text-fco-blue text-xs font-semibold cursor-pointer transition-colors shrink-0"
           >
             Sesuaikan
           </button>
@@ -235,38 +311,121 @@ export function QuotaAuditPage() {
 
   return (
     <div>
-      <PageToolbar
-        title="Audit & Penyesuaian Kuota Kapal"
-        desc="Verifikasi batas kuota tangkapan nasional, bandingkan dengan AI LSTM + NSGA-III, dan lakukan override resmi."
-        searchPlaceholder="Cari kapal / nomor registrasi..."
-        searchValue={search}
-        onSearchChange={setSearch}
-        addLabel="Override Kuota Manual"
-        onAdd={() => handleOpenOverride()}
-      />
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          Manajemen & Audit Kuota Penangkapan
+        </h1>
+        <p className="m-0 text-sm text-soft mt-1">
+          Kewenangan regulator: Audit kepatuhan kuota tahunan kapal, proyeksi
+          cerdas LSTM & NSGA-III, dan penetapan kuota resmi.
+        </p>
 
-      <AlertBanner
-        variant="success"
-        message={toast || ""}
-        onDismiss={() => setToast(null)}
-      />
-      <AlertBanner
-        variant="error"
-        message={errorMsg || ""}
-        onDismiss={() => setErrorMsg(null)}
-      />
+        {/* Style 1: Underline Tab Bar */}
+        <div className="border-b border-fco-border dark:border-fco-border-dark mt-6">
+          <nav
+            className="-mb-px flex gap-6 overflow-x-auto"
+            role="tablist"
+            aria-label="Tab Pengawasan Kuota"
+          >
+            {tabItems.map((t) => {
+              const active = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => handleTabChange(t.key)}
+                  className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                    active
+                      ? "border-b-fco-blue text-fco-blue"
+                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
+                  }`}
+                >
+                  <t.Icon
+                    size={17}
+                    className={`shrink-0 transition-colors ${
+                      active
+                        ? "text-fco-blue"
+                        : "text-soft group-hover:text-strong"
+                    }`}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                  <span className="whitespace-nowrap">{t.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={ships}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data kapal terdaftar di server."
-          onRowClick={openAuditDetail}
+      {toast && (
+        <div className="mb-5">
+          <AlertBanner
+            variant="success"
+            message={toast}
+            onDismiss={() => setToast(null)}
+          />
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="mb-5">
+          <AlertBanner
+            variant="error"
+            message={errorMsg}
+            onDismiss={() => setErrorMsg(null)}
+          />
+        </div>
+      )}
+
+      {/* Tab 1: Audit Kuota Table */}
+      {activeTab === "audit" && (
+        <div>
+          <PageToolbar
+            searchPlaceholder="Cari kapal / nomor registrasi..."
+            searchValue={search}
+            onSearchChange={setSearch}
+            addLabel="Input Kuota Manual"
+            onAdd={() => handleOpenOverride()}
+          />
+
+          <section className="surface-card border rounded-xl p-6 shadow-xs">
+            <DataTable
+              columns={cols}
+              rows={ships}
+              rowKey={(r) => String(r.id)}
+              loading={loading}
+              emptyText="Belum ada data kapal terdaftar di server."
+              onRowClick={openAuditDetail}
+            />
+          </section>
+        </div>
+      )}
+
+      {/* Tab 2: Prediksi Kuota AI (LSTM + NSGA-III) */}
+      {activeTab === "predict" && (
+        <PredictQuotaTab
+          onQuotaApplied={() => {
+            fetchShips();
+            handleTabChange("audit");
+          }}
         />
-      </section>
+      )}
 
+      {/* Tab 3: Input Kuota Manual */}
+      {activeTab === "manual" && (
+        <ManualQuotaTab
+          onQuotaSaved={() => {
+            fetchShips();
+            handleTabChange("audit");
+          }}
+        />
+      )}
+
+      {/* Detail Pop-up Modal */}
       <DetailModal
         open={isAuditDetailOpen}
         title={
@@ -290,6 +449,35 @@ export function QuotaAuditPage() {
             : undefined
         }
         onClose={closeAuditDetail}
+        actions={
+          selectedAuditShip && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const target = selectedAuditShip;
+                  closeAuditDetail();
+                  handleOpenAiPrediction(target);
+                }}
+                className="h-9 px-3.5 rounded-lg border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-300 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
+              >
+                <Brain size={14} />
+                <span>AI Predict</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = selectedAuditShip;
+                  closeAuditDetail();
+                  handleOpenOverride(target);
+                }}
+                className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+              >
+                Sesuaikan
+              </button>
+            </div>
+          )
+        }
         fields={[
           {
             label: "Nomor Registrasi",
@@ -331,27 +519,23 @@ export function QuotaAuditPage() {
         ]}
       />
 
+      {/* Manual Quota Quick Modal */}
       <ManualQuotaModal
         isOpen={isOverrideOpen}
+        initialShipReg={selectedShipReg}
         onClose={() => setIsOverrideOpen(false)}
         onSave={handleOverrideSave}
-        initialShipReg={selectedShipReg}
       />
 
+      {/* AI Quota Quick Modal */}
       <AiQuotaModal
         open={isAiOpen}
-        onClose={() => setIsAiOpen(false)}
         ship={selectedShipForAi}
         predicting={aiPredicting}
         result={aiResult}
         error={aiError}
-        onApplyRecommendation={() => {
-          setIsAiOpen(false);
-          if (selectedShipForAi) {
-            setSelectedShipReg(selectedShipForAi.registration_number);
-            setIsOverrideOpen(true);
-          }
-        }}
+        onClose={() => setIsAiOpen(false)}
+        onApplyRecommendation={handleApplyRecommendationFromAiModal}
       />
     </div>
   );

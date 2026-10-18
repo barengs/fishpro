@@ -70,6 +70,13 @@ export interface MonthlyQuotaRecommendation {
 export interface PredictShipQuotaResponse {
   ship_registration_number: string;
   ship_name?: string;
+  epoch_level?: number;
+  epoch_used?: number;
+  confidence?: number;
+  lstm_predictions?: { date: string; predicted_value: number }[];
+  nsga_optimized?: { date: string; optimized_value: number }[];
+  recommended_quota?: number;
+  training_time?: string;
   predicted_quota?: number;
   optimal_quota?: number;
   lstm_predicted_quota?: number;

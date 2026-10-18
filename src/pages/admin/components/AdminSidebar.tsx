@@ -50,13 +50,11 @@ export function AdminLayout() {
       {/* 1. Desktop Left Sidebar (Deep Navy Oceanic Blue) */}
       <aside
         aria-label="Menu Navigasi Admin"
-        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out ${
-          sidebarOpen
-            ? "w-64 border-r border-[#1a3875]"
-            : "w-0 border-r-0 overflow-hidden"
+        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
+          sidebarOpen ? "w-64 border-r border-[#1a3875]" : "w-0 border-r-0"
         }`}
       >
-        <div className="w-64 flex flex-col h-full shrink-0">
+        <div className="w-64 flex flex-col h-full shrink-0 overflow-hidden">
           {/* Brand Header */}
           <div className="h-16 px-5 border-b border-white/10 flex items-center shrink-0">
             <Link to="/admin" className="no-underline">
@@ -65,7 +63,7 @@ export function AdminLayout() {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
             <AdminSidebarNav />
           </div>
 
@@ -103,7 +101,7 @@ export function AdminLayout() {
         <div
           role="dialog"
           aria-label="Menu navigasi mobile"
-          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out ${
+          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out overflow-hidden ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -120,7 +118,7 @@ export function AdminLayout() {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
             <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
           </div>
 

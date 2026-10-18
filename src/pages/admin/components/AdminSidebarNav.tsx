@@ -31,7 +31,10 @@ const navItems = [
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
   return (
-    <nav className="flex flex-col gap-1 py-1 pb-4" aria-label="Navigasi Admin">
+    <nav
+      className="flex flex-col gap-1 py-1 pb-4 w-full min-w-0 overflow-hidden"
+      aria-label="Navigasi Admin"
+    >
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -39,7 +42,7 @@ export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
           end={item.end}
           onClick={onNavigate}
           className={({ isActive }) =>
-            `flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-all no-underline cursor-pointer ${
+            `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive
                 ? "bg-white text-[#0e2756] font-bold shadow-sm"
                 : "text-blue-100/75 hover:text-white hover:bg-white/10 font-medium"
