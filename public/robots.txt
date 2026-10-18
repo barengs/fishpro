@@ -1,0 +1,8 @@
+# Robots.txt for Fish Chain Optima (FCO)
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /regulator/
+Disallow: /owner/
+Disallow: /captain/
+Disallow: /api/

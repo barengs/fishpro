@@ -28,32 +28,32 @@ const colorMap: Record<
 > = {
   blue: {
     card: "bg-fco-blue text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
   emerald: {
-    card: "bg-emerald-600 text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    card: "bg-emerald-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
   amber: {
-    card: "bg-amber-500 text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    card: "bg-amber-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
   purple: {
-    card: "bg-purple-600 text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    card: "bg-purple-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
   cyan: {
-    card: "bg-cyan-600 text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    card: "bg-cyan-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
   rose: {
-    card: "bg-rose-600 text-white",
-    footer: "bg-black/15 hover:bg-black/25 text-white/95",
+    card: "bg-rose-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
     iconBg: "bg-white/20 text-white",
   },
 };
@@ -74,13 +74,13 @@ export function KpiCard({
 
   return (
     <div
-      className={`rounded-lg flex flex-col justify-between overflow-hidden shadow-xs border-0 transition-transform duration-150 hover:-translate-y-0.5 ${styles.card}`}
+      className={`rounded-lg flex flex-col justify-between overflow-hidden shadow-xs border-0 min-h-[148px] transition-transform duration-150 hover:-translate-y-0.5 ${styles.card}`}
     >
       {/* Card Body */}
       <div className="p-4 sm:p-5 flex-1">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="min-w-0">
-            <div className="text-xs font-bold uppercase tracking-wider text-white/85 mb-1 truncate">
+            <div className="text-xs font-bold uppercase tracking-wider text-white mb-1 truncate">
               {label}
             </div>
             {loading ? (
@@ -103,7 +103,7 @@ export function KpiCard({
         </div>
 
         {delta && !loading && (
-          <div className="flex items-center gap-1.5 text-xs text-white/90 mt-2 font-medium">
+          <div className="flex items-center gap-1.5 text-xs text-white mt-2 font-medium">
             {trendUp ? (
               <TrendingUp
                 size={14}
@@ -124,7 +124,7 @@ export function KpiCard({
         )}
 
         {note && !loading && (
-          <div className="text-2xs text-white/75 mt-1 truncate">{note}</div>
+          <div className="text-2xs text-white/85 mt-1 truncate">{note}</div>
         )}
       </div>
 

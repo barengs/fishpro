@@ -60,7 +60,7 @@ export function UserProfileBadge({
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-haspopup="menu"
         aria-expanded={dropdownOpen}
-        aria-label="Menu profil pengguna"
+        aria-label={`Menu profil ${name} (${initials})`}
         className="flex items-center gap-3 p-1.5 rounded-xl border-none bg-transparent hover:surface-page cursor-pointer transition-colors"
       >
         <div

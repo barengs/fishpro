@@ -129,10 +129,10 @@ export function OwnerLayout() {
 
       {/* 2. Mobile Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ease-in-out ${
+        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-in-out ${
           mobileOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            ? "opacity-100 pointer-events-auto visible"
+            : "opacity-0 pointer-events-none invisible"
         }`}
         aria-hidden={!mobileOpen}
       >
