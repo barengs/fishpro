@@ -47,13 +47,14 @@ export function IotDevicesPage() {
     setErrorMsg(null);
     try {
       const data = await iotService.getDevices();
-      setDevices(data);
+      setDevices(Array.isArray(data) ? data : []);
     } catch (err: unknown) {
       setErrorMsg(
         err instanceof Error
           ? err.message
           : "Gagal memuat daftar timbangan IoT.",
       );
+      setDevices([]);
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export function IotDevicesPage() {
     async function loadInitial() {
       try {
         const data = await iotService.getDevices();
-        if (!ignore) setDevices(data);
+        if (!ignore) setDevices(Array.isArray(data) ? data : []);
       } catch (err: unknown) {
         if (!ignore) {
           setErrorMsg(
@@ -72,6 +73,7 @@ export function IotDevicesPage() {
               ? err.message
               : "Gagal memuat daftar timbangan IoT.",
           );
+          setDevices([]);
         }
       } finally {
         if (!ignore) setLoading(false);
@@ -122,7 +124,8 @@ export function IotDevicesPage() {
     }
   };
 
-  const filteredDevices = devices.filter((d) => {
+  const safeDevices = Array.isArray(devices) ? devices : [];
+  const filteredDevices = safeDevices.filter((d) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return (

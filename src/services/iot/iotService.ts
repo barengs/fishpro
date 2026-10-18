@@ -15,7 +15,10 @@ export const iotService = {
    * GET /api/iot/devices/ - Daftar semua timbangan pintar
    */
   async getDevices(): Promise<SmartScale[]> {
-    return apiClient<SmartScale[]>(API_ENDPOINTS.IOT.DEVICES);
+    const data = await apiClient<SmartScale[] | { results?: SmartScale[] }>(
+      API_ENDPOINTS.IOT.DEVICES,
+    );
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
@@ -95,7 +98,11 @@ export const iotService = {
       ? `${API_ENDPOINTS.IOT.READINGS}?${query}`
       : API_ENDPOINTS.IOT.READINGS;
 
-    return apiClient<ScaleReading[]>(url, { bypassCache: true });
+    const data = await apiClient<ScaleReading[] | { results?: ScaleReading[] }>(
+      url,
+      { bypassCache: true },
+    );
+    return Array.isArray(data) ? data : data.results || [];
   },
 
   /**
