@@ -53,7 +53,7 @@ export function RegisterStepWizard() {
   const [experienceYears, setExperienceYears] = useState("5");
   const [shipReg, setShipReg] = useState("");
   const [shipName, setShipName] = useState("");
-  const [homePort, setHomePort] = useState("Pelabuhan Benoa");
+  const [homePort, setHomePort] = useState("");
   const [wpp, setWpp] = useState("WPP 573");
 
   // Step 4: Terms & submission
