@@ -27,17 +27,35 @@ export function ScaleReadingsTable({
     {
       key: "time",
       header: "Waktu Timbang",
-      flex: 2,
+      flex: 3,
       render: (r) => (
         <div>
-          <div className="text-sm font-semibold tabular-nums">
-            {new Date(r.created_at).toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm font-semibold tabular-nums">
+              {new Date(r.created_at).toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </span>
+            <span className="sm:hidden">
+              <StatusChip
+                label={
+                  r.status === "saved"
+                    ? "Tersimpan"
+                    : r.status === "discarded"
+                      ? "Dilewati"
+                      : "Pending"
+                }
+                bg={r.status === "saved" ? undefined : "#FFF1E0"}
+                color={r.status === "saved" ? undefined : "#B54708"}
+              />
+            </span>
           </div>
           <div className="text-2xs text-soft">
+            <span className="sm:hidden font-mono font-bold text-strong">
+              {r.device_id} ·{" "}
+            </span>
             {new Date(r.created_at).toLocaleDateString("id-ID", {
               day: "numeric",
               month: "short",
@@ -51,6 +69,7 @@ export function ScaleReadingsTable({
       key: "device",
       header: "Timbangan / Pelabuhan",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <div>
           <span className="text-sm font-bold text-strong">{r.device_id}</span>
@@ -64,7 +83,7 @@ export function ScaleReadingsTable({
       flex: 2,
       align: "right",
       render: (r) => (
-        <span className="text-base font-extrabold text-strong font-mono tabular-nums">
+        <span className="text-sm sm:text-base font-extrabold text-strong font-mono tabular-nums">
           {Number(r.weight).toLocaleString("id-ID", {
             minimumFractionDigits: 2,
           })}{" "}
@@ -77,6 +96,7 @@ export function ScaleReadingsTable({
       header: "Status",
       flex: 2,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         r.status === "saved" ? (
           <StatusChip label="Tersimpan Resmi" />
@@ -95,7 +115,7 @@ export function ScaleReadingsTable({
         <button
           type="button"
           onClick={() => openDetail(r)}
-          className="h-8 px-3 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+          className="h-8 px-2.5 sm:px-3 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors shrink-0"
         >
           Detail
         </button>

@@ -146,11 +146,21 @@ export function IotDevicesPage() {
             <Cpu size={17} aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-strong truncate">
-              {r.name}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-semibold text-strong truncate">
+                {r.name}
+              </span>
+              <span className="sm:hidden">
+                <StatusChip
+                  label={r.is_active ? "Aktif" : "Nonaktif"}
+                  bg={r.is_active ? undefined : "#EEF1F6"}
+                  color={r.is_active ? undefined : "#4A5872"}
+                />
+              </span>
             </div>
             <div className="text-xs text-soft font-mono truncate">
               ID: {r.device_id}
+              <span className="sm:hidden font-sans"> · {r.port_name}</span>
             </div>
           </div>
         </div>
@@ -160,6 +170,7 @@ export function IotDevicesPage() {
       key: "port",
       header: "Lokasi Pelabuhan",
       flex: 2,
+      hideOnMobile: true,
       render: (r) => (
         <div className="flex items-center gap-1.5 text-sm text-strong truncate">
           <MapPin size={14} className="text-soft shrink-0" aria-hidden="true" />
@@ -199,6 +210,7 @@ export function IotDevicesPage() {
       header: "Status",
       flex: 1,
       align: "center",
+      hideOnMobile: true,
       render: (r) =>
         r.is_active ? (
           <StatusChip
