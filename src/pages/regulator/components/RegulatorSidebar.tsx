@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Link2,
   Menu,
-  Scale,
   Search,
   X,
 } from "lucide-react";
@@ -21,7 +20,6 @@ const navItems = [
   { label: "Dashboard", to: "/regulator", end: true, Icon: LayoutDashboard },
   { label: "Audit Kuota", to: "/regulator/audit", end: true, Icon: FileCheck },
   { label: "Prediksi Kuota AI", to: "/regulator/predict-quota", Icon: Brain },
-  { label: "Input Kuota Manual", to: "/regulator/manual-quota", Icon: Scale },
   { label: "Verifikasi Blockchain", to: "/regulator/verify", Icon: Link2 },
 ];
 

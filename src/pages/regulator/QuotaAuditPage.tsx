@@ -31,7 +31,8 @@ export function QuotaAuditPage() {
 
   // Manual Quota Override Modal
   const [isOverrideOpen, setIsOverrideOpen] = useState(false);
-  const [selectedShipReg, setSelectedShipReg] = useState("");
+  const [selectedShipForOverride, setSelectedShipForOverride] =
+    useState<Ship | null>(null);
 
   // AI Prediction Modal
   const [isAiOpen, setIsAiOpen] = useState(false);
@@ -65,7 +66,7 @@ export function QuotaAuditPage() {
   }, [search, fetchShips]);
 
   const handleOpenOverride = (ship?: Ship) => {
-    setSelectedShipReg(ship ? ship.registration_number : "");
+    setSelectedShipForOverride(ship || null);
     setIsOverrideOpen(true);
   };
 
@@ -397,7 +398,8 @@ export function QuotaAuditPage() {
       {/* Manual Quota Quick Modal */}
       <ManualQuotaModal
         isOpen={isOverrideOpen}
-        initialShipReg={selectedShipReg}
+        ship={selectedShipForOverride}
+        ships={ships}
         onClose={() => setIsOverrideOpen(false)}
         onSave={handleOverrideSave}
       />
