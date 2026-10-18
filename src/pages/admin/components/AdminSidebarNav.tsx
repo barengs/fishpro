@@ -4,6 +4,7 @@ import {
   BarChart3,
   Building2,
   ClipboardList,
+  Cpu,
   Fish,
   KeyRound,
   LayoutDashboard,
@@ -26,6 +27,7 @@ const navItems = [
   { label: "Wilayah (WPP)", to: "/admin/areas", Icon: MapPin },
   { label: "Kuota & PNBP", to: "/admin/quota", Icon: BarChart3 },
   { label: "Blockchain", to: "/admin/blockchain", Icon: Link2 },
+  { label: "Perangkat IoT", to: "/admin/iot-devices", Icon: Cpu },
   { label: "Peran & Hak Akses", to: "/admin/roles", Icon: KeyRound },
 ];
 

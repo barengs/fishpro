@@ -76,6 +76,11 @@ const RolesMenusPage = lazy(() =>
     default: m.RolesMenusPage,
   })),
 );
+const IotDevicesPage = lazy(() =>
+  import("./pages/admin/IotDevicesPage").then((m) => ({
+    default: m.IotDevicesPage,
+  })),
+);
 
 // Lazy-loaded Regulator pages
 const RegulatorLayout = lazy(() =>
@@ -96,6 +101,11 @@ const QuotaAuditPage = lazy(() =>
 const PredictQuotaPage = lazy(() =>
   import("./pages/regulator/PredictQuotaPage").then((m) => ({
     default: m.PredictQuotaPage,
+  })),
+);
+const IotScalesPage = lazy(() =>
+  import("./pages/regulator/IotScalesPage").then((m) => ({
+    default: m.IotScalesPage,
   })),
 );
 const VerifyBlockchainPage = lazy(() =>
@@ -186,6 +196,7 @@ export default function App() {
                 <Route path="areas" element={<AreasPage />} />
                 <Route path="quota" element={<QuotaPnbpPage />} />
                 <Route path="blockchain" element={<BlockchainPage />} />
+                <Route path="iot-devices" element={<IotDevicesPage />} />
                 <Route path="roles" element={<RolesMenusPage />} />
               </Route>
 
@@ -194,6 +205,7 @@ export default function App() {
                 <Route index element={<RegulatorDashboard />} />
                 <Route path="audit" element={<QuotaAuditPage />} />
                 <Route path="predict-quota" element={<PredictQuotaPage />} />
+                <Route path="scales" element={<IotScalesPage />} />
                 <Route
                   path="manual-quota"
                   element={<Navigate to="/regulator/audit" replace />}

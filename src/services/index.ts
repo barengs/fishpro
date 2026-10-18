@@ -10,3 +10,4 @@ export * from "./regions";
 export * from "./blockchain";
 export * from "./pnbp";
 export * from "./admin";
+export * from "./iot";
