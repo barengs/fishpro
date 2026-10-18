@@ -1,4 +1,11 @@
-import { Building2, Check, Ship, User, Anchor } from "lucide-react";
+import {
+  AlertCircle,
+  Anchor,
+  Building2,
+  Check,
+  Ship,
+  User,
+} from "lucide-react";
 import type { Role } from "./types";
 
 interface StepIdentityProps {
@@ -10,10 +17,10 @@ interface StepIdentityProps {
   setFullName: (name: string) => void;
   companyName: string;
   setCompanyName: (name: string) => void;
+  errors?: Record<string, string>;
+  onClearError?: (field: string) => void;
 }
 
-const inputCls =
-  "w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-10 pr-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft";
 const labelCls = "block text-sm font-semibold text-strong mb-1.5";
 
 export function StepIdentity({
@@ -25,7 +32,18 @@ export function StepIdentity({
   setFullName,
   companyName,
   setCompanyName,
+  errors = {},
+  onClearError,
 }: StepIdentityProps) {
+  const getFieldCls = (fieldName: string) => {
+    const hasError = Boolean(errors[fieldName]);
+    return `w-full h-11 border-2 rounded-xl pl-10 pr-3.5 text-sm field-input transition-all surface-card text-strong placeholder:text-soft ${
+      hasError
+        ? "has-error border-red-500 dark:border-red-500 bg-red-50/40 dark:bg-red-950/20 text-red-950 dark:text-red-100"
+        : "border-fco-border dark:border-fco-border-dark focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15"
+    }`;
+  };
+
   return (
     <div className="flex flex-col gap-5">
       {/* 1. Pemilihan Peran Pendaftaran */}
@@ -181,24 +199,37 @@ export function StepIdentity({
           <div className="relative">
             <User
               size={17}
-              className="text-soft absolute left-3.5 top-3 pointer-events-none"
+              className={`${
+                errors.fullName ? "text-red-500" : "text-soft"
+              } absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
               aria-hidden="true"
             />
             <input
               id="rg-name"
+              name="fullName"
               type="text"
               autoComplete="name"
               required
+              aria-invalid={Boolean(errors.fullName)}
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                onClearError?.("fullName");
+              }}
               placeholder={
                 role === "owner"
                   ? "Contoh: Budi Santoso"
                   : "Nama lengkap sesuai KTP / Buku Pelaut"
               }
-              className={inputCls}
+              className={getFieldCls("fullName")}
             />
           </div>
+          {errors.fullName && (
+            <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+              <AlertCircle size={13} className="shrink-0" aria-hidden="true" />
+              <span>{errors.fullName}</span>
+            </span>
+          )}
         </div>
 
         {/* Khusus Owner Perusahaan: Nama Perusahaan */}
@@ -211,19 +242,36 @@ export function StepIdentity({
             <div className="relative">
               <Building2
                 size={17}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                className={`${
+                  errors.companyName ? "text-red-500" : "text-soft"
+                } absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
                 aria-hidden="true"
               />
               <input
                 id="rg-company"
+                name="companyName"
                 type="text"
                 autoComplete="organization"
+                aria-invalid={Boolean(errors.companyName)}
                 value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                onChange={(e) => {
+                  setCompanyName(e.target.value);
+                  onClearError?.("companyName");
+                }}
                 placeholder="Contoh: PT Samudera Bahari Nusantara"
-                className={inputCls}
+                className={getFieldCls("companyName")}
               />
             </div>
+            {errors.companyName && (
+              <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{errors.companyName}</span>
+              </span>
+            )}
           </div>
         )}
       </div>

@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, Phone, User } from "lucide-react";
+import {
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
 
 interface StepAccountProps {
   username: string;
@@ -12,10 +20,10 @@ interface StepAccountProps {
   setPassword: (val: string) => void;
   passwordConfirm: string;
   setPasswordConfirm: (val: string) => void;
+  errors?: Record<string, string>;
+  onClearError?: (field: string) => void;
 }
 
-const inputCls =
-  "w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft";
 const labelCls = "block text-sm font-semibold text-strong mb-1.5";
 
 export function StepAccount({
@@ -29,9 +37,20 @@ export function StepAccount({
   setPassword,
   passwordConfirm,
   setPasswordConfirm,
+  errors = {},
+  onClearError,
 }: StepAccountProps) {
   const [showPass, setShowPass] = useState(false);
   const [showPassConfirm, setShowPassConfirm] = useState(false);
+
+  const getFieldCls = (fieldName: string) => {
+    const hasError = Boolean(errors[fieldName]);
+    return `w-full h-11 border-2 rounded-xl pl-10 pr-3.5 text-sm field-input transition-all surface-card text-strong placeholder:text-soft ${
+      hasError
+        ? "has-error border-red-500 dark:border-red-500 bg-red-50/40 dark:bg-red-950/20 text-red-950 dark:text-red-100"
+        : "border-fco-border dark:border-fco-border-dark focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15"
+    }`;
+  };
 
   return (
     <div>
@@ -53,24 +72,40 @@ export function StepAccount({
             <div className="relative">
               <User
                 size={16}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                className={`${
+                  errors.username ? "text-red-500" : "text-soft"
+                } absolute left-3.5 top-3 pointer-events-none transition-colors`}
               />
               <input
                 id="rg-user"
+                name="username"
                 type="text"
                 autoComplete="username"
                 required
+                aria-invalid={Boolean(errors.username)}
                 value={username}
-                onChange={(e) =>
-                  setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))
-                }
+                onChange={(e) => {
+                  setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""));
+                  onClearError?.("username");
+                }}
                 placeholder="Contoh: kapalsamudera"
-                className={`${inputCls} pl-10`}
+                className={getFieldCls("username")}
               />
             </div>
-            <span className="text-2xs text-soft mt-1 block">
-              Gunakan huruf kecil, angka, atau underscore tanpa spasi.
-            </span>
+            {errors.username ? (
+              <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{errors.username}</span>
+              </span>
+            ) : (
+              <span className="text-2xs text-soft mt-1 block">
+                Gunakan huruf kecil, angka, strip (-), atau underscore (_).
+              </span>
+            )}
           </div>
 
           <div>
@@ -81,22 +116,40 @@ export function StepAccount({
             <div className="relative">
               <Phone
                 size={16}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                className={`${
+                  errors.phone ? "text-red-500" : "text-soft"
+                } absolute left-3.5 top-3 pointer-events-none transition-colors`}
               />
               <input
                 id="rg-phone"
+                name="phone"
                 type="tel"
                 autoComplete="tel"
                 required
+                aria-invalid={Boolean(errors.phone)}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  onClearError?.("phone");
+                }}
                 placeholder="Contoh: 081234567890"
-                className={`${inputCls} pl-10`}
+                className={getFieldCls("phone")}
               />
             </div>
-            <span className="text-2xs text-soft mt-1 block">
-              Untuk pengiriman notifikasi kuota & verifikasi akun.
-            </span>
+            {errors.phone ? (
+              <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{errors.phone}</span>
+              </span>
+            ) : (
+              <span className="text-2xs text-soft mt-1 block">
+                Untuk pengiriman notifikasi kuota & verifikasi akun.
+              </span>
+            )}
           </div>
         </div>
 
@@ -109,19 +162,32 @@ export function StepAccount({
           <div className="relative">
             <Mail
               size={16}
-              className="text-soft absolute left-3.5 top-3 pointer-events-none"
+              className={`${
+                errors.email ? "text-red-500" : "text-soft"
+              } absolute left-3.5 top-3 pointer-events-none transition-colors`}
             />
             <input
               id="rg-email"
+              name="email"
               type="email"
               autoComplete="email"
               required
+              aria-invalid={Boolean(errors.email)}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                onClearError?.("email");
+              }}
               placeholder="Contoh: pemilik@samudera.co.id"
-              className={`${inputCls} pl-10`}
+              className={getFieldCls("email")}
             />
           </div>
+          {errors.email && (
+            <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+              <AlertCircle size={13} className="shrink-0" aria-hidden="true" />
+              <span>{errors.email}</span>
+            </span>
+          )}
         </div>
 
         {/* Password & Konfirmasi Password */}
@@ -134,17 +200,24 @@ export function StepAccount({
             <div className="relative">
               <Lock
                 size={16}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                className={`${
+                  errors.password ? "text-red-500" : "text-soft"
+                } absolute left-3.5 top-3 pointer-events-none transition-colors`}
               />
               <input
                 id="rg-pass"
+                name="password"
                 type={showPass ? "text" : "password"}
                 autoComplete="new-password"
                 required
+                aria-invalid={Boolean(errors.password)}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  onClearError?.("password");
+                }}
                 placeholder="Minimal 8 karakter"
-                className={`${inputCls} pl-10 pr-10`}
+                className={`${getFieldCls("password")} pr-10`}
               />
               <button
                 type="button"
@@ -157,6 +230,16 @@ export function StepAccount({
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {errors.password && (
+              <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{errors.password}</span>
+              </span>
+            )}
           </div>
 
           <div>
@@ -167,17 +250,24 @@ export function StepAccount({
             <div className="relative">
               <Lock
                 size={16}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                className={`${
+                  errors.passwordConfirm ? "text-red-500" : "text-soft"
+                } absolute left-3.5 top-3 pointer-events-none transition-colors`}
               />
               <input
                 id="rg-pass2"
+                name="passwordConfirm"
                 type={showPassConfirm ? "text" : "password"}
                 autoComplete="new-password"
                 required
+                aria-invalid={Boolean(errors.passwordConfirm)}
                 value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                onChange={(e) => {
+                  setPasswordConfirm(e.target.value);
+                  onClearError?.("passwordConfirm");
+                }}
                 placeholder="Ulangi kata sandi"
-                className={`${inputCls} pl-10 pr-10`}
+                className={`${getFieldCls("passwordConfirm")} pr-10`}
               />
               <button
                 type="button"
@@ -192,6 +282,16 @@ export function StepAccount({
                 {showPassConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {errors.passwordConfirm && (
+              <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{errors.passwordConfirm}</span>
+              </span>
+            )}
           </div>
         </div>
       </div>

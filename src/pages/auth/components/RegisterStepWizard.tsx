@@ -59,7 +59,43 @@ export function RegisterStepWizard() {
   // Step 4: Terms & submission
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const FIELD_INPUT_MAP: Record<string, string> = {
+    fullName: "rg-name",
+    companyName: "rg-company",
+    username: "rg-user",
+    phone: "rg-phone",
+    email: "rg-email",
+    password: "rg-pass",
+    passwordConfirm: "rg-pass2",
+  };
+
+  const focusFirstErrorField = (errs: Record<string, string>) => {
+    const firstKey = Object.keys(errs)[0];
+    if (!firstKey) return;
+    const elementId = FIELD_INPUT_MAP[firstKey] || firstKey;
+    setTimeout(() => {
+      const el =
+        document.getElementById(elementId) ||
+        document.querySelector(`[name="${firstKey}"]`);
+      if (el instanceof HTMLElement) {
+        el.focus();
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 60);
+  };
+
+  const handleClearError = (field: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const updated = { ...prev };
+      delete updated[field];
+      return updated;
+    });
+    setErrorMsg(null);
+  };
 
   const handleNext = () => {
     setErrorMsg(null);
@@ -72,10 +108,19 @@ export function RegisterStepWizard() {
         companyName,
       });
       if (!parsed.success) {
+        const errors: Record<string, string> = {};
+        parsed.error.issues.forEach((issue) => {
+          const key = String(issue.path[0] || "");
+          if (key && !errors[key]) {
+            errors[key] = issue.message;
+          }
+        });
+        setFieldErrors(errors);
         setErrorMsg(
           parsed.error.issues[0]?.message ||
             "Harap lengkapi formulir identitas dengan benar.",
         );
+        focusFirstErrorField(errors);
         return;
       }
     }
@@ -90,19 +135,31 @@ export function RegisterStepWizard() {
         passwordConfirm,
       });
       if (!parsed.success) {
+        const errors: Record<string, string> = {};
+        parsed.error.issues.forEach((issue) => {
+          const key = String(issue.path[0] || "");
+          if (key && !errors[key]) {
+            errors[key] = issue.message;
+          }
+        });
+        setFieldErrors(errors);
         setErrorMsg(
           parsed.error.issues[0]?.message ||
             "Harap lengkapi kredensial akun dengan benar.",
         );
+        focusFirstErrorField(errors);
         return;
       }
     }
 
+    setFieldErrors({});
+    setErrorMsg(null);
     setCurrentStep((prev) => Math.min(4, prev + 1));
   };
 
   const handlePrev = () => {
     setErrorMsg(null);
+    setFieldErrors({});
     setCurrentStep((prev) => Math.max(1, prev - 1));
   };
 
@@ -252,6 +309,8 @@ export function RegisterStepWizard() {
                 setFullName={setFullName}
                 companyName={companyName}
                 setCompanyName={setCompanyName}
+                errors={fieldErrors}
+                onClearError={handleClearError}
               />
             )}
 
@@ -267,6 +326,8 @@ export function RegisterStepWizard() {
                 setPassword={setPassword}
                 passwordConfirm={passwordConfirm}
                 setPasswordConfirm={setPasswordConfirm}
+                errors={fieldErrors}
+                onClearError={handleClearError}
               />
             )}
 

@@ -117,6 +117,26 @@
   border-color: var(--color-fco-blue);
   box-shadow: 0 0 0 3px rgb(26 86 219 / 0.15);
 }
+.field-input[aria-invalid="true"],
+.field-input.has-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2;
+}
+.dark .field-input[aria-invalid="true"],
+.dark .field-input.has-error {
+  border-color: #ef4444 !important;
+  background-color: rgb(239 68 68 / 0.08);
+}
+.field-input[aria-invalid="true"]:focus,
+.field-input.has-error:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgb(239 68 68 / 0.25) !important;
+}
+.dark .field-input[aria-invalid="true"]:focus,
+.dark .field-input.has-error:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgb(239 68 68 / 0.3) !important;
+}
 .field-input:disabled,
 .field-input[aria-disabled="true"] {
   border-color: var(--color-fco-border-subtle);

@@ -156,8 +156,8 @@ export const registerStep2Schema = z
       .trim()
       .min(3, "Nama pengguna minimal 3 karakter.")
       .regex(
-        /^[a-zA-Z0-9_]+$/,
-        "Nama pengguna hanya boleh berupa huruf, angka, dan garis bawah (_).",
+        /^[a-zA-Z0-9_.-]+$/,
+        "Nama pengguna hanya boleh berupa huruf, angka, titik (.), strip (-), dan garis bawah (_).",
       ),
     email: z.string().trim().email("Format email tidak valid."),
     phone: z.string().trim().min(8, "Nomor telepon minimal 8 digit."),
