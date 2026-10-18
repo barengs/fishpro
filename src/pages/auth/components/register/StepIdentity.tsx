@@ -33,41 +33,71 @@ export function StepIdentity({
         <label className={labelCls}>
           Daftar Sebagai <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-2 gap-1.5 sm:gap-2.5 p-1 surface-inset border dark:border-fco-border-dark rounded-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <button
             type="button"
             onClick={() => setRole("owner")}
-            className={`flex items-center justify-center gap-1.5 sm:gap-2.5 h-10 sm:h-11 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer border-none min-w-0 ${
+            className={`flex items-center justify-between h-12 px-3.5 rounded-xl border-2 cursor-pointer transition-all text-left ${
               role === "owner"
-                ? "bg-fco-blue text-white shadow-xs"
-                : "bg-transparent text-soft hover:text-strong hover:surface-page"
+                ? "border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue font-bold shadow-xs"
+                : "border-fco-border dark:border-fco-border-dark surface-card text-strong hover:surface-page font-semibold"
             }`}
           >
-            <Ship
-              size={17}
-              strokeWidth={2.2}
-              className="shrink-0"
-              aria-hidden="true"
-            />
-            <span className="truncate">Pemilik Kapal</span>
+            <div className="flex items-center gap-3 min-w-0">
+              <span
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                  role === "owner"
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "surface-inset border border-fco-border-subtle text-soft"
+                }`}
+              >
+                <Ship size={19} strokeWidth={2.2} aria-hidden="true" />
+              </span>
+              <span className="truncate text-xs sm:text-sm font-semibold">
+                Pemilik Kapal
+              </span>
+            </div>
+            {role === "owner" && (
+              <Check
+                size={16}
+                strokeWidth={2.5}
+                className="text-fco-blue shrink-0 ml-2"
+                aria-hidden="true"
+              />
+            )}
           </button>
 
           <button
             type="button"
             onClick={() => setRole("captain")}
-            className={`flex items-center justify-center gap-1.5 sm:gap-2.5 h-10 sm:h-11 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer border-none min-w-0 ${
+            className={`flex items-center justify-between h-12 px-3.5 rounded-xl border-2 cursor-pointer transition-all text-left ${
               role === "captain"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-transparent text-soft hover:text-strong hover:surface-page"
+                ? "border-fco-blue bg-fco-blue-light/50 dark:bg-fco-blue/15 text-fco-blue font-bold shadow-xs"
+                : "border-fco-border dark:border-fco-border-dark surface-card text-strong hover:surface-page font-semibold"
             }`}
           >
-            <Anchor
-              size={17}
-              strokeWidth={2.2}
-              className="shrink-0"
-              aria-hidden="true"
-            />
-            <span className="truncate">Nahkoda</span>
+            <div className="flex items-center gap-3 min-w-0">
+              <span
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                  role === "captain"
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "surface-inset border border-fco-border-subtle text-soft"
+                }`}
+              >
+                <Anchor size={19} strokeWidth={2.2} aria-hidden="true" />
+              </span>
+              <span className="truncate text-xs sm:text-sm font-semibold">
+                Nahkoda
+              </span>
+            </div>
+            {role === "captain" && (
+              <Check
+                size={16}
+                strokeWidth={2.5}
+                className="text-fco-blue shrink-0 ml-2"
+                aria-hidden="true"
+              />
+            )}
           </button>
         </div>
       </div>

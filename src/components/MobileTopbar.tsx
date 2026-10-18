@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
+import { ChevronDown, Loader2, LogOut, Menu, User, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { FullscreenToggle } from "./FullscreenToggle";
 
@@ -15,7 +15,8 @@ interface MobileTopbarProps {
   onToggle: () => void;
   onClose: () => void;
   profile: Profile;
-  onLogout?: () => void;
+  onLogout?: () => void | Promise<void>;
+  isLoggingOut?: boolean;
   children: React.ReactNode;
 }
 
@@ -25,10 +26,25 @@ export function MobileTopbar({
   onClose,
   profile,
   onLogout,
+  isLoggingOut: externalLoggingOut,
   children,
 }: MobileTopbarProps) {
   const [accountOpen, setAccountOpen] = useState(false);
+  const [internalLoggingOut, setInternalLoggingOut] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
+
+  const isLoggingOut = externalLoggingOut ?? internalLoggingOut;
+
+  const handleLogoutClick = async () => {
+    if (!onLogout || isLoggingOut) return;
+    setInternalLoggingOut(true);
+    try {
+      await onLogout();
+    } finally {
+      setInternalLoggingOut(false);
+      setAccountOpen(false);
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -121,14 +137,24 @@ export function MobileTopbar({
                     <button
                       type="button"
                       role="menuitem"
-                      onClick={() => {
-                        setAccountOpen(false);
-                        onLogout();
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left"
+                      disabled={isLoggingOut}
+                      onClick={handleLogoutClick}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <LogOut size={16} aria-hidden="true" />
-                      Keluar
+                      {isLoggingOut ? (
+                        <Loader2
+                          size={16}
+                          className="animate-spin text-red-600 dark:text-red-400 shrink-0"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <LogOut
+                          size={16}
+                          aria-hidden="true"
+                          className="shrink-0"
+                        />
+                      )}
+                      <span>{isLoggingOut ? "Mengeluarkan..." : "Keluar"}</span>
                     </button>
                   )}
                 </div>
