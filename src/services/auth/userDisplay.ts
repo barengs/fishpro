@@ -35,19 +35,39 @@ export function getUserDisplayInfo(): UserDisplayInfo {
   // Format human-friendly role label
   let roleLabel = "Pengguna FCO";
   const rawRole = (user.role || "").toLowerCase();
-  if (rawRole === "admin") {
+  const rawRoles = (user.roles || []).map((r) => r.toLowerCase());
+  const usernameLower = (user.username || "").toLowerCase();
+
+  const isRegulator =
+    rawRole === "regulator" ||
+    rawRoles.includes("regulator") ||
+    usernameLower.includes("regulator");
+
+  const isAdmin =
+    rawRole === "admin" ||
+    rawRoles.includes("admin") ||
+    usernameLower.startsWith("admin");
+
+  const isCaptain =
+    rawRole === "captain" ||
+    rawRoles.includes("captain") ||
+    usernameLower.includes("captain");
+
+  const isOwner = rawRole === "owner" || rawRoles.includes("owner");
+
+  if (isAdmin) {
     roleLabel = profile?.department
       ? `Admin · ${profile.department}`
       : "Admin KKP";
-  } else if (rawRole === "regulator") {
+  } else if (isRegulator) {
     roleLabel = profile?.department
       ? `Pengawas · ${profile.department}`
-      : "Regulator KKP";
-  } else if (rawRole === "captain") {
+      : "Pengawas Kuota KKP";
+  } else if (isCaptain) {
     roleLabel = profile?.license_number
       ? `Nahkoda (${profile.license_number})`
       : "Nahkoda Kapal";
-  } else if (rawRole === "owner") {
+  } else if (isOwner) {
     roleLabel =
       profile?.owner_type === "company"
         ? "Pemilik (Perusahaan)"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   Brain,
   FileCheck,
@@ -81,6 +81,14 @@ export function RegulatorLayout() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const userRole = authService.getUserRole();
+  if (userRole === "owner") {
+    return <Navigate to="/owner" replace />;
+  }
+  if (userRole === "captain") {
+    return <Navigate to="/captain" replace />;
+  }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 

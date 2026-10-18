@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { Menu, Search, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
@@ -30,6 +30,17 @@ export function AdminLayout() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const userRole = authService.getUserRole();
+  if (userRole === "regulator") {
+    return <Navigate to="/regulator" replace />;
+  }
+  if (userRole === "owner") {
+    return <Navigate to="/owner" replace />;
+  }
+  if (userRole === "captain") {
+    return <Navigate to="/captain" replace />;
+  }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 

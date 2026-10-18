@@ -53,13 +53,28 @@ export function LoginForm() {
         `Login berhasil. Selamat datang kembali, ${data.username}!`,
       );
 
-      // Navigate based on backend user_as or roles
-      const role = data.user_as || (data.roles && data.roles[0]) || "owner";
-      if (role === "admin") {
+      // Navigate based on resolved role
+      const rawUserAs = (data.user_as || "").toLowerCase();
+      const rolesList = (data.roles || []).map((r) => r.toLowerCase());
+      const usernameLower = (data.username || "").toLowerCase();
+
+      if (
+        rawUserAs === "admin" ||
+        rolesList.includes("admin") ||
+        usernameLower.startsWith("admin")
+      ) {
         navigate("/admin");
-      } else if (role === "regulator") {
+      } else if (
+        rawUserAs === "regulator" ||
+        rolesList.includes("regulator") ||
+        usernameLower.includes("regulator")
+      ) {
         navigate("/regulator");
-      } else if (role === "captain") {
+      } else if (
+        rawUserAs === "captain" ||
+        rolesList.includes("captain") ||
+        usernameLower.includes("captain")
+      ) {
         navigate("/captain");
       } else {
         navigate("/owner");

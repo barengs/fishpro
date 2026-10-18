@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Anchor, LayoutDashboard, Menu, Search, Ship, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { NotificationBell } from "../../../components/NotificationBell";
@@ -67,6 +67,17 @@ export function OwnerLayout() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const userRole = authService.getUserRole();
+  if (userRole === "regulator") {
+    return <Navigate to="/regulator" replace />;
+  }
+  if (userRole === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+  if (userRole === "captain") {
+    return <Navigate to="/captain" replace />;
+  }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 

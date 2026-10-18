@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   ClipboardList,
   LayoutDashboard,
@@ -74,6 +74,17 @@ export function CaptainLayout() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const userRole = authService.getUserRole();
+  if (userRole === "regulator") {
+    return <Navigate to="/regulator" replace />;
+  }
+  if (userRole === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+  if (userRole === "owner") {
+    return <Navigate to="/owner" replace />;
+  }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 

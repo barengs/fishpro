@@ -15,19 +15,46 @@ export const authService = {
     });
 
     if (data.token) {
+      const usernameLower = (data.username || "").toLowerCase();
+      const rawUserAs = (data.user_as || "").toLowerCase();
+      const rolesList = (data.roles || []).map((r) => r.toLowerCase());
+
+      let detectedRole = data.user_as || "owner";
+      if (
+        rawUserAs === "admin" ||
+        rolesList.includes("admin") ||
+        usernameLower.startsWith("admin")
+      ) {
+        detectedRole = "admin";
+      } else if (
+        rawUserAs === "regulator" ||
+        rolesList.includes("regulator") ||
+        usernameLower.includes("regulator")
+      ) {
+        detectedRole = "regulator";
+      } else if (
+        rawUserAs === "captain" ||
+        rolesList.includes("captain") ||
+        usernameLower.includes("captain")
+      ) {
+        detectedRole = "captain";
+      } else if (rawUserAs === "owner" || rolesList.includes("owner")) {
+        detectedRole = "owner";
+      }
+
       localStorage.setItem("token", data.token);
       localStorage.setItem("auth_token", data.token);
       if (data.refresh_token) {
         localStorage.setItem("refresh_token", data.refresh_token);
       }
-      localStorage.setItem("user_as", data.user_as);
+      localStorage.setItem("user_as", detectedRole);
       localStorage.setItem(
         "user",
         JSON.stringify({
           id: data.user_id,
           username: data.username,
-          role: data.user_as,
-          roles: data.roles || [data.user_as],
+          role: detectedRole,
+          roles: data.roles || [detectedRole],
           profile: data.profile,
         }),
       );
@@ -85,7 +112,37 @@ export const authService = {
   },
 
   getUserRole(): string | null {
-    return localStorage.getItem("user_as");
+    const user = this.getStoredUser();
+    const storedUserAs = localStorage.getItem("user_as");
+    const usernameLower = (user?.username || "").toLowerCase();
+    const rawRole = (user?.role || storedUserAs || "").toLowerCase();
+    const rolesList = (user?.roles || []).map((r) => r.toLowerCase());
+
+    if (
+      rawRole === "admin" ||
+      rolesList.includes("admin") ||
+      usernameLower.startsWith("admin")
+    ) {
+      return "admin";
+    }
+    if (
+      rawRole === "regulator" ||
+      rolesList.includes("regulator") ||
+      usernameLower.includes("regulator")
+    ) {
+      return "regulator";
+    }
+    if (
+      rawRole === "captain" ||
+      rolesList.includes("captain") ||
+      usernameLower.includes("captain")
+    ) {
+      return "captain";
+    }
+    if (rawRole === "owner" || rolesList.includes("owner")) {
+      return "owner";
+    }
+    return storedUserAs || null;
   },
 
   getStoredUser(): StoredUser | null {

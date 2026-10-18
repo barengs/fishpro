@@ -93,6 +93,16 @@ const QuotaAuditPage = lazy(() =>
     default: m.QuotaAuditPage,
   })),
 );
+const PredictQuotaPage = lazy(() =>
+  import("./pages/regulator/PredictQuotaPage").then((m) => ({
+    default: m.PredictQuotaPage,
+  })),
+);
+const ManualQuotaPage = lazy(() =>
+  import("./pages/regulator/ManualQuotaPage").then((m) => ({
+    default: m.ManualQuotaPage,
+  })),
+);
 const VerifyBlockchainPage = lazy(() =>
   import("./pages/regulator/VerifyBlockchainPage").then((m) => ({
     default: m.VerifyBlockchainPage,
@@ -187,18 +197,9 @@ export default function App() {
               {/* Regulator */}
               <Route path="/regulator" element={<RegulatorLayout />}>
                 <Route index element={<RegulatorDashboard />} />
-                <Route
-                  path="audit"
-                  element={<QuotaAuditPage defaultTab="audit" />}
-                />
-                <Route
-                  path="predict-quota"
-                  element={<QuotaAuditPage defaultTab="predict" />}
-                />
-                <Route
-                  path="manual-quota"
-                  element={<QuotaAuditPage defaultTab="manual" />}
-                />
+                <Route path="audit" element={<QuotaAuditPage />} />
+                <Route path="predict-quota" element={<PredictQuotaPage />} />
+                <Route path="manual-quota" element={<ManualQuotaPage />} />
                 <Route path="verify" element={<VerifyBlockchainPage />} />
               </Route>
 

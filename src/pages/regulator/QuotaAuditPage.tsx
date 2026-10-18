@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Brain, FileCheck, Scale } from "lucide-react";
+import { Brain } from "lucide-react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { DetailModal } from "../../components/DetailModal";
@@ -10,54 +9,13 @@ import { ProgressBar } from "../../components/ProgressBar";
 import { AlertBanner } from "../../components/ui";
 import { ManualQuotaModal } from "./components/ManualQuotaModal";
 import { AiQuotaModal } from "./components/AiQuotaModal";
-import { PredictQuotaTab } from "./components/PredictQuotaTab";
-import { ManualQuotaTab } from "./components/ManualQuotaTab";
 import {
   shipsService,
   type Ship,
   type PredictShipQuotaResponse,
 } from "../../services/ships";
 
-type QuotaTabKey = "audit" | "predict" | "manual";
-
-const tabItems = [
-  {
-    key: "audit" as const,
-    label: "Audit Kepatuhan Kuota",
-    Icon: FileCheck,
-  },
-  {
-    key: "predict" as const,
-    label: "Prediksi AI (LSTM + NSGA-III)",
-    Icon: Brain,
-  },
-  {
-    key: "manual" as const,
-    label: "Input Kuota Manual",
-    Icon: Scale,
-  },
-];
-
-export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const urlTab = searchParams.get("tab") as QuotaTabKey;
-  const pathTab: QuotaTabKey | null = location.pathname.includes(
-    "predict-quota",
-  )
-    ? "predict"
-    : location.pathname.includes("manual-quota")
-      ? "manual"
-      : null;
-
-  const activeTab: QuotaTabKey =
-    pathTab ||
-    (urlTab === "predict" || urlTab === "manual"
-      ? urlTab
-      : defaultTab || "audit");
-
+export function QuotaAuditPage() {
   const [ships, setShips] = useState<Ship[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -71,11 +29,11 @@ export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
     closeDetail: closeAuditDetail,
   } = useDetailModal<Ship>();
 
-  // Manual Quota Override Modal (Quick modal from table)
+  // Manual Quota Override Modal
   const [isOverrideOpen, setIsOverrideOpen] = useState(false);
   const [selectedShipReg, setSelectedShipReg] = useState("");
 
-  // AI Prediction Modal (Quick modal from table)
+  // AI Prediction Modal
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [selectedShipForAi, setSelectedShipForAi] = useState<Ship | null>(null);
   const [aiPredicting, setAiPredicting] = useState(false);
@@ -83,16 +41,6 @@ export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
     null,
   );
   const [aiError, setAiError] = useState<string | null>(null);
-
-  const handleTabChange = (key: QuotaTabKey) => {
-    if (key === "audit") {
-      navigate("/regulator/audit");
-    } else if (key === "predict") {
-      navigate("/regulator/predict-quota");
-    } else if (key === "manual") {
-      navigate("/regulator/manual-quota");
-    }
-  };
 
   const fetchShips = useCallback(async (query?: string) => {
     setLoading(true);
@@ -311,55 +259,15 @@ export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
-          Manajemen & Audit Kuota Penangkapan
-        </h1>
-        <p className="m-0 text-sm text-soft mt-1">
-          Kewenangan regulator: Audit kepatuhan kuota tahunan kapal, proyeksi
-          cerdas LSTM & NSGA-III, dan penetapan kuota resmi.
-        </p>
-
-        {/* Style 1: Underline Tab Bar */}
-        <div className="border-b border-fco-border dark:border-fco-border-dark mt-6">
-          <nav
-            className="-mb-px flex gap-6 overflow-x-auto"
-            role="tablist"
-            aria-label="Tab Pengawasan Kuota"
-          >
-            {tabItems.map((t) => {
-              const active = activeTab === t.key;
-              return (
-                <button
-                  key={t.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => handleTabChange(t.key)}
-                  className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
-                    active
-                      ? "border-b-fco-blue text-fco-blue"
-                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
-                  }`}
-                >
-                  <t.Icon
-                    size={17}
-                    className={`shrink-0 transition-colors ${
-                      active
-                        ? "text-fco-blue"
-                        : "text-soft group-hover:text-strong"
-                    }`}
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                  <span className="whitespace-nowrap">{t.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-      </div>
+      <PageToolbar
+        title="Audit Kepatuhan Kuota"
+        desc="Verifikasi batas kuota penangkapan tahunan seluruh armada kapal nasional dan pantau tingkat kepatuhan kuota."
+        searchPlaceholder="Cari kapal / nomor registrasi..."
+        searchValue={search}
+        onSearchChange={setSearch}
+        addLabel="Input Kuota Manual"
+        onAdd={() => handleOpenOverride()}
+      />
 
       {toast && (
         <div className="mb-5">
@@ -381,49 +289,16 @@ export function QuotaAuditPage({ defaultTab }: { defaultTab?: QuotaTabKey }) {
         </div>
       )}
 
-      {/* Tab 1: Audit Kuota Table */}
-      {activeTab === "audit" && (
-        <div>
-          <PageToolbar
-            searchPlaceholder="Cari kapal / nomor registrasi..."
-            searchValue={search}
-            onSearchChange={setSearch}
-            addLabel="Input Kuota Manual"
-            onAdd={() => handleOpenOverride()}
-          />
-
-          <section className="surface-card border rounded-xl p-6 shadow-xs">
-            <DataTable
-              columns={cols}
-              rows={ships}
-              rowKey={(r) => String(r.id)}
-              loading={loading}
-              emptyText="Belum ada data kapal terdaftar di server."
-              onRowClick={openAuditDetail}
-            />
-          </section>
-        </div>
-      )}
-
-      {/* Tab 2: Prediksi Kuota AI (LSTM + NSGA-III) */}
-      {activeTab === "predict" && (
-        <PredictQuotaTab
-          onQuotaApplied={() => {
-            fetchShips();
-            handleTabChange("audit");
-          }}
+      <section className="surface-card border rounded-xl p-6 shadow-xs">
+        <DataTable
+          columns={cols}
+          rows={ships}
+          rowKey={(r) => String(r.id)}
+          loading={loading}
+          emptyText="Belum ada data kapal terdaftar di server."
+          onRowClick={openAuditDetail}
         />
-      )}
-
-      {/* Tab 3: Input Kuota Manual */}
-      {activeTab === "manual" && (
-        <ManualQuotaTab
-          onQuotaSaved={() => {
-            fetchShips();
-            handleTabChange("audit");
-          }}
-        />
-      )}
+      </section>
 
       {/* Detail Pop-up Modal */}
       <DetailModal
