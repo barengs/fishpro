@@ -30,56 +30,38 @@ export function useCatchWizard({
       setIsLocating(false);
     };
 
-    const fallbackToNetworkGeo = async () => {
-      try {
-        const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.latitude && data.longitude) {
-            applyPosition(data.latitude, data.longitude);
-            return true;
-          }
-        }
-      } catch {
-        // network error / offline
-      }
-      return false;
-    };
-
-    if (window.isSecureContext && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          applyPosition(pos.coords.latitude, pos.coords.longitude);
-        },
-        async (err) => {
-          const ok = await fallbackToNetworkGeo();
-          if (!ok) {
-            if (err.code === err.PERMISSION_DENIED) {
-              setErrorMsg(
-                "Izin akses GPS ditolak oleh browser. Harap izinkan akses lokasi di pengaturan browser.",
-              );
-            } else {
-              applyPosition(-8.747, 115.214);
-              setErrorMsg(
-                "Sensor GPS tidak terjangkau. Koordinat diisi dengan estimasi pelabuhan Benoa.",
-              );
-            }
-            setIsLocating(false);
-          }
-        },
-        { enableHighAccuracy: true, timeout: 6000, maximumAge: 60000 },
-      );
-    } else {
-      fallbackToNetworkGeo().then((ok) => {
-        if (!ok) {
-          applyPosition(-8.747, 115.214);
-          setErrorMsg(
-            "Browser HP memblokir GPS di alamat HTTP lokal (wajib HTTPS). Koordinat diisi estimasi pelabuhan.",
-          );
-          setIsLocating(false);
-        }
-      });
+    if (!navigator.geolocation) {
+      setErrorMsg("Perangkat ini tidak mendukung fitur sensor GPS.");
+      setIsLocating(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        applyPosition(pos.coords.latitude, pos.coords.longitude);
+      },
+      (err) => {
+        setIsLocating(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setErrorMsg(
+            "Izin akses GPS ditolak. Harap izinkan akses lokasi di pengaturan browser perangkat.",
+          );
+        } else if (err.code === err.TIMEOUT) {
+          setErrorMsg(
+            "Waktu pembacaan GPS habis. Pastikan GPS aktif atau masukkan angka koordinat secara manual.",
+          );
+        } else {
+          setErrorMsg(
+            "Sensor GPS tidak terjangkau. Masukkan koordinat lokasi secara manual.",
+          );
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   };
 
   const handleNext = () => {
