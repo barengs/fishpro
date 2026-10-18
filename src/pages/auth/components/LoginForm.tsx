@@ -92,7 +92,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      {errorMsg && (
+      {errorMsg && Object.keys(fieldErrors).length === 0 && (
         <div
           role="alert"
           className="flex items-center gap-2.5 p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold border border-red-200 dark:border-red-500/20"

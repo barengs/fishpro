@@ -274,8 +274,8 @@ export function RegisterStepWizard() {
 
       {/* 2. Streamlined Form Card */}
       <div className="surface-card border dark:border-fco-border-dark rounded-xl sm:rounded-2xl p-4 sm:p-7 lg:p-8 shadow-xs">
-        {/* Contextual In-Card Alert Banner */}
-        {errorMsg && (
+        {/* Contextual In-Card Alert Banner (Only shown if no inline field errors exist) */}
+        {errorMsg && Object.keys(fieldErrors).length === 0 && (
           <div
             role="alert"
             className="flex items-center gap-2.5 p-3 px-3.5 sm:px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs sm:text-sm font-semibold mb-4 sm:mb-5 border border-red-200 dark:border-red-500/20"
