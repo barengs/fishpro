@@ -88,6 +88,6 @@ export function useResetPassword(
     handleSavePassword,
     handleOtpChange,
     handleOtpKeyDown,
-    goToLogin: () => navigate("/login"),
+    goToLogin: () => navigate("/login", { replace: true }),
   };
 }

@@ -14,7 +14,7 @@ export function useLogout() {
     try {
       await authService.logout();
       toast.success("Logout berhasil. Sesi telah diakhiri.");
-      navigate("/login");
+      navigate("/login", { replace: true });
     } finally {
       setLoggingOut(false);
     }

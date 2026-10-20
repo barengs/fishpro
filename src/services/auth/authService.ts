@@ -157,4 +157,22 @@ export const authService = {
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
   },
+
+  getDashboardUrl(): string {
+    return getRoleDashboardPath(this.getUserRole());
+  },
 };
+
+export function getRoleDashboardPath(role?: string | null): string {
+  switch (role) {
+    case "admin":
+      return "/admin";
+    case "regulator":
+      return "/regulator";
+    case "captain":
+      return "/captain";
+    case "owner":
+    default:
+      return "/owner";
+  }
+}

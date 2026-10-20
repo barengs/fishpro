@@ -171,6 +171,10 @@ export function RegulatorLayout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
   const userRole = authService.getUserRole();
   if (userRole === "owner") {
     return <Navigate to="/owner" replace />;
@@ -184,7 +188,7 @@ export function RegulatorLayout() {
   const handleLogout = async () => {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

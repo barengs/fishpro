@@ -170,16 +170,13 @@ export function useRegisterWizard() {
         address: (homePort && homePort.trim()) || undefined,
       };
 
-      const res = await authService.register(payload);
+      await authService.register(payload);
       toast.success(
         `Pendaftaran berhasil! Selamat datang, ${fullName.trim() || username}.`,
       );
 
-      if (res.role === "captain") {
-        navigate("/captain");
-      } else {
-        navigate("/owner");
-      }
+      const targetDashboard = authService.getDashboardUrl();
+      navigate(targetDashboard, { replace: true });
     } catch (err: unknown) {
       const message =
         err instanceof Error

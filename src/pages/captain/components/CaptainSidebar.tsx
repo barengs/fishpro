@@ -112,6 +112,10 @@ export function CaptainLayout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
   const userRole = authService.getUserRole();
   if (userRole === "regulator") {
     return <Navigate to="/regulator" replace />;
@@ -128,7 +132,7 @@ export function CaptainLayout() {
   const handleLogout = async () => {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

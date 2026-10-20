@@ -167,15 +167,13 @@ export function AdminLayout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
   const userRole = authService.getUserRole();
-  if (userRole === "regulator") {
-    return <Navigate to="/regulator" replace />;
-  }
-  if (userRole === "owner") {
-    return <Navigate to="/owner" replace />;
-  }
-  if (userRole === "captain") {
-    return <Navigate to="/captain" replace />;
+  if (userRole && userRole !== "admin") {
+    return <Navigate to={authService.getDashboardUrl()} replace />;
   }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
@@ -183,7 +181,7 @@ export function AdminLayout() {
   const handleLogout = async () => {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

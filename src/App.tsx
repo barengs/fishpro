@@ -2,6 +2,11 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 import { ToastProvider } from "./components/toast";
+import {
+  PublicRoute,
+  ProtectedRoute,
+  BackButtonGuard,
+} from "./components/auth";
 
 // Lazy-loaded auth pages
 const OnboardingPage = lazy(() =>
@@ -174,18 +179,62 @@ export default function App() {
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
+          <BackButtonGuard />
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Navigate to="/onboard" replace />} />
+              {/* Root redirect */}
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <Navigate to="/onboard" replace />
+                  </PublicRoute>
+                }
+              />
 
-              {/* Standalone auth pages */}
-              <Route path="/onboard" element={<OnboardingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              {/* Standalone auth & public landing pages */}
+              <Route
+                path="/onboard"
+                element={
+                  <PublicRoute>
+                    <OnboardingPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <RegisterPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/reset-password"
+                element={
+                  <PublicRoute>
+                    <ResetPasswordPage />
+                  </PublicRoute>
+                }
+              />
 
-              {/* Admin */}
-              <Route path="/admin" element={<AdminLayout />}>
+              {/* Protected: Admin */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<AdminDashboard />} />
                 <Route path="ships" element={<ShipsPage />} />
                 <Route path="users" element={<UsersPage />} />
@@ -200,8 +249,15 @@ export default function App() {
                 <Route path="roles" element={<RolesMenusPage />} />
               </Route>
 
-              {/* Regulator */}
-              <Route path="/regulator" element={<RegulatorLayout />}>
+              {/* Protected: Regulator */}
+              <Route
+                path="/regulator"
+                element={
+                  <ProtectedRoute allowedRoles={["regulator", "admin"]}>
+                    <RegulatorLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<RegulatorDashboard />} />
                 <Route path="audit" element={<QuotaAuditPage />} />
                 <Route path="predict-quota" element={<PredictQuotaPage />} />
@@ -213,21 +269,43 @@ export default function App() {
                 <Route path="verify" element={<VerifyBlockchainPage />} />
               </Route>
 
-              {/* Owner */}
-              <Route path="/owner" element={<OwnerLayout />}>
+              {/* Protected: Owner */}
+              <Route
+                path="/owner"
+                element={
+                  <ProtectedRoute allowedRoles={["owner", "admin"]}>
+                    <OwnerLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<OwnerDashboard />} />
                 <Route path="fleet" element={<FleetPage />} />
                 <Route path="captains" element={<CaptainsPage />} />
               </Route>
 
-              {/* Captain */}
-              <Route path="/captain" element={<CaptainLayout />}>
+              {/* Protected: Captain */}
+              <Route
+                path="/captain"
+                element={
+                  <ProtectedRoute allowedRoles={["captain", "admin"]}>
+                    <CaptainLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<CaptainDashboard />} />
                 <Route path="catches" element={<MyCatchesPage />} />
                 <Route path="ship" element={<MyShipPage />} />
               </Route>
 
-              <Route path="*" element={<Navigate to="/onboard" replace />} />
+              {/* Catch-all */}
+              <Route
+                path="*"
+                element={
+                  <PublicRoute>
+                    <Navigate to="/onboard" replace />
+                  </PublicRoute>
+                }
+              />
             </Routes>
           </Suspense>
         </BrowserRouter>

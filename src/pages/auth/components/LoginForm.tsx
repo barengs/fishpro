@@ -53,32 +53,9 @@ export function LoginForm() {
         `Login berhasil. Selamat datang kembali, ${data.username}!`,
       );
 
-      // Navigate based on resolved role
-      const rawUserAs = (data.user_as || "").toLowerCase();
-      const rolesList = (data.roles || []).map((r) => r.toLowerCase());
-      const usernameLower = (data.username || "").toLowerCase();
-
-      if (
-        rawUserAs === "admin" ||
-        rolesList.includes("admin") ||
-        usernameLower.startsWith("admin")
-      ) {
-        navigate("/admin");
-      } else if (
-        rawUserAs === "regulator" ||
-        rolesList.includes("regulator") ||
-        usernameLower.includes("regulator")
-      ) {
-        navigate("/regulator");
-      } else if (
-        rawUserAs === "captain" ||
-        rolesList.includes("captain") ||
-        usernameLower.includes("captain")
-      ) {
-        navigate("/captain");
-      } else {
-        navigate("/owner");
-      }
+      // Navigate directly to resolved role dashboard with replace: true to clean history stack
+      const targetDashboard = authService.getDashboardUrl();
+      navigate(targetDashboard, { replace: true });
     } catch (err: unknown) {
       const message =
         err instanceof Error
