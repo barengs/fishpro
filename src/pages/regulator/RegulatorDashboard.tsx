@@ -143,28 +143,13 @@ export function RegulatorDashboard() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
-        <div>
-          <h1 className="m-0 text-3xl font-extrabold tracking-tight">
-            Portal Pengawas & Regulator
-          </h1>
-          <div className="text-sm text-soft mt-1">
-            Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen
-            penyesuaian manual kuota KKP.
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedShip(null);
-              setIsModalOpen(true);
-            }}
-            className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-sm font-semibold cursor-pointer transition-colors shadow-xs"
-          >
-            + Override Kuota Manual
-          </button>
+      <div className="mb-7">
+        <h1 className="m-0 text-3xl font-extrabold tracking-tight">
+          Portal Pengawas & Regulator
+        </h1>
+        <div className="text-sm text-soft mt-1">
+          Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen
+          penyesuaian manual kuota KKP.
         </div>
       </div>
 
