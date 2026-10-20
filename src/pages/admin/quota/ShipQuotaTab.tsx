@@ -1,5 +1,4 @@
 import { DataTable, type Column } from "../../../components/DataTable";
-import { ProgressBar } from "../../../components/ProgressBar";
 import { StatusChip } from "../../../components/StatusChip";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { CrudModal } from "../../../components/CrudModal";
@@ -43,8 +42,8 @@ export function ShipQuotaTab() {
         const isCritical = hasQuota && pct < 15;
 
         return (
-          <div>
-            <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="py-0.5">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-semibold text-strong">
                 {r.name}
               </span>
@@ -62,10 +61,13 @@ export function ShipQuotaTab() {
                 )}
               </span>
             </div>
-            <div className="text-xs text-soft tabular-nums">
-              {r.registration_number}
-              {hasQuota &&
-                ` · Sisa: ${Number(q!.remaining_quota).toLocaleString("id-ID")} kg (${pct}%)`}
+            <div className="text-xs text-soft tabular-nums mt-0.5 flex items-center gap-1.5">
+              <span>{r.registration_number}</span>
+              {r.home_port && <span>· {r.home_port}</span>}
+              <span className="sm:hidden">
+                {hasQuota &&
+                  `· Sisa: ${Number(q!.remaining_quota).toLocaleString("id-ID")} kg (${pct}%)`}
+              </span>
             </div>
           </div>
         );
@@ -75,7 +77,6 @@ export function ShipQuotaTab() {
       key: "quota",
       header: "Alokasi Kuota",
       flex: 2,
-      align: "right",
       hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
@@ -83,9 +84,14 @@ export function ShipQuotaTab() {
           return <span className="text-xs text-soft italic">Belum diatur</span>;
         }
         return (
-          <span className="text-sm font-semibold tabular-nums">
-            {Number(q.total_quota).toLocaleString("id-ID")} kg
-          </span>
+          <div>
+            <span className="text-sm font-semibold tabular-nums text-strong">
+              {Number(q.total_quota).toLocaleString("id-ID")} kg
+            </span>
+            <span className="block text-2xs text-soft">
+              Tahun {q.year || 2026}
+            </span>
+          </div>
         );
       },
     },
@@ -102,14 +108,32 @@ export function ShipQuotaTab() {
         const pct = q.quota_percentage;
         const barBg = pct < 15 ? "#EF4444" : pct < 30 ? "#F59E0B" : "#1A56DB";
         return (
-          <div className="w-full max-w-44">
-            <div className="flex justify-between text-2xs text-soft mb-1 tabular-nums">
-              <span>
+          <div className="w-full max-w-56 pr-2">
+            <div className="flex items-baseline justify-between gap-2 mb-1.5 tabular-nums">
+              <span className="text-sm font-semibold text-strong">
                 {Number(q.remaining_quota).toLocaleString("id-ID")} kg
               </span>
-              <span>{pct}%</span>
+              <span
+                className={`text-xs font-bold ${
+                  pct < 15
+                    ? "text-red-600 dark:text-red-400"
+                    : pct < 30
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-fco-blue"
+                }`}
+              >
+                {pct}%
+              </span>
             </div>
-            <ProgressBar width={`${pct}%`} height={6} barBg={barBg} />
+            <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-fco-border-subtle">
+              <div
+                className="h-full rounded-full transition-all duration-300"
+                style={{
+                  width: `${Math.min(100, Math.max(0, pct))}%`,
+                  backgroundColor: barBg,
+                }}
+              />
+            </div>
           </div>
         );
       },
@@ -117,7 +141,7 @@ export function ShipQuotaTab() {
     {
       key: "st",
       header: "Status",
-      flex: 1,
+      flex: 2,
       align: "center",
       hideOnMobile: true,
       render: (r) => {
