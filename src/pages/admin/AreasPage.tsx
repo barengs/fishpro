@@ -1,114 +1,45 @@
-import { useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
-import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
-import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { DetailModal } from "../../components/DetailModal";
 import { AlertBanner } from "../../components/ui";
 import { AreaModal } from "../../components/modals/AreaModal";
 import { TemplateDropdown } from "../../components/TemplateDropdown";
 import { CsvImportModal } from "./species/CsvImportModal";
-import {
-  regionsService,
-  type CreateFishingAreaPayload,
-  type FishingArea,
-} from "../../services/regions";
+import { regionsService, type FishingArea } from "../../services/regions";
 import { FileUp } from "lucide-react";
+import { useAreasManager } from "./hooks/useAreasManager";
 
 export function AreasPage() {
-  const [rows, setRows] = useState<FishingArea[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [editingArea, setEditingArea] = useState<FishingArea | null>(null);
-  const [selectedDetailArea, setSelectedDetailArea] =
-    useState<FishingArea | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
   const {
-    target: deleteTarget,
-    open: isDeleteOpen,
-    requestDelete,
+    rows,
+    loading,
+    search,
+    setSearch,
+    editingArea,
+    selectedDetailArea,
+    setSelectedDetailArea,
+    errorMsg,
+    setErrorMsg,
+    toastMsg,
+    setToastMsg,
+    deleting,
+    isAreaModalOpen,
+    closeAreaModal,
+    handleOpenAdd,
+    handleOpenEdit,
+    handleModalSubmit,
+    isImportModalOpen,
+    openImportModal,
+    closeImportModal,
+    handleCsvImport,
+    deleteTarget,
+    isDeleteOpen,
     cancelDelete,
-  } = useConfirmDelete<{ id: number; name: string }>();
-
-  const areaModal = useCrudModal();
-  const importModal = useCrudModal();
-
-  const fetchAreas = async (query?: string) => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const data = await regionsService.getAll(query);
-      setRows(data);
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : "Gagal memuat data WPP");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchAreas(search);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const handleOpenAdd = () => {
-    setEditingArea(null);
-    setErrorMsg(null);
-    areaModal.openModal();
-  };
-
-  const handleOpenEdit = (area: FishingArea) => {
-    setEditingArea(area);
-    setErrorMsg(null);
-    areaModal.openModal();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
-    const targetId = deleteTarget.id;
-    try {
-      await regionsService.delete(targetId);
-      setRows((prev) => prev.filter((r) => r.id !== targetId));
-      setToastMsg(`Wilayah "${deleteTarget.name}" berhasil dihapus.`);
-      setTimeout(() => setToastMsg(null), 3000);
-      cancelDelete();
-      fetchAreas(search);
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal menghapus wilayah",
-      );
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleModalSubmit = async (payload: CreateFishingAreaPayload) => {
-    if (editingArea) {
-      await regionsService.update(editingArea.id, payload);
-      setToastMsg(`Wilayah "${payload.nama}" berhasil diperbarui.`);
-    } else {
-      await regionsService.create(payload);
-      setToastMsg(`Wilayah baru "${payload.nama}" berhasil ditambahkan.`);
-    }
-    setTimeout(() => setToastMsg(null), 3000);
-    fetchAreas(search);
-  };
-
-  const handleCsvImport = async (csvData: string, clearExisting: boolean) => {
-    const res = await regionsService.importAreas(csvData, clearExisting);
-    setToastMsg(
-      `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`,
-    );
-    setTimeout(() => setToastMsg(null), 4000);
-    fetchAreas(search);
-  };
+    requestDelete,
+    handleConfirmDelete,
+  } = useAreasManager();
 
   const cols: Column<FishingArea>[] = [
     {
@@ -184,7 +115,7 @@ export function AreasPage() {
             />
             <button
               type="button"
-              onClick={importModal.openModal}
+              onClick={openImportModal}
               className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
             >
               <FileUp
@@ -270,21 +201,21 @@ export function AreasPage() {
       />
 
       <AreaModal
-        open={areaModal.open}
-        onClose={areaModal.closeModal}
+        open={isAreaModalOpen}
+        onClose={closeAreaModal}
         onSubmit={handleModalSubmit}
         editingArea={editingArea}
       />
 
       <CsvImportModal
-        open={importModal.open}
+        open={isImportModalOpen}
         title="Impor Wilayah (WPP) dari CSV"
         subtitle="Kirim data CSV teks sesuai format resmi: nama,code,deskripsi"
         headerFormat="nama,code,deskripsi"
         placeholderText={
           "nama,code,deskripsi\nSelat Malaka,WPP 571,Wilayah barat Sumatera\nLaut Jawa,WPP 712,Perairan dangkal produktif"
         }
-        onClose={importModal.closeModal}
+        onClose={closeImportModal}
         onImport={handleCsvImport}
       />
 

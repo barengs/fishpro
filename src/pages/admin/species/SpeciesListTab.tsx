@@ -1,134 +1,49 @@
-import { useEffect, useState } from "react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
 import { CrudModal } from "../../../components/CrudModal";
-import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
-import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { DetailModal } from "../../../components/DetailModal";
-import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
-import { speciesSchema } from "../../../utils/schemas";
 import { CsvImportModal } from "./CsvImportModal";
-import {
-  fishSpeciesService,
-  type CreateFishSpeciesPayload,
-  type FishSpecies,
-} from "../../../services/fish";
+import { fishSpeciesService, type FishSpecies } from "../../../services/fish";
 import { Download, FileUp } from "lucide-react";
+import { useSpeciesList } from "./hooks/useSpeciesList";
 
 export function SpeciesListTab() {
-  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const {
-    target: deleteTarget,
-    open: isDeleteOpen,
-    requestDelete,
-    cancelDelete,
-  } = useConfirmDelete<{ id: number; name: string }>();
-  const {
-    selected: selectedSpecies,
-    open: isDetailOpen,
+    speciesList,
+    search,
+    setSearch,
+    loading,
+    errorMsg,
+    setErrorMsg,
+    toastMsg,
+    setToastMsg,
+    submitting,
+    deleting,
+    editingSpeciesId,
+    speciesForm,
+    setSpeciesForm,
+    isSpeciesModalOpen,
+    closeSpeciesModal,
+    handleOpenAdd,
+    handleOpenEdit,
+    handleSpeciesSubmit,
+    isImportModalOpen,
+    openImportModal,
+    closeImportModal,
+    handleImportCsv,
+    selectedSpecies,
+    isDetailOpen,
     openDetail,
     closeDetail,
-  } = useDetailModal<FishSpecies>();
-
-  const speciesModal = useCrudModal();
-  const importModal = useCrudModal();
-  const [editingSpeciesId, setEditingSpeciesId] = useState<number | null>(null);
-  const [speciesForm, setSpeciesForm] = useState<CreateFishSpeciesPayload>({
-    name: "",
-    scientific_name: "",
-    description: "",
-  });
-
-  const fetchSpecies = async (query?: string) => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const data = await fishSpeciesService.getAll(query);
-      setSpeciesList(data);
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal memuat spesies ikan",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchSpecies(search);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const handleSpeciesSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = speciesSchema.safeParse(speciesForm);
-    if (!parsed.success) {
-      setErrorMsg(
-        parsed.error.issues[0]?.message || "Nama spesies belum valid.",
-      );
-      return;
-    }
-    setSubmitting(true);
-    setErrorMsg(null);
-    try {
-      if (editingSpeciesId) {
-        await fishSpeciesService.update(editingSpeciesId, speciesForm);
-        setToastMsg(`Spesies "${speciesForm.name}" berhasil diperbarui.`);
-      } else {
-        await fishSpeciesService.create(speciesForm);
-        setToastMsg(`Spesies baru "${speciesForm.name}" berhasil ditambahkan.`);
-      }
-      setTimeout(() => setToastMsg(null), 3000);
-      speciesModal.closeModal();
-      fetchSpecies(search);
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal menyimpan spesies ikan",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
-    const targetId = deleteTarget.id;
-    try {
-      await fishSpeciesService.delete(targetId);
-      setSpeciesList((prev) => prev.filter((r) => r.id !== targetId));
-      setToastMsg(`Spesies "${deleteTarget.name}" berhasil dihapus.`);
-      setTimeout(() => setToastMsg(null), 3000);
-      cancelDelete();
-      fetchSpecies(search);
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal menghapus spesies",
-      );
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleImportCsv = async (csvData: string, clearExisting: boolean) => {
-    const res = await fishSpeciesService.importSpecies(csvData, clearExisting);
-    setToastMsg(
-      `Impor selesai: ${res.created} dibuat, ${res.updated} diperbarui, ${res.errors} kesalahan.`,
-    );
-    setTimeout(() => setToastMsg(null), 4000);
-    fetchSpecies(search);
-  };
+    deleteTarget,
+    isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+    handleConfirmDelete,
+  } = useSpeciesList();
 
   const speciesCols: Column<FishSpecies>[] = [
     {
@@ -166,15 +81,7 @@ export function SpeciesListTab() {
       render: (r) => (
         <CrudActions
           onDetail={() => openDetail(r)}
-          onEdit={() => {
-            setEditingSpeciesId(r.id);
-            setSpeciesForm({
-              name: r.name,
-              scientific_name: r.scientific_name || "",
-              description: r.description || "",
-            });
-            speciesModal.openModal();
-          }}
+          onEdit={() => handleOpenEdit(r)}
           onDelete={() => requestDelete({ id: r.id, name: r.name })}
         />
       ),
@@ -188,11 +95,7 @@ export function SpeciesListTab() {
         searchValue={search}
         onSearchChange={setSearch}
         addLabel="Tambah Spesies"
-        onAdd={() => {
-          setEditingSpeciesId(null);
-          setSpeciesForm({ name: "", scientific_name: "", description: "" });
-          speciesModal.openModal();
-        }}
+        onAdd={handleOpenAdd}
         extraActions={
           <>
             <a
@@ -209,7 +112,7 @@ export function SpeciesListTab() {
             </a>
             <button
               type="button"
-              onClick={importModal.openModal}
+              onClick={openImportModal}
               className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
             >
               <FileUp
@@ -248,97 +151,108 @@ export function SpeciesListTab() {
       <DetailModal
         open={isDetailOpen}
         title={selectedSpecies?.name || "Detail Spesies Ikan"}
-        subtitle="Data taksonomi dan deskripsi spesies dalam katalog resmi nasional."
+        subtitle="Informasi taksonomi biologis dan klasifikasi resmi spesies perikanan."
         badge={
           selectedSpecies?.scientific_name ? (
-            <span className="italic text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="font-mono italic text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
               {selectedSpecies.scientific_name}
             </span>
           ) : undefined
         }
         onClose={closeDetail}
+        actions={
+          selectedSpecies && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedSpecies;
+                closeDetail();
+                handleOpenEdit(target);
+              }}
+              className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
         fields={[
           {
-            label: "Nama Lokal Nusantara",
+            label: "Nama Umum Ikan",
             value: selectedSpecies?.name,
           },
           {
             label: "Nama Ilmiah (Taksonomi)",
             value: (
               <span className="italic font-semibold text-strong">
-                {selectedSpecies?.scientific_name || "Belum terdaftar"}
+                {selectedSpecies?.scientific_name || "—"}
               </span>
             ),
           },
           {
-            label: "Deskripsi Morfologi & Habitat",
+            label: "Deskripsi & Karakteristik",
             value:
               selectedSpecies?.description ||
-              "Tidak ada deskripsi karakteristik spesies.",
+              "Tidak ada deskripsi tambahan untuk spesies ini.",
             fullWidth: true,
           },
         ]}
       />
 
       <CrudModal
-        open={speciesModal.open}
-        title={editingSpeciesId ? "Ubah Spesies Ikan" : "Tambah Spesies Ikan"}
-        subtitle="Daftarkan jenis ikan baru ke katalog resmi."
-        onClose={speciesModal.closeModal}
-        onSubmit={handleSpeciesSubmit}
-        submitLabel={
-          submitting
-            ? "Menyimpan..."
-            : editingSpeciesId
-              ? "Perbarui Spesies"
-              : "Simpan Spesies"
+        open={isSpeciesModalOpen}
+        title={
+          editingSpeciesId ? "Ubah Data Spesies" : "Tambah Spesies Ikan Baru"
         }
+        subtitle="Informasi taksonomi spesies ikan resmi."
+        onClose={closeSpeciesModal}
+        onSubmit={handleSpeciesSubmit}
+        submitLabel={submitting ? "Menyimpan..." : "Simpan Spesies"}
       >
-        <TextField
-          label="Nama Ikan (Unik)"
-          id="sp-name"
-          required
-          disabled={submitting}
-          value={speciesForm.name}
-          onChange={(e) =>
-            setSpeciesForm({ ...speciesForm, name: e.target.value })
-          }
-          placeholder="Contoh: Tuna Sirip Kuning"
-        />
-        <TextField
-          label="Nama Ilmiah (Taksonomi)"
-          id="sp-sci"
-          optional
-          disabled={submitting}
-          value={speciesForm.scientific_name || ""}
-          onChange={(e) =>
-            setSpeciesForm({ ...speciesForm, scientific_name: e.target.value })
-          }
-          placeholder="Contoh: Thunnus albacares"
-        />
-        <TextareaField
-          label="Deskripsi Spesies"
-          id="sp-desc"
-          optional
-          rows={3}
-          disabled={submitting}
-          value={speciesForm.description || ""}
-          onChange={(e) =>
-            setSpeciesForm({ ...speciesForm, description: e.target.value })
-          }
-          placeholder="Karakteristik habitat, ukuran umum, atau musim..."
-        />
+        <div className="flex flex-col gap-3.5">
+          <TextField
+            label="Nama Ikan"
+            id="sp-name"
+            required
+            value={speciesForm.name}
+            onChange={(e) =>
+              setSpeciesForm({ ...speciesForm, name: e.target.value })
+            }
+            placeholder="Contoh: Tongkol Krai"
+          />
+          <TextField
+            label="Nama Ilmiah (Opsional)"
+            id="sp-sci"
+            value={speciesForm.scientific_name ?? ""}
+            onChange={(e) =>
+              setSpeciesForm({
+                ...speciesForm,
+                scientific_name: e.target.value,
+              })
+            }
+            placeholder="Contoh: Auxis thazard"
+          />
+          <TextareaField
+            label="Deskripsi / Karakteristik"
+            id="sp-desc"
+            rows={3}
+            value={speciesForm.description ?? ""}
+            onChange={(e) =>
+              setSpeciesForm({ ...speciesForm, description: e.target.value })
+            }
+            placeholder="Karakteristik habitat, ukuran umum, atau catatan perikanan..."
+          />
+        </div>
       </CrudModal>
 
       <CsvImportModal
-        open={importModal.open}
-        title="Impor Spesies dari CSV"
-        subtitle="Kirim data CSV teks sesuai header resmi: name,scientific_name,description"
+        open={isImportModalOpen}
+        title="Impor Spesies Ikan dari CSV"
+        subtitle="Format header CSV: name,scientific_name,description"
         headerFormat="name,scientific_name,description"
         placeholderText={
-          "name,scientific_name,description\nTongkol,Euthynnus affinis,Ikan pelagis bernilai ekonomis\nCakalang,Katsuwonus pelamis,Ikan pelagis cepat berenang"
+          "name,scientific_name,description\nTongkol Krai,Auxis thazard,Ikan pelagis kecil perairan tropis\nCakalang,Katsuwonus pelamis,Tuna pelagis perairan terbuka"
         }
-        onClose={importModal.closeModal}
+        onClose={closeImportModal}
         onImport={handleImportCsv}
       />
 
@@ -346,7 +260,7 @@ export function SpeciesListTab() {
         open={isDeleteOpen}
         title="Hapus Spesies Ikan"
         itemName={deleteTarget?.name}
-        message="Apakah Anda yakin ingin menghapus katalog spesies ini? Data tangkapan dan acuan harga yang merujuk spesies ini dapat terpengaruh."
+        message="Apakah Anda yakin ingin menghapus data spesies ikan ini? Tindakan ini dapat mempengaruhi data tangkapan terkait."
         loading={deleting}
         onClose={cancelDelete}
         onConfirm={handleConfirmDelete}

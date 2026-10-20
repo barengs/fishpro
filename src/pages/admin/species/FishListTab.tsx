@@ -1,136 +1,44 @@
-import { useEffect, useState } from "react";
 import { Download, FileUp } from "lucide-react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { CrudActions } from "../../../components/FormField";
-import { useCrudModal } from "../../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
-import { useConfirmDelete } from "../../../components/useConfirmDelete";
 import { DetailModal } from "../../../components/DetailModal";
-import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner } from "../../../components/ui";
 import { CsvImportModal } from "./CsvImportModal";
 import { FishModal } from "./FishModal";
-import {
-  fishService,
-  fishSpeciesService,
-  type CreateFishPayload,
-  type Fish,
-  type FishSpecies,
-} from "../../../services/fish";
+import { fishSpeciesService, type Fish } from "../../../services/fish";
+import { useFishList } from "./hooks/useFishList";
 
 export function FishListTab() {
-  const [fishList, setFishList] = useState<Fish[]>([]);
-  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [editingFish, setEditingFish] = useState<Fish | null>(null);
   const {
-    target: deleteTarget,
-    open: isDeleteOpen,
-    requestDelete,
-    cancelDelete,
-  } = useConfirmDelete<{ id: number; name: string }>();
-  const {
-    selected: selectedFish,
-    open: isDetailOpen,
+    fishList,
+    speciesList,
+    loading,
+    errorMsg,
+    setErrorMsg,
+    toastMsg,
+    setToastMsg,
+    editingFish,
+    isFishModalOpen,
+    closeFishModal,
+    handleOpenAdd,
+    handleOpenEdit,
+    handleFishSubmit,
+    isImportModalOpen,
+    openImportModal,
+    closeImportModal,
+    handleImportCsv,
+    selectedFish,
+    isDetailOpen,
     openDetail,
     closeDetail,
-  } = useDetailModal<Fish>();
-
-  const fishModal = useCrudModal();
-  const importModal = useCrudModal();
-
-  const fetchData = async () => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const [fishData, spData] = await Promise.all([
-        fishService.getAll(),
-        fishSpeciesService.getAll(),
-      ]);
-      setFishList(fishData);
-      setSpeciesList(spData);
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal memuat data sampel ikan",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    let ignore = false;
-    async function loadInitial() {
-      try {
-        const [fishData, spData] = await Promise.all([
-          fishService.getAll(),
-          fishSpeciesService.getAll(),
-        ]);
-        if (!ignore) {
-          setFishList(fishData);
-          setSpeciesList(spData);
-        }
-      } catch (err: unknown) {
-        if (!ignore) {
-          setErrorMsg(
-            err instanceof Error
-              ? err.message
-              : "Gagal memuat data sampel ikan",
-          );
-        }
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    }
-    loadInitial();
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  const handleFishSubmit = async (payload: CreateFishPayload) => {
-    if (editingFish) {
-      await fishService.update(editingFish.id, payload);
-      setToastMsg("Data ikan berhasil diperbarui.");
-    } else {
-      await fishService.create(payload);
-      setToastMsg("Data ikan baru berhasil ditambahkan.");
-    }
-    setTimeout(() => setToastMsg(null), 3000);
-    fetchData();
-  };
-
-  const handleImportCsv = async (
-    csvText: string,
-    clearExisting: boolean,
-  ): Promise<void> => {
-    const res = await fishService.importFish(csvText, clearExisting);
-    setToastMsg(
-      res.message || `Berhasil mengimpor ${res.created || 0} sampel ikan.`,
-    );
-    setTimeout(() => setToastMsg(null), 3000);
-    fetchData();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    const targetId = deleteTarget.id;
-    try {
-      await fishService.delete(targetId);
-      setFishList((prev) => prev.filter((r) => r.id !== targetId));
-      setToastMsg(`Data ikan ${deleteTarget.name} berhasil dihapus.`);
-      setTimeout(() => setToastMsg(null), 3000);
-      cancelDelete();
-      fetchData();
-    } catch (err: unknown) {
-      setErrorMsg(
-        err instanceof Error ? err.message : "Gagal menghapus data ikan",
-      );
-    }
-  };
+    deleteTarget,
+    isDeleteOpen,
+    cancelDelete,
+    requestDelete,
+    handleConfirmDelete,
+  } = useFishList();
 
   const fishCols: Column<Fish>[] = [
     {
@@ -199,10 +107,7 @@ export function FishListTab() {
       render: (r) => (
         <CrudActions
           onDetail={() => openDetail(r)}
-          onEdit={() => {
-            setEditingFish(r);
-            fishModal.openModal();
-          }}
+          onEdit={() => handleOpenEdit(r)}
           onDelete={() =>
             requestDelete({
               id: r.id,
@@ -218,10 +123,7 @@ export function FishListTab() {
     <div>
       <PageToolbar
         addLabel="Tambah Ikan"
-        onAdd={() => {
-          setEditingFish(null);
-          fishModal.openModal();
-        }}
+        onAdd={handleOpenAdd}
         extraActions={
           <>
             <a
@@ -238,7 +140,7 @@ export function FishListTab() {
             </a>
             <button
               type="button"
-              onClick={importModal.openModal}
+              onClick={openImportModal}
               className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
             >
               <FileUp
@@ -308,22 +210,22 @@ export function FishListTab() {
       />
 
       <FishModal
-        open={fishModal.open}
+        open={isFishModalOpen}
         editingFish={editingFish}
         speciesList={speciesList}
-        onClose={fishModal.closeModal}
+        onClose={closeFishModal}
         onSubmit={handleFishSubmit}
       />
 
       <CsvImportModal
-        open={importModal.open}
+        open={isImportModalOpen}
         title="Impor Ikan dari CSV"
         subtitle="Kirim data CSV teks sesuai header: nama_jenis,nama_ikan,berat_kg,catatan"
         headerFormat="nama_jenis,nama_ikan,berat_kg,catatan"
         placeholderText={
           "nama_jenis,nama_ikan,berat_kg,catatan\nTongkol,Tongkol Super,1.5,Kualitas ekspor"
         }
-        onClose={importModal.closeModal}
+        onClose={closeImportModal}
         onImport={handleImportCsv}
       />
 

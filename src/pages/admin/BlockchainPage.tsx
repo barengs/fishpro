@@ -1,60 +1,32 @@
-import { useEffect, useState } from "react";
 import { PageHeader } from "../../components/PageHeader";
 import { DataTable, type Column } from "../../components/DataTable";
 import { DetailModal } from "../../components/DetailModal";
-import { useDetailModal } from "../../components/useDetailModal";
 import { StatusChip } from "../../components/StatusChip";
 import { AlertBanner } from "../../components/ui";
-import {
-  blockchainService,
-  type BlockchainBlock,
-  type FishCatchTransaction,
+import type {
+  BlockchainBlock,
+  FishCatchTransaction,
 } from "../../services/blockchain";
 import { formatShortHash } from "../../utils";
 import { Check, ShieldCheck } from "lucide-react";
+import { useBlockchainViewer } from "./hooks/useBlockchainViewer";
 
 export function BlockchainPage() {
-  const [blocks, setBlocks] = useState<BlockchainBlock[]>([]);
-  const [transactions, setTransactions] = useState<FishCatchTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [statusValid, setStatusValid] = useState<boolean | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const {
-    selected: selectedBlock,
-    open: isBlockDetailOpen,
-    openDetail: openBlockDetail,
-    closeDetail: closeBlockDetail,
-  } = useDetailModal<BlockchainBlock>();
-  const {
-    selected: selectedTx,
-    open: isTxDetailOpen,
-    openDetail: openTxDetail,
-    closeDetail: closeTxDetail,
-  } = useDetailModal<FishCatchTransaction>();
-
-  useEffect(() => {
-    async function loadBlockchainData() {
-      setLoading(true);
-      setErrorMsg(null);
-      try {
-        const [blocksData, txData, statusData] = await Promise.all([
-          blockchainService.getBlocks().catch(() => []),
-          blockchainService.getTransactions().catch(() => []),
-          blockchainService.getStatus().catch(() => null),
-        ]);
-        setBlocks(blocksData);
-        setTransactions(txData);
-        if (statusData) setStatusValid(statusData.valid);
-      } catch (err: unknown) {
-        setErrorMsg(
-          err instanceof Error ? err.message : "Gagal memuat data blockchain",
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBlockchainData();
-  }, []);
+    blocks,
+    transactions,
+    loading,
+    statusValid,
+    errorMsg,
+    selectedBlock,
+    isBlockDetailOpen,
+    openBlockDetail,
+    closeBlockDetail,
+    selectedTx,
+    isTxDetailOpen,
+    openTxDetail,
+    closeTxDetail,
+  } = useBlockchainViewer();
 
   const blockCols: Column<BlockchainBlock>[] = [
     {
@@ -198,11 +170,9 @@ export function BlockchainPage() {
         }
       />
 
-      <AlertBanner
-        variant="error"
-        message={errorMsg || ""}
-        onDismiss={() => setErrorMsg(null)}
-      />
+      {errorMsg && (
+        <AlertBanner variant="error" message={errorMsg} onDismiss={() => {}} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <section className="surface-card border rounded-xl p-6 shadow-xs">
