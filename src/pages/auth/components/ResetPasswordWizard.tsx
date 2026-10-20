@@ -1,72 +1,33 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, Lock, Mail } from "lucide-react";
+import { useResetPassword, type ResetStep } from "../hooks/useResetPassword";
 
 interface ResetPasswordWizardProps {
-  step: 1 | 2 | 3 | 4;
-  setStep: (step: 1 | 2 | 3 | 4) => void;
+  step: ResetStep;
+  setStep: (step: ResetStep) => void;
 }
 
 export function ResetPasswordWizard({
   step,
   setStep,
 }: ResetPasswordWizardProps) {
-  const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSendOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!identifier.trim()) {
-      setError("Masukkan email atau nomor registrasi.");
-      return;
-    }
-    setError(null);
-    setStep(2);
-  };
-
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otp.join("").length < 6) {
-      setError("Masukkan 6 digit kode OTP verifikasi.");
-      return;
-    }
-    setError(null);
-    setStep(3);
-  };
-
-  const handleSavePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newPassword || newPassword.length < 8) {
-      setError("Kata sandi baru minimal 8 karakter.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError("Konfirmasi kata sandi tidak cocok.");
-      return;
-    }
-    setError(null);
-    setStep(4);
-  };
-
-  const handleOtpChange = (index: number, val: string) => {
-    if (val.length > 1) val = val.slice(-1);
-    const nextOtp = [...otp];
-    nextOtp[index] = val;
-    setOtp(nextOtp);
-    if (val && index < 5) {
-      document.getElementById(`otp-${index + 1}`)?.focus();
-    }
-  };
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      document.getElementById(`otp-${index - 1}`)?.focus();
-    }
-  };
+  const {
+    identifier,
+    setIdentifier,
+    otp,
+    setOtp,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    setError,
+    handleSendOtp,
+    handleVerifyOtp,
+    handleSavePassword,
+    handleOtpChange,
+    handleOtpKeyDown,
+    goToLogin,
+  } = useResetPassword(step, setStep);
 
   return (
     <div>
@@ -281,7 +242,7 @@ export function ResetPasswordWizard({
           </div>
           <button
             type="button"
-            onClick={() => navigate("/login")}
+            onClick={goToLogin}
             className="w-full h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors"
           >
             Masuk sekarang
