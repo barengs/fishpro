@@ -253,7 +253,7 @@ export function OwnerLayout() {
               )}
             </button>
 
-            {/* Quick Jump Command Menu */}
+            {/* Search Menu */}
             <QuickSearchMenu
               items={ownerSearchItems}
               placeholder="Cari armada / menu... (Ctrl+K)"

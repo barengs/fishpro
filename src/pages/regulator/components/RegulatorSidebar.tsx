@@ -309,7 +309,7 @@ export function RegulatorLayout() {
               )}
             </button>
 
-            {/* Quick Jump Command Menu */}
+            {/* Search Menu */}
             <QuickSearchMenu
               items={regulatorSearchItems}
               placeholder="Cari audit / menu... (Ctrl+K)"

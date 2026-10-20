@@ -253,7 +253,7 @@ export function CaptainLayout() {
               )}
             </button>
 
-            {/* Quick Jump Command Menu */}
+            {/* Search Menu */}
             <QuickSearchMenu
               items={captainSearchItems}
               placeholder="Cari tangkapan / menu... (Ctrl+K)"

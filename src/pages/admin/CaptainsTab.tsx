@@ -1,114 +1,41 @@
-import { useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
-import { useCrudModal } from "../../components/useCrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
-import { useConfirmDelete } from "../../components/useConfirmDelete";
 import { DetailModal } from "../../components/DetailModal";
-import { useDetailModal } from "../../components/useDetailModal";
 import { AlertBanner } from "../../components/ui";
 import { CaptainModal } from "../../components/modals/CaptainModal";
-import {
-  captainsService,
-  type Captain,
-  type CreateCaptainPayload,
-} from "../../services/captains";
-import { ownersService, type Owner } from "../../services/owners";
+import type { Captain } from "../../services/captains";
+import { useCaptainsManager } from "./hooks/useCaptainsManager";
 
 export function CaptainsTab() {
-  const [rows, setRows] = useState<Captain[]>([]);
-  const [ownersList, setOwnersList] = useState<Owner[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [editingCaptain, setEditingCaptain] = useState<Captain | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
   const {
-    target: deleteTarget,
-    open: isDeleteOpen,
-    requestDelete,
-    cancelDelete,
-  } = useConfirmDelete<{ id: number; name: string }>();
-  const {
-    selected: selectedCaptain,
-    open: isDetailOpen,
+    rows,
+    ownersList,
+    loading,
+    search,
+    setSearch,
+    errorMsg,
+    setErrorMsg,
+    toastMsg,
+    setToastMsg,
+    editingCaptain,
+    isModalOpen,
+    closeModal,
+    handleOpenAdd,
+    handleOpenEdit,
+    handleModalSubmit,
+    selectedCaptain,
+    isDetailOpen,
     openDetail,
     closeDetail,
-  } = useDetailModal<Captain>();
-
-  const captainModal = useCrudModal();
-
-  const fetchCaptains = async (query?: string) => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const [captainsData, ownersData] = await Promise.all([
-        captainsService.getAll(query),
-        ownersService.getAll(),
-      ]);
-      setRows(captainsData);
-      setOwnersList(ownersData);
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Gagal memuat data nahkoda";
-      setErrorMsg(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchCaptains(search);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const handleOpenAdd = () => {
-    setEditingCaptain(null);
-    setErrorMsg(null);
-    captainModal.openModal();
-  };
-
-  const handleOpenEdit = (captain: Captain) => {
-    setEditingCaptain(captain);
-    setErrorMsg(null);
-    captainModal.openModal();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
-    const targetId = deleteTarget.id;
-    try {
-      await captainsService.delete(targetId);
-      setRows((prev) => prev.filter((r) => r.id !== targetId));
-      setToastMsg(`Nahkoda "${deleteTarget.name}" berhasil dihapus.`);
-      setTimeout(() => setToastMsg(null), 3000);
-      cancelDelete();
-      fetchCaptains(search);
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Gagal menghapus data nahkoda";
-      setErrorMsg(msg);
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleModalSubmit = async (payload: CreateCaptainPayload) => {
-    if (editingCaptain) {
-      await captainsService.update(editingCaptain.id, payload);
-      setToastMsg(`Data nahkoda "${payload.full_name}" berhasil diperbarui.`);
-    } else {
-      await captainsService.create(payload);
-      setToastMsg(`Nahkoda baru "${payload.full_name}" berhasil ditambahkan.`);
-    }
-    setTimeout(() => setToastMsg(null), 3000);
-    fetchCaptains(search);
-  };
+    deleteTarget,
+    isDeleteOpen,
+    deleting,
+    requestDelete,
+    cancelDelete,
+    handleConfirmDelete,
+  } = useCaptainsManager();
 
   const cols: Column<Captain>[] = [
     {
@@ -283,8 +210,8 @@ export function CaptainsTab() {
       />
 
       <CaptainModal
-        open={captainModal.open}
-        onClose={captainModal.closeModal}
+        open={isModalOpen}
+        onClose={closeModal}
         onSubmit={handleModalSubmit}
         editingCaptain={editingCaptain}
         ownersList={ownersList}
