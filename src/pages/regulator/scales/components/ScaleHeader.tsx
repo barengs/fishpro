@@ -18,22 +18,24 @@ export function ScaleHeader({
   onRefresh,
 }: ScaleHeaderProps) {
   return (
-    <div className="surface-card border rounded-xl p-5 sm:p-6 shadow-xs flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <Scale size={20} className="text-fco-blue" aria-hidden="true" />
+    <div className="surface-card border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="max-w-xl">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-fco-blue flex items-center justify-center shrink-0">
+            <Scale size={20} aria-hidden="true" />
+          </div>
           <h1 className="m-0 text-xl sm:text-2xl font-extrabold tracking-tight text-strong">
             Terminal Timbangan Pintar IoT
           </h1>
         </div>
-        <p className="m-0 text-xs sm:text-sm text-soft">
+        <p className="m-0 text-xs sm:text-sm text-soft leading-relaxed">
           Penerimaan berat tangkapan otomatis dari timbangan dermaga pelabuhan,
           kalkulasi PNBP instan, dan segel blockchain.
         </p>
       </div>
 
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="w-56 sm:w-64">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3 shrink-0">
+        <div className="w-full sm:w-64">
           <SelectField
             label="Pilih Timbangan Dermaga"
             id="scale-device-select"
@@ -48,9 +50,9 @@ export function ScaleHeader({
           />
         </div>
 
-        <div className="flex items-center gap-2 pt-6">
+        <div className="flex items-center gap-2 h-10 shrink-0">
           <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border h-full ${
               sseConnected
                 ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
                 : "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
@@ -68,7 +70,7 @@ export function ScaleHeader({
             type="button"
             onClick={onRefresh}
             title="Refresh Pembacaan"
-            className="w-9 h-9 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer transition-colors"
+            className="w-10 h-10 rounded-xl border border-fco-border-subtle surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer transition-colors shrink-0"
           >
             <RefreshCw size={15} aria-hidden="true" />
           </button>

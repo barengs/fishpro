@@ -30,7 +30,7 @@ export function AiQuotaModal({
     <CrudModal
       open={open}
       title={`Prediksi Kuota AI: ${ship?.name || "Kapal"}`}
-      subtitle="Endpoint: POST /api/ships/predict-quota/ (LSTM + NSGA-III Optimization)"
+      subtitle="Prediksi tren tangkapan dan optimasi kelestarian kuota perikanan."
       onClose={onClose}
       hideFooter
     >

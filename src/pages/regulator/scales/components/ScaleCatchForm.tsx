@@ -63,17 +63,17 @@ export function ScaleCatchForm({
         onSubmit={onSubmit}
         className="surface-card border rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col gap-4.5"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-fco-border-subtle">
+        <div className="flex items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-fco-border-subtle">
           <div>
             <h2 className="m-0 text-base font-bold text-strong">
               Simpan Laporan Tangkapan Pelabuhan
             </h2>
-            <p className="m-0 text-xs text-soft mt-0.5">
-              POST /api/iot/save-catch/ — Tautkan bobot timbangan ke kapal dan
-              segel ke blockchain.
+            <p className="m-0 text-xs text-soft mt-0.5 leading-relaxed">
+              Tautkan bobot timbangan digital ke data kapal dan segel resmi ke
+              blockchain.
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-fco-blue px-2.5 py-1 rounded-md bg-blue-500/10">
+          <span className="text-xs font-mono font-bold text-fco-blue px-3 py-1.5 rounded-lg bg-blue-500/10 shrink-0">
             Bobot: {currentWeightNum} kg
           </span>
         </div>
@@ -181,10 +181,10 @@ export function ScaleCatchForm({
             ) : (
               <>
                 <CheckCircle2 size={18} strokeWidth={2.2} aria-hidden="true" />
-                <span>
-                  Simpan Tangkapan Resmi (Otomatis Potong Kuota, PNBP, &
-                  Blockchain)
+                <span className="hidden sm:inline">
+                  Simpan Tangkapan Resmi (Potong Kuota, PNBP, & Blockchain)
                 </span>
+                <span className="sm:hidden">Simpan Tangkapan Resmi</span>
               </>
             )}
           </button>

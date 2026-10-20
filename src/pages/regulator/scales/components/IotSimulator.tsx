@@ -18,7 +18,7 @@ export function IotSimulator({
   onSubmit,
 }: IotSimulatorProps) {
   return (
-    <div className="surface-card border rounded-xl p-4 sm:p-5 shadow-xs">
+    <div className="surface-card border rounded-2xl p-5 sm:p-6 shadow-xs">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Cpu size={16} className="text-purple-600 dark:text-purple-400" />
@@ -39,8 +39,7 @@ export function IotSimulator({
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <p className="m-0 text-xs text-soft leading-relaxed">
             Uji alur penimbangan secara instan tanpa perangkat fisik. Masukkan
-            angka berat untuk memicu endpoint{" "}
-            <code>POST /api/iot/receive-weight/</code>.
+            angka berat untuk simulasi pengiriman data timbangan dermaga.
           </p>
           <div className="flex gap-2">
             <div className="relative flex-1">

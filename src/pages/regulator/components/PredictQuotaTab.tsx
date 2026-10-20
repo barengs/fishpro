@@ -35,15 +35,9 @@ export function PredictQuotaTab({
           <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
             <Brain size={20} strokeWidth={2} aria-hidden="true" />
           </div>
-          <div>
-            <h2 className="m-0 text-base font-bold text-strong">
-              Parameter Prediksi AI (LSTM + NSGA-III)
-            </h2>
-            <p className="m-0 text-xs text-soft mt-0.5">
-              POST /api/ships/predict-quota/ — Prediksi tren historis via LSTM
-              dan optimasi multi-objektif kelestarian perairan.
-            </p>
-          </div>
+          <h2 className="m-0 text-base font-bold text-strong">
+            Parameter Prediksi AI (LSTM + NSGA-III)
+          </h2>
         </div>
 
         <form onSubmit={handleRunPrediction} className="flex flex-col gap-5">

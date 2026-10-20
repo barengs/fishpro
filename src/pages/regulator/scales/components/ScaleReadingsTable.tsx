@@ -124,21 +124,20 @@ export function ScaleReadingsTable({
   ];
 
   return (
-    <section className="surface-card border rounded-xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+    <section className="surface-card border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="m-0 text-base font-bold text-strong">
             Riwayat Pembacaan Sensor Timbangan ({readings.length})
           </h3>
           <p className="m-0 text-xs text-soft mt-0.5">
-            GET /api/iot/readings/ — Log audit seluruh sesi penimbangan ikan di
-            pelabuhan.
+            Log audit seluruh sesi penimbangan ikan resmi di pelabuhan.
           </p>
         </div>
         <button
           type="button"
           onClick={onRefresh}
-          className="inline-flex items-center gap-1.5 h-8.5 px-3 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer"
+          className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors self-start sm:self-auto"
         >
           <RefreshCw size={13} />
           <span>Muat Ulang</span>
