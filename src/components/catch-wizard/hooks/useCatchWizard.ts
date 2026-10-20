@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   emptyCatchForm,
   type CatchReportFormData,
 } from "../../catchReportTypes";
 import { catchStep1Schema, catchStep2Schema } from "../../../utils/schemas";
+import { fishSpeciesService, type FishSpecies } from "../../../services/fish";
+import { regionsService, type FishingArea } from "../../../services/regions";
 
 export function useCatchWizard({
   onSubmit,
@@ -14,6 +16,37 @@ export function useCatchWizard({
   const [form, setForm] = useState<CatchReportFormData>(emptyCatchForm);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
+  const [loadingSpecies, setLoadingSpecies] = useState(false);
+  const [wppList, setWppList] = useState<FishingArea[]>([]);
+  const [loadingWpp, setLoadingWpp] = useState(false);
+
+  useEffect(() => {
+    let ignore = false;
+    async function fetchOptions() {
+      setLoadingSpecies(true);
+      setLoadingWpp(true);
+      try {
+        const [spData, areaData] = await Promise.all([
+          fishSpeciesService.getAll().catch(() => []),
+          regionsService.getAll().catch(() => []),
+        ]);
+        if (!ignore) {
+          setSpeciesList(Array.isArray(spData) ? spData : []);
+          setWppList(Array.isArray(areaData) ? areaData : []);
+        }
+      } finally {
+        if (!ignore) {
+          setLoadingSpecies(false);
+          setLoadingWpp(false);
+        }
+      }
+    }
+    fetchOptions();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const handleGetLocation = () => {
     setErrorMsg(null);
@@ -110,5 +143,9 @@ export function useCatchWizard({
     handleNext,
     handlePrev,
     handleSubmit,
+    speciesList,
+    loadingSpecies,
+    wppList,
+    loadingWpp,
   };
 }

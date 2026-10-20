@@ -18,7 +18,7 @@ export const emptyCatchForm: CatchReportFormData = {
   location_longitude: "115.200000",
   description: "",
   fish_species: "",
-  wpp: "WPP 573",
+  wpp: "",
   quantity: "",
   unit: "kg",
   value: "",

@@ -33,6 +33,10 @@ export function CatchReportWizard({
     handleNext,
     handlePrev,
     handleSubmit,
+    speciesList,
+    loadingSpecies,
+    wppList,
+    loadingWpp,
   } = useCatchWizard({ onSubmit });
 
   return (
@@ -67,7 +71,14 @@ export function CatchReportWizard({
           )}
 
           {currentStep === 2 && (
-            <StepCatchDetails form={form} setForm={setForm} />
+            <StepCatchDetails
+              form={form}
+              setForm={setForm}
+              speciesList={speciesList}
+              loadingSpecies={loadingSpecies}
+              wppList={wppList}
+              loadingWpp={loadingWpp}
+            />
           )}
 
           {currentStep === 3 && <StepCatchSummary form={form} />}
