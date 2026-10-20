@@ -28,6 +28,29 @@ export default defineConfig({
               return 'vendor-zod';
             }
           }
+          if (
+            id.includes('/src/components/ui/') ||
+            id.includes('/src/components/DataTable') ||
+            id.includes('/src/components/DetailModal') ||
+            id.includes('/src/components/StatusChip') ||
+            id.includes('/src/components/ProgressBar') ||
+            id.includes('/src/components/FormField') ||
+            id.includes('/src/components/CrudModal') ||
+            id.includes('/src/components/ConfirmDeleteModal') ||
+            id.includes('/src/components/useCrudModal') ||
+            id.includes('/src/components/useDetailModal') ||
+            id.includes('/src/components/useConfirmDelete') ||
+            id.includes('/src/components/NotificationBell')
+          ) {
+            return 'shared-ui';
+          }
+          if (
+            id.includes('/src/utils/') ||
+            id.includes('/src/services/') ||
+            id.includes('/src/config/api')
+          ) {
+            return 'shared-core';
+          }
         },
       },
     },
