@@ -18,17 +18,73 @@ interface AdminSidebarNavProps {
 }
 
 const navItems = [
-  { label: "Dashboard", to: "/admin", end: true, Icon: LayoutDashboard },
-  { label: "Kapal", to: "/admin/ships", Icon: Ship },
-  { label: "Pemilik Kapal", to: "/admin/owners", Icon: Building2 },
-  { label: "Nahkoda", to: "/admin/captains", Icon: Anchor },
-  { label: "Laporan Tangkapan", to: "/admin/catches", Icon: ClipboardList },
-  { label: "Spesies Ikan", to: "/admin/species", Icon: Fish },
-  { label: "Wilayah (WPP)", to: "/admin/areas", Icon: MapPin },
-  { label: "Kuota & PNBP", to: "/admin/quota", Icon: BarChart3 },
-  { label: "Blockchain", to: "/admin/blockchain", Icon: Link2 },
-  { label: "Perangkat IoT", to: "/admin/iot-devices", Icon: Cpu },
-  { label: "Peran & Hak Akses", to: "/admin/roles", Icon: KeyRound },
+  {
+    label: "Dashboard",
+    to: "/admin",
+    end: true,
+    Icon: LayoutDashboard,
+    prefetch: () => import("../AdminDashboard"),
+  },
+  {
+    label: "Kapal",
+    to: "/admin/ships",
+    Icon: Ship,
+    prefetch: () => import("../ShipsPage"),
+  },
+  {
+    label: "Pemilik Kapal",
+    to: "/admin/owners",
+    Icon: Building2,
+    prefetch: () => import("../OwnersTab"),
+  },
+  {
+    label: "Nahkoda",
+    to: "/admin/captains",
+    Icon: Anchor,
+    prefetch: () => import("../CaptainsTab"),
+  },
+  {
+    label: "Laporan Tangkapan",
+    to: "/admin/catches",
+    Icon: ClipboardList,
+    prefetch: () => import("../CatchesPage"),
+  },
+  {
+    label: "Spesies Ikan",
+    to: "/admin/species",
+    Icon: Fish,
+    prefetch: () => import("../SpeciesPage"),
+  },
+  {
+    label: "Wilayah (WPP)",
+    to: "/admin/areas",
+    Icon: MapPin,
+    prefetch: () => import("../AreasPage"),
+  },
+  {
+    label: "Kuota & PNBP",
+    to: "/admin/quota",
+    Icon: BarChart3,
+    prefetch: () => import("../QuotaPnbpPage"),
+  },
+  {
+    label: "Blockchain",
+    to: "/admin/blockchain",
+    Icon: Link2,
+    prefetch: () => import("../BlockchainPage"),
+  },
+  {
+    label: "Perangkat IoT",
+    to: "/admin/iot-devices",
+    Icon: Cpu,
+    prefetch: () => import("../IotDevicesPage"),
+  },
+  {
+    label: "Peran & Hak Akses",
+    to: "/admin/roles",
+    Icon: KeyRound,
+    prefetch: () => import("../RolesMenusPage"),
+  },
 ];
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
@@ -43,6 +99,7 @@ export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
           to={item.to}
           end={item.end}
           onClick={onNavigate}
+          onMouseEnter={item.prefetch}
           className={({ isActive }) =>
             `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive

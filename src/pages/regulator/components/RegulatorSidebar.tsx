@@ -18,11 +18,38 @@ import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 
 const navItems = [
-  { label: "Dashboard", to: "/regulator", end: true, Icon: LayoutDashboard },
-  { label: "Audit Kuota", to: "/regulator/audit", end: true, Icon: FileCheck },
-  { label: "Prediksi Kuota AI", to: "/regulator/predict-quota", Icon: Brain },
-  { label: "Timbangan IoT", to: "/regulator/scales", Icon: Scale },
-  { label: "Verifikasi Blockchain", to: "/regulator/verify", Icon: Link2 },
+  {
+    label: "Dashboard",
+    to: "/regulator",
+    end: true,
+    Icon: LayoutDashboard,
+    prefetch: () => import("../RegulatorDashboard"),
+  },
+  {
+    label: "Audit Kuota",
+    to: "/regulator/audit",
+    end: true,
+    Icon: FileCheck,
+    prefetch: () => import("../QuotaAuditPage"),
+  },
+  {
+    label: "Prediksi Kuota AI",
+    to: "/regulator/predict-quota",
+    Icon: Brain,
+    prefetch: () => import("../PredictQuotaPage"),
+  },
+  {
+    label: "Timbangan IoT",
+    to: "/regulator/scales",
+    Icon: Scale,
+    prefetch: () => import("../IotScalesPage"),
+  },
+  {
+    label: "Verifikasi Blockchain",
+    to: "/regulator/verify",
+    Icon: Link2,
+    prefetch: () => import("../VerifyBlockchainPage"),
+  },
 ];
 
 export function RegulatorSidebarNav({
@@ -41,6 +68,7 @@ export function RegulatorSidebarNav({
           to={item.to}
           end={item.end}
           onClick={onNavigate}
+          onMouseEnter={item.prefetch}
           className={({ isActive }) =>
             `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive

@@ -17,9 +17,25 @@ import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 
 const navItems = [
-  { label: "Dashboard", to: "/captain", end: true, Icon: LayoutDashboard },
-  { label: "Riwayat Tangkapan", to: "/captain/catches", Icon: ClipboardList },
-  { label: "Kapal Saya", to: "/captain/ship", Icon: Ship },
+  {
+    label: "Dashboard",
+    to: "/captain",
+    end: true,
+    Icon: LayoutDashboard,
+    prefetch: () => import("../CaptainDashboard"),
+  },
+  {
+    label: "Riwayat Tangkapan",
+    to: "/captain/catches",
+    Icon: ClipboardList,
+    prefetch: () => import("../MyCatchesPage"),
+  },
+  {
+    label: "Kapal Saya",
+    to: "/captain/ship",
+    Icon: Ship,
+    prefetch: () => import("../MyShipPage"),
+  },
 ];
 
 export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -34,6 +50,7 @@ export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           to={item.to}
           end={item.end}
           onClick={onNavigate}
+          onMouseEnter={item.prefetch}
           className={({ isActive }) =>
             `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive

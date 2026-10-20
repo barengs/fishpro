@@ -10,9 +10,25 @@ import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 
 const navItems = [
-  { label: "Dashboard", to: "/owner", end: true, Icon: LayoutDashboard },
-  { label: "Armada Kapal", to: "/owner/fleet", Icon: Ship },
-  { label: "Nahkoda", to: "/owner/captains", Icon: Anchor },
+  {
+    label: "Dashboard",
+    to: "/owner",
+    end: true,
+    Icon: LayoutDashboard,
+    prefetch: () => import("../OwnerDashboard"),
+  },
+  {
+    label: "Armada Kapal",
+    to: "/owner/fleet",
+    Icon: Ship,
+    prefetch: () => import("../FleetPage"),
+  },
+  {
+    label: "Nahkoda",
+    to: "/owner/captains",
+    Icon: Anchor,
+    prefetch: () => import("../CaptainsPage"),
+  },
 ];
 
 export function OwnerSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -27,6 +43,7 @@ export function OwnerSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           to={item.to}
           end={item.end}
           onClick={onNavigate}
+          onMouseEnter={item.prefetch}
           className={({ isActive }) =>
             `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive
