@@ -1,20 +1,41 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import {
-  ClipboardList,
-  LayoutDashboard,
-  Menu,
-  Search,
-  Ship,
-  X,
-} from "lucide-react";
+import { ClipboardList, LayoutDashboard, Menu, Ship, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { NotificationBell } from "../../../components/NotificationBell";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import {
+  QuickSearchMenu,
+  type QuickSearchItem,
+} from "../../../components/QuickSearchMenu";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
+
+const captainSearchItems: QuickSearchItem[] = [
+  {
+    label: "Dashboard",
+    to: "/captain",
+    category: "Overview",
+    icon: LayoutDashboard,
+    keywords: ["ringkasan", "beranda", "statistik"],
+  },
+  {
+    label: "Riwayat Tangkapan",
+    to: "/captain/catches",
+    category: "Operasional",
+    icon: ClipboardList,
+    keywords: ["tangkapan", "laporan", "ikan", "bobot", "volume", "catches"],
+  },
+  {
+    label: "Kapal Saya",
+    to: "/captain/ship",
+    category: "Armada",
+    icon: Ship,
+    keywords: ["kapal", "spesifikasi", "gt", "mesin", "dimensi"],
+  },
+];
 
 const navItems = [
   {
@@ -81,7 +102,6 @@ export function CaptainLayout() {
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024,
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
@@ -109,14 +129,6 @@ export function CaptainLayout() {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
-  };
-
-  const handleHeaderSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    navigate(
-      `/captain/catches?search=${encodeURIComponent(searchQuery.trim())}`,
-    );
   };
 
   return (
@@ -241,23 +253,11 @@ export function CaptainLayout() {
               )}
             </button>
 
-            <form
-              onSubmit={handleHeaderSearch}
-              className="relative w-full max-w-72 sm:max-w-88"
-            >
-              <Search
-                size={16}
-                className="text-soft absolute left-3 top-2.5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari tangkapan / kapal..."
-                className="w-full h-9 pl-9 pr-3.5 rounded-lg border border-fco-border-subtle surface-inset text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
-              />
-            </form>
+            {/* Quick Jump Command Menu */}
+            <QuickSearchMenu
+              items={captainSearchItems}
+              placeholder="Cari tangkapan / menu... (Ctrl+K)"
+            />
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">

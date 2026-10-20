@@ -7,15 +7,77 @@ import {
   Link2,
   Menu,
   Scale,
-  Search,
   X,
 } from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import {
+  QuickSearchMenu,
+  type QuickSearchItem,
+} from "../../../components/QuickSearchMenu";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
+
+const regulatorSearchItems: QuickSearchItem[] = [
+  {
+    label: "Dashboard",
+    to: "/regulator",
+    category: "Overview",
+    icon: LayoutDashboard,
+    keywords: ["ringkasan", "beranda", "overview", "statistik"],
+  },
+  {
+    label: "Audit Kuota",
+    to: "/regulator/audit",
+    category: "Pengawasan",
+    icon: FileCheck,
+    keywords: [
+      "audit",
+      "kuota",
+      "kepatuhan",
+      "kapal",
+      "sisa kuota",
+      "monitoring",
+    ],
+  },
+  {
+    label: "Prediksi Kuota AI",
+    to: "/regulator/predict-quota",
+    category: "AI & Analitik",
+    icon: Brain,
+    keywords: ["prediksi", "ai", "lstm", "nsga", "rekomendasi", "optimasi"],
+  },
+  {
+    label: "Timbangan IoT",
+    to: "/regulator/scales",
+    category: "Operasional Dermaga",
+    icon: Scale,
+    keywords: [
+      "timbangan",
+      "iot",
+      "dermaga",
+      "pelabuhan",
+      "smart scale",
+      "sensor",
+    ],
+  },
+  {
+    label: "Verifikasi Blockchain",
+    to: "/regulator/verify",
+    category: "Audit & Keamanan",
+    icon: Link2,
+    keywords: [
+      "blockchain",
+      "verifikasi",
+      "validasi",
+      "hash",
+      "sha256",
+      "ledger",
+    ],
+  },
+];
 
 const navItems = [
   {
@@ -99,7 +161,6 @@ export function RegulatorLayout() {
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024,
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
@@ -124,14 +185,6 @@ export function RegulatorLayout() {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
-  };
-
-  const handleHeaderSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    navigate(
-      `/regulator/audit?search=${encodeURIComponent(searchQuery.trim())}`,
-    );
   };
 
   return (
@@ -256,23 +309,11 @@ export function RegulatorLayout() {
               )}
             </button>
 
-            <form
-              onSubmit={handleHeaderSearch}
-              className="relative w-full max-w-72 sm:max-w-88"
-            >
-              <Search
-                size={16}
-                className="text-soft absolute left-3 top-2.5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari audit kuota / kapal..."
-                className="w-full h-9 pl-9 pr-3.5 rounded-lg border border-fco-border-subtle surface-inset text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
-              />
-            </form>
+            {/* Quick Jump Command Menu */}
+            <QuickSearchMenu
+              items={regulatorSearchItems}
+              placeholder="Cari audit / menu... (Ctrl+K)"
+            />
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">

@@ -1,13 +1,41 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Anchor, LayoutDashboard, Menu, Search, Ship, X } from "lucide-react";
+import { Anchor, LayoutDashboard, Menu, Ship, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { NotificationBell } from "../../../components/NotificationBell";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import {
+  QuickSearchMenu,
+  type QuickSearchItem,
+} from "../../../components/QuickSearchMenu";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
+
+const ownerSearchItems: QuickSearchItem[] = [
+  {
+    label: "Dashboard",
+    to: "/owner",
+    category: "Overview",
+    icon: LayoutDashboard,
+    keywords: ["ringkasan", "beranda", "statistik", "overview"],
+  },
+  {
+    label: "Armada Kapal",
+    to: "/owner/fleet",
+    category: "Armada",
+    icon: Ship,
+    keywords: ["kapal", "armada", "kuota", "sipi", "gt", "gross tonnage"],
+  },
+  {
+    label: "Nahkoda",
+    to: "/owner/captains",
+    category: "Armada",
+    icon: Anchor,
+    keywords: ["nahkoda", "captain", "lisensi", "sikpi", "kapten"],
+  },
+];
 
 const navItems = [
   {
@@ -74,7 +102,6 @@ export function OwnerLayout() {
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024,
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
@@ -102,12 +129,6 @@ export function OwnerLayout() {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
-  };
-
-  const handleHeaderSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    navigate(`/owner/fleet?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   return (
@@ -232,23 +253,11 @@ export function OwnerLayout() {
               )}
             </button>
 
-            <form
-              onSubmit={handleHeaderSearch}
-              className="relative w-full max-w-72 sm:max-w-88"
-            >
-              <Search
-                size={16}
-                className="text-soft absolute left-3 top-2.5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari armada kapal..."
-                className="w-full h-9 pl-9 pr-3.5 rounded-lg border border-fco-border-subtle surface-inset text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
-              />
-            </form>
+            {/* Quick Jump Command Menu */}
+            <QuickSearchMenu
+              items={ownerSearchItems}
+              placeholder="Cari armada / menu... (Ctrl+K)"
+            />
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">

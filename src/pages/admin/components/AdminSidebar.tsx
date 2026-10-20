@@ -1,10 +1,28 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
-import { Menu, Search, X } from "lucide-react";
+import {
+  Anchor,
+  BarChart3,
+  Building2,
+  ClipboardList,
+  Cpu,
+  Fish,
+  KeyRound,
+  LayoutDashboard,
+  Link2,
+  MapPin,
+  Menu,
+  Ship,
+  X,
+} from "lucide-react";
 import { Logo } from "../../../components/Logo";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import {
+  QuickSearchMenu,
+  type QuickSearchItem,
+} from "../../../components/QuickSearchMenu";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 import { AdminSidebarNav } from "./AdminSidebarNav";
@@ -14,13 +32,131 @@ export {
   AdminSidebarNav as SidebarBody,
 } from "./AdminSidebarNav";
 
+const adminSearchItems: QuickSearchItem[] = [
+  {
+    label: "Dashboard",
+    to: "/admin",
+    category: "Overview",
+    icon: LayoutDashboard,
+    keywords: ["ringkasan", "beranda", "statistik", "overview", "kpi"],
+  },
+  {
+    label: "Kapal",
+    to: "/admin/ships",
+    category: "Armada",
+    icon: Ship,
+    keywords: ["kapal", "registrasi", "sipi", "gt", "gross tonnage", "armada"],
+  },
+  {
+    label: "Pemilik Kapal",
+    to: "/admin/owners",
+    category: "Armada",
+    icon: Building2,
+    keywords: ["pemilik", "owner", "perusahaan", "pt", "cv", "badan usaha"],
+  },
+  {
+    label: "Nahkoda",
+    to: "/admin/captains",
+    category: "Armada",
+    icon: Anchor,
+    keywords: ["nahkoda", "captain", "lisensi", "sikpi", "pelaut", "kapten"],
+  },
+  {
+    label: "Laporan Tangkapan",
+    to: "/admin/catches",
+    category: "Operasional",
+    icon: ClipboardList,
+    keywords: [
+      "tangkapan",
+      "laporan",
+      "catch",
+      "ikan",
+      "bobot",
+      "volume",
+      "pnbp",
+    ],
+  },
+  {
+    label: "Spesies Ikan",
+    to: "/admin/species",
+    category: "Katalog",
+    icon: Fish,
+    keywords: [
+      "spesies",
+      "taksonomi",
+      "nama ilmiah",
+      "ikan",
+      "biologi",
+      "katalog",
+    ],
+  },
+  {
+    label: "Wilayah (WPP)",
+    to: "/admin/areas",
+    category: "Katalog",
+    icon: MapPin,
+    keywords: ["wpp", "wilayah", "wppnri", "zona", "area", "laut"],
+  },
+  {
+    label: "Kuota & PNBP",
+    to: "/admin/quota",
+    category: "Regulasi",
+    icon: BarChart3,
+    keywords: ["kuota", "pnbp", "tarif", "alokasi", "prediksi", "ai", "lstm"],
+  },
+  {
+    label: "Blockchain",
+    to: "/admin/blockchain",
+    category: "Audit & Keamanan",
+    icon: Link2,
+    keywords: [
+      "blockchain",
+      "blok",
+      "hash",
+      "sha256",
+      "ledger",
+      "transaksi",
+      "verifikasi",
+    ],
+  },
+  {
+    label: "Perangkat IoT",
+    to: "/admin/iot-devices",
+    category: "Hardware & Sensor",
+    icon: Cpu,
+    keywords: [
+      "iot",
+      "timbangan",
+      "smart scale",
+      "sensor",
+      "perangkat",
+      "device",
+    ],
+  },
+  {
+    label: "Peran & Hak Akses",
+    to: "/admin/roles",
+    category: "Pengaturan Sistem",
+    icon: KeyRound,
+    keywords: [
+      "role",
+      "peran",
+      "menu",
+      "hak akses",
+      "izin",
+      "petugas",
+      "admin",
+      "regulator",
+    ],
+  },
+];
+
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024,
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
@@ -48,12 +184,6 @@ export function AdminLayout() {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
     navigate("/login");
-  };
-
-  const handleHeaderSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    navigate(`/admin/ships?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   return (
@@ -186,24 +316,11 @@ export function AdminLayout() {
               )}
             </button>
 
-            {/* Clean Top Search Bar */}
-            <form
-              onSubmit={handleHeaderSearch}
-              className="relative w-full max-w-72 sm:max-w-88"
-            >
-              <Search
-                size={16}
-                className="text-soft absolute left-3 top-2.5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-full h-9 pl-9 pr-3.5 rounded-lg border border-fco-border-subtle surface-inset text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
-              />
-            </form>
+            {/* Quick Search Menu */}
+            <QuickSearchMenu
+              items={adminSearchItems}
+              placeholder="Cari menu... (Ctrl+K)"
+            />
           </div>
 
           {/* Right Header Controls */}
