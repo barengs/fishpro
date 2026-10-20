@@ -1,4 +1,8 @@
 import { Cpu, Loader2, Send } from "lucide-react";
+import {
+  formatThousandInput,
+  unformatThousandInput,
+} from "../../../../utils/formatters";
 
 interface IotSimulatorProps {
   showSimulator: boolean;
@@ -44,12 +48,14 @@ export function IotSimulator({
           <div className="flex gap-2">
             <div className="relative flex-1">
               <input
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 required
-                value={simWeight}
-                onChange={(e) => onWeightChange(e.target.value)}
-                placeholder="Contoh: 45.50"
+                value={formatThousandInput(simWeight)}
+                onChange={(e) =>
+                  onWeightChange(unformatThousandInput(e.target.value))
+                }
+                placeholder="Contoh: 45,50"
                 className="w-full h-10 border-2 border-fco-border dark:border-fco-border-dark rounded-lg px-3 text-sm font-mono field-input focus:outline-hidden focus:border-fco-blue"
               />
               <span className="text-xs text-soft font-semibold absolute right-3 top-2.5">

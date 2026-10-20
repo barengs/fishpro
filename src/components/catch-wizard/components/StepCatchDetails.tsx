@@ -1,5 +1,4 @@
-import { FormField, inputCls } from "../../FormField";
-import { SelectField, type SelectOption } from "../../ui";
+import { SelectField, TextField, type SelectOption } from "../../ui";
 import { type CatchReportFormData } from "../../catchReportTypes";
 import { type FishSpecies } from "../../../services/fish";
 import { type FishingArea } from "../../../services/regions";
@@ -50,6 +49,7 @@ export function StepCatchDetails({
         <SelectField
           label="WPP"
           id="cr-wpp"
+          required
           searchable
           searchPlaceholder="Cari wilayah WPP..."
           placeholder={loadingWpp ? "Memuat WPP..." : "— Pilih Wilayah WPP —"}
@@ -60,17 +60,16 @@ export function StepCatchDetails({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <FormField label="Jumlah" htmlFor="cr-q" required>
-          <input
-            id="cr-q"
-            type="number"
-            step="0.01"
-            min="0"
-            value={form.quantity}
-            onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-            className={inputCls}
-          />
-        </FormField>
+        <TextField
+          label="Jumlah"
+          id="cr-q"
+          type="number"
+          step="0.01"
+          required
+          value={form.quantity}
+          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+          placeholder="0"
+        />
         <SelectField
           label="Satuan"
           id="cr-u"
@@ -83,21 +82,16 @@ export function StepCatchDetails({
         />
       </div>
 
-      <FormField
+      <TextField
         label="Nilai (Rp)"
-        htmlFor="cr-v"
+        id="cr-v"
+        type="number"
+        step="0.01"
         hint="Opsional — PNBP dihitung otomatis."
-      >
-        <input
-          id="cr-v"
-          type="number"
-          step="0.01"
-          min="0"
-          value={form.value}
-          onChange={(e) => setForm({ ...form, value: e.target.value })}
-          className={inputCls}
-        />
-      </FormField>
+        value={form.value}
+        onChange={(e) => setForm({ ...form, value: e.target.value })}
+        placeholder="0"
+      />
     </div>
   );
 }
