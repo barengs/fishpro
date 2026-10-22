@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Anchor, LayoutDashboard, Menu, Ship, X } from "lucide-react";
 import { Logo } from "../../../components/Logo";
-import { NotificationBell } from "../../../components/NotificationBell";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
@@ -265,7 +264,6 @@ export function OwnerLayout() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <NotificationBell count={1} />
             <FullscreenToggle compact />
             <ThemeToggle compact />
             <UserProfileBadge
