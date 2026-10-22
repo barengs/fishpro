@@ -140,23 +140,21 @@ export function AreasPage() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada wilayah penangkapan terdaftar di server."
-          onRowClick={(r) => setSelectedDetailArea(r)}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada wilayah penangkapan terdaftar di server."
+        onRowClick={(r) => setSelectedDetailArea(r)}
+      />
 
       <DetailModal
         open={Boolean(selectedDetailArea)}
         title={selectedDetailArea?.nama || "Detail Wilayah"}
         badge={
           selectedDetailArea ? (
-            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
               Kode: {selectedDetailArea.code}
             </span>
           ) : undefined

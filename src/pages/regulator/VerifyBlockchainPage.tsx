@@ -129,7 +129,7 @@ export function VerifyBlockchainPage() {
         desc="Verifikasi audit integritas transaksi penangkapan ikan yang disegel ke buku besar kriptografis KKP."
         actions={
           statusValid !== null ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
               <ShieldCheck size={15} aria-hidden="true" />
               <span>Integritas Rantai: Valid</span>
             </div>
@@ -138,20 +138,18 @@ export function VerifyBlockchainPage() {
       />
 
       {errorMsg && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
+        <div className="p-3.5 px-4.5 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
           ⚠ {errorMsg}
         </div>
       )}
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada transaksi penangkapan ikan tercatat di ledger blockchain."
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada transaksi penangkapan ikan tercatat di ledger blockchain."
+      />
     </div>
   );
 }

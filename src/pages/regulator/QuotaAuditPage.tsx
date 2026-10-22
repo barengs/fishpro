@@ -198,16 +198,14 @@ export function QuotaAuditPage() {
         </div>
       )}
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={ships}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data kapal terdaftar di server."
-          onRowClick={openAuditDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={ships}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data kapal terdaftar di server."
+        onRowClick={openAuditDetail}
+      />
 
       {/* Detail Pop-up Modal */}
       <DetailModal

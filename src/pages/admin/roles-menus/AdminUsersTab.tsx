@@ -172,15 +172,13 @@ export function AdminUsersTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={userCols}
-          rows={adminUsers}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada akun admin terdaftar di server."
-        />
-      </section>
+      <DataTable
+        columns={userCols}
+        rows={adminUsers}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada akun admin terdaftar di server."
+      />
 
       <AdminUserModal
         open={userModal.open}

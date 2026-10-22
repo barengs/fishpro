@@ -143,22 +143,22 @@ export function RoleMenusTab() {
       render: (r) => (
         <div className="flex gap-1.5 flex-wrap">
           {r.can_view && (
-            <span className="text-2xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <span className="text-2xs font-semibold px-2 py-0.5 rounded-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
               Lihat
             </span>
           )}
           {r.can_create && (
-            <span className="text-2xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <span className="text-2xs font-semibold px-2 py-0.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
               Buat
             </span>
           )}
           {r.can_edit && (
-            <span className="text-2xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <span className="text-2xs font-semibold px-2 py-0.5 rounded-xs bg-amber-500/10 text-amber-600 dark:text-amber-400">
               Ubah
             </span>
           )}
           {r.can_delete && (
-            <span className="text-2xs font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400">
+            <span className="text-2xs font-semibold px-2 py-0.5 rounded-xs bg-red-500/10 text-red-600 dark:text-red-400">
               Hapus
             </span>
           )}
@@ -201,15 +201,13 @@ export function RoleMenusTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={rmCols}
-          rows={roleMenus}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada hubungan peran-menu yang ditetapkan."
-        />
-      </section>
+      <DataTable
+        columns={rmCols}
+        rows={roleMenus}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada hubungan peran-menu yang ditetapkan."
+      />
 
       <AssignRoleMenuModal
         open={assignMenuModal.open}

@@ -183,15 +183,13 @@ export function MenusTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={menuCols}
-          rows={menus}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data menu terdaftar di server."
-        />
-      </section>
+      <DataTable
+        columns={menuCols}
+        rows={menus}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data menu terdaftar di server."
+      />
 
       <MenuModal
         open={menuModal.open}

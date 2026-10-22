@@ -120,16 +120,14 @@ export function CaptainsTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data nahkoda terdaftar di server."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data nahkoda terdaftar di server."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}
@@ -137,7 +135,7 @@ export function CaptainsTab() {
         subtitle="Profil nahkoda kapal, nomor lisensi resmi, dan penugasan armada."
         badge={
           selectedCaptain ? (
-            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
               Lisensi: {selectedCaptain.license_number}
             </span>
           ) : undefined

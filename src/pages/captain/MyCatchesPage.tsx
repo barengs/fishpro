@@ -174,16 +174,14 @@ export function MyCatchesPage() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-4 sm:p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada riwayat tangkapan tercatat untuk kapal ini."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada riwayat tangkapan tercatat untuk kapal ini."
+        onRowClick={openDetail}
+      />
 
       {/* Modal Detail Tangkapan */}
       <DetailModal
@@ -257,7 +255,7 @@ export function MyCatchesPage() {
                 <div className="rounded-xl border border-fco-border-subtle surface-inset overflow-hidden mt-1">
                   <div className="max-h-52 overflow-y-auto divide-y divide-fco-border-subtle">
                     <table className="w-full text-left text-xs border-collapse">
-                      <thead className="surface-card sticky top-0 z-1 text-soft font-semibold border-b border-fco-border-subtle">
+                      <thead className="bg-fco-blue sticky top-0 z-1 text-white font-bold">
                         <tr>
                           <th className="py-2.5 px-3">Spesies / WPP</th>
                           <th className="py-2.5 px-3 text-right">Volume</th>

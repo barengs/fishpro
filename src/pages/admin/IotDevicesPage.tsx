@@ -168,16 +168,14 @@ export function IotDevicesPage() {
         </div>
       )}
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={filteredDevices}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada perangkat timbangan pintar IoT yang terdaftar di sistem."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={filteredDevices}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada perangkat timbangan pintar IoT yang terdaftar di sistem."
+        onRowClick={openDetail}
+      />
 
       {/* Detail Modal */}
       <DetailModal

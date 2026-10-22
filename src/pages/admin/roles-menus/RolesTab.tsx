@@ -152,7 +152,7 @@ export function RolesTab() {
         const isAdmin = r.name.toLowerCase() === "admin";
         return (
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${
               isAdmin
                 ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
                 : "bg-blue-500/10 text-fco-blue dark:text-blue-400"
@@ -215,16 +215,14 @@ export function RolesTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={roleCols}
-          rows={roles}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data peran terdaftar di server."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={roleCols}
+        rows={roles}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data peran terdaftar di server."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}
@@ -233,7 +231,7 @@ export function RolesTab() {
         badge={
           selectedRole ? (
             <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${
                 selectedRole.name.toLowerCase() === "admin"
                   ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
                   : "bg-blue-500/10 text-fco-blue dark:text-blue-400"

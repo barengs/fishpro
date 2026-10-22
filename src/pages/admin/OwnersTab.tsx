@@ -199,16 +199,14 @@ export function OwnersTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data pemilik terdaftar di server."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data pemilik terdaftar di server."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}
@@ -216,7 +214,7 @@ export function OwnersTab() {
         subtitle="Identitas legalitas pemilik kapal atau perusahaan perikanan."
         badge={
           selectedOwner ? (
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
               {selectedOwner.owner_type === "company"
                 ? "Perusahaan (PT/CV)"
                 : "Perorangan"}

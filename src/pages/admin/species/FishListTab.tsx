@@ -165,16 +165,14 @@ export function FishListTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={fishCols}
-          rows={fishList}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data sampel ikan individu."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={fishCols}
+        rows={fishList}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data sampel ikan individu."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}
@@ -182,7 +180,7 @@ export function FishListTab() {
         subtitle="Data spesimen ikan individu, berat, dan kondisi kualitasnya."
         badge={
           selectedFish ? (
-            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
               Spesies: {selectedFish.species_name || `#${selectedFish.species}`}
             </span>
           ) : undefined

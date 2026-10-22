@@ -145,16 +145,14 @@ export function ShipsPage() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={columns}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data kapal terdaftar di server."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data kapal terdaftar di server."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}

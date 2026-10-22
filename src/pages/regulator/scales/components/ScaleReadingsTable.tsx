@@ -124,7 +124,7 @@ export function ScaleReadingsTable({
   ];
 
   return (
-    <section className="surface-card border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="m-0 text-base font-bold text-strong">
@@ -137,7 +137,7 @@ export function ScaleReadingsTable({
         <button
           type="button"
           onClick={onRefresh}
-          className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors self-start sm:self-auto"
+          className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors self-start sm:self-auto"
         >
           <RefreshCw size={13} />
           <span>Muat Ulang</span>
@@ -229,6 +229,6 @@ export function ScaleReadingsTable({
           },
         ]}
       />
-    </section>
+    </div>
   );
 }

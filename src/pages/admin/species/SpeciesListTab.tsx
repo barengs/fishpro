@@ -137,16 +137,14 @@ export function SpeciesListTab() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={speciesCols}
-          rows={speciesList}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada data spesies ikan terdaftar di server."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={speciesCols}
+        rows={speciesList}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada data spesies ikan terdaftar di server."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}
@@ -154,7 +152,7 @@ export function SpeciesListTab() {
         subtitle="Informasi taksonomi biologis dan klasifikasi resmi spesies perikanan."
         badge={
           selectedSpecies?.scientific_name ? (
-            <span className="font-mono italic text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+            <span className="font-mono italic text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
               {selectedSpecies.scientific_name}
             </span>
           ) : undefined

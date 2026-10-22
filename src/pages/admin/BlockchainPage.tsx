@@ -162,7 +162,7 @@ export function BlockchainPage() {
         desc="Buku besar kriptografis terdistribusi SHA-256 untuk menjamin laporan tangkapan tidak dapat dimanipulasi."
         actions={
           statusValid !== null ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
               <ShieldCheck size={15} aria-hidden="true" />
               <span>Rantai Blok Valid</span>
             </div>
@@ -175,8 +175,8 @@ export function BlockchainPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        <section className="surface-card border rounded-xl p-6 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
             <h2 className="m-0 text-base font-bold text-strong">
               Blok Blockchain ({blocks.length})
             </h2>
@@ -190,10 +190,10 @@ export function BlockchainPage() {
             emptyText="Belum ada blok tercatat di jaringan blockchain."
             onRowClick={openBlockDetail}
           />
-        </section>
+        </div>
 
-        <section className="surface-card border rounded-xl p-6 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
             <h2 className="m-0 text-base font-bold text-strong">
               Transaksi Tangkapan ({transactions.length})
             </h2>
@@ -207,7 +207,7 @@ export function BlockchainPage() {
             emptyText="Belum ada transaksi tangkapan tersegel di blockchain."
             onRowClick={openTxDetail}
           />
-        </section>
+        </div>
       </div>
 
       <DetailModal
@@ -219,7 +219,7 @@ export function BlockchainPage() {
         }
         subtitle="Hash SHA-256, nonce, dan tautan rantai blok yang tidak dapat dimanipulasi."
         badge={
-          <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-fco-blue">
+          <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
             Index: #{selectedBlock?.index}
           </span>
         }

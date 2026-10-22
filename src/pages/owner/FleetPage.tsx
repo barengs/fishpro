@@ -146,16 +146,14 @@ export function FleetPage() {
         onDismiss={() => setErrorMsg(null)}
       />
 
-      <section className="surface-card border rounded-xl p-6 shadow-xs">
-        <DataTable
-          columns={cols}
-          rows={rows}
-          rowKey={(r) => String(r.id)}
-          loading={loading}
-          emptyText="Belum ada kapal terdaftar dalam armada Anda."
-          onRowClick={openDetail}
-        />
-      </section>
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada kapal terdaftar dalam armada Anda."
+        onRowClick={openDetail}
+      />
 
       <DetailModal
         open={isDetailOpen}

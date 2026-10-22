@@ -91,79 +91,77 @@ export function CriticalQuotaTable() {
         </Link>
       </div>
 
-      <div className="p-5 sm:p-6">
-        <div className="overflow-x-auto">
-          <div className="min-w-115">
-            <div className="flex items-center py-2 text-xs font-semibold text-soft">
-              <div className="basis-3/8">Kapal</div>
-              <div className="basis-3/8">Sisa kuota</div>
-              <div className="basis-2/8 text-right">Status</div>
-            </div>
-
-            {loading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={`skel-${i}`}
-                  className="flex items-center py-3 border-t border-fco-border-subtle text-sm gap-2"
-                >
-                  <div className="basis-3/8 space-y-1.5 pr-2">
-                    <Skeleton className="h-4 w-3/4 rounded" />
-                    <Skeleton className="h-3 w-1/2 rounded opacity-60" />
-                  </div>
-                  <div className="basis-3/8 space-y-1.5 pr-2">
-                    <Skeleton className="h-3 w-1/3 rounded" />
-                    <Skeleton className="h-2 w-full rounded-full" />
-                  </div>
-                  <div className="basis-2/8 flex justify-end">
-                    <Skeleton className="h-5 w-16 rounded-full" />
-                  </div>
-                </div>
-              ))
-            ) : rows.length === 0 ? (
-              <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle">
-                Belum ada data kapal terdaftar di database KKP.
-              </div>
-            ) : (
-              rows.map((q) => (
-                <div
-                  key={q.reg}
-                  className="flex items-center py-3 border-t border-fco-border-subtle text-sm gap-2"
-                >
-                  <div className="basis-3/8 min-w-0">
-                    <div className="font-semibold text-strong truncate">
-                      {q.name}
-                    </div>
-                    <div className="text-2xs text-soft font-mono truncate">
-                      {q.reg}
-                    </div>
-                  </div>
-                  <div className="basis-3/8">
-                    <div className="text-xs font-medium text-soft mb-1 tabular-nums">
-                      {q.pct}% tersisa
-                    </div>
-                    <ProgressBar
-                      width={q.width}
-                      height={6}
-                      barBg={
-                        q.pct < 15
-                          ? "#EF4444"
-                          : q.pct < 30
-                            ? "#F59E0B"
-                            : "#1A56DB"
-                      }
-                    />
-                  </div>
-                  <div className="basis-2/8 text-right">
-                    <StatusChip
-                      label={q.chip}
-                      bg={q.chipBg}
-                      color={q.chipColor}
-                    />
-                  </div>
-                </div>
-              ))
-            )}
+      <div className="overflow-x-auto">
+        <div className="min-w-115">
+          <div className="flex items-center py-3 px-4 text-xs font-bold text-white bg-fco-blue">
+            <div className="basis-3/8">Kapal</div>
+            <div className="basis-3/8">Sisa kuota</div>
+            <div className="basis-2/8 text-right">Status</div>
           </div>
+
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={`skel-${i}`}
+                className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2"
+              >
+                <div className="basis-3/8 space-y-1.5 pr-2">
+                  <Skeleton className="h-4 w-3/4 rounded-xs" />
+                  <Skeleton className="h-3 w-1/2 rounded-xs opacity-60" />
+                </div>
+                <div className="basis-3/8 space-y-1.5 pr-2">
+                  <Skeleton className="h-3 w-1/3 rounded-xs" />
+                  <Skeleton className="h-2 w-full rounded-xs" />
+                </div>
+                <div className="basis-2/8 flex justify-end">
+                  <Skeleton className="h-5 w-16 rounded-xs" />
+                </div>
+              </div>
+            ))
+          ) : rows.length === 0 ? (
+            <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle bg-white dark:bg-fco-card-dark">
+              Belum ada data kapal terdaftar di database KKP.
+            </div>
+          ) : (
+            rows.map((q) => (
+              <div
+                key={q.reg}
+                className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2 bg-white dark:bg-fco-card-dark"
+              >
+                <div className="basis-3/8 min-w-0">
+                  <div className="font-semibold text-strong truncate">
+                    {q.name}
+                  </div>
+                  <div className="text-2xs text-soft font-mono truncate">
+                    {q.reg}
+                  </div>
+                </div>
+                <div className="basis-3/8">
+                  <div className="text-xs font-medium text-soft mb-1 tabular-nums">
+                    {q.pct}% tersisa
+                  </div>
+                  <ProgressBar
+                    width={q.width}
+                    height={6}
+                    barBg={
+                      q.pct < 15
+                        ? "#EF4444"
+                        : q.pct < 30
+                          ? "#F59E0B"
+                          : "#1A56DB"
+                    }
+                  />
+                </div>
+                <div className="basis-2/8 text-right">
+                  <StatusChip
+                    label={q.chip}
+                    bg={q.chipBg}
+                    color={q.chipColor}
+                  />
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>
