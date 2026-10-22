@@ -61,19 +61,19 @@ export function ScaleCatchForm({
     <div className="flex flex-col gap-4">
       <form
         onSubmit={onSubmit}
-        className="surface-card border rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col gap-4.5"
+        className="surface-card border border-fco-border-subtle rounded-xs p-6 shadow-2xs flex flex-col gap-4"
       >
-        <div className="flex items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-fco-border-subtle">
+        <div className="flex items-start sm:items-center justify-between gap-3 pb-3 border-b border-fco-border-subtle">
           <div>
             <h2 className="m-0 text-base font-bold text-strong">
               Simpan Laporan Tangkapan Pelabuhan
             </h2>
             <p className="m-0 text-xs text-soft mt-0.5 leading-relaxed">
-              Tautkan bobot timbangan digital ke data kapal dan segel resmi ke
+              Tautkan bobot timbangan digital ke data kapal dan simpan ke
               blockchain.
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-fco-blue px-3 py-1.5 rounded-lg bg-blue-500/10 shrink-0">
+          <span className="text-xs font-mono font-bold text-fco-blue px-2.5 py-1 rounded-xs bg-blue-500/10 shrink-0">
             Bobot: {currentWeightNum} kg
           </span>
         </div>
@@ -163,11 +163,11 @@ export function ScaleCatchForm({
         />
 
         {/* Submit Action Button */}
-        <div className="pt-3 border-t border-fco-border-subtle flex flex-col gap-2">
+        <div className="pt-2 border-t border-fco-border-subtle flex flex-col gap-2">
           <button
             type="submit"
             disabled={saving || !latestReading}
-            className="w-full h-12 rounded-xl border-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm cursor-pointer transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-11 rounded-xs border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-bold text-sm cursor-pointer transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
@@ -188,15 +188,14 @@ export function ScaleCatchForm({
               </>
             )}
           </button>
-          <div className="flex items-center justify-center gap-4 text-2xs text-soft pt-1">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center justify-between text-2xs text-soft pt-1">
+            <span className="flex items-center gap-1.5">
               <Link2 size={13} className="text-fco-blue" />
-              <span>Segel Imutabilitas Blockchain SHA-256</span>
+              <span>Verifikasi Blockchain SHA-256</span>
             </span>
-            <span>·</span>
-            <span className="flex items-center gap-1">
-              <Sparkles size={13} className="text-purple-600" />
-              <span>Kalkulasi Otomatis PNBP KKP</span>
+            <span className="flex items-center gap-1.5">
+              <Sparkles size={13} className="text-fco-blue" />
+              <span>Kalkulasi PNBP Otomatis</span>
             </span>
           </div>
         </div>
@@ -204,7 +203,7 @@ export function ScaleCatchForm({
 
       {/* Success Banner Card */}
       {saveSuccess && (
-        <div className="surface-card border-2 border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/20 rounded-xl p-4 sm:p-5 text-xs text-strong flex flex-col gap-2 shadow-xs animate-in fade-in duration-200">
+        <div className="surface-card border-2 border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/20 rounded-xs p-4 sm:p-5 text-xs text-strong flex flex-col gap-2 shadow-xs animate-in fade-in duration-200">
           <div className="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-300 text-sm">
             <CheckCircle2 size={18} />
             <span>{saveSuccess.message}</span>

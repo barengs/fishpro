@@ -115,7 +115,7 @@ export function ScaleReadingsTable({
         <button
           type="button"
           onClick={() => openDetail(r)}
-          className="h-8 px-2.5 sm:px-3 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors shrink-0"
+          className="h-8 px-2.5 sm:px-3 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors shrink-0"
         >
           Detail
         </button>

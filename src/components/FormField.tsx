@@ -21,24 +21,28 @@ export function FormField({
 
   return (
     <div>
-      <label
-        htmlFor={htmlFor}
-        className="block text-sm font-semibold text-strong mb-1.5"
-      >
-        {label}
-        {required && (
-          <span
-            className="text-red-500 ml-1 font-bold"
-            aria-label="wajib diisi"
-            title="Wajib diisi"
-          >
-            *
-          </span>
-        )}
-        {isOptional && (
-          <span className="text-soft font-normal text-xs ml-1">(opsional)</span>
-        )}
-      </label>
+      {label ? (
+        <label
+          htmlFor={htmlFor}
+          className="block text-sm font-semibold text-strong mb-1.5"
+        >
+          {label}
+          {required && (
+            <span
+              className="text-red-500 ml-1 font-bold"
+              aria-label="wajib diisi"
+              title="Wajib diisi"
+            >
+              *
+            </span>
+          )}
+          {isOptional && (
+            <span className="text-soft font-normal text-xs ml-1">
+              (opsional)
+            </span>
+          )}
+        </label>
+      ) : null}
       {children}
       {hint && <span className="text-xs text-soft mt-1 block">{hint}</span>}
     </div>

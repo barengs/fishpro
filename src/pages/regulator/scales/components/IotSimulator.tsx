@@ -22,10 +22,10 @@ export function IotSimulator({
   onSubmit,
 }: IotSimulatorProps) {
   return (
-    <div className="surface-card border rounded-2xl p-5 sm:p-6 shadow-xs">
-      <div className="flex items-center justify-between mb-3">
+    <div className="surface-card border border-fco-border-subtle rounded-xs p-4 shadow-2xs">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Cpu size={16} className="text-purple-600 dark:text-purple-400" />
+          <Cpu size={15} className="text-fco-blue" />
           <span className="text-xs font-bold uppercase tracking-wider text-strong">
             Simulator Hardware IoT
           </span>
@@ -35,16 +35,15 @@ export function IotSimulator({
           onClick={onToggle}
           className="text-2xs text-fco-blue hover:underline bg-transparent border-none cursor-pointer p-0 font-semibold"
         >
-          {showSimulator ? "Sembunyikan" : "Buka Tester"}
+          {showSimulator ? "Sembunyikan" : "Buka Pengujian"}
         </button>
       </div>
 
       {showSimulator && (
-        <form onSubmit={onSubmit} className="flex flex-col gap-3">
-          <p className="m-0 text-xs text-soft leading-relaxed">
-            Uji alur penimbangan secara instan tanpa perangkat fisik. Masukkan
-            angka berat untuk simulasi pengiriman data timbangan dermaga.
-          </p>
+        <form
+          onSubmit={onSubmit}
+          className="mt-3 pt-3 border-t border-fco-border-subtle flex flex-col gap-2.5"
+        >
           <div className="flex gap-2">
             <div className="relative flex-1">
               <input
@@ -55,8 +54,8 @@ export function IotSimulator({
                 onChange={(e) =>
                   onWeightChange(unformatThousandInput(e.target.value))
                 }
-                placeholder="Contoh: 45,50"
-                className="w-full h-10 border-2 border-fco-border dark:border-fco-border-dark rounded-lg px-3 text-sm font-mono field-input focus:outline-hidden focus:border-fco-blue"
+                placeholder="45,50"
+                className="w-full h-10 border border-fco-border-subtle surface-card rounded-xs px-3 pr-8 text-sm font-mono field-input focus:outline-hidden focus:border-fco-blue"
               />
               <span className="text-xs text-soft font-semibold absolute right-3 top-2.5">
                 kg
@@ -65,7 +64,7 @@ export function IotSimulator({
             <button
               type="submit"
               disabled={simulating}
-              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg border-none bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold cursor-pointer transition-colors shadow-xs disabled:opacity-60 shrink-0"
+              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xs border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-xs font-bold cursor-pointer transition-colors shadow-xs disabled:opacity-60 shrink-0"
             >
               {simulating ? (
                 <Loader2 size={14} className="animate-spin" />
@@ -75,6 +74,10 @@ export function IotSimulator({
               <span>Kirim Berat</span>
             </button>
           </div>
+          <p className="m-0 text-2xs text-soft leading-relaxed">
+            Uji alur penimbangan instan tanpa sensor fisik. Mengirim berat
+            virtual ke backend.
+          </p>
         </form>
       )}
     </div>
