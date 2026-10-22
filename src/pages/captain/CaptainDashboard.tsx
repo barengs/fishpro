@@ -33,7 +33,13 @@ export function CaptainDashboard() {
         </h1>
         <div className="text-sm text-soft mt-1">
           {hasShip
-            ? `${ship!.name} · ${ship!.registration_number} · Pelabuhan asal ${ship!.home_port || "—"}`
+            ? `${ship!.name} · ${ship!.registration_number} · ${
+                ship!.home_port
+                  ? ship!.home_port.toLowerCase().startsWith("pelabuhan")
+                    ? ship!.home_port
+                    : `Pelabuhan ${ship!.home_port}`
+                  : "Pelabuhan belum tercatat"
+              }`
             : `Akun nahkoda: ${userInfo.name} · Belum ada kapal terhubung`}
         </div>
       </div>

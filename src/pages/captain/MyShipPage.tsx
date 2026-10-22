@@ -10,30 +10,15 @@ export function MyShipPage() {
   const [loading, setLoading] = useState(true);
 
   const currentUser = authService.getStoredUser();
-  const captainId = currentUser?.id || 1;
 
   useEffect(() => {
     async function loadShip() {
       setLoading(true);
       try {
-        const ships = await shipsService
-          .getByCaptain(captainId)
-          .catch(() => []);
-        if (ships.length > 0) {
-          setShip(ships[0]);
-        } else {
-          // Check all ships
-          const all = await shipsService.getAll().catch(() => []);
-          // Try matching ship where captain id matches or captain name matches user name
-          const matched = all.find(
-            (s) =>
-              (s.captain && s.captain === captainId) ||
-              (s.captain_name &&
-                s.captain_name.toLowerCase() ===
-                  currentUser?.username.toLowerCase()),
-          );
-          setShip(matched || (all.length > 0 ? all[0] : null));
-        }
+        const targetShip = await shipsService
+          .getShipForCaptain(currentUser)
+          .catch(() => null);
+        setShip(targetShip);
       } catch {
         setShip(null);
       } finally {
@@ -41,7 +26,7 @@ export function MyShipPage() {
       }
     }
     loadShip();
-  }, [captainId, currentUser?.username]);
+  }, [currentUser]);
 
   const specs = ship
     ? [

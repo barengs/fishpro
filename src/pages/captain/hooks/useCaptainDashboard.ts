@@ -24,7 +24,6 @@ export function useCaptainDashboard() {
   const { open: isModalOpen, openModal, closeModal } = useCrudModal();
 
   const currentUser = authService.getStoredUser();
-  const captainId = currentUser?.id || 1;
   const userInfo = getUserDisplayInfo();
 
   useEffect(() => {
@@ -32,8 +31,8 @@ export function useCaptainDashboard() {
 
     async function loadData() {
       try {
-        const [ships, chainStatus, blocks] = await Promise.all([
-          shipsService.getByCaptain(captainId).catch(() => []),
+        const [targetShip, chainStatus, blocks] = await Promise.all([
+          shipsService.getShipForCaptain(currentUser).catch(() => null),
           blockchainService.getStatus().catch(() => null),
           blockchainService.getBlocks().catch(() => []),
         ]);
@@ -42,19 +41,6 @@ export function useCaptainDashboard() {
 
         if (chainStatus) setBlockchainStatus(chainStatus);
         if (blocks.length > 0) setLastBlock(blocks[blocks.length - 1]);
-
-        let targetShip = ships.length > 0 ? ships[0] : null;
-        if (!targetShip) {
-          const all = await shipsService.getAll().catch(() => []);
-          const matched = all.find(
-            (s) =>
-              (s.captain && s.captain === captainId) ||
-              (s.captain_name &&
-                s.captain_name.toLowerCase() ===
-                  currentUser?.username.toLowerCase()),
-          );
-          targetShip = matched || (all.length > 0 ? all[0] : null);
-        }
 
         setShip(targetShip);
 
@@ -95,7 +81,7 @@ export function useCaptainDashboard() {
     return () => {
       ignore = true;
     };
-  }, [captainId, currentUser?.username, refreshKey]);
+  }, [currentUser, refreshKey]);
 
   const handleReportAdded = async (data: CatchReportFormData) => {
     const shipReg = ship ? ship.registration_number : "REG-0412";

@@ -44,30 +44,52 @@ export function RegulatorDashboard() {
         if (shipsData.length > 0) {
           const mapped: ShipQuotaItem[] = shipsData.map((s) => {
             const q = s.current_year_quota;
-            const pct = q ? q.quota_percentage : 70;
-            const totalQ = q ? Number(q.total_quota) : 12000;
-            const usedQ = q ? Number(q.used_quota) : 3600;
-            const isCritical = pct < 15;
-            const isWarning = pct < 35;
+            const hasQuota = Boolean(q && typeof q === "object");
+            const pct = hasQuota ? q!.quota_percentage : null;
+            const totalQ = hasQuota ? Number(q!.total_quota) : null;
+            const usedQ = hasQuota ? Number(q!.used_quota) : null;
+            const isCritical = pct !== null && pct < 15;
+            const isWarning = pct !== null && pct < 35;
 
             return {
               name: s.name,
               reg: s.registration_number,
               owner: s.owner_name || (s.owner ? `Owner #${s.owner}` : "—"),
-              allocatedQuota: `${totalQ.toLocaleString("id-ID")} kg`,
-              usedQuota: `${usedQ.toLocaleString("id-ID")} kg`,
-              percentRemaining: `${pct}%`,
-              aiRecommendedQuota: `${Math.round(totalQ * 1.15).toLocaleString("id-ID")} kg`,
-              status: isCritical ? "Kritis" : isWarning ? "Waspada" : "Normal",
-              statusBg: isCritical ? "#FFF1E0" : "#E8F0FE",
-              statusColor: isCritical ? "#B54708" : "#1A56DB",
+              allocatedQuota:
+                totalQ !== null
+                  ? `${totalQ.toLocaleString("id-ID")} kg`
+                  : "Belum diatur",
+              usedQuota:
+                usedQ !== null ? `${usedQ.toLocaleString("id-ID")} kg` : "0 kg",
+              percentRemaining: pct !== null ? `${pct}%` : "0%",
+              aiRecommendedQuota: "—",
+              status: !hasQuota
+                ? "Belum Diatur"
+                : isCritical
+                  ? "Kritis"
+                  : isWarning
+                    ? "Waspada"
+                    : "Aman",
+              statusBg: !hasQuota
+                ? "#EEF1F6"
+                : isCritical
+                  ? "#FFF1E0"
+                  : "#E8F0FE",
+              statusColor: !hasQuota
+                ? "#4A5872"
+                : isCritical
+                  ? "#B54708"
+                  : "#1A56DB",
             };
           });
 
           setShips(mapped);
 
           const critCount = shipsData.filter(
-            (s) => (s.current_year_quota?.quota_percentage ?? 70) < 15,
+            (s) =>
+              s.current_year_quota &&
+              typeof s.current_year_quota === "object" &&
+              s.current_year_quota.quota_percentage < 15,
           ).length;
           setCriticalCount(critCount);
         } else {

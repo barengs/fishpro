@@ -15,22 +15,15 @@ export function MyCatchesPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentUser = authService.getStoredUser();
-  const captainId = currentUser?.id || 1;
 
   const fetchCatches = useCallback(
     async (query?: string) => {
       setLoading(true);
       setErrorMsg(null);
       try {
-        const shipsData = await shipsService
-          .getByCaptain(captainId)
-          .catch(() => []);
-
-        let currentShip = shipsData.length > 0 ? shipsData[0] : null;
-        if (!currentShip) {
-          const all = await shipsService.getAll().catch(() => []);
-          currentShip = all.length > 0 ? all[0] : null;
-        }
+        const currentShip = await shipsService
+          .getShipForCaptain(currentUser)
+          .catch(() => null);
         setShip(currentShip);
 
         if (currentShip) {
@@ -51,7 +44,7 @@ export function MyCatchesPage() {
         setLoading(false);
       }
     },
-    [captainId],
+    [currentUser],
   );
 
   useEffect(() => {
@@ -148,7 +141,11 @@ export function MyCatchesPage() {
     <div className="max-w-360 mx-auto">
       <PageToolbar
         title="Riwayat Tangkapan Kapal"
-        desc={`Laporan hasil laut untuk kapal ${ship ? ship.name : "KM Samudra Jaya"} (${ship ? ship.registration_number : "REG-0412"}).`}
+        desc={
+          ship
+            ? `Laporan hasil laut untuk kapal ${ship.name} (${ship.registration_number}).`
+            : "Laporan hasil laut resmi untuk kapal armada Anda."
+        }
         searchPlaceholder="Filter tanggal..."
         searchValue={search}
         onSearchChange={setSearch}

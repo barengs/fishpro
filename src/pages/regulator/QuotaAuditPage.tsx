@@ -46,13 +46,21 @@ export function QuotaAuditPage() {
       flex: 3,
       render: (r) => {
         const q = r.current_year_quota;
-        const pct = q ? q.quota_percentage : 70;
+        const hasQuota = Boolean(q && typeof q === "object");
+        const pct = hasQuota ? q!.quota_percentage : null;
+        const isCritical = pct !== null && pct < 15;
         return (
           <div>
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-sm font-semibold">{r.name}</span>
               <span className="sm:hidden">
-                {pct < 15 ? (
+                {!hasQuota ? (
+                  <StatusChip
+                    label="Belum Diatur"
+                    bg="#EEF1F6"
+                    color="#4A5872"
+                  />
+                ) : isCritical ? (
                   <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
                 ) : (
                   <StatusChip label="Aman" />
@@ -74,11 +82,12 @@ export function QuotaAuditPage() {
       hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
+        if (!q || typeof q !== "object") {
+          return <span className="text-xs text-soft italic">Belum diatur</span>;
+        }
         return (
           <span className="text-sm tabular-nums font-semibold">
-            {q
-              ? `${Number(q.total_quota).toLocaleString("id-ID")} kg`
-              : "12.000 kg"}
+            {Number(q.total_quota).toLocaleString("id-ID")} kg
           </span>
         );
       },
@@ -90,8 +99,10 @@ export function QuotaAuditPage() {
       hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
-        const pct = q ? `${q.quota_percentage}%` : "70%";
-        return <ProgressBar width={pct} showText />;
+        if (!q || typeof q !== "object") {
+          return <span className="text-xs text-soft">—</span>;
+        }
+        return <ProgressBar width={`${q.quota_percentage}%`} showText />;
       },
     },
     {
@@ -111,7 +122,12 @@ export function QuotaAuditPage() {
       hideOnMobile: true,
       render: (r) => {
         const q = r.current_year_quota;
-        const pct = q ? q.quota_percentage : 70;
+        if (!q || typeof q !== "object") {
+          return (
+            <StatusChip label="Belum Diatur" bg="#EEF1F6" color="#4A5872" />
+          );
+        }
+        const pct = q.quota_percentage;
         return pct < 15 ? (
           <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
         ) : (
@@ -206,8 +222,16 @@ export function QuotaAuditPage() {
           selectedAuditShip
             ? (() => {
                 const q = selectedAuditShip.current_year_quota;
-                const pct =
-                  typeof q === "object" && q ? q.quota_percentage : 70;
+                if (!q || typeof q !== "object") {
+                  return (
+                    <StatusChip
+                      label="Belum Diatur"
+                      bg="#EEF1F6"
+                      color="#4A5872"
+                    />
+                  );
+                }
+                const pct = q.quota_percentage;
                 return pct < 15 ? (
                   <StatusChip label="Kritis" bg="#FFF1E0" color="#B54708" />
                 ) : (

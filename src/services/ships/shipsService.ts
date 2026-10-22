@@ -1,4 +1,5 @@
 import { apiClient, API_ENDPOINTS } from "../api";
+import { captainsService } from "../captains";
 import type { PaginatedResponse } from "../types";
 import type {
   CreateShipPayload,
@@ -48,6 +49,77 @@ export const shipsService = {
       `${API_ENDPOINTS.SHIPS.LIST}by_captain/?captain_id=${captainId}`,
     );
     return Array.isArray(data) ? data : [];
+  },
+
+  /**
+   * Mengambil kapal yang ditugaskan kepada nahkoda yang sedang login saat ini.
+   * Melakukan pencocokan: ID relasional, nomor lisensi, atau nama profil/nahkoda.
+   */
+  async getShipForCaptain(
+    user: {
+      id?: number;
+      username?: string;
+      profile?: {
+        name?: string;
+        full_name?: string;
+        license_number?: string;
+      };
+    } | null,
+  ): Promise<Ship | null> {
+    if (!user) return null;
+
+    const userFullName = (
+      user.profile?.name ||
+      user.profile?.full_name ||
+      user.username ||
+      ""
+    )
+      .toLowerCase()
+      .trim();
+    const userLicense = (user.profile?.license_number || "")
+      .toLowerCase()
+      .trim();
+    const userId = user.id;
+
+    // Ambil daftar nahkoda dan kapal secara paralel
+    const [captains, allShips] = await Promise.all([
+      captainsService.getAll().catch(() => []),
+      this.getAll().catch(() => []),
+    ]);
+
+    // 1. Cari profil nahkoda yang sesuai dengan akun user
+    const matchedCaptain = captains.find(
+      (c) =>
+        (userId && c.user === userId) ||
+        (userLicense &&
+          c.license_number?.toLowerCase().trim() === userLicense) ||
+        (userFullName && c.full_name?.toLowerCase().trim() === userFullName),
+    );
+
+    if (matchedCaptain) {
+      const shipByCaptainId = allShips.find(
+        (s) => s.captain === matchedCaptain.id,
+      );
+      if (shipByCaptainId) return shipByCaptainId;
+    }
+
+    // 2. Fallback pencocokan nama nahkoda di kapal
+    if (userFullName) {
+      const shipByName = allShips.find(
+        (s) => s.captain_name?.toLowerCase().trim() === userFullName,
+      );
+      if (shipByName) return shipByName;
+    }
+
+    if (user.username) {
+      const usernameLower = user.username.toLowerCase().trim();
+      const shipByUsername = allShips.find(
+        (s) => s.captain_name?.toLowerCase().trim() === usernameLower,
+      );
+      if (shipByUsername) return shipByUsername;
+    }
+
+    return null;
   },
 
   /**
