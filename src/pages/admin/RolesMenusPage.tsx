@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { KeyRound, Menu, ShieldCheck, UserCog } from "lucide-react";
 import { RolesTab } from "./roles-menus/RolesTab";
 import { MenusTab } from "./roles-menus/MenusTab";
@@ -19,7 +19,24 @@ const tabItems: {
 ];
 
 export function RolesMenusPage() {
-  const [tab, setTab] = useState<AdminTab>("roles");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentTabParam = searchParams.get("tab") as AdminTab;
+  const tab: AdminTab =
+    currentTabParam && tabItems.some((t) => t.key === currentTabParam)
+      ? currentTabParam
+      : "roles";
+
+  const handleTabChange = (nextTab: AdminTab) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("tab", nextTab);
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   return (
     <div>
@@ -47,7 +64,7 @@ export function RolesMenusPage() {
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => setTab(t.key)}
+                  onClick={() => handleTabChange(t.key)}
                   className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
                     active
                       ? "border-b-fco-blue text-fco-blue"

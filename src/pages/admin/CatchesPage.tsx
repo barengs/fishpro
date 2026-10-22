@@ -220,6 +220,7 @@ export function CatchesPage() {
                     <table className="w-full text-left text-xs border-collapse">
                       <thead className="bg-fco-blue sticky top-0 z-1 text-white font-bold">
                         <tr>
+                          <th className="py-2.5 px-3 w-10 text-center">No</th>
                           <th className="py-2.5 px-3">Spesies / WPP</th>
                           <th className="py-2.5 px-3 text-right">Volume</th>
                           <th className="py-2.5 px-3 text-right">PNBP</th>
@@ -231,6 +232,9 @@ export function CatchesPage() {
                             key={i}
                             className="hover:surface-page transition-colors"
                           >
+                            <td className="py-2.5 px-3 text-center tabular-nums text-soft font-semibold w-10">
+                              {i + 1}
+                            </td>
                             <td className="py-2.5 px-3">
                               <div className="font-semibold text-strong">
                                 {d.fish_species_name ||

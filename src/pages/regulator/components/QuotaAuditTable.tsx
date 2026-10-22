@@ -38,8 +38,9 @@ export function QuotaAuditTable({
 
       <div className="border border-fco-border-subtle surface-card rounded-xs overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
-          <div className="min-w-180">
-            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue">
+          <div className="min-w-185">
+            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue gap-2">
+              <div className="w-8 shrink-0 text-center">No</div>
               <div className="basis-3/12">Kapal & Pemilik</div>
               <div className="basis-2/12">Alokasi Kuota</div>
               <div className="basis-2/12">Rekomendasi AI</div>
@@ -48,11 +49,14 @@ export function QuotaAuditTable({
               <div className="basis-2/12 text-right">Aksi</div>
             </div>
 
-            {ships.map((s) => (
+            {ships.map((s, i) => (
               <div
                 key={s.reg}
-                className="flex items-center py-4 px-3 border-t border-fco-border-subtle bg-white dark:bg-fco-card-dark"
+                className="flex items-center py-4 px-3 border-t border-fco-border-subtle bg-white dark:bg-fco-card-dark gap-2"
               >
+                <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
+                  {i + 1}
+                </div>
                 <div className="basis-3/12">
                   <div className="text-sm font-semibold text-strong">
                     {s.name}

@@ -92,8 +92,9 @@ export function CriticalQuotaTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-115">
-          <div className="flex items-center py-3 px-4 text-xs font-bold text-white bg-fco-blue">
+        <div className="min-w-120">
+          <div className="flex items-center py-3 px-4 text-xs font-bold text-white bg-fco-blue gap-2">
+            <div className="w-8 shrink-0 text-center">No</div>
             <div className="basis-3/8">Kapal</div>
             <div className="basis-3/8">Sisa kuota</div>
             <div className="basis-2/8 text-right">Status</div>
@@ -105,6 +106,9 @@ export function CriticalQuotaTable() {
                 key={`skel-${i}`}
                 className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2"
               >
+                <div className="w-8 shrink-0 flex justify-center">
+                  <Skeleton className="h-4 w-5 rounded-xs" />
+                </div>
                 <div className="basis-3/8 space-y-1.5 pr-2">
                   <Skeleton className="h-4 w-3/4 rounded-xs" />
                   <Skeleton className="h-3 w-1/2 rounded-xs opacity-60" />
@@ -123,11 +127,14 @@ export function CriticalQuotaTable() {
               Belum ada data kapal terdaftar di database KKP.
             </div>
           ) : (
-            rows.map((q) => (
+            rows.map((q, i) => (
               <div
                 key={q.reg}
                 className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2 bg-white dark:bg-fco-card-dark"
               >
+                <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
+                  {i + 1}
+                </div>
                 <div className="basis-3/8 min-w-0">
                   <div className="font-semibold text-strong truncate">
                     {q.name}

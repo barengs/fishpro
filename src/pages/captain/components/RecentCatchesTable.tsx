@@ -30,8 +30,9 @@ export function RecentCatchesTable({ reports = [] }: RecentCatchesTableProps) {
 
       <div className="border border-fco-border-subtle surface-card rounded-xs overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
-          <div className="min-w-115">
-            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue">
+          <div className="min-w-120">
+            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue gap-2">
+              <div className="w-8 shrink-0 text-center">No</div>
               <div className="basis-3/12">Tanggal</div>
               <div className="basis-3/12">Spesies</div>
               <div className="basis-2/12 text-right">Jumlah</div>
@@ -47,8 +48,11 @@ export function RecentCatchesTable({ reports = [] }: RecentCatchesTableProps) {
               reports.map((r, i) => (
                 <div
                   key={i}
-                  className="flex items-center py-3 px-3 border-t border-fco-border-subtle text-sm bg-white dark:bg-fco-card-dark"
+                  className="flex items-center py-3 px-3 border-t border-fco-border-subtle text-sm bg-white dark:bg-fco-card-dark gap-2"
                 >
+                  <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
+                    {i + 1}
+                  </div>
                   <div className="basis-3/12 tabular-nums text-strong">
                     {r.date}
                   </div>

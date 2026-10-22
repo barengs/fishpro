@@ -71,8 +71,9 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
 
       <div className="border border-fco-border-subtle surface-card rounded-xs overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
-          <div className="min-w-130">
-            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue">
+          <div className="min-w-135">
+            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue gap-2">
+              <div className="w-8 shrink-0 text-center">No</div>
               <div className="basis-3/10">Kapal</div>
               <div className="basis-2/10">Nahkoda</div>
               <div className="basis-3/10">Sisa kuota</div>
@@ -85,19 +86,22 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                   key={`skel-fleet-${i}`}
                   className="flex items-center py-3 px-3 border-t border-fco-border-subtle text-sm gap-2 bg-white dark:bg-fco-card-dark"
                 >
+                  <div className="w-8 shrink-0 flex justify-center">
+                    <Skeleton className="h-4 w-5 rounded-xs" />
+                  </div>
                   <div className="basis-3/10 space-y-1.5 pr-2">
-                    <Skeleton className="h-4 w-3/4 rounded" />
-                    <Skeleton className="h-3 w-1/2 rounded opacity-60" />
+                    <Skeleton className="h-4 w-3/4 rounded-xs" />
+                    <Skeleton className="h-3 w-1/2 rounded-xs opacity-60" />
                   </div>
                   <div className="basis-2/10 pr-2">
-                    <Skeleton className="h-4 w-2/3 rounded" />
+                    <Skeleton className="h-4 w-2/3 rounded-xs" />
                   </div>
                   <div className="basis-3/10 space-y-1.5 pr-2">
-                    <Skeleton className="h-3 w-1/3 rounded" />
-                    <Skeleton className="h-2 w-full rounded-full" />
+                    <Skeleton className="h-3 w-1/3 rounded-xs" />
+                    <Skeleton className="h-2 w-full rounded-xs" />
                   </div>
                   <div className="basis-2/10 flex justify-end">
-                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-16 rounded-xs" />
                   </div>
                 </div>
               ))
@@ -106,7 +110,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                 Belum ada kapal dalam armada Anda.
               </div>
             ) : (
-              ships.map((s) => {
+              ships.map((s, i) => {
                 const quota = s.current_year_quota;
                 const pct = quota ? quota.quota_percentage : 70;
                 const width = `${pct}%`;
@@ -144,8 +148,11 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                 return (
                   <div
                     key={s.id || s.registration_number}
-                    className="flex items-center py-4 px-3 border-t border-fco-border-subtle"
+                    className="flex items-center py-4 px-3 border-t border-fco-border-subtle gap-2"
                   >
+                    <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
+                      {i + 1}
+                    </div>
                     <div className="basis-3/10">
                       <div className="text-sm font-semibold text-strong">
                         {s.name}
