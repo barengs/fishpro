@@ -4,11 +4,13 @@ import { type ScaleReading } from "../../../../services/iot";
 interface ScaleDisplayProps {
   selectedDeviceId: string;
   latestReading: ScaleReading | null;
+  loading?: boolean;
 }
 
 export function ScaleDisplay({
   selectedDeviceId,
   latestReading,
+  loading,
 }: ScaleDisplayProps) {
   const currentWeightNum = latestReading
     ? Number(latestReading.weight).toFixed(2)
@@ -38,7 +40,11 @@ export function ScaleDisplay({
 
       {/* Main Digital Readout */}
       <div className="py-8 sm:py-10 flex flex-col items-center justify-center text-center">
-        <div className="text-6xl sm:text-7xl font-mono font-black tracking-tight tabular-nums text-white drop-shadow-lg">
+        <div
+          className={`text-6xl sm:text-7xl font-mono font-black tracking-tight tabular-nums text-white drop-shadow-lg ${
+            loading && !latestReading ? "opacity-60 animate-pulse" : ""
+          }`}
+        >
           {currentWeightNum}
         </div>
         <div className="text-xs sm:text-sm font-bold uppercase tracking-widest text-emerald-400 mt-2.5">
@@ -51,11 +57,19 @@ export function ScaleDisplay({
         <span className="flex items-center gap-1.5 font-medium">
           <span
             className={`w-2 h-2 rounded-full ${
-              latestReading ? "bg-amber-400" : "bg-emerald-400"
+              loading && !latestReading
+                ? "bg-blue-400 animate-pulse"
+                : latestReading
+                  ? "bg-amber-400"
+                  : "bg-emerald-400"
             }`}
           />
           <span>
-            {latestReading ? "Beban Terdeteksi (Pending)" : "Siap Menimbang"}
+            {loading && !latestReading
+              ? "Menghubungkan ke Sensor..."
+              : latestReading
+                ? "Beban Terdeteksi (Pending)"
+                : "Siap Menimbang"}
           </span>
         </span>
         <span className="font-mono text-2xs text-slate-400">

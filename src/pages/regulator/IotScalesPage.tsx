@@ -79,6 +79,7 @@ export function IotScalesPage() {
           <ScaleDisplay
             selectedDeviceId={selectedDeviceId}
             latestReading={latestReading}
+            loading={loading}
           />
 
           <IotSimulator

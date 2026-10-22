@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../../../../components/toast";
 import {
   iotService,
@@ -52,7 +52,6 @@ export function useIotScales() {
   const [simulating, setSimulating] = useState(false);
   const [showSimulator, setShowSimulator] = useState(true);
 
-  const eventSourceRef = useRef<EventSource | null>(null);
   const toast = useToast();
 
   // Load initial master data
@@ -117,12 +116,47 @@ export function useIotScales() {
     }
   }, []);
 
-  // Setup Server-Sent Events (SSE) stream & initial load
+  // Setup Smart Polling: menggantikan SSE gantung yang mengunci Gunicorn worker
   useEffect(() => {
     if (!selectedDeviceId) return;
     let ignore = false;
+    let pollTimer: ReturnType<typeof setTimeout> | null = null;
 
-    async function loadReadings() {
+    async function pollLatestWeight() {
+      // Lewati polling jika tab browser tidak aktif / disembunyikan
+      if (typeof document !== "undefined" && document.hidden) {
+        if (!ignore) {
+          pollTimer = setTimeout(pollLatestWeight, 5000);
+        }
+        return;
+      }
+
+      try {
+        const latest = await iotService.getLatestReading(
+          selectedDeviceId,
+          "pending",
+        );
+        if (!ignore) {
+          setLatestReading((prev) => {
+            // Hanya set state baru jika id atau bobot berbeda
+            if (!prev && !latest) return null;
+            if (prev?.id === latest?.id && prev?.weight === latest?.weight) {
+              return prev;
+            }
+            return latest;
+          });
+          setSseConnected(true);
+        }
+      } catch {
+        if (!ignore) setSseConnected(false);
+      } finally {
+        if (!ignore) {
+          pollTimer = setTimeout(pollLatestWeight, 2500);
+        }
+      }
+    }
+
+    async function initialLoad() {
       try {
         const [latest, list] = await Promise.all([
           iotService.getLatestReading(selectedDeviceId, "pending"),
@@ -131,58 +165,25 @@ export function useIotScales() {
         if (!ignore) {
           setLatestReading(latest);
           setReadings(list);
+          setSseConnected(true);
         }
       } catch {
         // Ignored
+      } finally {
+        if (!ignore) {
+          pollTimer = setTimeout(pollLatestWeight, 2500);
+        }
       }
     }
-    loadReadings();
 
-    const streamUrl = iotService.getStreamUrl(selectedDeviceId);
-    const es = new EventSource(streamUrl);
-    eventSourceRef.current = es;
-
-    es.onopen = () => {
-      if (!ignore) setSseConnected(true);
-    };
-
-    es.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.event === "weight_update" || data.event === "initial_state") {
-          if (!ignore) {
-            setLatestReading({
-              id: data.reading_id,
-              device_id: data.device_id,
-              scale_name: data.scale_name,
-              port_name: data.port_name,
-              weight: data.weight,
-              unit: data.unit || "kg",
-              tare: data.tare || 0,
-              is_stable: data.is_stable ?? true,
-              status: data.status || "pending",
-              created_at: data.created_at || new Date().toISOString(),
-            });
-          }
-          fetchReadings(selectedDeviceId);
-        } else if (data.event === "weight_saved") {
-          fetchReadings(selectedDeviceId);
-        }
-      } catch {
-        // Ignored
-      }
-    };
-
-    es.onerror = () => {
-      if (!ignore) setSseConnected(false);
-    };
+    initialLoad();
 
     return () => {
       ignore = true;
-      es.close();
+      if (pollTimer) clearTimeout(pollTimer);
       setSseConnected(false);
     };
-  }, [selectedDeviceId, fetchReadings]);
+  }, [selectedDeviceId]);
 
   // Handle Save Catch
   const handleSaveCatch = async (e: React.FormEvent) => {

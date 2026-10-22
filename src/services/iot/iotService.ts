@@ -70,9 +70,14 @@ export const iotService = {
       : API_ENDPOINTS.IOT.LATEST;
 
     try {
-      const res = await apiClient<ScaleReading | { message: string }>(url, {
-        bypassCache: true,
-      });
+      const res = await apiClient<ScaleReading | { message: string } | null>(
+        url,
+        {
+          bypassCache: true,
+          silentStatusCodes: [404],
+        },
+      );
+      if (!res) return null;
       if ("message" in res && !("id" in res)) {
         return null;
       }

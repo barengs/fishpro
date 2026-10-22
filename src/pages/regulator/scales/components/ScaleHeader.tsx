@@ -62,7 +62,7 @@ export function ScaleHeader({
               sseConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
             }`}
           />
-          <span>{sseConnected ? "SSE Aktif" : "Menghubungkan"}</span>
+          <span>{sseConnected ? "Live Aktif" : "Menghubungkan"}</span>
         </span>
 
         <button

@@ -5,6 +5,7 @@ interface RequestOptions extends RequestInit {
   bypassCache?: boolean;
   maxAge?: number;
   staleAge?: number;
+  silentStatusCodes?: number[];
 }
 
 interface CacheEntry<T = unknown> {
@@ -181,6 +182,9 @@ export async function apiClient<T = unknown>(
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
+      if (options.silentStatusCodes?.includes(response.status)) {
+        return null as T;
+      }
       const parsed = parseErrorMessage(data);
       const errorMsg =
         parsed || `HTTP Error ${response.status}: ${response.statusText}`;
