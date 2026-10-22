@@ -132,7 +132,7 @@ export function BlockchainCard() {
           to="/admin/blockchain"
           className="text-xs font-semibold text-fco-blue hover:underline no-underline block text-center"
         >
-          Buka Penjelajah Blockchain →
+          Buka Penjelajah Blockchain
         </Link>
       </div>
     </section>

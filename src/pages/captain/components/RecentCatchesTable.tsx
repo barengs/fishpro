@@ -24,7 +24,7 @@ export function RecentCatchesTable({ reports = [] }: RecentCatchesTableProps) {
           to="/captain/catches"
           className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
         >
-          Lihat semua →
+          Lihat semua
         </Link>
       </div>
 

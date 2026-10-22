@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type KpiColor =
@@ -132,17 +132,15 @@ export function KpiCard({
       {href ? (
         <Link
           to={href}
-          className={`px-4 sm:px-5 py-2.5 flex items-center justify-between text-xs font-semibold no-underline transition-colors ${styles.footer}`}
+          className={`px-4 sm:px-5 py-2.5 flex items-center text-xs font-semibold no-underline transition-colors ${styles.footer}`}
         >
           <span>{linkText}</span>
-          <ChevronRight size={14} strokeWidth={2.4} aria-hidden="true" />
         </Link>
       ) : delta ? (
         <div
-          className={`px-4 sm:px-5 py-2 flex items-center justify-between text-xs font-medium ${styles.footer}`}
+          className={`px-4 sm:px-5 py-2 flex items-center text-xs font-medium ${styles.footer}`}
         >
           <span className="truncate">{delta}</span>
-          <ChevronRight size={14} strokeWidth={2} aria-hidden="true" />
         </div>
       ) : null}
     </div>

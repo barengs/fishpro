@@ -21,8 +21,8 @@ export function TariffConfigTab() {
       <section className="surface-card border rounded-xl p-6 shadow-xs max-w-220">
         <h2 className="m-0 mb-1 text-base font-bold">Tarif PNBP Aktif</h2>
         <p className="m-0 mb-4 text-sm text-soft">
-          GT ≤ {t.gt_threshold} → {Number(t.rate_small) * 100}% · GT &gt;{" "}
-          {t.gt_threshold} → {Number(t.rate_large) * 100}%
+          GT ≤ {t.gt_threshold}: {Number(t.rate_small) * 100}% · GT &gt;{" "}
+          {t.gt_threshold}: {Number(t.rate_large) * 100}%
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <div>
@@ -53,7 +53,7 @@ export function TariffConfigTab() {
       <CrudModal
         open={tariffModal.open}
         title="Ubah Tarif PNBP"
-        subtitle="Rumus BE: GT ≤ batas → rate_small, GT > batas → rate_large."
+        subtitle="Rumus BE: GT ≤ batas memakai rate_small, GT > batas memakai rate_large."
         onClose={tariffModal.closeModal}
         onSubmit={(e) => {
           e.preventDefault();

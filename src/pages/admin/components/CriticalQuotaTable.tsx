@@ -87,7 +87,7 @@ export function CriticalQuotaTable() {
           to="/admin/ships"
           className="text-xs font-semibold text-fco-blue hover:underline no-underline"
         >
-          Lihat Semua Kapal →
+          Lihat Semua Kapal
         </Link>
       </div>
 

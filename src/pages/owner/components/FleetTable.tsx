@@ -65,7 +65,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
           to="/owner/captains"
           className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
         >
-          Kelola nahkoda →
+          Kelola nahkoda
         </Link>
       </div>
 

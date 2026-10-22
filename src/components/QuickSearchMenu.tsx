@@ -1,12 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ArrowRight,
-  CornerDownLeft,
-  Search,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { CornerDownLeft, Search, X, type LucideIcon } from "lucide-react";
 
 export interface QuickSearchItem {
   label: string;
@@ -236,17 +230,11 @@ export function QuickSearchMenu({
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
-                      {isSelected ? (
+                      {isSelected && (
                         <span className="inline-flex items-center gap-1 text-2xs px-1.5 py-0.5 rounded bg-white/20 text-white font-mono">
                           <span>Buka</span>
                           <CornerDownLeft size={10} aria-hidden="true" />
                         </span>
-                      ) : (
-                        <ArrowRight
-                          size={13}
-                          className="text-soft"
-                          aria-hidden="true"
-                        />
                       )}
                     </div>
                   </div>

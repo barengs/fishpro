@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronDown, ClipboardList } from "lucide-react";
+import { ChevronDown, ClipboardList } from "lucide-react";
 import { Logo } from "../../components/Logo";
 import { ThemeToggle } from "../../components/ThemeToggle";
 import { ReportMockup } from "./components/ReportMockup";
@@ -76,8 +76,7 @@ export function OnboardingPage() {
                 to="/register"
                 className="h-12 px-6 inline-flex items-center rounded-xl bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold no-underline transition-colors"
               >
-                Daftarkan kapal Anda{" "}
-                <ArrowRight size={17} className="ml-2" aria-hidden="true" />
+                Daftarkan kapal Anda
               </Link>
               <Link
                 to="/login"
@@ -178,7 +177,7 @@ export function OnboardingPage() {
                     {r.sees}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm font-bold text-fco-blue">
-                    Masuk <ArrowRight size={15} aria-hidden="true" />
+                    Masuk
                   </span>
                 </Link>
               ))}
@@ -229,8 +228,7 @@ export function OnboardingPage() {
               to="/register"
               className="h-12 px-8 inline-flex items-center rounded-xl bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold no-underline transition-colors"
             >
-              Mulai mendaftarkan armada{" "}
-              <ArrowRight size={17} className="ml-2" aria-hidden="true" />
+              Mulai mendaftarkan armada
             </Link>
             <p className="m-0 mt-3 text-sm text-soft">
               4 langkah · lisensi / SIPI / NIP siap · gratis

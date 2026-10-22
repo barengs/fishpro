@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Lock, Mail } from "lucide-react";
+import { Check, Lock, Mail } from "lucide-react";
 import { useResetPassword, type ResetStep } from "../hooks/useResetPassword";
 
 interface ResetPasswordWizardProps {
@@ -134,7 +134,6 @@ export function ResetPasswordWizard({
               }}
               className="inline-flex items-center gap-1.5 bg-transparent border-none text-soft hover:text-strong font-medium cursor-pointer p-0 transition-colors"
             >
-              <ArrowLeft size={14} aria-hidden="true" />
               Ubah email
             </button>
             <button

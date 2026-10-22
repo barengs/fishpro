@@ -181,7 +181,7 @@ export function CaptainDashboard() {
                 to="/captain/catches"
                 className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
               >
-                Lihat riwayat →
+                Lihat riwayat
               </Link>
             </div>
           </section>

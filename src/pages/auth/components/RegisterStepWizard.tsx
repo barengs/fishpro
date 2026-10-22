@@ -1,11 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { StepIdentity } from "./register/StepIdentity";
 import { StepAccount } from "./register/StepAccount";
 import { StepOperational } from "./register/StepOperational";
@@ -224,7 +218,6 @@ export function RegisterStepWizard() {
               disabled={isLoading}
               className="h-10 sm:h-11 px-3.5 sm:px-5 rounded-xl text-xs sm:text-sm border border-fco-border surface-card hover:surface-page text-strong font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5 sm:gap-2 shrink-0"
             >
-              <ArrowLeft size={16} aria-hidden="true" />
               <span>Sebelumnya</span>
             </button>
           )}
@@ -235,10 +228,9 @@ export function RegisterStepWizard() {
             <button
               type="button"
               onClick={handleNext}
-              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs inline-flex items-center justify-center gap-1.5 sm:gap-2 shrink-0"
+              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs inline-flex items-center justify-center shrink-0"
             >
               <span>Lanjut</span>
-              <ArrowRight size={16} aria-hidden="true" />
             </button>
           ) : (
             <button

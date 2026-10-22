@@ -28,7 +28,7 @@ export function ShipSpecsCard({ specs, shipName }: ShipSpecsCardProps) {
             to="/captain/ship"
             className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline shrink-0"
           >
-            Lihat kapal →
+            Lihat kapal
           </Link>
         </div>
 
