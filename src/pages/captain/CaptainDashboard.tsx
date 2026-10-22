@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
-import { BarChart3, Check, Coins, Fish, Plus, Ship } from "lucide-react";
+import { BarChart3, Check, Coins, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { StatusChip } from "../../components/StatusChip";
-import { CrudModal } from "../../components/CrudModal";
-import { CatchReportWizard } from "../../components/CatchReportWizard";
 import { AlertBanner } from "../../components/ui";
 import { QuotaHeroCard } from "./components/QuotaHeroCard";
 import { ShipSpecsCard } from "./components/ShipSpecsCard";
 import { RecentCatchesTable } from "./components/RecentCatchesTable";
-import { formatRupiah, formatShortHash, formatWeight } from "../../utils";
+import { formatRupiah, formatShortHash } from "../../utils";
 import { useCaptainDashboard } from "./hooks/useCaptainDashboard";
 
 export function CaptainDashboard() {
@@ -23,38 +21,20 @@ export function CaptainDashboard() {
     setToast,
     userInfo,
     dynamicSpecs,
-    totalWeightKg,
     totalPnbpSum,
-    isModalOpen,
-    openModal,
-    closeModal,
-    handleReportAdded,
   } = useCaptainDashboard();
 
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
-        <div>
-          <h1 className="m-0 text-3xl font-extrabold tracking-tight">
-            Ringkasan Nahkoda
-          </h1>
-          <div className="text-sm text-soft mt-1">
-            {hasShip
-              ? `${ship!.name} · ${ship!.registration_number} · Pelabuhan asal ${ship!.home_port || "—"}`
-              : `Akun nahkoda: ${userInfo.name} · Belum ada kapal terhubung`}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={openModal}
-            className="inline-flex items-center gap-2 h-10 px-4.5 rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs"
-          >
-            <Plus size={16} strokeWidth={2.2} aria-hidden="true" />
-            Lapor tangkapan
-          </button>
+      <div className="mb-7">
+        <h1 className="m-0 text-3xl font-extrabold tracking-tight">
+          Ringkasan Nahkoda
+        </h1>
+        <div className="text-sm text-soft mt-1">
+          {hasShip
+            ? `${ship!.name} · ${ship!.registration_number} · Pelabuhan asal ${ship!.home_port || "—"}`
+            : `Akun nahkoda: ${userInfo.name} · Belum ada kapal terhubung`}
         </div>
       </div>
 
@@ -64,8 +44,8 @@ export function CaptainDashboard() {
         onDismiss={() => setToast(null)}
       />
 
-      {/* 4 KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      {/* 3 KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <KpiCard
           label="Sisa kuota 2026"
           value={
@@ -77,24 +57,13 @@ export function CaptainDashboard() {
           }
           delta={
             quota
-              ? `${quota.quota_percentage}% dari kuota ${Number(quota.total_quota).toLocaleString("id-ID")} kg`
+              ? `${quota.quota_percentage}% tersisa dari kuota ${Number(quota.total_quota).toLocaleString("id-ID")} kg`
               : hasShip
                 ? "Menunggu alokasi kuota"
                 : "Belum ada kapal terhubung"
           }
           color="blue"
           Icon={BarChart3}
-        />
-        <KpiCard
-          label="Tangkapan terlapor"
-          value={formatWeight(totalWeightKg)}
-          delta={
-            reports.length > 0
-              ? `${reports.length} laporan masuk ke sistem`
-              : "Belum ada laporan tangkapan"
-          }
-          color="emerald"
-          Icon={Fish}
         />
         <KpiCard
           label="PNBP terhitung"
@@ -123,7 +92,7 @@ export function CaptainDashboard() {
       </div>
 
       {/* Hero Quota & Blockchain Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-5 items-stretch">
         <div className="lg:col-span-3">
           <QuotaHeroCard
             remainingKg={
@@ -135,6 +104,11 @@ export function CaptainDashboard() {
               quota
                 ? `${Number(quota.total_quota).toLocaleString("id-ID")} kg`
                 : "0 kg"
+            }
+            usedKg={
+              quota
+                ? `${Number(quota.used_quota).toLocaleString("id-ID")} kg`
+                : undefined
             }
             percentage={quota ? quota.quota_percentage : 0}
             validUntil={quota ? "31 Des 2026" : "—"}
@@ -201,7 +175,7 @@ export function CaptainDashboard() {
                 to="/captain/catches"
                 className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
               >
-                Lihat riwayat
+                Lihat riwayat →
               </Link>
             </div>
           </section>
@@ -209,25 +183,14 @@ export function CaptainDashboard() {
       </div>
 
       {/* Recent Catches Table & Ship Specs */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch">
         <div className="lg:col-span-3">
           <RecentCatchesTable reports={reports} />
         </div>
         <div className="lg:col-span-2">
-          <ShipSpecsCard specs={dynamicSpecs} />
+          <ShipSpecsCard specs={dynamicSpecs} shipName={ship?.name} />
         </div>
       </div>
-
-      {/* Modal Lapor Tangkapan (Wizard) */}
-      <CrudModal
-        open={isModalOpen}
-        title="Lapor tangkapan baru"
-        subtitle="3 langkah: waktu & lokasi, hasil, cek."
-        onClose={closeModal}
-        hideFooter
-      >
-        <CatchReportWizard onSubmit={handleReportAdded} onCancel={closeModal} />
-      </CrudModal>
     </div>
   );
 }

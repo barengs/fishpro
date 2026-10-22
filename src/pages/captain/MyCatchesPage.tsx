@@ -1,26 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
-import { CrudModal } from "../../components/CrudModal";
-import { useCrudModal } from "../../components/useCrudModal";
 import { StatusChip } from "../../components/StatusChip";
 import { AlertBanner } from "../../components/ui";
-import { CatchReportWizard } from "../../components/CatchReportWizard";
-import type { CatchReportFormData } from "../../components/catchReportTypes";
 import { catchesService, type FishCatch } from "../../services/catches";
 import { shipsService, type Ship } from "../../services/ships";
 import { authService } from "../../services/auth";
-import { fishSpeciesService, type FishSpecies } from "../../services/fish";
 
 export function MyCatchesPage() {
   const [rows, setRows] = useState<FishCatch[]>([]);
   const [ship, setShip] = useState<Ship | null>(null);
-  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const { open, openModal, closeModal } = useCrudModal();
 
   const currentUser = authService.getStoredUser();
   const captainId = currentUser?.id || 1;
@@ -30,12 +22,10 @@ export function MyCatchesPage() {
       setLoading(true);
       setErrorMsg(null);
       try {
-        const [shipsData, spData] = await Promise.all([
-          shipsService.getByCaptain(captainId).catch(() => []),
-          fishSpeciesService.getAll().catch(() => []),
-        ]);
+        const shipsData = await shipsService
+          .getByCaptain(captainId)
+          .catch(() => []);
 
-        setSpeciesList(spData);
         let currentShip = shipsData.length > 0 ? shipsData[0] : null;
         if (!currentShip) {
           const all = await shipsService.getAll().catch(() => []);
@@ -70,55 +60,6 @@ export function MyCatchesPage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [search, fetchCatches]);
-
-  const handleSubmit = async (data: CatchReportFormData) => {
-    const shipReg = ship ? ship.registration_number : "REG-0412";
-
-    try {
-      // Find species ID
-      let speciesId = Number(data.fish_species);
-      if (isNaN(speciesId) || speciesId === 0) {
-        const found = speciesList.find(
-          (s) => s.name.toLowerCase() === data.fish_species.toLowerCase(),
-        );
-        speciesId = found
-          ? found.id
-          : speciesList.length > 0
-            ? speciesList[0].id
-            : 1;
-      }
-
-      const payload = {
-        ship: shipReg,
-        catch_date: data.catch_date,
-        catch_type: data.catch_type,
-        location_latitude: data.location_latitude,
-        location_longitude: data.location_longitude,
-        description: data.description || "",
-        catch_details: [
-          {
-            fish_species: speciesId,
-            quantity: parseFloat(data.quantity) || 0,
-            unit: data.unit || "kg",
-            value: data.value ? parseFloat(data.value) : null,
-            notes: data.description || "",
-          },
-        ],
-      };
-
-      await catchesService.createWithDetails(payload);
-      setToastMsg(
-        `Laporan tangkapan berhasil dicatat dan disegel ke blockchain!`,
-      );
-      setTimeout(() => setToastMsg(null), 4000);
-      closeModal();
-      fetchCatches(search);
-    } catch (err: unknown) {
-      alert(
-        err instanceof Error ? err.message : "Gagal mengirim laporan tangkapan",
-      );
-    }
-  };
 
   const cols: Column<FishCatch>[] = [
     {
@@ -211,15 +152,8 @@ export function MyCatchesPage() {
         searchPlaceholder="Filter tanggal..."
         searchValue={search}
         onSearchChange={setSearch}
-        addLabel="Lapor Tangkapan Baru"
-        onAdd={openModal}
       />
 
-      <AlertBanner
-        variant="success"
-        message={toastMsg || ""}
-        onDismiss={() => setToastMsg(null)}
-      />
       <AlertBanner
         variant="error"
         message={errorMsg || ""}
@@ -235,16 +169,6 @@ export function MyCatchesPage() {
           emptyText="Belum ada riwayat tangkapan tercatat untuk kapal ini."
         />
       </section>
-
-      <CrudModal
-        open={open}
-        title="Lapor Tangkapan Baru"
-        subtitle={`Laporan langsung diverifikasi dan disegel ke blockchain untuk ${ship ? ship.name : "kapal Anda"}.`}
-        onClose={closeModal}
-        hideFooter
-      >
-        <CatchReportWizard onSubmit={handleSubmit} onCancel={closeModal} />
-      </CrudModal>
     </div>
   );
 }
