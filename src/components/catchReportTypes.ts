@@ -9,6 +9,9 @@ export interface CatchReportFormData {
   quantity: string;
   unit: string;
   value: string;
+  entry_mode?: "iot" | "manual";
+  scale_reading_id?: string;
+  manual_reason?: string;
 }
 
 export const emptyCatchForm: CatchReportFormData = {
@@ -22,4 +25,7 @@ export const emptyCatchForm: CatchReportFormData = {
   quantity: "",
   unit: "kg",
   value: "",
+  entry_mode: "manual",
+  scale_reading_id: "",
+  manual_reason: "",
 };

@@ -43,7 +43,23 @@ export function TextField({
     id.toLowerCase().includes("yr") ||
     Boolean(inputProps.name?.toLowerCase().includes("year"));
 
-  const shouldFormat = formatThousand ?? (type === "number" && !isYearField);
+  const isDecimalDimensionOrCoord =
+    id.toLowerCase().includes("length") ||
+    id.toLowerCase().includes("width") ||
+    id.toLowerCase().includes("panjang") ||
+    id.toLowerCase().includes("lebar") ||
+    id.toLowerCase().includes("gt") ||
+    id.toLowerCase().includes("tonnage") ||
+    id.toLowerCase().includes("lat") ||
+    id.toLowerCase().includes("lng") ||
+    id.toLowerCase().includes("coord") ||
+    Boolean(inputProps.name?.toLowerCase().includes("length")) ||
+    Boolean(inputProps.name?.toLowerCase().includes("width")) ||
+    Boolean(inputProps.name?.toLowerCase().includes("gt"));
+
+  const shouldFormat =
+    formatThousand ??
+    (type === "number" && !isYearField && !isDecimalDimensionOrCoord);
 
   const inputRef = useRef<HTMLInputElement>(null);
 

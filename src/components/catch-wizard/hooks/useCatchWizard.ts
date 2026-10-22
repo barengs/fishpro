@@ -6,6 +6,7 @@ import {
 import { catchStep1Schema, catchStep2Schema } from "../../../utils/schemas";
 import { fishSpeciesService, type FishSpecies } from "../../../services/fish";
 import { regionsService, type FishingArea } from "../../../services/regions";
+import { iotService, type ScaleReading } from "../../../services/iot";
 
 export function useCatchWizard({
   onSubmit,
@@ -20,25 +21,31 @@ export function useCatchWizard({
   const [loadingSpecies, setLoadingSpecies] = useState(false);
   const [wppList, setWppList] = useState<FishingArea[]>([]);
   const [loadingWpp, setLoadingWpp] = useState(false);
+  const [pendingReadings, setPendingReadings] = useState<ScaleReading[]>([]);
+  const [loadingReadings, setLoadingReadings] = useState(false);
 
   useEffect(() => {
     let ignore = false;
     async function fetchOptions() {
       setLoadingSpecies(true);
       setLoadingWpp(true);
+      setLoadingReadings(true);
       try {
-        const [spData, areaData] = await Promise.all([
+        const [spData, areaData, readingsData] = await Promise.all([
           fishSpeciesService.getAll().catch(() => []),
           regionsService.getAll().catch(() => []),
+          iotService.getReadings(undefined, "pending").catch(() => []),
         ]);
         if (!ignore) {
           setSpeciesList(Array.isArray(spData) ? spData : []);
           setWppList(Array.isArray(areaData) ? areaData : []);
+          setPendingReadings(Array.isArray(readingsData) ? readingsData : []);
         }
       } finally {
         if (!ignore) {
           setLoadingSpecies(false);
           setLoadingWpp(false);
+          setLoadingReadings(false);
         }
       }
     }
@@ -147,5 +154,7 @@ export function useCatchWizard({
     loadingSpecies,
     wppList,
     loadingWpp,
+    pendingReadings,
+    loadingReadings,
   };
 }

@@ -37,6 +37,8 @@ export function CatchReportWizard({
     loadingSpecies,
     wppList,
     loadingWpp,
+    pendingReadings,
+    loadingReadings,
   } = useCatchWizard({ onSubmit });
 
   return (
@@ -78,6 +80,8 @@ export function CatchReportWizard({
               loadingSpecies={loadingSpecies}
               wppList={wppList}
               loadingWpp={loadingWpp}
+              pendingReadings={pendingReadings}
+              loadingReadings={loadingReadings}
             />
           )}
 

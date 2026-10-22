@@ -21,6 +21,14 @@ export function StepCatchSummary({ form }: StepCatchSummaryProps) {
       </p>
       <dl className="m-0 p-4 rounded-xl surface-inset border text-sm flex flex-col gap-2.5">
         <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
+          <dt className="text-soft">Metode Pengukuran</dt>
+          <dd className="m-0 font-semibold text-strong text-right">
+            {form.entry_mode === "iot"
+              ? "Timbangan Pintar IoT"
+              : "Input Manual / Arsip TPI"}
+          </dd>
+        </div>
+        <div className="flex justify-between gap-3 py-1 border-b border-fco-border">
           <dt className="text-soft">Tanggal / Jenis</dt>
           <dd className="m-0 font-semibold text-strong text-right tabular-nums">
             {form.catch_date} · {typeLabel[form.catch_type]}

@@ -6,6 +6,7 @@ import type { CatchReportFormData } from "../../../components/catchReportTypes";
 import { catchesService, type FishCatch } from "../../../services/catches";
 import { shipsService, type Ship } from "../../../services/ships";
 import { fishSpeciesService, type FishSpecies } from "../../../services/fish";
+import { iotService } from "../../../services/iot";
 
 export function useCatchesManager() {
   const [rows, setRows] = useState<FishCatch[]>([]);
@@ -109,25 +110,36 @@ export function useCatchesManager() {
             : 1;
       }
 
-      const payload = {
-        ship: selectedShipReg,
-        catch_date: data.catch_date,
-        catch_type: data.catch_type,
-        location_latitude: data.location_latitude,
-        location_longitude: data.location_longitude,
-        description: data.description || "",
-        catch_details: [
-          {
-            fish_species: speciesId,
-            quantity: parseFloat(data.quantity) || 0,
-            unit: data.unit || "kg",
-            value: data.value ? parseFloat(data.value) : null,
-            notes: data.description || "",
-          },
-        ],
-      };
-
-      await catchesService.createWithDetails(payload);
+      if (data.entry_mode === "iot" && data.scale_reading_id) {
+        await iotService.saveCatch({
+          reading_id: data.scale_reading_id,
+          ship_registration_number: selectedShipReg,
+          fish_species_id: speciesId,
+          catch_type: data.catch_type as "pelagic" | "demersal" | "reef",
+          catch_date: data.catch_date,
+          operator_notes:
+            data.description || "Dicatat via Admin Portal (Timbangan IoT)",
+        });
+      } else {
+        const payload = {
+          ship: selectedShipReg,
+          catch_date: data.catch_date,
+          catch_type: data.catch_type,
+          location_latitude: data.location_latitude,
+          location_longitude: data.location_longitude,
+          description: data.description || "",
+          catch_details: [
+            {
+              fish_species: speciesId,
+              quantity: parseFloat(data.quantity) || 0,
+              unit: data.unit || "kg",
+              value: data.value ? parseFloat(data.value) : null,
+              notes: data.description || "",
+            },
+          ],
+        };
+        await catchesService.createWithDetails(payload);
+      }
       setToastMsg(
         `Laporan tangkapan untuk ${selectedShipReg} berhasil dibuat dan disegel ke blockchain!`,
       );
