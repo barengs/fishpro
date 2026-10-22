@@ -15,13 +15,13 @@ export function ShipSpecsCard({ specs, shipName }: ShipSpecsCardProps) {
   return (
     <section className="surface-card border rounded-xl p-6 shadow-xs h-full flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-fco-blue flex items-center justify-center shrink-0">
-              <Ship size={15} aria-hidden="true" />
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-fco-blue flex items-center justify-center shrink-0">
+              <Ship size={16} aria-hidden="true" />
             </div>
             <h2 className="m-0 text-base font-bold text-strong truncate">
-              {shipName ? `Detail Kapal (${shipName})` : "Detail Kapal"}
+              Detail Kapal
             </h2>
           </div>
           <Link
@@ -32,23 +32,27 @@ export function ShipSpecsCard({ specs, shipName }: ShipSpecsCardProps) {
           </Link>
         </div>
 
+        <p className="m-0 text-xs text-soft mb-3 leading-relaxed truncate">
+          {shipName
+            ? `Spesifikasi teknis fisik ${shipName}.`
+            : "Spesifikasi teknis dan dimensi kapal."}
+        </p>
+
         {!specs || specs.length === 0 ? (
-          <div className="py-8 text-center text-sm text-soft">
+          <div className="py-6 text-center text-xs text-soft">
             Spesifikasi kapal belum tersedia atau kapal belum terhubung.
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
             {specs.map((s) => (
               <div
                 key={s.label}
-                className="p-3 rounded-xl surface-inset border border-fco-border-subtle"
+                className="flex items-center justify-between py-2 text-xs sm:text-sm"
               >
-                <div className="text-2xs font-semibold text-soft uppercase tracking-wider mb-1 truncate">
-                  {s.label}
-                </div>
-                <div className="text-base font-bold tabular-nums text-strong truncate">
+                <span className="text-soft">{s.label}</span>
+                <span className="font-semibold tabular-nums text-strong">
                   {s.value}
-                </div>
+                </span>
               </div>
             ))}
           </div>

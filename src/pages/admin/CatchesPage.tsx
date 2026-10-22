@@ -197,41 +197,86 @@ export function CatchesPage() {
           {
             label: "Rincian Hasil Tangkapan & Spesies",
             fullWidth: true,
-            value: (
-              <div className="flex flex-col gap-2 pt-1">
-                {(selectedCatch?.catch_details || []).length === 0 ? (
+            value: (() => {
+              const details = selectedCatch?.catch_details || [];
+              if (details.length === 0) {
+                return (
                   <span className="text-soft text-xs">
-                    Belum ada rincian spesies.
+                    Belum ada rincian spesifik spesies.
                   </span>
-                ) : (
-                  (selectedCatch?.catch_details || []).map((d, i) => (
-                    <div
-                      key={i}
-                      className="p-2.5 rounded-lg surface-card border dark:border-fco-border-dark flex items-center justify-between text-xs"
-                    >
-                      <div>
-                        <div className="font-bold text-strong">
-                          {d.fish_species_name || `Spesies #${d.fish_species}`}
-                        </div>
-                        <div className="text-soft text-2xs mt-0.5">
-                          Wilayah WPP: {d.wpp || "—"}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-strong">
-                          {d.quantity} {d.unit}
-                        </div>
-                        {d.pnbp && (
-                          <div className="text-fco-blue font-mono font-medium text-2xs">
-                            PNBP: Rp {Number(d.pnbp).toLocaleString("id-ID")}
-                          </div>
-                        )}
-                      </div>
+                );
+              }
+
+              const totalQty = details.reduce(
+                (acc, cur) => acc + (Number(cur.quantity) || 0),
+                0,
+              );
+              const totalPnbp = details.reduce(
+                (acc, cur) => acc + (Number(cur.pnbp) || 0),
+                0,
+              );
+
+              return (
+                <div className="rounded-xl border border-fco-border-subtle surface-inset overflow-hidden mt-1">
+                  <div className="max-h-52 overflow-y-auto divide-y divide-fco-border-subtle">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="surface-card sticky top-0 z-1 text-soft font-semibold border-b border-fco-border-subtle">
+                        <tr>
+                          <th className="py-2.5 px-3">Spesies / WPP</th>
+                          <th className="py-2.5 px-3 text-right">Volume</th>
+                          <th className="py-2.5 px-3 text-right">PNBP</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-fco-border-subtle text-strong">
+                        {details.map((d, i) => (
+                          <tr
+                            key={i}
+                            className="hover:surface-page transition-colors"
+                          >
+                            <td className="py-2.5 px-3">
+                              <div className="font-semibold text-strong">
+                                {d.fish_species_name ||
+                                  `Spesies #${d.fish_species}`}
+                              </div>
+                              {d.wpp && (
+                                <div className="text-2xs text-soft font-medium">
+                                  Wilayah: {d.wpp}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-bold tabular-nums">
+                              {d.quantity} {d.unit}
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-mono text-fco-blue tabular-nums">
+                              {d.pnbp
+                                ? `Rp ${Number(d.pnbp).toLocaleString("id-ID")}`
+                                : "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Summary Bar */}
+                  <div className="p-2.5 px-3 surface-card border-t border-fco-border-subtle flex flex-wrap items-center justify-between gap-2 text-xs font-bold">
+                    <span className="text-soft font-medium">
+                      {details.length} Spesies
+                    </span>
+                    <div className="flex items-center gap-3.5 tabular-nums">
+                      <span>
+                        Total: {Number(totalQty).toLocaleString("id-ID")} kg
+                      </span>
+                      {totalPnbp > 0 && (
+                        <span className="text-fco-blue">
+                          PNBP: Rp {Number(totalPnbp).toLocaleString("id-ID")}
+                        </span>
+                      )}
                     </div>
-                  ))
-                )}
-              </div>
-            ),
+                  </div>
+                </div>
+              );
+            })(),
           },
           {
             label: "Catatan Lokasi",

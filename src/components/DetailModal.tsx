@@ -15,6 +15,7 @@ export interface DetailModalProps {
   fields: DetailField[];
   onClose: () => void;
   actions?: ReactNode;
+  showCloseButton?: boolean;
 }
 
 export function DetailModal({
@@ -25,6 +26,7 @@ export function DetailModal({
   fields,
   onClose,
   actions,
+  showCloseButton = false,
 }: DetailModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -102,17 +104,19 @@ export function DetailModal({
           </dl>
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-card">
-          {actions}
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-9 px-4 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
-          >
-            Tutup
-          </button>
-        </div>
+        {/* Footer: Only render if actions are provided or explicitly requested */}
+        {(actions || showCloseButton) && (
+          <div className="px-6 py-3 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-card">
+            {actions}
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-9 px-4 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
+            >
+              Tutup
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
