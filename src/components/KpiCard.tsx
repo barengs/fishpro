@@ -74,7 +74,7 @@ export function KpiCard({
 
   return (
     <div
-      className={`rounded-lg flex flex-col justify-between overflow-hidden shadow-xs border-0 min-h-[148px] transition-transform duration-150 hover:-translate-y-0.5 ${styles.card}`}
+      className={`rounded-lg flex flex-col justify-between overflow-hidden shadow-xs border-0 min-h-37 transition-transform duration-150 hover:-translate-y-0.5 ${styles.card}`}
     >
       {/* Card Body */}
       <div className="p-4 sm:p-5 flex-1">
