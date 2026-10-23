@@ -114,29 +114,16 @@ export const authService = {
   getUserRole(): string | null {
     const user = this.getStoredUser();
     const storedUserAs = localStorage.getItem("user_as");
-    const usernameLower = (user?.username || "").toLowerCase();
     const rawRole = (user?.role || storedUserAs || "").toLowerCase();
     const rolesList = (user?.roles || []).map((r) => r.toLowerCase());
 
-    if (
-      rawRole === "admin" ||
-      rolesList.includes("admin") ||
-      usernameLower.startsWith("admin")
-    ) {
+    if (rawRole === "admin" || rolesList.includes("admin")) {
       return "admin";
     }
-    if (
-      rawRole === "regulator" ||
-      rolesList.includes("regulator") ||
-      usernameLower.includes("regulator")
-    ) {
+    if (rawRole === "regulator" || rolesList.includes("regulator")) {
       return "regulator";
     }
-    if (
-      rawRole === "captain" ||
-      rolesList.includes("captain") ||
-      usernameLower.includes("captain")
-    ) {
+    if (rawRole === "captain" || rolesList.includes("captain")) {
       return "captain";
     }
     if (rawRole === "owner" || rolesList.includes("owner")) {
