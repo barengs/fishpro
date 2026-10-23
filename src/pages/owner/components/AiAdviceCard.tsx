@@ -116,26 +116,26 @@ export function AiAdviceCard() {
   }, [currentOwnerKey]);
 
   return (
-    <section className="surface-card border rounded-xl p-6 shadow-xs">
-      <h2 className="mt-0 mb-4 text-base font-bold text-strong">
+    <section className="surface-card border rounded-xs p-5 shadow-2xs">
+      <h2 className="mt-0 mb-3 text-base font-bold text-strong">
         Rekomendasi & Wawasan AI
       </h2>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {tips.map((t) => (
-          <div key={t.title} className="flex gap-3">
-            <div className="w-8 h-8 rounded-fco bg-fco-blue-light dark:bg-fco-blue/20 flex items-center justify-center shrink-0">
+          <div key={t.title} className="flex gap-2.5">
+            <div className="w-7 h-7 rounded-xs bg-fco-blue-light dark:bg-fco-blue/20 flex items-center justify-center shrink-0">
               <t.Icon
-                size={16}
+                size={15}
                 className="text-fco-blue"
                 strokeWidth={2}
                 aria-hidden="true"
               />
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5 text-strong">
+              <div className="text-xs font-bold mb-0.5 text-strong">
                 {t.title}
               </div>
-              <div className="text-fco-sm leading-relaxed text-soft">
+              <div className="text-2xs leading-relaxed text-soft">
                 {t.text}
               </div>
             </div>

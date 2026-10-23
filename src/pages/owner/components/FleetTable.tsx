@@ -109,24 +109,29 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
             ) : (
               ships.map((s, i) => {
                 const quota = s.current_year_quota;
-                const pct = quota ? quota.quota_percentage : 70;
+                const hasQuota = Boolean(
+                  quota && typeof quota.quota_percentage === "number",
+                );
+                const pct = hasQuota ? quota!.quota_percentage : 0;
                 const width = `${pct}%`;
 
                 const isIdle = !s.captain;
-                const isWarn = pct < 15;
-                const isWatch = pct < 35;
+                const isWarn = hasQuota && pct < 15;
+                const isWatch = hasQuota && pct < 35;
 
                 const chipLabel = !s.active
                   ? "Nonaktif"
-                  : isIdle
-                    ? "Tanpa nahkoda"
-                    : isWarn
-                      ? "Kuota menipis"
-                      : isWatch
-                        ? "Perlu dipantau"
-                        : "Aktif";
+                  : !hasQuota
+                    ? "Belum Diatur"
+                    : isIdle
+                      ? "Tanpa nahkoda"
+                      : isWarn
+                        ? "Kuota menipis"
+                        : isWatch
+                          ? "Perlu dipantau"
+                          : "Aktif";
 
-                const chipBg = !s.active
+                const chipBg = !s.active || !hasQuota
                   ? "#EEF1F6"
                   : isWarn
                     ? "#FFF1E0"
@@ -134,7 +139,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                       ? "#EEF1F6"
                       : "#E8F0FE";
 
-                const chipColor = !s.active
+                const chipColor = !s.active || !hasQuota
                   ? "#4A5872"
                   : isWarn
                     ? "#B54708"
@@ -164,7 +169,13 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                       )}
                     </div>
                     <div className="basis-3/10 pr-6">
-                      <ProgressBar width={width} showText />
+                      {hasQuota ? (
+                        <ProgressBar width={width} showText />
+                      ) : (
+                        <span className="text-xs text-soft italic">
+                          Belum ada alokasi
+                        </span>
+                      )}
                     </div>
                     <div className="basis-2/10 text-right">
                       <StatusChip

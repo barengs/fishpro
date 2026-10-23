@@ -117,15 +117,15 @@ export function OwnerDashboard() {
       </div>
 
       {/* Realtime Owner KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
           label="Jumlah armada kapal"
           value={`${metrics.shipsCount}`}
-          note={
+          delta={
             metrics.shipsCount === 0
               ? "Belum ada kapal terdaftar"
               : metrics.unassignedCaptainsCount > 0
-                ? `${metrics.unassignedCaptainsCount} kapal belum ada nahkoda`
+                ? `${metrics.unassignedCaptainsCount} kapal tanpa nahkoda`
                 : "Semua kapal memiliki nahkoda"
           }
           color="blue"
@@ -135,7 +135,7 @@ export function OwnerDashboard() {
         <KpiCard
           label="Tangkapan terverifikasi"
           value={metrics.catchStr}
-          note={
+          delta={
             metrics.catchesCount > 0
               ? `${metrics.catchesCount} laporan masuk ke sistem`
               : "Belum ada laporan tangkapan"
@@ -147,7 +147,7 @@ export function OwnerDashboard() {
         <KpiCard
           label="PNBP terhitung"
           value={metrics.pnbpStr}
-          note="Perhitungan resmi berbasis GT"
+          delta="Perhitungan resmi berbasis GT"
           color="purple"
           Icon={Coins}
           loading={loading}
@@ -155,9 +155,9 @@ export function OwnerDashboard() {
         <KpiCard
           label="Sisa kuota gabungan"
           value={metrics.avgQuota > 0 ? `${metrics.avgQuota}%` : "—"}
-          note={
+          delta={
             metrics.avgQuota > 0
-              ? `Rata-rata armada kapal berkuota`
+              ? "Rata-rata armada kapal berkuota"
               : "Belum ada alokasi kuota"
           }
           color="amber"

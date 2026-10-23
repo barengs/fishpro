@@ -71,7 +71,7 @@ export function PnbpPredictionBars() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-xl p-6 shadow-xs">
+    <section className="surface-card border rounded-xs p-5 shadow-2xs">
       <div className="flex justify-between items-start mb-1">
         <h2 className="m-0 text-base font-bold text-strong">
           Prediksi PNBP Armada
@@ -82,43 +82,43 @@ export function PnbpPredictionBars() {
           </span>
         )}
       </div>
-      <div className="text-fco-sm text-soft mb-5">
+      <div className="text-xs text-soft mb-4">
         Proyeksi tren penerimaan armada berbasis pipeline machine learning
       </div>
 
       {loading ? (
-        <div className="flex items-end gap-3 h-37.5 py-1">
+        <div className="flex items-end gap-3 h-32 py-1">
           {["h-16", "h-24", "h-20", "h-28", "h-32", "h-22"].map((h, idx) => (
             <div
               key={idx}
               className="flex-1 h-full flex flex-col justify-end items-center gap-2"
             >
-              <Skeleton className={`w-full rounded-t-md ${h}`} />
-              <Skeleton className="h-3 w-8 rounded" />
+              <Skeleton className={`w-full rounded-xs ${h}`} />
+              <Skeleton className="h-3 w-8 rounded-xs" />
             </div>
           ))}
         </div>
       ) : bars.length === 0 ? (
-        <div className="py-8 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-fco-border rounded-xl">
-          <BarChart3 size={20} className="text-soft" />
-          <p className="m-0 text-xs text-soft">
-            Belum ada data proyeksi PNBP untuk armada Anda. Data grafik akan
-            muncul setelah laporan tangkapan terakumulasi.
+        <div className="py-5 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-fco-border-subtle surface-inset rounded-xs">
+          <BarChart3 size={18} className="text-soft" />
+          <p className="m-0 text-xs text-soft leading-relaxed max-w-xs">
+            Belum ada proyeksi PNBP untuk armada Anda. Grafik akan terisi
+            otomatis setelah kapal melakukan penimbangan hasil tangkapan.
           </p>
         </div>
       ) : (
         <>
-          <div className="flex items-end gap-3 h-37.5">
+          <div className="flex items-end gap-3 h-32">
             {bars.map((b) => (
               <div
                 key={b.label}
                 className="flex-1 h-full flex flex-col justify-end items-center gap-1.5"
               >
-                <div className="text-fco-xs font-bold text-strong h-3.5">
+                <div className="text-2xs font-bold text-strong h-3">
                   {b.top}
                 </div>
                 <div
-                  className="w-full rounded-t-md transition-all duration-300"
+                  className="w-full rounded-xs transition-all duration-300"
                   style={{ height: b.h, backgroundColor: b.color }}
                 />
               </div>
@@ -129,20 +129,20 @@ export function PnbpPredictionBars() {
             {bars.map((b) => (
               <div
                 key={b.label}
-                className="flex-1 text-center text-xs text-soft"
+                className="flex-1 text-center text-2xs text-soft font-medium"
               >
                 {b.label}
               </div>
             ))}
           </div>
 
-          <div className="flex gap-4 mt-4 text-xs text-soft">
+          <div className="flex gap-4 mt-3 pt-2 border-t border-fco-border-subtle text-2xs text-soft">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue" />
               Aktual
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue-border" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#BCD3F8] dark:bg-blue-400" />
               Prediksi
             </span>
           </div>
