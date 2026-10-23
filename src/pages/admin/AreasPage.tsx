@@ -7,6 +7,7 @@ import { AlertBanner } from "../../components/ui";
 import { AreaModal } from "../../components/modals/AreaModal";
 import { TemplateDropdown } from "../../components/TemplateDropdown";
 import { CsvImportModal } from "./species/CsvImportModal";
+import { WppMapViewer } from "../../components/map/WppMapViewer";
 import { regionsService, type FishingArea } from "../../services/regions";
 import { FileUp } from "lucide-react";
 import { useAreasManager } from "./hooks/useAreasManager";
@@ -139,6 +140,17 @@ export function AreasPage() {
         message={errorMsg || ""}
         onDismiss={() => setErrorMsg(null)}
       />
+
+      {/* Peta Wilayah WPP Nasional */}
+      <div className="mb-6">
+        <WppMapViewer
+          role="admin"
+          selectedWpp={search}
+          onSelectWpp={(wppCode) => {
+            setSearch((prev) => (prev === wppCode ? "" : wppCode));
+          }}
+        />
+      </div>
 
       <DataTable
         columns={cols}

@@ -8,6 +8,7 @@ import {
 import { ManualQuotaModal } from "./components/ManualQuotaModal";
 import { ComplianceOverview } from "./components/ComplianceOverview";
 import { BlockchainCard } from "../admin/components/BlockchainCard";
+import { WppMapViewer } from "../../components/map/WppMapViewer";
 import { shipsService } from "../../services/ships";
 import { blockchainService } from "../../services/blockchain";
 import { pnbpService } from "../../services/pnbp";
@@ -221,6 +222,27 @@ export function RegulatorDashboard() {
           delta="Estimasi penerimaan resmi"
           color="purple"
           Icon={Coins}
+        />
+      </div>
+
+      {/* Radar Pengawasan WPP Maritim */}
+      <div className="mb-6">
+        <WppMapViewer
+          role="regulator"
+          vessels={ships.map((s, idx) => ({
+            id: idx + 1,
+            name: s.name,
+            reg: s.reg,
+            wppCode: s.reg.includes("0550") ? "712" : "573",
+            quotaPct: s.percentRemaining.includes("%")
+              ? parseInt(s.percentRemaining, 10)
+              : null,
+            active: s.status !== "Nonaktif",
+          }))}
+          onInspectVessel={(v) => {
+            const found = ships.find((s) => s.reg === v.reg);
+            if (found) handleOpenModal(found);
+          }}
         />
       </div>
 
