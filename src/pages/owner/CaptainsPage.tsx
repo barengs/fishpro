@@ -45,23 +45,28 @@ export function CaptainsPage() {
     currentUser?.profile?.owner_id ||
     currentUser?.profile?.id ||
     currentUser?.id;
-  const currentOwnerName = (
-    currentUser?.profile?.name ||
-    currentUser?.profile?.full_name ||
-    currentUser?.username ||
-    ""
-  )
-    .toLowerCase()
-    .trim();
+  const currentOwnerKey = `${currentOwnerId || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
   const fetchCaptains = useCallback(
     async (query?: string) => {
       setLoading(true);
       setErrorMsg(null);
       try {
+        const user = authService.getStoredUser();
+        const ownerId =
+          user?.profile?.owner_id || user?.profile?.id || user?.id;
+        const ownerName = (
+          user?.profile?.name ||
+          user?.profile?.full_name ||
+          user?.username ||
+          ""
+        )
+          .toLowerCase()
+          .trim();
+
         const [captainsData, ownerShips] = await Promise.all([
           captainsService.getAll(query),
-          shipsService.getFleetForOwner(currentUser).catch(() => []),
+          shipsService.getFleetForOwner(user).catch(() => []),
         ]);
 
         const ownerShipIds = new Set(ownerShips.map((s) => s.id));
@@ -82,11 +87,11 @@ export function CaptainsPage() {
         // Filter kepemilikan armada agar hanya menampilkan nahkoda milik armada owner yang sedang login
         const ownerCaptains = captainsData.filter((c) => {
           // 1. Relasi langsung pemilik
-          if (currentOwnerId && c.owner === currentOwnerId) return true;
+          if (ownerId && c.owner === ownerId) return true;
           if (
-            currentOwnerName &&
+            ownerName &&
             c.owner_name &&
-            c.owner_name.toLowerCase().trim() === currentOwnerName
+            c.owner_name.toLowerCase().trim() === ownerName
           ) {
             return true;
           }
@@ -118,7 +123,7 @@ export function CaptainsPage() {
         setLoading(false);
       }
     },
-    [currentUser, currentOwnerId, currentOwnerName],
+    [],
   );
 
   useEffect(() => {
@@ -126,7 +131,7 @@ export function CaptainsPage() {
       fetchCaptains(search);
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, fetchCaptains]);
+  }, [search, fetchCaptains, currentOwnerKey]);
 
   const handleOpenAdd = () => {
     setEditingCaptain(null);

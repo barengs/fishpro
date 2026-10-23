@@ -31,13 +31,18 @@ export function AiAdviceCard() {
   const [tips, setTips] = useState<TipItem[]>(defaultTips);
 
   const currentUser = authService.getStoredUser();
+  const currentOwnerKey = `${currentUser?.id || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
   useEffect(() => {
+    let ignore = false;
     async function loadDynamicTips() {
       try {
+        const user = authService.getStoredUser();
         const ships = await shipsService
-          .getFleetForOwner(currentUser)
+          .getFleetForOwner(user)
           .catch(() => []);
+
+        if (ignore) return;
 
         const generated: TipItem[] = [];
 
@@ -95,7 +100,7 @@ export function AiAdviceCard() {
           });
         }
 
-        if (generated.length > 0) {
+        if (generated.length > 0 && !ignore) {
           setTips(generated.slice(0, 3));
         }
       } catch {
@@ -104,7 +109,11 @@ export function AiAdviceCard() {
     }
 
     loadDynamicTips();
-  }, [currentUser]);
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentOwnerKey]);
 
   return (
     <section className="surface-card border rounded-xl p-6 shadow-xs">

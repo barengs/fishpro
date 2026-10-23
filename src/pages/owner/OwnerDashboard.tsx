@@ -44,8 +44,9 @@ export function OwnerDashboard() {
     async function loadOwnerStats() {
       setLoading(true);
       try {
+        const user = authService.getStoredUser();
         const ownerShips = await shipsService
-          .getFleetForOwner(currentUser)
+          .getFleetForOwner(user)
           .catch(() => []);
 
         if (ignore) return;
@@ -102,7 +103,7 @@ export function OwnerDashboard() {
     return () => {
       ignore = true;
     };
-  }, [currentUser, currentOwnerKey]);
+  }, [currentOwnerKey]);
 
   return (
     <div>

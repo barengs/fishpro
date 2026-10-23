@@ -39,13 +39,15 @@ export function useFleetManager() {
     currentUser?.profile?.owner_id ||
     currentUser?.profile?.id ||
     currentUser?.id;
+  const currentOwnerKey = `${currentOwnerId || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
   const fetchFleet = useCallback(
     async (query?: string) => {
       setLoading(true);
       setErrorMsg(null);
       try {
-        const data = await shipsService.getFleetForOwner(currentUser, query);
+        const user = authService.getStoredUser();
+        const data = await shipsService.getFleetForOwner(user, query);
         setRows(data);
       } catch (err: unknown) {
         const msg =
@@ -55,7 +57,7 @@ export function useFleetManager() {
         setLoading(false);
       }
     },
-    [currentUser],
+    [],
   );
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export function useFleetManager() {
       fetchFleet(search);
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, fetchFleet]);
+  }, [search, fetchFleet, currentOwnerKey]);
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;

@@ -12,11 +12,13 @@ interface FleetTableProps {
 
 export function FleetTable({ ships: propsShips }: FleetTableProps) {
   const [internalShips, setInternalShips] = useState<Ship[]>([]);
-  const [loading, setLoading] = useState(!propsShips);
+  const [internalLoading, setInternalLoading] = useState(true);
 
   const currentUser = authService.getStoredUser();
+  const currentOwnerKey = `${currentUser?.id || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
   const ships = propsShips ?? internalShips;
+  const loading = propsShips ? false : internalLoading;
 
   useEffect(() => {
     if (propsShips) {
@@ -25,10 +27,11 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
 
     let ignore = false;
     async function loadFleet() {
-      setLoading(true);
+      setInternalLoading(true);
       try {
+        const user = authService.getStoredUser();
         const data = await shipsService
-          .getFleetForOwner(currentUser)
+          .getFleetForOwner(user)
           .catch(() => []);
         if (!ignore) {
           setInternalShips(data);
@@ -37,7 +40,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
         // Fallback to empty
       } finally {
         if (!ignore) {
-          setLoading(false);
+          setInternalLoading(false);
         }
       }
     }
@@ -47,7 +50,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
     return () => {
       ignore = true;
     };
-  }, [currentUser, propsShips]);
+  }, [currentOwnerKey, propsShips]);
 
   return (
     <div className="flex flex-col gap-2.5">
