@@ -9,7 +9,8 @@ import { AlertTriangle } from "lucide-react";
 interface CriticalShipItem {
   name: string;
   reg: string;
-  pct: number;
+  hasQuota: boolean;
+  pct: number | null;
   width: string;
   chip: string;
   chipBg: string;
@@ -25,36 +26,52 @@ export function CriticalQuotaTable() {
       try {
         const ships: Ship[] = await shipsService.getAll();
         if (ships.length > 0) {
-          const parsed = ships.map((s) => {
+          const parsed: CriticalShipItem[] = ships.map((s) => {
             const quota = s.current_year_quota;
-            const pct = quota ? quota.quota_percentage : 70;
-            const isNearEmpty = pct < 15;
-            const isWarning = pct < 35;
+            const hasQuota = Boolean(
+              quota && typeof quota.quota_percentage === "number",
+            );
+            const pct = hasQuota ? quota!.quota_percentage : null;
+            const isNearEmpty = pct !== null && pct < 15;
+            const isWarning = pct !== null && pct < 35;
             return {
               name: s.name,
               reg: s.registration_number,
+              hasQuota,
               pct,
-              width: `${pct}%`,
-              chip: isNearEmpty
-                ? "Hampir habis"
-                : isWarning
-                  ? "Perlu dipantau"
-                  : "Normal",
-              chipBg: isNearEmpty
-                ? "#FFF1E0"
-                : isWarning
-                  ? "#E8F0FE"
-                  : "#EEF1F6",
-              chipColor: isNearEmpty
-                ? "#B54708"
-                : isWarning
-                  ? "#1A56DB"
-                  : "#4A5872",
+              width: pct !== null ? `${pct}%` : "0%",
+              chip: !hasQuota
+                ? "Belum Diatur"
+                : isNearEmpty
+                  ? "Hampir habis"
+                  : isWarning
+                    ? "Perlu dipantau"
+                    : "Normal",
+              chipBg: !hasQuota
+                ? "#EEF1F6"
+                : isNearEmpty
+                  ? "#FFF1E0"
+                  : isWarning
+                    ? "#E8F0FE"
+                    : "#EEF1F6",
+              chipColor: !hasQuota
+                ? "#4A5872"
+                : isNearEmpty
+                  ? "#B54708"
+                  : isWarning
+                    ? "#1A56DB"
+                    : "#4A5872",
             };
           });
 
-          // Sort by lowest remaining quota first, pick top 5
-          parsed.sort((a, b) => a.pct - b.pct);
+          // Prioritaskan yang kuotanya paling kritis, lalu yang belum diatur kuota
+          parsed.sort((a, b) => {
+            if (a.pct !== null && b.pct !== null) return a.pct - b.pct;
+            if (a.pct !== null) return -1;
+            if (b.pct !== null) return 1;
+            return 0;
+          });
+
           setRows(parsed.slice(0, 5));
         } else {
           setRows([]);
@@ -144,20 +161,28 @@ export function CriticalQuotaTable() {
                   </div>
                 </div>
                 <div className="basis-3/8">
-                  <div className="text-xs font-medium text-soft mb-1 tabular-nums">
-                    {q.pct}% tersisa
-                  </div>
-                  <ProgressBar
-                    width={q.width}
-                    height={6}
-                    barBg={
-                      q.pct < 15
-                        ? "#EF4444"
-                        : q.pct < 30
-                          ? "#F59E0B"
-                          : "#1A56DB"
-                    }
-                  />
+                  {q.hasQuota && q.pct !== null ? (
+                    <>
+                      <div className="text-xs font-medium text-soft mb-1 tabular-nums">
+                        {q.pct}% tersisa
+                      </div>
+                      <ProgressBar
+                        width={q.width}
+                        height={6}
+                        barBg={
+                          q.pct < 15
+                            ? "#EF4444"
+                            : q.pct < 30
+                              ? "#F59E0B"
+                              : "#1A56DB"
+                        }
+                      />
+                    </>
+                  ) : (
+                    <span className="text-xs text-soft italic">
+                      Belum ada alokasi
+                    </span>
+                  )}
                 </div>
                 <div className="basis-2/8 text-right">
                   <StatusChip

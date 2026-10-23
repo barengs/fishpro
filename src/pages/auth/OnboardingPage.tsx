@@ -63,9 +63,9 @@ export function OnboardingPage() {
               className="hidden lg:flex items-center gap-1 text-sm font-medium"
             >
               {[
-                ["Ekosistem", "#fitur"],
-                ["Akses Peran", "#peran"],
-                ["Keamanan Blockchain", "#keamanan"],
+                ["Fitur", "#fitur"],
+                ["Pilihan Peran", "#peran"],
+                ["Keamanan Data", "#keamanan"],
                 ["Tanya Jawab", "#faq"],
               ].map(([label, href]) => (
                 <a
@@ -114,16 +114,16 @@ export function OnboardingPage() {
         {/* 2. Hero Headline Section (Minimalist, High Contrast typography) */}
         <section className="w-full max-w-5xl mx-auto px-4 sm:px-8 pt-16 sm:pt-24 pb-12 text-center flex flex-col items-center">
           <h1 className="m-0 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] text-strong max-w-4xl">
-            Di mana laut bertemu{" "}
+            Dari laut, tercatat{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500">
-              kepastian
+              pasti
             </span>
             .
           </h1>
 
           <p className="mt-5 mb-8 text-base sm:text-xl text-soft max-w-2xl leading-relaxed font-normal">
-            Satu platform terpadu untuk monitoring armada kapal, pencatatan
-            bobot timbangan cerdas IoT, dan segel imutabilitas blockchain KKP.
+            Pantau kapal, catat hasil tangkapan langsung dari timbangan
+            pelabuhan, dan simpan catatan resmi yang aman dan transparan.
           </p>
 
           {/* Call to Action Button */}
@@ -160,19 +160,19 @@ export function OnboardingPage() {
               <span className="block text-2xl font-black text-strong tabular-nums font-mono">
                 1.280+
               </span>
-              <span>Kapal Terdaftar Resmi</span>
+              <span>Kapal Terdaftar</span>
             </div>
             <div>
               <span className="block text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums font-mono">
                 100%
               </span>
-              <span>Ledger SHA-256 Valid</span>
+              <span>Data Terverifikasi</span>
             </div>
             <div>
               <span className="block text-2xl font-black text-fco-blue tabular-nums font-mono">
                 94.5%
               </span>
-              <span>Akurasi Kuota AI</span>
+              <span>Ketepatan Kuota AI</span>
             </div>
           </div>
         </section>
@@ -186,10 +186,10 @@ export function OnboardingPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <span className="text-2xs font-bold uppercase tracking-wider text-fco-blue block mb-1">
-                  Arsitektur Sistem
+                  Kemudahan Sistem
                 </span>
                 <h2 className="m-0 text-xl sm:text-2xl font-extrabold text-strong">
-                  Pilar Utama Ekosistem FCO
+                  Fitur Andalan Layanan
                 </h2>
               </div>
 
@@ -316,14 +316,14 @@ export function OnboardingPage() {
         >
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-2xs font-bold uppercase tracking-wider text-fco-blue block mb-1">
-              Personalisasi Hak Akses
+              Menu Sesuai Kebutuhan
             </span>
             <h2 className="m-0 text-2xl sm:text-4xl font-extrabold text-strong tracking-tight">
-              Akses Terpadu Sesuai Peran Anda
+              Pilih Halaman Sesuai Peran Anda
             </h2>
             <p className="mt-3 text-sm text-soft leading-relaxed">
-              Setiap pihak memiliki portal kendali terspesialisasi untuk
-              menjamin akuntabilitas dan kelancaran operasional.
+              Setiap pengguna punya halaman khusus agar pekerjaan lebih fokus,
+              mudah dipantau, dan langsung tepat sasaran.
             </p>
           </div>
 
@@ -396,43 +396,43 @@ export function OnboardingPage() {
             </div>
 
             <h2 className="m-0 text-2xl sm:text-3xl font-extrabold text-strong tracking-tight">
-              Kredibilitas Data yang Tidak Dapat Dimanipulasi
+              Catatan Aman dan Tidak Bisa Diubah Sepihak
             </h2>
 
             <p className="mt-3 mb-8 text-sm text-soft max-w-xl leading-relaxed">
-              Semua pencatatan hasil laut melewati enkripsi rantai blok SHA-256
-              sehingga data volume, nama kapal, dan hitungan PNBP bersifat
-              permanen (*immutable*) serta dapat diaudit kapan saja.
+              Semua data tangkapan otomatis terkunci dengan teknologi rantai
+              data (blockchain). Informasi berat, nama kapal, dan perhitungan
+              PNBP tersimpan permanen dan bisa dicek kapan pun.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full text-left">
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  01. Otomasi Sensor
+                  01. Otomatis dari Timbangan
                 </span>
                 <span className="text-xs text-soft">
-                  Berat tangkapan diambil langsung dari load cell timbangan
-                  dermaga tanpa perantara manual.
+                  Berat ikan dibaca langsung dari timbangan dermaga tanpa perlu
+                  diketik manual.
                 </span>
               </div>
 
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  02. Enkripsi SHA-256
+                  02. Terkunci Rapat
                 </span>
                 <span className="text-xs text-soft">
-                  Data dikunci ke blok transaksi dengan tautan hash kriptografi
-                  ke blok sebelumnya.
+                  Setiap catatan terhubung ke data sebelumnya sehingga tidak
+                  bisa diedit atau dihapus diam-diam.
                 </span>
               </div>
 
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  03. Audit Transparan
+                  03. Terbuka & Jelas
                 </span>
                 <span className="text-xs text-soft">
-                  Regulator dan instansi pemerintah dapat memverifikasi
-                  integritas buku besar secara instan.
+                  Petugas dan dinas terkait bisa langsung memeriksa keaslian
+                  catatan secara instan.
                 </span>
               </div>
             </div>
