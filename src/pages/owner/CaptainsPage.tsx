@@ -40,14 +40,43 @@ export function CaptainsPage() {
   const captainModal = useCrudModal();
 
   const currentUser = authService.getStoredUser();
-  const currentOwnerId = currentUser?.id || 1;
+  const currentOwnerId = currentUser?.id;
+  const currentOwnerName = (
+    currentUser?.profile?.name ||
+    currentUser?.profile?.full_name ||
+    currentUser?.username ||
+    ""
+  ).toLowerCase().trim();
 
   const fetchCaptains = async (query?: string) => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const data = await captainsService.getAll(query);
-      setRows(data);
+      const data = await captainsService.getAll(query, currentOwnerId);
+      // Filter kepemilikan armada agar hanya menampilkan nahkoda milik owner yang sedang login
+      const ownerCaptains = data.filter((c) => {
+        if (currentOwnerId && c.owner === currentOwnerId) return true;
+        if (
+          currentOwnerName &&
+          c.owner_name &&
+          c.owner_name.toLowerCase().trim() === currentOwnerName
+        ) {
+          return true;
+        }
+        // Periksa apakah kapal yang dinahkodai milik owner yang sedang login
+        if (c.ships && c.ships.length > 0) {
+          return c.ships.some((s) => {
+            const shipOwner = String(s.owner || "").toLowerCase();
+            return (
+              (currentOwnerId && s.owner === currentOwnerId) ||
+              (currentOwnerName && shipOwner === currentOwnerName)
+            );
+          });
+        }
+        return false;
+      });
+
+      setRows(ownerCaptains);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Gagal memuat data nahkoda";

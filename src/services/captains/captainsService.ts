@@ -7,9 +7,14 @@ export const captainsService = {
    * GET /api/owners/captains/ - Daftar semua nahkoda
    * Mengambil daftar semua nahkoda kapal (informasi lisensi dan pengalaman)
    */
-  async getAll(search?: string): Promise<Captain[]> {
-    const url = search
-      ? `${API_ENDPOINTS.CAPTAINS.LIST}?search=${encodeURIComponent(search)}`
+  async getAll(search?: string, ownerId?: number): Promise<Captain[]> {
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (ownerId) params.append("owner_id", String(ownerId));
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${API_ENDPOINTS.CAPTAINS.LIST}?${queryString}`
       : API_ENDPOINTS.CAPTAINS.LIST;
 
     const data = await apiClient<PaginatedResponse<Captain> | Captain[]>(url);
