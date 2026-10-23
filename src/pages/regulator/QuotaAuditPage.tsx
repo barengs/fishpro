@@ -249,7 +249,7 @@ export function QuotaAuditPage() {
                   closeAuditDetail();
                   handleOpenAiPrediction(target);
                 }}
-                className="h-9 px-3.5 rounded-lg border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-300 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
+                className="h-9 px-3.5 rounded-xs border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-300 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
               >
                 <Brain size={14} />
                 <span>AI Predict</span>
@@ -261,7 +261,7 @@ export function QuotaAuditPage() {
                   closeAuditDetail();
                   handleOpenOverride(target);
                 }}
-                className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+                className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
               >
                 Sesuaikan
               </button>

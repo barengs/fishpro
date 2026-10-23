@@ -150,7 +150,7 @@ export function CaptainsTab() {
                 closeDetail();
                 handleOpenEdit(target);
               }}
-              className="h-10 px-4 rounded-xl border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-sm font-semibold text-fco-blue cursor-pointer transition-colors"
+              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
             >
               Ubah Data
             </button>

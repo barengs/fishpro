@@ -177,7 +177,7 @@ export function ShipsPage() {
                 closeDetail();
                 handleOpenEdit(target);
               }}
-              className="h-9 px-3.5 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
             >
               Ubah Data
             </button>

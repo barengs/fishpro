@@ -15,7 +15,6 @@ export interface DetailModalProps {
   fields: DetailField[];
   onClose: () => void;
   actions?: ReactNode;
-  showCloseButton?: boolean;
 }
 
 export function DetailModal({
@@ -26,7 +25,6 @@ export function DetailModal({
   fields,
   onClose,
   actions,
-  showCloseButton = false,
 }: DetailModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -55,7 +53,7 @@ export function DetailModal({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-130 surface-card border dark:border-fco-border-dark rounded-xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]"
+        className="relative w-full max-w-130 surface-card border dark:border-fco-border-dark rounded-xs shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]"
       >
         {/* Clean, Focused Header */}
         <div className="px-6 py-4 border-b border-fco-border-subtle flex items-center justify-between gap-4 shrink-0">
@@ -77,7 +75,7 @@ export function DetailModal({
             type="button"
             onClick={onClose}
             aria-label="Tutup detail"
-            className="w-8 h-8 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-colors shrink-0"
+            className="w-8 h-8 rounded-xs surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-colors shrink-0"
           >
             <X size={16} aria-hidden="true" />
           </button>
@@ -104,17 +102,10 @@ export function DetailModal({
           </dl>
         </div>
 
-        {/* Footer: Only render if actions are provided or explicitly requested */}
-        {(actions || showCloseButton) && (
+        {/* Footer: Only render if custom actions are provided */}
+        {actions && (
           <div className="px-6 py-3 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-card">
             {actions}
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-9 px-4 rounded-lg border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
-            >
-              Tutup
-            </button>
           </div>
         )}
       </div>
