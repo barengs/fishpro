@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Logo } from "../../../components/Logo";
+import { ThemeToggle } from "../../../components/ThemeToggle";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
+import { LayoutDashboard } from "lucide-react";
 
 interface CenteredAuthProps {
   children: React.ReactNode;
@@ -14,46 +17,95 @@ export function CenteredAuth({
   register = false,
   hideBrand = false,
 }: CenteredAuthProps) {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const isLoggedIn = authService.isAuthenticated();
+  const dashboardUrl = authService.getDashboardUrl();
+  const userInfo = getUserDisplayInfo();
+
+  const isHomeActive = pathname === "/" || pathname === "/onboard";
+  const isLoginActive = pathname === "/login";
+  const isRegisterActive = pathname === "/register";
+
   return (
-    <div className="min-h-screen flex flex-col surface-page text-strong">
-      <header className="surface-topbar border-b sticky top-0 z-40">
-        <div className="max-w-360 mx-auto px-4 sm:px-8 h-16 flex items-center gap-2">
-          {!hideBrand && (
-            <Link
-              to="/onboard"
-              className="no-underline"
-              aria-label="Kembali beranda"
-            >
-              <Logo />
-            </Link>
-          )}
+    <div className="min-h-screen flex flex-col surface-page text-strong selection:bg-fco-blue selection:text-white">
+      <header className="sticky top-0 z-50 surface-card/85 backdrop-blur-md border-b border-fco-border-subtle">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-18 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {!hideBrand ? (
+              <Link
+                to="/onboard"
+                className="no-underline flex items-center shrink-0"
+                aria-label="Kembali ke beranda"
+              >
+                <Logo size={32} />
+              </Link>
+            ) : (
+              <Link
+                to="/onboard"
+                className="no-underline flex items-center shrink-0"
+                aria-label="Kembali ke beranda"
+              >
+                <Logo size={28} />
+              </Link>
+            )}
+          </div>
+
           <nav
-            aria-label="Navigasi"
-            className="flex items-center gap-1 ml-auto"
+            aria-label="Navigasi Autentikasi"
+            className="flex items-center gap-2.5 sm:gap-3 ml-auto"
           >
+            <ThemeToggle compact />
+
             <Link
               to="/onboard"
-              className="h-9 px-2.5 sm:px-4 inline-flex items-center rounded-fco text-xs sm:text-sm font-semibold text-soft hover:text-strong no-underline transition-colors"
+              className={`h-10 px-3.5 sm:px-4 inline-flex items-center rounded-xs text-xs font-bold transition-all no-underline ${
+                isHomeActive
+                  ? "bg-fco-blue text-white shadow-xs font-extrabold"
+                  : "border border-fco-border-subtle surface-card hover:surface-page text-strong"
+              }`}
             >
               Beranda
             </Link>
-            <Link
-              to="/login"
-              className="h-9 px-2.5 sm:px-4 inline-flex items-center rounded-fco text-xs sm:text-sm font-semibold text-soft hover:text-strong no-underline transition-colors"
-            >
-              Masuk
-            </Link>
-            <Link
-              to="/register"
-              className="h-9 px-3 sm:px-4 inline-flex items-center rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-xs sm:text-sm font-semibold no-underline transition-colors"
-            >
-              Daftar
-            </Link>
+
+            {isLoggedIn ? (
+              <Link
+                to={dashboardUrl}
+                className="h-10 px-4.5 inline-flex items-center gap-2 rounded-xs bg-fco-blue hover:bg-fco-blue-hover text-white text-xs font-bold transition-all shadow-xs no-underline active:scale-[0.99]"
+              >
+                <LayoutDashboard size={14} />
+                <span>Dashboard ({userInfo.name})</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className={`h-10 px-3.5 sm:px-4 inline-flex items-center rounded-xs text-xs font-bold transition-all no-underline ${
+                    isLoginActive
+                      ? "bg-fco-blue text-white shadow-xs font-extrabold"
+                      : "border border-fco-border-subtle surface-card hover:surface-page text-strong"
+                  }`}
+                >
+                  Masuk
+                </Link>
+                <Link
+                  to="/register"
+                  className={`h-10 px-4 sm:px-5 inline-flex items-center rounded-xs text-xs font-bold transition-all shadow-xs no-underline active:scale-[0.99] ${
+                    isRegisterActive
+                      ? "bg-fco-blue text-white shadow-sm ring-2 ring-fco-blue/30 font-extrabold"
+                      : "bg-fco-blue hover:bg-fco-blue-hover text-white"
+                  }`}
+                >
+                  Daftar
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col justify-center items-center w-full px-3 sm:px-6 py-5 sm:py-8 lg:py-12 my-auto">
+      <main className="flex-1 flex flex-col justify-center items-center w-full px-3 sm:px-6 py-6 sm:py-10 my-auto">
         <div
           className={`w-full ${register ? "max-w-160" : wide ? "max-w-220" : "max-w-135"}`}
         >
@@ -61,7 +113,7 @@ export function CenteredAuth({
         </div>
       </main>
 
-      <footer className="pb-8 text-center text-xs text-fco-placeholder">
+      <footer className="border-t border-fco-border-subtle surface-card py-6 text-center text-xs text-soft">
         © 2026 Kementerian Kelautan dan Perikanan RI
       </footer>
     </div>

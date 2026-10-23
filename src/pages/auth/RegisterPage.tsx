@@ -4,7 +4,7 @@ import { RegisterStepWizard } from "./components/RegisterStepWizard";
 
 export function RegisterPage() {
   return (
-    <CenteredAuth register hideBrand>
+    <CenteredAuth register>
       <div className="mb-4 sm:mb-6 text-center">
         <h1 className="m-0 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-strong">
           Pendaftaran Akun Baru

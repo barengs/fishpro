@@ -2,13 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/auth";
 
-const PUBLIC_AUTH_PATHS = [
-  "/",
-  "/onboard",
-  "/login",
-  "/register",
-  "/reset-password",
-];
+const PUBLIC_AUTH_PATHS = ["/login", "/register", "/reset-password"];
 
 /**
  * BackButtonGuard:

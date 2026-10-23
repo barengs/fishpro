@@ -30,9 +30,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
       setInternalLoading(true);
       try {
         const user = authService.getStoredUser();
-        const data = await shipsService
-          .getFleetForOwner(user)
-          .catch(() => []);
+        const data = await shipsService.getFleetForOwner(user).catch(() => []);
         if (!ignore) {
           setInternalShips(data);
         }
@@ -131,21 +129,23 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                           ? "Perlu dipantau"
                           : "Aktif";
 
-                const chipBg = !s.active || !hasQuota
-                  ? "#EEF1F6"
-                  : isWarn
-                    ? "#FFF1E0"
-                    : isIdle
-                      ? "#EEF1F6"
-                      : "#E8F0FE";
+                const chipBg =
+                  !s.active || !hasQuota
+                    ? "#EEF1F6"
+                    : isWarn
+                      ? "#FFF1E0"
+                      : isIdle
+                        ? "#EEF1F6"
+                        : "#E8F0FE";
 
-                const chipColor = !s.active || !hasQuota
-                  ? "#4A5872"
-                  : isWarn
-                    ? "#B54708"
-                    : isIdle
-                      ? "#4A5872"
-                      : "#1A56DB";
+                const chipColor =
+                  !s.active || !hasQuota
+                    ? "#4A5872"
+                    : isWarn
+                      ? "#B54708"
+                      : isIdle
+                        ? "#4A5872"
+                        : "#1A56DB";
 
                 return (
                   <div

@@ -47,84 +47,78 @@ export function CaptainsPage() {
     currentUser?.id;
   const currentOwnerKey = `${currentOwnerId || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
-  const fetchCaptains = useCallback(
-    async (query?: string) => {
-      setLoading(true);
-      setErrorMsg(null);
-      try {
-        const user = authService.getStoredUser();
-        const ownerId =
-          user?.profile?.owner_id || user?.profile?.id || user?.id;
-        const ownerName = (
-          user?.profile?.name ||
-          user?.profile?.full_name ||
-          user?.username ||
-          ""
-        )
-          .toLowerCase()
-          .trim();
+  const fetchCaptains = useCallback(async (query?: string) => {
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const user = authService.getStoredUser();
+      const ownerId = user?.profile?.owner_id || user?.profile?.id || user?.id;
+      const ownerName = (
+        user?.profile?.name ||
+        user?.profile?.full_name ||
+        user?.username ||
+        ""
+      )
+        .toLowerCase()
+        .trim();
 
-        const [captainsData, ownerShips] = await Promise.all([
-          captainsService.getAll(query),
-          shipsService.getFleetForOwner(user).catch(() => []),
-        ]);
+      const [captainsData, ownerShips] = await Promise.all([
+        captainsService.getAll(query),
+        shipsService.getFleetForOwner(user).catch(() => []),
+      ]);
 
-        const ownerShipIds = new Set(ownerShips.map((s) => s.id));
-        const ownerShipRegs = new Set(
-          ownerShips.map((s) => s.registration_number.toLowerCase().trim()),
-        );
-        const ownerAssignedCaptainIds = new Set(
-          ownerShips
-            .map((s) => s.captain)
-            .filter((c): c is number => Boolean(c)),
-        );
-        const ownerAssignedCaptainNames = new Set(
-          ownerShips
-            .map((s) => s.captain_name?.toLowerCase().trim())
-            .filter((n): n is string => Boolean(n)),
-        );
+      const ownerShipIds = new Set(ownerShips.map((s) => s.id));
+      const ownerShipRegs = new Set(
+        ownerShips.map((s) => s.registration_number.toLowerCase().trim()),
+      );
+      const ownerAssignedCaptainIds = new Set(
+        ownerShips.map((s) => s.captain).filter((c): c is number => Boolean(c)),
+      );
+      const ownerAssignedCaptainNames = new Set(
+        ownerShips
+          .map((s) => s.captain_name?.toLowerCase().trim())
+          .filter((n): n is string => Boolean(n)),
+      );
 
-        // Filter kepemilikan armada agar hanya menampilkan nahkoda milik armada owner yang sedang login
-        const ownerCaptains = captainsData.filter((c) => {
-          // 1. Relasi langsung pemilik
-          if (ownerId && c.owner === ownerId) return true;
-          if (
-            ownerName &&
-            c.owner_name &&
-            c.owner_name.toLowerCase().trim() === ownerName
-          ) {
-            return true;
-          }
-          // 2. Nahkoda yang ditunjuk pada kapal milik armada owner (KM Bintang Laut -> yahya)
-          if (ownerAssignedCaptainIds.has(c.id)) return true;
-          if (
-            c.full_name &&
-            ownerAssignedCaptainNames.has(c.full_name.toLowerCase().trim())
-          ) {
-            return true;
-          }
-          // 3. Kapal yang terhubung pada profil nahkoda merupakan kapal milik armada owner
-          if (c.ships && c.ships.length > 0) {
-            return c.ships.some(
-              (s) =>
-                ownerShipIds.has(s.id) ||
-                ownerShipRegs.has(s.registration_number.toLowerCase().trim()),
-            );
-          }
-          return false;
-        });
+      // Filter kepemilikan armada agar hanya menampilkan nahkoda milik armada owner yang sedang login
+      const ownerCaptains = captainsData.filter((c) => {
+        // 1. Relasi langsung pemilik
+        if (ownerId && c.owner === ownerId) return true;
+        if (
+          ownerName &&
+          c.owner_name &&
+          c.owner_name.toLowerCase().trim() === ownerName
+        ) {
+          return true;
+        }
+        // 2. Nahkoda yang ditunjuk pada kapal milik armada owner (KM Bintang Laut -> yahya)
+        if (ownerAssignedCaptainIds.has(c.id)) return true;
+        if (
+          c.full_name &&
+          ownerAssignedCaptainNames.has(c.full_name.toLowerCase().trim())
+        ) {
+          return true;
+        }
+        // 3. Kapal yang terhubung pada profil nahkoda merupakan kapal milik armada owner
+        if (c.ships && c.ships.length > 0) {
+          return c.ships.some(
+            (s) =>
+              ownerShipIds.has(s.id) ||
+              ownerShipRegs.has(s.registration_number.toLowerCase().trim()),
+          );
+        }
+        return false;
+      });
 
-        setRows(ownerCaptains);
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : "Gagal memuat data nahkoda";
-        setErrorMsg(msg);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
+      setRows(ownerCaptains);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Gagal memuat data nahkoda";
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

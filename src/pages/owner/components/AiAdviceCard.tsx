@@ -38,9 +38,7 @@ export function AiAdviceCard() {
     async function loadDynamicTips() {
       try {
         const user = authService.getStoredUser();
-        const ships = await shipsService
-          .getFleetForOwner(user)
-          .catch(() => []);
+        const ships = await shipsService.getFleetForOwner(user).catch(() => []);
 
         if (ignore) return;
 
@@ -135,9 +133,7 @@ export function AiAdviceCard() {
               <div className="text-xs font-bold mb-0.5 text-strong">
                 {t.title}
               </div>
-              <div className="text-2xs leading-relaxed text-soft">
-                {t.text}
-              </div>
+              <div className="text-2xs leading-relaxed text-soft">{t.text}</div>
             </div>
           </div>
         ))}

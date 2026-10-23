@@ -41,24 +41,21 @@ export function useFleetManager() {
     currentUser?.id;
   const currentOwnerKey = `${currentOwnerId || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
 
-  const fetchFleet = useCallback(
-    async (query?: string) => {
-      setLoading(true);
-      setErrorMsg(null);
-      try {
-        const user = authService.getStoredUser();
-        const data = await shipsService.getFleetForOwner(user, query);
-        setRows(data);
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : "Gagal memuat data armada kapal";
-        setErrorMsg(msg);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
+  const fetchFleet = useCallback(async (query?: string) => {
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const user = authService.getStoredUser();
+      const data = await shipsService.getFleetForOwner(user, query);
+      setRows(data);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Gagal memuat data armada kapal";
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

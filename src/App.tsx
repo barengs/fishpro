@@ -193,14 +193,7 @@ export default function App() {
               />
 
               {/* Standalone auth & public landing pages */}
-              <Route
-                path="/onboard"
-                element={
-                  <PublicRoute>
-                    <OnboardingPage />
-                  </PublicRoute>
-                }
-              />
+              <Route path="/onboard" element={<OnboardingPage />} />
               <Route
                 path="/login"
                 element={
