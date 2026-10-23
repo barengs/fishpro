@@ -66,8 +66,8 @@ export function CaptainsTab() {
     {
       key: "exp",
       header: "Pengalaman",
-      flex: 1,
-      align: "right",
+      flex: 1.5,
+      align: "center",
       hideOnMobile: true,
       render: (r) => (
         <span className="text-sm tabular-nums">

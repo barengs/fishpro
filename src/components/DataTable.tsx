@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Skeleton } from "./ui/Skeleton";
 
 export interface Column<T> {
@@ -23,6 +24,8 @@ export interface DataTableProps<T> {
   showRowNumber?: boolean;
   startIndex?: number;
   rowNumberHeader?: string;
+  pagination?: boolean;
+  pageSize?: number;
 }
 
 export function DataTable<T>({
@@ -36,7 +39,32 @@ export function DataTable<T>({
   showRowNumber = true,
   startIndex = 1,
   rowNumberHeader = "No",
+  pagination = true,
+  pageSize = 10,
 }: DataTableProps<T>) {
+  const [prevRowsLength, setPrevRowsLength] = useState(rows.length);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset to first page when data length changes without triggering effect cascade
+  if (rows.length !== prevRowsLength) {
+    setPrevRowsLength(rows.length);
+    setCurrentPage(1);
+  }
+
+  const effectivePageSize = pageSize > 0 ? pageSize : 10;
+  const totalPages = Math.ceil(rows.length / effectivePageSize) || 1;
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const displayedRows = pagination
+    ? rows.slice(
+        (safePage - 1) * effectivePageSize,
+        safePage * effectivePageSize,
+      )
+    : rows;
+
+  const currentStartIndex = pagination
+    ? (safePage - 1) * effectivePageSize + 1
+    : startIndex;
   return (
     <div className="border border-fco-border-subtle surface-card rounded-xs overflow-hidden shadow-2xs">
       <div className="overflow-x-auto">
@@ -70,7 +98,7 @@ export function DataTable<T>({
                           minWidth: c.minWidth ?? undefined,
                         }
                   }
-                  className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                  className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
                     c.align === "right"
                       ? "text-right"
                       : c.align === "center"
@@ -165,7 +193,7 @@ export function DataTable<T>({
               {emptyText}
             </div>
           ) : (
-            rows.map((row, index) => (
+            displayedRows.map((row, index) => (
               <div
                 key={rowKey(row)}
                 onClick={() => onRowClick?.(row)}
@@ -180,7 +208,7 @@ export function DataTable<T>({
                     style={{ flex: "0 0 38px" }}
                     className="shrink-0 text-center text-xs font-semibold tabular-nums text-soft"
                   >
-                    {startIndex + index}
+                    {currentStartIndex + index}
                   </div>
                 )}
                 {columns.map((c) => {
@@ -211,7 +239,7 @@ export function DataTable<T>({
                               minWidth: c.minWidth ?? undefined,
                             }
                       }
-                      className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                      className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
                         isRight
                           ? "justify-end text-right"
                           : isCentered
@@ -219,7 +247,7 @@ export function DataTable<T>({
                             : ""
                       } ${c.className || ""}`}
                     >
-                      {c.render(row, index)}
+                      {c.render(row, currentStartIndex - 1 + index)}
                     </div>
                   );
                 })}
@@ -228,6 +256,67 @@ export function DataTable<T>({
           )}
         </div>
       </div>
+
+      {/* Pagination Footer */}
+      {pagination && rows.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-3 sm:px-4 py-3 border-t border-fco-border-subtle bg-white dark:bg-fco-card-dark text-xs text-soft">
+          <div className="tabular-nums">
+            Menampilkan{" "}
+            <strong className="text-strong font-semibold">
+              {(safePage - 1) * effectivePageSize + 1}
+            </strong>{" "}
+            -{" "}
+            <strong className="text-strong font-semibold">
+              {Math.min(safePage * effectivePageSize, rows.length)}
+            </strong>{" "}
+            dari{" "}
+            <strong className="text-strong font-semibold">{rows.length}</strong>{" "}
+            data
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safePage <= 1}
+                className="h-8 px-2.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Sebelumnya
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                const isCurrent = p === safePage;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setCurrentPage(p)}
+                    className={`w-8 h-8 rounded-xs text-xs font-bold transition-colors cursor-pointer border ${
+                      isCurrent
+                        ? "bg-fco-blue text-white border-fco-blue shadow-xs"
+                        : "border-fco-border-subtle surface-inset hover:surface-page text-strong"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={safePage >= totalPages}
+                className="h-8 px-2.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Berikutnya
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
