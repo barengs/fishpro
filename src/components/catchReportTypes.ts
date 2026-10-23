@@ -15,10 +15,10 @@ export interface CatchReportFormData {
 }
 
 export const emptyCatchForm: CatchReportFormData = {
-  catch_date: "2026-10-09",
+  catch_date: new Date().toISOString().split("T")[0],
   catch_type: "pelagic",
-  location_latitude: "-8.740000",
-  location_longitude: "115.200000",
+  location_latitude: "",
+  location_longitude: "",
   description: "",
   fish_species: "",
   wpp: "",
