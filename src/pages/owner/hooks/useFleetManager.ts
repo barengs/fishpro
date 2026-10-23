@@ -35,21 +35,17 @@ export function useFleetManager() {
   } = useDetailModal<Ship>();
 
   const currentUser = authService.getStoredUser();
-  const currentOwnerId = currentUser?.id;
+  const currentOwnerId =
+    currentUser?.profile?.owner_id ||
+    currentUser?.profile?.id ||
+    currentUser?.id;
 
   const fetchFleet = useCallback(
     async (query?: string) => {
       setLoading(true);
       setErrorMsg(null);
       try {
-        let data: Ship[] = [];
-        if (currentOwnerId && !query) {
-          data = await shipsService
-            .getByOwner(currentOwnerId)
-            .catch(() => shipsService.getAll(query));
-        } else {
-          data = await shipsService.getAll(query);
-        }
+        const data = await shipsService.getFleetForOwner(currentUser, query);
         setRows(data);
       } catch (err: unknown) {
         const msg =
@@ -59,7 +55,7 @@ export function useFleetManager() {
         setLoading(false);
       }
     },
-    [currentOwnerId],
+    [currentUser],
   );
 
   useEffect(() => {

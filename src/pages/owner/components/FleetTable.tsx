@@ -15,7 +15,6 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
   const [loading, setLoading] = useState(!propsShips);
 
   const currentUser = authService.getStoredUser();
-  const ownerId = currentUser?.id;
 
   const ships = propsShips ?? internalShips;
 
@@ -28,14 +27,9 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
     async function loadFleet() {
       setLoading(true);
       try {
-        let data: Ship[] = [];
-        if (ownerId) {
-          data = await shipsService
-            .getByOwner(ownerId)
-            .catch(() => shipsService.getAll());
-        } else {
-          data = await shipsService.getAll();
-        }
+        const data = await shipsService
+          .getFleetForOwner(currentUser)
+          .catch(() => []);
         if (!ignore) {
           setInternalShips(data);
         }
@@ -53,7 +47,7 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
     return () => {
       ignore = true;
     };
-  }, [ownerId, propsShips]);
+  }, [currentUser, propsShips]);
 
   return (
     <div className="flex flex-col gap-2.5">

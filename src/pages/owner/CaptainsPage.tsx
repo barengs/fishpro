@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { useCrudModal } from "../../components/useCrudModal";
@@ -14,6 +14,7 @@ import {
   type Captain,
   type CreateCaptainPayload,
 } from "../../services/captains";
+import { shipsService } from "../../services/ships";
 import { authService } from "../../services/auth";
 
 export function CaptainsPage() {
@@ -40,58 +41,92 @@ export function CaptainsPage() {
   const captainModal = useCrudModal();
 
   const currentUser = authService.getStoredUser();
-  const currentOwnerId = currentUser?.id;
+  const currentOwnerId =
+    currentUser?.profile?.owner_id ||
+    currentUser?.profile?.id ||
+    currentUser?.id;
   const currentOwnerName = (
     currentUser?.profile?.name ||
     currentUser?.profile?.full_name ||
     currentUser?.username ||
     ""
-  ).toLowerCase().trim();
+  )
+    .toLowerCase()
+    .trim();
 
-  const fetchCaptains = async (query?: string) => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const data = await captainsService.getAll(query, currentOwnerId);
-      // Filter kepemilikan armada agar hanya menampilkan nahkoda milik owner yang sedang login
-      const ownerCaptains = data.filter((c) => {
-        if (currentOwnerId && c.owner === currentOwnerId) return true;
-        if (
-          currentOwnerName &&
-          c.owner_name &&
-          c.owner_name.toLowerCase().trim() === currentOwnerName
-        ) {
-          return true;
-        }
-        // Periksa apakah kapal yang dinahkodai milik owner yang sedang login
-        if (c.ships && c.ships.length > 0) {
-          return c.ships.some((s) => {
-            const shipOwner = String(s.owner || "").toLowerCase();
-            return (
-              (currentOwnerId && s.owner === currentOwnerId) ||
-              (currentOwnerName && shipOwner === currentOwnerName)
+  const fetchCaptains = useCallback(
+    async (query?: string) => {
+      setLoading(true);
+      setErrorMsg(null);
+      try {
+        const [captainsData, ownerShips] = await Promise.all([
+          captainsService.getAll(query),
+          shipsService.getFleetForOwner(currentUser).catch(() => []),
+        ]);
+
+        const ownerShipIds = new Set(ownerShips.map((s) => s.id));
+        const ownerShipRegs = new Set(
+          ownerShips.map((s) => s.registration_number.toLowerCase().trim()),
+        );
+        const ownerAssignedCaptainIds = new Set(
+          ownerShips
+            .map((s) => s.captain)
+            .filter((c): c is number => Boolean(c)),
+        );
+        const ownerAssignedCaptainNames = new Set(
+          ownerShips
+            .map((s) => s.captain_name?.toLowerCase().trim())
+            .filter((n): n is string => Boolean(n)),
+        );
+
+        // Filter kepemilikan armada agar hanya menampilkan nahkoda milik armada owner yang sedang login
+        const ownerCaptains = captainsData.filter((c) => {
+          // 1. Relasi langsung pemilik
+          if (currentOwnerId && c.owner === currentOwnerId) return true;
+          if (
+            currentOwnerName &&
+            c.owner_name &&
+            c.owner_name.toLowerCase().trim() === currentOwnerName
+          ) {
+            return true;
+          }
+          // 2. Nahkoda yang ditunjuk pada kapal milik armada owner (KM Bintang Laut -> yahya)
+          if (ownerAssignedCaptainIds.has(c.id)) return true;
+          if (
+            c.full_name &&
+            ownerAssignedCaptainNames.has(c.full_name.toLowerCase().trim())
+          ) {
+            return true;
+          }
+          // 3. Kapal yang terhubung pada profil nahkoda merupakan kapal milik armada owner
+          if (c.ships && c.ships.length > 0) {
+            return c.ships.some(
+              (s) =>
+                ownerShipIds.has(s.id) ||
+                ownerShipRegs.has(s.registration_number.toLowerCase().trim()),
             );
-          });
-        }
-        return false;
-      });
+          }
+          return false;
+        });
 
-      setRows(ownerCaptains);
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Gagal memuat data nahkoda";
-      setErrorMsg(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setRows(ownerCaptains);
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error ? err.message : "Gagal memuat data nahkoda";
+        setErrorMsg(msg);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentUser, currentOwnerId, currentOwnerName],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchCaptains(search);
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, fetchCaptains]);
 
   const handleOpenAdd = () => {
     setEditingCaptain(null);

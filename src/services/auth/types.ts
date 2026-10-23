@@ -4,6 +4,8 @@ export interface LoginCredentials {
 }
 
 export interface UserProfile {
+  id?: number;
+  owner_id?: number;
   type?: string;
   full_name?: string;
   name?: string;

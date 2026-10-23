@@ -6,7 +6,6 @@ import { PnbpPredictionBars } from "./components/PnbpPredictionBars";
 import { AiAdviceCard } from "./components/AiAdviceCard";
 import { shipsService, type Ship as ShipType } from "../../services/ships";
 import { catchesService } from "../../services/catches";
-import { pnbpService } from "../../services/pnbp";
 import { authService } from "../../services/auth";
 import {
   calculateAverageRemainingQuota,
@@ -37,44 +36,54 @@ export function OwnerDashboard() {
   const [ships, setShips] = useState<ShipType[]>([]);
 
   const currentUser = authService.getStoredUser();
-  const ownerId = currentUser?.id;
+  const currentOwnerKey = `${currentUser?.id || ""}-${currentUser?.profile?.name || currentUser?.username || ""}`;
 
   useEffect(() => {
+    let ignore = false;
+
     async function loadOwnerStats() {
       setLoading(true);
       try {
-        let ownerShips: ShipType[] = [];
-        if (ownerId) {
-          ownerShips = await shipsService
-            .getByOwner(ownerId)
-            .catch(() => shipsService.getAll());
-        } else {
-          ownerShips = await shipsService.getAll();
-        }
-        setShips(ownerShips);
+        const ownerShips = await shipsService
+          .getFleetForOwner(currentUser)
+          .catch(() => []);
 
-        const [catches, chartRes] = await Promise.all([
-          catchesService.getAll().catch(() => []),
-          pnbpService.getUnifiedChartData().catch(() => null),
-        ]);
+        if (ignore) return;
+        setShips(ownerShips);
 
         const shipsCount = ownerShips.length;
         const unassignedCaptainsCount = ownerShips.filter(
           (s) => !s.captain,
         ).length;
 
-        const avgQuota = calculateAverageRemainingQuota(ownerShips);
-        const summary = chartRes?.charts_data?.summary_stats;
+        // Ambil data laporan tangkapan per kapal armada pemilik ini
+        const fleetCatchesPromises = ownerShips.map((s) =>
+          catchesService.getAll({ ship_id: s.id }).catch(() => []),
+        );
+        const catchesArrays = await Promise.all(fleetCatchesPromises);
+        if (ignore) return;
 
-        const pnbpStr = formatRupiah(summary?.total_pnbp_sum);
-        const rawVolume =
-          summary?.total_volume_sum || calculateCatchTotalVolume(catches);
+        const ownerCatches = catchesArrays.flat();
+
+        // Hitung total tangkapan dan PNBP khusus armada pemilik ini
+        const rawVolume = calculateCatchTotalVolume(ownerCatches);
+        const totalPnbp = ownerCatches.reduce((acc, c) => {
+          const details = c.catch_details || [];
+          const catchPnbp = details.reduce(
+            (sum, d) => sum + (Number(d.pnbp) || 0),
+            0,
+          );
+          return acc + catchPnbp;
+        }, 0);
+
+        const avgQuota = calculateAverageRemainingQuota(ownerShips);
         const catchStr = formatWeight(rawVolume);
+        const pnbpStr = formatRupiah(totalPnbp);
 
         setMetrics({
           shipsCount,
           unassignedCaptainsCount,
-          catchesCount: catches.length,
+          catchesCount: ownerCatches.length,
           catchStr,
           pnbpStr,
           avgQuota,
@@ -82,12 +91,18 @@ export function OwnerDashboard() {
       } catch {
         // Keeps 0 metrics on error
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
 
     loadOwnerStats();
-  }, [ownerId]);
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentUser, currentOwnerKey]);
 
   return (
     <div>
@@ -138,10 +153,10 @@ export function OwnerDashboard() {
         />
         <KpiCard
           label="Sisa kuota gabungan"
-          value={metrics.shipsCount > 0 ? `${metrics.avgQuota}%` : "—"}
+          value={metrics.avgQuota > 0 ? `${metrics.avgQuota}%` : "—"}
           note={
-            metrics.shipsCount > 0
-              ? `Rata-rata ${metrics.shipsCount} kapal armada`
+            metrics.avgQuota > 0
+              ? `Rata-rata armada kapal berkuota`
               : "Belum ada alokasi kuota"
           }
           color="amber"

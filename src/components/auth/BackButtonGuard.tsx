@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/auth";
 
 const PUBLIC_AUTH_PATHS = [
@@ -14,18 +14,13 @@ const PUBLIC_AUTH_PATHS = [
  * BackButtonGuard:
  * Mencegah pengguna yang sudah login menekan tombol 'Back' browser
  * dan kembali ke halaman login atau keluar ke halaman landing.
- * Jika pengguna menekan back saat sesi aktif, guard langsung menjaga
- * agar tetap berada di dashboard privat.
+ * Hanya mencegat navigasi kembali jika rute tujuan adalah halaman publik/auth.
  */
 export function BackButtonGuard() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     if (!authService.isAuthenticated()) return;
-
-    // Pasang trap history barrier pada rute terotentikasi
-    window.history.pushState(null, "", window.location.href);
 
     const handlePopState = () => {
       if (authService.isAuthenticated()) {
@@ -33,11 +28,7 @@ export function BackButtonGuard() {
 
         // Jika tombol back mengarah ke rute publik / login
         if (PUBLIC_AUTH_PATHS.includes(currentPath)) {
-          window.history.pushState(null, "", authService.getDashboardUrl());
           navigate(authService.getDashboardUrl(), { replace: true });
-        } else {
-          // Re-trap history state
-          window.history.pushState(null, "", window.location.href);
         }
       }
     };
@@ -47,7 +38,7 @@ export function BackButtonGuard() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [location.pathname, navigate]);
+  }, [navigate]);
 
   return null;
 }

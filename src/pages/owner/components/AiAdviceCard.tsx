@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BarChart3, AlertCircle, UserCheck } from "lucide-react";
-import { shipsService, type Ship } from "../../../services/ships";
+import { shipsService } from "../../../services/ships";
 import { authService } from "../../../services/auth";
 
 interface TipItem {
@@ -31,19 +31,13 @@ export function AiAdviceCard() {
   const [tips, setTips] = useState<TipItem[]>(defaultTips);
 
   const currentUser = authService.getStoredUser();
-  const ownerId = currentUser?.id;
 
   useEffect(() => {
     async function loadDynamicTips() {
       try {
-        let ships: Ship[] = [];
-        if (ownerId) {
-          ships = await shipsService
-            .getByOwner(ownerId)
-            .catch(() => shipsService.getAll());
-        } else {
-          ships = await shipsService.getAll();
-        }
+        const ships = await shipsService
+          .getFleetForOwner(currentUser)
+          .catch(() => []);
 
         const generated: TipItem[] = [];
 
@@ -69,21 +63,34 @@ export function AiAdviceCard() {
           });
         }
 
-        // Try getting AI recommendations
+        // Try getting AI recommendations for this owner's ships only
         const aiRec = await shipsService
           .getAiRecommendations()
           .catch(() => null);
-        if (aiRec && aiRec.top_ships && aiRec.top_ships.length > 0) {
-          const top = aiRec.top_ships[0];
+        const ownerShipRegs = new Set(
+          ships.map((s) => s.registration_number.toLowerCase().trim()),
+        );
+
+        const ownerTopShip = aiRec?.top_ships?.find((top) =>
+          ownerShipRegs.has(top.registration_number.toLowerCase().trim()),
+        );
+
+        if (ownerTopShip) {
           generated.push({
-            title: `Efisiensi terbaik: ${top.name}`,
-            text: `Rekomendasi bulan tangkapan optimal: ${top.best_fishing_months.slice(0, 3).join(", ")}.`,
+            title: `Efisiensi terbaik: ${ownerTopShip.name}`,
+            text: `Rekomendasi bulan tangkapan optimal: ${ownerTopShip.best_fishing_months.slice(0, 3).join(", ")}.`,
+            Icon: AlertCircle,
+          });
+        } else if (ships.length > 0) {
+          generated.push({
+            title: "Pengaturan kuota armada",
+            text: "Hubungi regulator pelabuhan untuk menetapkan alokasi kuota resmi bagi armada Anda.",
             Icon: AlertCircle,
           });
         } else {
           generated.push({
-            title: "Ajukan penyesuaian kuota",
-            text: "Gunakan fitur override regulator jika kuota kapal Anda membutuhkan penyesuaian.",
+            title: "Daftarkan kapal armada Anda",
+            text: "Tambahkan kapal baru melalui menu Armada Kapal untuk memulai pemantauan kuota dan operasi.",
             Icon: AlertCircle,
           });
         }
@@ -97,7 +104,7 @@ export function AiAdviceCard() {
     }
 
     loadDynamicTips();
-  }, [ownerId]);
+  }, [currentUser]);
 
   return (
     <section className="surface-card border rounded-xl p-6 shadow-xs">

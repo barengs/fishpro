@@ -28,16 +28,24 @@ export function calculateCatchTotalVolume(catches: FishCatch[]): number {
 
 /**
  * Menghitung rata-rata persentase sisa kuota dari armada kapal.
+ * Hanya menghitung kapal yang memiliki alokasi kuota resmi aktif.
  */
 export function calculateAverageRemainingQuota(ships: Ship[]): number {
   if (!ships || ships.length === 0) return 0;
 
-  const totalPct = ships.reduce((acc, s) => {
-    const quotaPct = s.current_year_quota?.quota_percentage;
-    return acc + (typeof quotaPct === "number" ? quotaPct : 0);
+  const shipsWithQuota = ships.filter(
+    (s) =>
+      s.current_year_quota &&
+      typeof s.current_year_quota.quota_percentage === "number",
+  );
+
+  if (shipsWithQuota.length === 0) return 0;
+
+  const totalPct = shipsWithQuota.reduce((acc, s) => {
+    return acc + (s.current_year_quota?.quota_percentage || 0);
   }, 0);
 
-  return Math.round(totalPct / ships.length);
+  return Math.round(totalPct / shipsWithQuota.length);
 }
 
 /**
