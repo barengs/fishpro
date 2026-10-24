@@ -77,6 +77,20 @@ export function formatShortHash(
 }
 
 /**
+ * Melakukan sanitize/escape karakter khusus HTML untuk mencegah XSS injection pada DOM/Leaflet.
+ * @example escapeHtml("KM <b>Bintang</b>") -> "KM &lt;b&gt;Bintang&lt;/b&gt;"
+ */
+export function escapeHtml(str: string | null | undefined): string {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Format string/angka numerik dengan pemisah ribuan titik secara real-time.
  * @example formatThousandInput("1000") -> "1.000"
  * @example formatThousandInput("1000000") -> "1.000.000"

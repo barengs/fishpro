@@ -3,7 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Info, RotateCcw, Map, Eye } from "lucide-react";
 import { WPP_REAL_POLYGONS, type WppPolygonGeo } from "./wppRealPolygons";
-import { formatWeight } from "../../utils";
+import { formatWeight, escapeHtml } from "../../utils";
 
 export interface ShipVesselMarker {
   id: number;
@@ -147,7 +147,7 @@ export function WppMapViewer({
         className: "custom-wpp-badge",
         html: `
           <div style="background:#091424;color:#ffffff;border:1.5px solid #0284c7;padding:2px 8px;border-radius:3px;font-size:11px;font-family:monospace;font-weight:bold;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.4);text-align:center;">
-            WPP ${wpp.code}
+            WPP ${escapeHtml(wpp.code)}
             ${catchVolume > 0 ? `<div style="color:#38bdf8;font-size:9px;font-weight:bold;">${formatWeight(catchVolume)}</div>` : ""}
           </div>
         `,
@@ -174,8 +174,8 @@ export function WppMapViewer({
       const wpp =
         WPP_REAL_POLYGONS.find((w) => w.code === code) || WPP_REAL_POLYGONS[2];
 
-      // Jitter offset around center for distinct vessel coordinates
-      const latOffset = ((v.id % 5) - 2) * 0.45;
+      // Jitter offset around center for distinct vessel coordinates (offset slightly south to avoid overlapping center badge)
+      const latOffset = ((v.id % 5) - 2) * 0.45 - 0.4;
       const lngOffset = (((v.id * 3) % 5) - 2) * 0.55;
       const vesselPos: [number, number] = [
         wpp.center[0] + latOffset,
@@ -195,8 +195,11 @@ export function WppMapViewer({
         fillOpacity: 0.9,
       });
 
+      const safeName = escapeHtml(v.name);
+      const safeReg = escapeHtml(v.reg);
+
       circle.bindTooltip(
-        `<strong>${v.name}</strong><br/>Reg: ${v.reg}<br/>Status Kuota: ${pct}% tersisa`,
+        `<strong>${safeName}</strong><br/>Reg: ${safeReg}<br/>Status Kuota: ${pct}% tersisa`,
         { direction: "top", offset: [0, -6] },
       );
 
