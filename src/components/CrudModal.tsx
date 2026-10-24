@@ -46,10 +46,10 @@ export function CrudModal({
         onClick={onClose}
       />
       <div
-        className={`relative w-full ${wide ? "max-w-220" : "max-w-135"} overflow-y-auto surface-card border rounded-xl shadow-2xl`}
+        className={`relative w-full ${wide ? "max-w-220" : "max-w-135"} overflow-y-auto surface-card border rounded-xs shadow-2xl`}
         style={{ maxHeight: "90vh" }}
       >
-        <div className="sticky top-0 z-30 surface-card border-b border-fco-border px-5 sm:px-6 py-4 flex items-start justify-between gap-4 rounded-t-xl">
+        <div className="sticky top-0 z-10 surface-card border-b border-fco-border px-5 sm:px-6 py-4 flex items-start justify-between gap-4 rounded-t-xs">
           <div>
             <h2 className="m-0 text-lg font-extrabold tracking-tight">
               {title}
@@ -62,9 +62,9 @@ export function CrudModal({
             type="button"
             onClick={onClose}
             aria-label="Tutup"
-            className="w-9 h-9 rounded-fco border border-fco-border bg-transparent hover:surface-page flex items-center justify-center cursor-pointer transition-colors shrink-0"
+            className="w-8 h-8 rounded-xs border border-fco-border bg-transparent hover:surface-page flex items-center justify-center cursor-pointer transition-colors shrink-0"
           >
-            <X size={18} aria-hidden="true" />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
         {hideFooter || !onSubmit ? (
@@ -79,13 +79,13 @@ export function CrudModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 h-12 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors"
+                className="flex-1 h-11 rounded-xs border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="flex-1 h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors"
+                className="flex-1 h-11 rounded-xs border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-bold cursor-pointer transition-colors shadow-xs"
               >
                 {submitLabel}
               </button>

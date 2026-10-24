@@ -224,13 +224,13 @@ export function WppMapViewer({
   };
 
   return (
-    <div className="surface-card border border-fco-border-subtle rounded-xs overflow-hidden shadow-2xs">
+    <div className="relative isolate z-0 surface-card border border-fco-border-subtle rounded-xs overflow-hidden shadow-2xs">
       {/* Real Leaflet Map Container */}
       <div className="relative w-full h-97.5 sm:h-112.5 bg-slate-900 overflow-hidden">
         <div ref={mapContainerRef} className="w-full h-full z-0" />
 
         {/* Floating Map Controls (Top-Right) */}
-        <div className="absolute top-3 right-3 z-[1000] flex items-center gap-2 pointer-events-auto">
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-2 pointer-events-auto">
           {/* Layer Segmented Control */}
           <div className="inline-flex items-center rounded-xs border border-white/10 bg-[#0f172a]/90 backdrop-blur-md p-0.5 shadow-lg">
             <button
@@ -272,7 +272,7 @@ export function WppMapViewer({
         </div>
 
         {/* Floating In-Map Legend (Bottom-Left) */}
-        <div className="absolute bottom-3 left-3 z-[1000] px-3 py-1.5 rounded-xs bg-[#0f172a]/90 backdrop-blur-md border border-white/10 text-white shadow-lg pointer-events-auto flex items-center gap-2.5 text-2xs font-medium">
+        <div className="absolute bottom-3 left-3 z-20 px-3 py-1.5 rounded-xs bg-[#0f172a]/90 backdrop-blur-md border border-white/10 text-white shadow-lg pointer-events-auto flex items-center gap-2.5 text-2xs font-medium">
           {role === "regulator" ? (
             <>
               <span className="text-white/50 font-bold uppercase text-[10px]">
@@ -309,7 +309,7 @@ export function WppMapViewer({
 
         {/* 3. Floating Detail Card on Top-Right of Map (Only visible on hover) */}
         {hoveredWpp && (
-          <div className="absolute top-3 right-3 z-[1000] max-w-xs sm:max-w-sm p-3.5 rounded-xs bg-[#0f172a]/95 backdrop-blur-md border border-white/10 text-white shadow-2xl flex items-start gap-3 pointer-events-none transition-all duration-150 animate-in fade-in">
+          <div className="absolute top-3 right-3 z-30 max-w-xs sm:max-w-sm p-3.5 rounded-xs bg-[#0f172a]/95 backdrop-blur-md border border-white/10 text-white shadow-2xl flex items-start gap-3 pointer-events-none transition-all duration-150 animate-in fade-in">
             <div className="w-8 h-8 rounded-xs bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
               <Info size={16} />
             </div>
