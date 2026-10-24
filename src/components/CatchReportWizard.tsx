@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle } from "lucide-react";
 import { type CatchReportFormData } from "./catchReportTypes";
 import { useCatchWizard } from "./catch-wizard/hooks/useCatchWizard";
 import { CatchFormStepper } from "./catch-wizard/components/CatchFormStepper";
@@ -48,9 +49,14 @@ export function CatchReportWizard({
       {errorMsg && (
         <div
           role="alert"
-          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20"
+          className="p-3 px-4 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20 flex items-center gap-2.5"
         >
-          {errorMsg}
+          <AlertCircle
+            size={16}
+            className="shrink-0 text-red-600 dark:text-red-400"
+            aria-hidden="true"
+          />
+          <span>{errorMsg}</span>
         </div>
       )}
 

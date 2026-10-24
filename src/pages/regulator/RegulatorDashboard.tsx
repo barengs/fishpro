@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, Coins, Link2, Ship } from "lucide-react";
+import { AlertBanner } from "../../components/ui";
 import { KpiCard } from "../../components/KpiCard";
 import {
   QuotaAuditTable,
@@ -177,9 +178,11 @@ export function RegulatorDashboard() {
       </div>
 
       {toastMessage && (
-        <div className="p-3.5 px-4.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-5 border border-emerald-200 dark:border-emerald-500/20">
-          ✓ {toastMessage}
-        </div>
+        <AlertBanner
+          variant="success"
+          message={toastMessage}
+          onDismiss={() => setToastMessage(null)}
+        />
       )}
 
       {/* Global KPIs */}

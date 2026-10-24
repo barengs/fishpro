@@ -1,4 +1,4 @@
-import { Check, Lock, Mail } from "lucide-react";
+import { AlertCircle, Check, Lock, Mail } from "lucide-react";
 import { useResetPassword, type ResetStep } from "../hooks/useResetPassword";
 
 interface ResetPasswordWizardProps {
@@ -55,9 +55,14 @@ export function ResetPasswordWizard({
       {error && (
         <div
           role="alert"
-          className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20"
+          className="px-4 py-3 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20 flex items-center gap-2.5"
         >
-          {error}
+          <AlertCircle
+            size={16}
+            className="shrink-0 text-red-600 dark:text-red-400"
+            aria-hidden="true"
+          />
+          <span>{error}</span>
         </div>
       )}
 

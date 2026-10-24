@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Ship as ShipIcon } from "lucide-react";
+import { AlertCircle, Ship as ShipIcon } from "lucide-react";
 import { CrudModal } from "../../../components/CrudModal";
 import { SelectField, TextField, TextareaField } from "../../../components/ui";
 import { type Ship } from "../../../services/ships";
@@ -117,9 +117,14 @@ function ManualQuotaFormContent({
       {errorMsg && (
         <div
           role="alert"
-          className="p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20"
+          className="p-3 px-4 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20 flex items-center gap-2"
         >
-          ⚠ {errorMsg}
+          <AlertCircle
+            size={15}
+            className="shrink-0 text-red-600 dark:text-red-400"
+            aria-hidden="true"
+          />
+          <span>{errorMsg}</span>
         </div>
       )}
 

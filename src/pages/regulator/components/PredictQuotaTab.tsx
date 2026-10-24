@@ -1,4 +1,12 @@
-import { Brain, Check, Cpu, Loader2, Sparkles, TrendingUp } from "lucide-react";
+import {
+  AlertCircle,
+  Brain,
+  Check,
+  Cpu,
+  Loader2,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import { SelectField } from "../../../components/ui";
 import { usePredictQuotaTab } from "../hooks/usePredictQuotaTab";
 
@@ -143,9 +151,14 @@ export function PredictQuotaTab({
       {errorMsg && (
         <div
           role="alert"
-          className="p-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold border border-red-200 dark:border-red-500/20"
+          className="p-3.5 px-4.5 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold border border-red-200 dark:border-red-500/20 flex items-center gap-2.5 shadow-2xs"
         >
-          ⚠ {errorMsg}
+          <AlertCircle
+            size={16}
+            className="shrink-0 text-red-600 dark:text-red-400"
+            aria-hidden="true"
+          />
+          <span>{errorMsg}</span>
         </div>
       )}
 

@@ -49,18 +49,18 @@ export function AlertBanner({
   return (
     <div
       role="alert"
-      className={`p-3.5 px-4.5 rounded-xl text-sm font-semibold mb-5 border flex items-center justify-between gap-3 ${style.container} ${className}`}
+      className={`p-3.5 px-4.5 rounded-xs text-sm font-semibold mb-5 border flex items-center justify-between gap-3 ${style.container} ${className}`}
     >
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center gap-2.5 min-w-0">
         <Icon size={16} className="shrink-0" aria-hidden="true" />
-        <span className="truncate">{message}</span>
+        <span className="break-words">{message}</span>
       </div>
       {onDismiss && (
         <button
           type="button"
           onClick={onDismiss}
           aria-label="Tutup notifikasi"
-          className="p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
+          className="p-1 rounded-xs opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
         >
           <X size={14} aria-hidden="true" />
         </button>

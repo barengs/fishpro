@@ -7,7 +7,7 @@ import {
   type FishCatchTransaction,
 } from "../../services/blockchain";
 import { formatRupiah } from "../../utils";
-import { Check, ShieldCheck } from "lucide-react";
+import { AlertCircle, Check, ShieldCheck } from "lucide-react";
 
 export function VerifyBlockchainPage() {
   const [rows, setRows] = useState<FishCatchTransaction[]>([]);
@@ -138,8 +138,13 @@ export function VerifyBlockchainPage() {
       />
 
       {errorMsg && (
-        <div className="p-3.5 px-4.5 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20">
-          ⚠ {errorMsg}
+        <div className="p-3.5 px-4.5 rounded-xs bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold mb-5 border border-red-200 dark:border-red-500/20 flex items-center gap-2.5">
+          <AlertCircle
+            size={16}
+            className="shrink-0 text-red-600 dark:text-red-400"
+            aria-hidden="true"
+          />
+          <span>{errorMsg}</span>
         </div>
       )}
 
