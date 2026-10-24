@@ -91,10 +91,10 @@ export function CenteredAuth({
                 </Link>
                 <Link
                   to="/register"
-                  className={`h-10 px-4 sm:px-5 inline-flex items-center rounded-xs text-xs font-bold transition-all shadow-xs no-underline active:scale-[0.99] ${
+                  className={`h-10 px-4 sm:px-5 inline-flex items-center rounded-xs text-xs font-bold transition-all no-underline ${
                     isRegisterActive
-                      ? "bg-fco-blue text-white shadow-sm ring-2 ring-fco-blue/30 font-extrabold"
-                      : "bg-fco-blue hover:bg-fco-blue-hover text-white"
+                      ? "bg-fco-blue text-white shadow-xs font-extrabold"
+                      : "border border-fco-border-subtle surface-card hover:surface-page text-strong"
                   }`}
                 >
                   Daftar
