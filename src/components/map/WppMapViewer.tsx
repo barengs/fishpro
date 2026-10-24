@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Compass, Info, RotateCcw, Map, Eye } from "lucide-react";
+import { Info, RotateCcw, Map, Eye } from "lucide-react";
 import { WPP_REAL_POLYGONS, type WppPolygonGeo } from "./wppRealPolygons";
 import { formatWeight } from "../../utils";
 
@@ -34,7 +34,7 @@ export function WppMapViewer({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const polygonLayersRef = useRef<Record<string, L.Polygon>>({});
-  const [activeWpp, setActiveWpp] = useState<WppPolygonGeo | null>(null);
+  const [hoveredWpp, setHoveredWpp] = useState<WppPolygonGeo | null>(null);
   const [mapTileStyle, setMapTileStyle] = useState<"standard" | "satellite">(
     "standard",
   );
@@ -120,11 +120,10 @@ export function WppMapViewer({
 
       polygon.on("click", () => {
         onSelectWpp?.(`WPP ${wpp.code}`);
-        setActiveWpp(wpp);
       });
 
       polygon.on("mouseover", () => {
-        setActiveWpp(wpp);
+        setHoveredWpp(wpp);
         polygon.setStyle({
           fillOpacity: 0.35,
           weight: 2.5,
@@ -133,6 +132,7 @@ export function WppMapViewer({
       });
 
       polygon.on("mouseout", () => {
+        setHoveredWpp(null);
         if (selectedWpp?.replace(/^WPP\s*/i, "").trim() !== wpp.code) {
           polygon.setStyle({
             fillOpacity: 0.15,
@@ -217,60 +217,41 @@ export function WppMapViewer({
   // Reset map view to full archipelago
   const handleResetView = () => {
     mapInstanceRef.current?.setView([-2.2, 118.0], 5);
-    setActiveWpp(null);
+    setHoveredWpp(null);
   };
 
   return (
     <div className="surface-card border border-fco-border-subtle rounded-xs overflow-hidden shadow-2xs">
-      {/* 1. Clean Enterprise Header Toolbar */}
-      <div className="p-3.5 px-5 border-b border-fco-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-fco-card-dark">
-        {/* Title and Scope */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xs bg-blue-500/10 text-fco-blue flex items-center justify-center shrink-0">
-            <Compass size={18} aria-hidden="true" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="m-0 text-sm font-bold text-strong">
-                Peta Wilayah WPPNRI
-              </h3>
-              <span className="text-2xs font-mono font-bold px-2 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-                {role === "admin" ? "Zonasi Kebijakan" : "Radar Pengawasan"}
-              </span>
-            </div>
-            <p className="m-0 text-2xs text-soft mt-0.5">
-              Wilayah Pengelolaan Perikanan Negara Republik Indonesia
-              (Permen-KP)
-            </p>
-          </div>
-        </div>
+      {/* Real Leaflet Map Container */}
+      <div className="relative w-full h-97.5 sm:h-112.5 bg-slate-900 overflow-hidden">
+        <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-        {/* Action Controls & Legends */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs">
+        {/* Floating Map Controls (Top-Right) */}
+        <div className="absolute top-3 right-3 z-[1000] flex items-center gap-2 pointer-events-auto">
           {/* Layer Segmented Control */}
-          <div className="inline-flex rounded-xs border border-fco-border-subtle surface-inset p-0.5">
+          <div className="inline-flex items-center rounded-xs border border-white/10 bg-[#0f172a]/90 backdrop-blur-md p-0.5 shadow-lg">
             <button
               type="button"
               onClick={() => setMapTileStyle("standard")}
-              className={`h-7 px-3 rounded-xs text-xs font-semibold cursor-pointer border-none transition-colors flex items-center gap-1.5 ${
+              className={`h-7.5 px-3 rounded-xs text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
                 mapTileStyle === "standard"
-                  ? "bg-fco-blue text-white shadow-2xs"
-                  : "bg-transparent text-soft hover:text-strong"
+                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
+                  : "bg-transparent text-white/70 hover:text-white font-medium"
               }`}
             >
-              <Map size={12} />
+              <Map size={13} />
               <span>Peta Laut</span>
             </button>
             <button
               type="button"
               onClick={() => setMapTileStyle("satellite")}
-              className={`h-7 px-3 rounded-xs text-xs font-semibold cursor-pointer border-none transition-colors flex items-center gap-1.5 ${
+              className={`h-7.5 px-3 rounded-xs text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
                 mapTileStyle === "satellite"
-                  ? "bg-fco-blue text-white shadow-2xs"
-                  : "bg-transparent text-soft hover:text-strong"
+                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
+                  : "bg-transparent text-white/70 hover:text-white font-medium"
               }`}
             >
-              <Eye size={12} />
+              <Eye size={13} />
               <span>Satelit</span>
             </button>
           </div>
@@ -280,63 +261,69 @@ export function WppMapViewer({
             type="button"
             onClick={handleResetView}
             title="Pusatkan Peta Nusantara"
-            className="h-8 px-3 rounded-xs border border-fco-border-subtle surface-card hover:surface-page text-strong flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs text-xs font-semibold"
+            className="h-8.5 px-3 rounded-xs border border-white/10 bg-[#0f172a]/90 hover:bg-[#1e293b] backdrop-blur-md text-white flex items-center gap-1.5 cursor-pointer transition-all shadow-lg text-xs font-semibold active:scale-95"
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={13} className="text-white/80" />
             <span>Pusatkan</span>
           </button>
+        </div>
 
-          {/* Legend */}
+        {/* Floating In-Map Legend (Bottom-Left) */}
+        <div className="absolute bottom-3 left-3 z-[1000] px-3 py-1.5 rounded-xs bg-[#0f172a]/90 backdrop-blur-md border border-white/10 text-white shadow-lg pointer-events-auto flex items-center gap-2.5 text-2xs font-medium">
           {role === "regulator" ? (
-            <div className="hidden lg:flex items-center gap-3 pl-2.5 border-l border-fco-border-subtle text-2xs font-medium text-soft">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <>
+              <span className="text-white/50 font-bold uppercase text-[10px]">
+                Status Kuota:
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
                 <span>Aman</span>
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
                 <span>Waspada</span>
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
                 <span>Kritis</span>
               </span>
-            </div>
+            </>
           ) : (
-            <div className="hidden lg:flex items-center gap-2 pl-2.5 border-l border-fco-border-subtle text-2xs font-medium text-soft">
+            <>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-xs bg-[#0284c7]" />
-                <span>Batas WPP</span>
+                <span className="w-2.5 h-2.5 rounded-xs bg-[#0284c7] border border-cyan-400/50" />
+                <span className="font-semibold text-white/90">
+                  Batas 11 Wilayah WPP
+                </span>
               </span>
-            </div>
+              <span className="text-white/30 hidden sm:inline">·</span>
+              <span className="text-white/60 hidden sm:inline">
+                Klik zona untuk filter tabel
+              </span>
+            </>
           )}
         </div>
-      </div>
 
-      {/* 2. Real Leaflet Map Container */}
-        <div className="relative w-full h-97.5 sm:h-112.5 bg-slate-900 overflow-hidden">
-        <div ref={mapContainerRef} className="w-full h-full z-0" />
-
-        {/* 3. Floating Detail Card on Top-Right of Map */}
-        {activeWpp && (
-          <div className="absolute top-3 right-3 z-1000 max-w-xs sm:max-w-sm p-3.5 rounded-xs bg-[#0f172a]/95 backdrop-blur-md border border-white/10 text-white shadow-2xl flex items-start gap-3 pointer-events-auto">
+        {/* 3. Floating Detail Card on Top-Right of Map (Only visible on hover) */}
+        {hoveredWpp && (
+          <div className="absolute top-3 right-3 z-[1000] max-w-xs sm:max-w-sm p-3.5 rounded-xs bg-[#0f172a]/95 backdrop-blur-md border border-white/10 text-white shadow-2xl flex items-start gap-3 pointer-events-none transition-all duration-150 animate-in fade-in">
             <div className="w-8 h-8 rounded-xs bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
               <Info size={16} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-xs font-bold text-cyan-400">
-                  WPP {activeWpp.code}
+                  WPP {hoveredWpp.code}
                 </span>
                 <span className="text-2xs text-white/50 font-medium">
-                  {activeWpp.ocean}
+                  {hoveredWpp.ocean}
                 </span>
               </div>
               <h4 className="m-0 text-xs font-bold text-white truncate mt-0.5">
-                {activeWpp.name}
+                {hoveredWpp.name}
               </h4>
               <p className="m-0 text-2xs text-white/70 mt-1 leading-relaxed">
-                {activeWpp.description}
+                {hoveredWpp.description}
               </p>
 
               <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between text-2xs">
@@ -345,7 +332,7 @@ export function WppMapViewer({
                   <strong className="text-white font-mono">
                     {
                       vessels.filter((v) =>
-                        (v.wppCode || "573").includes(activeWpp.code),
+                        (v.wppCode || "573").includes(hoveredWpp.code),
                       ).length
                     }{" "}
                     kapal
@@ -355,8 +342,8 @@ export function WppMapViewer({
                   Total:{" "}
                   <strong className="text-cyan-300 font-mono">
                     {formatWeight(
-                      catchesPerWpp[activeWpp.code] ||
-                        catchesPerWpp[`WPP ${activeWpp.code}`] ||
+                      catchesPerWpp[hoveredWpp.code] ||
+                        catchesPerWpp[`WPP ${hoveredWpp.code}`] ||
                         0,
                     )}
                   </strong>

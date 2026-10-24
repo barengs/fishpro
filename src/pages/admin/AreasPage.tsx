@@ -1,3 +1,4 @@
+import { PageHeader } from "../../components/PageHeader";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
@@ -87,9 +88,23 @@ export function AreasPage() {
 
   return (
     <div>
-      <PageToolbar
+      <PageHeader
         title="Wilayah Pengelolaan Perikanan (WPP)"
         desc="Daftar resmi Wilayah Pengelolaan Perikanan Negara Republik Indonesia (WPPNRI)."
+      />
+
+      {/* Peta Wilayah WPP Nasional */}
+      <div className="mb-6">
+        <WppMapViewer
+          role="admin"
+          selectedWpp={search}
+          onSelectWpp={(wppCode) => {
+            setSearch((prev) => (prev === wppCode ? "" : wppCode));
+          }}
+        />
+      </div>
+
+      <PageToolbar
         searchPlaceholder="Cari WPP..."
         searchValue={search}
         onSearchChange={setSearch}
@@ -140,17 +155,6 @@ export function AreasPage() {
         message={errorMsg || ""}
         onDismiss={() => setErrorMsg(null)}
       />
-
-      {/* Peta Wilayah WPP Nasional */}
-      <div className="mb-6">
-        <WppMapViewer
-          role="admin"
-          selectedWpp={search}
-          onSelectWpp={(wppCode) => {
-            setSearch((prev) => (prev === wppCode ? "" : wppCode));
-          }}
-        />
-      </div>
 
       <DataTable
         columns={cols}
