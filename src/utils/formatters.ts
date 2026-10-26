@@ -156,8 +156,25 @@ export function unformatThousandInput(
   if (!s) return "";
 
   const isNegative = s.startsWith("-");
-  let clean = s.replace(/\./g, "");
-  clean = clean.replace(/,/g, ".");
+  let clean = isNegative ? s.slice(1) : s;
+
+  if (clean.includes(",") && clean.includes(".")) {
+    clean = clean.replace(/\./g, "").replace(/,/g, ".");
+  } else if (clean.includes(",")) {
+    clean = clean.replace(/,/g, ".");
+  } else if (clean.includes(".")) {
+    const parts = clean.split(".");
+    if (parts.length > 2) {
+      clean = clean.replace(/\./g, "");
+    } else if (
+      parts[1].length === 3 &&
+      parts[0].length >= 1 &&
+      parts[0].length <= 3
+    ) {
+      clean = clean.replace(/\./g, "");
+    }
+  }
+
   clean = clean.replace(/[^\d.]/g, "");
 
   const dotParts = clean.split(".");
