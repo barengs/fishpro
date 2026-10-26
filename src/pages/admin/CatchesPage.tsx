@@ -1,4 +1,4 @@
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Download, FileUp } from "lucide-react";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
 import { CrudActions } from "../../components/FormField";
@@ -8,7 +8,8 @@ import { CrudModal } from "../../components/CrudModal";
 import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
 import { DetailModal } from "../../components/DetailModal";
 import { CatchReportWizard } from "../../components/CatchReportWizard";
-import type { FishCatch } from "../../services/catches";
+import { CsvImportModal } from "./species/CsvImportModal";
+import { catchesService, type FishCatch } from "../../services/catches";
 import { useCatchesManager } from "./hooks/useCatchesManager";
 
 export function CatchesPage() {
@@ -28,6 +29,10 @@ export function CatchesPage() {
     openModal,
     closeModal,
     handleSubmit,
+    isImportModalOpen,
+    openImportModal,
+    closeImportModal,
+    handleCsvImport,
     selectedCatch,
     isDetailOpen,
     openDetail,
@@ -137,6 +142,34 @@ export function CatchesPage() {
         onSearchChange={setSearch}
         addLabel="Buat Laporan Baru"
         onAdd={openModal}
+        extraActions={
+          <>
+            <a
+              href={catchesService.getTemplateUrl()}
+              download
+              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
+            >
+              <Download
+                size={14}
+                className="text-fco-blue"
+                aria-hidden="true"
+              />
+              <span>Unduh Template CSV</span>
+            </a>
+            <button
+              type="button"
+              onClick={openImportModal}
+              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+            >
+              <FileUp
+                size={14}
+                className="text-emerald-600 dark:text-emerald-400"
+                aria-hidden="true"
+              />
+              <span>Impor File CSV</span>
+            </button>
+          </>
+        }
       />
 
       <AlertBanner
@@ -346,6 +379,16 @@ export function CatchesPage() {
           }
         />
       </CrudModal>
+
+      <CsvImportModal
+        open={isImportModalOpen}
+        title="Impor Laporan Tangkapan dari CSV"
+        subtitle="Format header CSV: ship_registration,ship_name,owner_name,captain_name,captain_license,quota_amount,catch_date,catch_type,location_latitude,location_longitude,description,fish_species_name,quantity,unit,value,notes,wpp_name"
+        headerFormat="ship_registration,ship_name,owner_name,captain_name,captain_license,quota_amount,catch_date,catch_type,location_latitude,location_longitude,description,fish_species_name,quantity,unit,value,notes,wpp_name"
+        placeholderText="Tempel atau unggah isi file CSV riwayat tangkapan di sini..."
+        onClose={closeImportModal}
+        onImport={handleCsvImport}
+      />
 
       <ConfirmDeleteModal
         open={isDeleteOpen}

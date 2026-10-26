@@ -20,6 +20,7 @@ export function useCatchesManager() {
   const [deleting, setDeleting] = useState(false);
 
   const { open: isModalOpen, openModal, closeModal } = useCrudModal();
+  const importModal = useCrudModal();
   const {
     target: deleteTarget,
     open: isDeleteOpen,
@@ -153,6 +154,25 @@ export function useCatchesManager() {
     }
   };
 
+  const handleCsvImport = async (csvData: string) => {
+    try {
+      const res = await catchesService.importCsv(csvData, false);
+      setToastMsg(
+        res.message ||
+          `Impor tangkapan berhasil: ${res.created_count || 0} laporan disimpan.`,
+      );
+      setTimeout(() => setToastMsg(null), 4000);
+      importModal.closeModal();
+      fetchCatches(search);
+    } catch (err: unknown) {
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Gagal mengimpor file CSV tangkapan",
+      );
+    }
+  };
+
   return {
     rows,
     ships,
@@ -172,6 +192,12 @@ export function useCatchesManager() {
     openModal,
     closeModal,
     handleSubmit,
+
+    // Modal Import
+    isImportModalOpen: importModal.open,
+    openImportModal: importModal.openModal,
+    closeImportModal: importModal.closeModal,
+    handleCsvImport,
 
     // Modal Detail
     selectedCatch,

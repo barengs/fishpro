@@ -111,6 +111,36 @@ export const catchesService = {
   },
 
   /**
+   * POST /api/catches/fish-catches-with-details/import_csv/ - Impor data tangkapan massal dari CSV
+   */
+  async importCsv(
+    csvData: string,
+    dryRun: boolean = false,
+  ): Promise<{
+    message?: string;
+    created_count?: number;
+    total_processed?: number;
+    errors?: string[];
+  }> {
+    return apiClient<{
+      message?: string;
+      created_count?: number;
+      total_processed?: number;
+      errors?: string[];
+    }>(`${API_ENDPOINTS.CATCHES.WITH_DETAILS}import_csv/`, {
+      method: "POST",
+      body: JSON.stringify({ csv_data: csvData, dry_run: dryRun }),
+    });
+  },
+
+  /**
+   * URL untuk mengunduh template CSV tangkapan
+   */
+  getTemplateUrl(): string {
+    return `${API_ENDPOINTS.CATCHES.WITH_DETAILS}download_template/`;
+  },
+
+  /**
    * DELETE /api/catches/fish-catches/{id}/ - Hapus laporan tangkapan ikan
    */
   async delete(id: number): Promise<void> {
