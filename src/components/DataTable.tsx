@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "./ui/Skeleton";
 
 export interface Column<T> {
@@ -26,6 +27,41 @@ export interface DataTableProps<T> {
   rowNumberHeader?: string;
   pagination?: boolean;
   pageSize?: number;
+}
+
+function getPaginationItems(
+  currentPage: number,
+  totalPages: number,
+): (number | "...")[] {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, "...", totalPages];
+  }
+
+  if (currentPage >= totalPages - 3) {
+    return [
+      1,
+      "...",
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
 }
 
 export function DataTable<T>({
@@ -280,25 +316,37 @@ export function DataTable<T>({
                 type="button"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={safePage <= 1}
-                className="h-8 px-2.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Halaman sebelumnya"
+                className="w-8 h-8 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-strong flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
-                Sebelumnya
+                <ChevronLeft size={14} aria-hidden="true" />
               </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                const isCurrent = p === safePage;
+              {getPaginationItems(safePage, totalPages).map((item, idx) => {
+                if (item === "...") {
+                  return (
+                    <span
+                      key={`dots-${idx}`}
+                      className="w-7 h-8 flex items-center justify-center text-xs font-bold text-soft select-none tracking-widest"
+                    >
+                      ...
+                    </span>
+                  );
+                }
+
+                const isCurrent = item === safePage;
                 return (
                   <button
-                    key={p}
+                    key={item}
                     type="button"
-                    onClick={() => setCurrentPage(p)}
-                    className={`w-8 h-8 rounded-xs text-xs font-bold transition-colors cursor-pointer border ${
+                    onClick={() => setCurrentPage(item)}
+                    className={`w-8 h-8 rounded-xs text-xs font-bold tabular-nums transition-colors cursor-pointer border ${
                       isCurrent
-                        ? "bg-fco-blue text-white border-fco-blue shadow-xs"
+                        ? "bg-fco-blue text-white border-fco-blue shadow-xs font-extrabold"
                         : "border-fco-border-subtle surface-inset hover:surface-page text-strong"
                     }`}
                   >
-                    {p}
+                    {item}
                   </button>
                 );
               })}
@@ -309,9 +357,10 @@ export function DataTable<T>({
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={safePage >= totalPages}
-                className="h-8 px-2.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Halaman berikutnya"
+                className="w-8 h-8 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-strong flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
-                Berikutnya
+                <ChevronRight size={14} aria-hidden="true" />
               </button>
             </div>
           )}
