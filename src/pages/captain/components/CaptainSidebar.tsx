@@ -1,89 +1,284 @@
-import { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Logo } from '../../../components/Logo'
-import { NotificationBell } from '../../../components/NotificationBell'
-import { UserProfileBadge } from '../../../components/UserProfileBadge'
-import { ClipboardList, LayoutDashboard, Ship } from 'lucide-react'
-import { MobileTopbar } from '../../../components/MobileTopbar'
-import { ThemeToggle } from '../../../components/ThemeToggle'
-import { FullscreenToggle } from '../../../components/FullscreenToggle'
+import { useEffect, useState } from "react";
+import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { ClipboardList, LayoutDashboard, Menu, Ship, X } from "lucide-react";
+import { Logo } from "../../../components/Logo";
+import { UserProfileBadge } from "../../../components/UserProfileBadge";
+import { ThemeToggle } from "../../../components/ThemeToggle";
+import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import {
+  QuickSearchMenu,
+  type QuickSearchItem,
+} from "../../../components/QuickSearchMenu";
+import { authService, getUserDisplayInfo } from "../../../services/auth";
+import { useToast } from "../../../components/toast";
+
+const captainSearchItems: QuickSearchItem[] = [
+  {
+    label: "Dashboard",
+    to: "/captain",
+    category: "Overview",
+    icon: LayoutDashboard,
+    keywords: ["ringkasan", "beranda", "statistik"],
+  },
+  {
+    label: "Riwayat Tangkapan",
+    to: "/captain/catches",
+    category: "Operasional",
+    icon: ClipboardList,
+    keywords: ["tangkapan", "laporan", "ikan", "bobot", "volume", "catches"],
+  },
+  {
+    label: "Kapal Saya",
+    to: "/captain/ship",
+    category: "Armada",
+    icon: Ship,
+    keywords: ["kapal", "spesifikasi", "gt", "mesin", "dimensi"],
+  },
+];
 
 const navItems = [
-  { label: 'Ringkasan', to: '/captain', end: true, Icon: LayoutDashboard },
-  { label: 'Riwayat Tangkapan', to: '/captain/catches', Icon: ClipboardList },
-  { label: 'Kapal Saya', to: '/captain/ship', Icon: Ship }
-]
+  {
+    label: "Dashboard",
+    to: "/captain",
+    end: true,
+    Icon: LayoutDashboard,
+    prefetch: () => import("../CaptainDashboard"),
+  },
+  {
+    label: "Riwayat Tangkapan",
+    to: "/captain/catches",
+    Icon: ClipboardList,
+    prefetch: () => import("../MyCatchesPage"),
+  },
+  {
+    label: "Kapal Saya",
+    to: "/captain/ship",
+    Icon: Ship,
+    prefetch: () => import("../MyShipPage"),
+  },
+];
 
-function SidebarBody() {
+export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <div className="flex flex-col gap-1">
-      {navItems.map((n) => (
+    <nav
+      className="flex flex-col gap-1 py-1 pb-4 w-full min-w-0 overflow-hidden"
+      aria-label="Navigasi Nahkoda"
+    >
+      {navItems.map((item) => (
         <NavLink
-          key={n.label}
-          to={n.to}
-          end={n.end}
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          onClick={onNavigate}
+          onMouseEnter={item.prefetch}
           className={({ isActive }) =>
-            `flex items-center gap-3 h-10.5 px-3 rounded-fco text-sm font-semibold no-underline transition-all ${
+            `w-full min-w-0 max-w-full box-border flex items-center gap-3.5 h-10 px-3.5 rounded-lg text-sm transition-colors duration-150 no-underline cursor-pointer ${
               isActive
-                ? 'bg-fco-blue-light text-fco-blue'
-                : 'bg-transparent text-soft hover:surface-page hover:text-strong'
+                ? "bg-white text-[#0e2756] font-bold shadow-sm"
+                : "text-blue-100/75 hover:text-white hover:bg-white/10 font-medium"
             }`
           }
         >
-          {<n.Icon size={20} className="shrink-0" strokeWidth={1.8} aria-hidden="true" />}
-          {n.label}
+          <item.Icon
+            size={18}
+            className="shrink-0 transition-colors"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+          <span className="truncate">{item.label}</span>
         </NavLink>
       ))}
-    </div>
-  )
+    </nav>
+  );
 }
 
-export function CaptainSidebar() {
-  return (
-    <nav aria-label="Menu utama Nahkoda" className="hidden lg:flex flex-col basis-62 shrink-0 surface-topbar border-r p-4">
-      <div className="px-2 pb-7">
-        <Link to="/captain" className="no-underline"><Logo /></Link>
-      </div>
-      <div className="flex-1">
-        <SidebarBody />
-      </div>
-    </nav>
-  )
-}
+export const SidebarBody = CaptainSidebarNav;
+export const CaptainSidebar = CaptainSidebarNav;
 
 export function CaptainLayout() {
-  const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.innerWidth >= 1024,
+  );
+  const navigate = useNavigate();
+  const toast = useToast();
+  const userInfo = getUserDisplayInfo();
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const userRole = authService.getUserRole();
+  if (userRole === "regulator") {
+    return <Navigate to="/regulator" replace />;
+  }
+  if (userRole === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+  if (userRole === "owner") {
+    return <Navigate to="/owner" replace />;
+  }
+
+  const isOpen = isDesktop ? sidebarOpen : mobileOpen;
+
+  const handleLogout = async () => {
+    await authService.logout();
+    toast.success("Logout berhasil. Sesi telah diakhiri.");
+    navigate("/login", { replace: true });
+  };
+
   return (
-    <div className="min-h-screen flex surface-page text-strong">
-      <CaptainSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="hidden lg:flex items-center justify-end gap-3 px-10 h-18 surface-topbar border-b sticky top-0 z-30">
-          <NotificationBell />
-          <FullscreenToggle />
-          <ThemeToggle />
-          <UserProfileBadge
-            initials="BH"
-            name="Budi Hartono"
-            role="Nahkoda KM Samudra Jaya"
-            onLogout={() => navigate('/login')}
-          />
-        </header>
-        <MobileTopbar
-          open={open}
-          onToggle={() => setOpen(!open)}
-          onClose={() => setOpen(false)}
-          profile={{ initials: 'BH', name: 'Budi Hartono', role: 'Nahkoda KM Samudra Jaya' }}
-          onLogout={() => navigate('/login')}
-        >
-          <div onClick={() => setOpen(false)}>
-            <SidebarBody />
+    <div className="min-h-screen surface-page text-strong flex">
+      {/* 1. Desktop Left Sidebar */}
+      <aside
+        aria-label="Menu Navigasi Nahkoda"
+        className={`hidden lg:flex flex-col bg-[#0e2756] dark:bg-[#0a1a3a] text-white fixed top-0 bottom-0 left-0 z-30 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
+          sidebarOpen ? "w-64 border-r border-[#1a3875]" : "w-0 border-r-0"
+        }`}
+      >
+        <div className="w-64 flex flex-col h-full shrink-0 overflow-hidden">
+          <div className="h-16 px-5 border-b border-white/10 flex items-center shrink-0">
+            <Link to="/captain" className="no-underline">
+              <Logo variant="dark" size={28} />
+            </Link>
           </div>
-        </MobileTopbar>
-        <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-10 pt-20 lg:pt-7">
+
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+            <CaptainSidebarNav />
+          </div>
+
+          <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-semibold text-white text-2xs uppercase tracking-wider">
+                Operasional Laut
+              </span>
+            </div>
+            <span className="text-2xs font-mono text-blue-200 px-1.5 py-0.5 rounded bg-white/10 border border-white/10">
+              v1.0.0
+            </span>
+          </div>
+        </div>
+      </aside>
+
+      {/* 2. Mobile Drawer Overlay */}
+      <div
+        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-in-out ${
+          mobileOpen
+            ? "opacity-100 pointer-events-auto visible"
+            : "opacity-0 pointer-events-none invisible"
+        }`}
+        aria-hidden={!mobileOpen}
+      >
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-xs cursor-pointer"
+          onClick={() => setMobileOpen(false)}
+        />
+        <div
+          role="dialog"
+          aria-label="Menu navigasi mobile"
+          className={`relative w-64 max-w-[80vw] h-full bg-[#0e2756] dark:bg-[#0a1a3a] border-r border-[#1a3875] text-white flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out overflow-hidden ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="h-16 px-4 border-b border-white/10 flex items-center justify-between shrink-0">
+            <Link to="/captain" className="no-underline">
+              <Logo variant="dark" size={28} />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white/80 hover:text-white border-none cursor-pointer transition-colors"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+            <CaptainSidebarNav onNavigate={() => setMobileOpen(false)} />
+          </div>
+
+          <div className="p-3 px-4 border-t border-white/10 flex items-center justify-between bg-black/20 text-xs text-blue-200/80 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-semibold text-white text-2xs uppercase tracking-wider">
+                Operasional Laut
+              </span>
+            </div>
+            <span className="text-2xs font-mono text-blue-200 px-1.5 py-0.5 rounded bg-white/10 border border-white/10">
+              v1.0.0
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Main View Area */}
+      <div
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+          sidebarOpen ? "lg:pl-64" : "lg:pl-0"
+        }`}
+      >
+        <header className="h-16 px-4 sm:px-7 surface-card border-b border-fco-border-subtle sticky top-0 z-20 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => {
+                if (isDesktop) {
+                  setSidebarOpen((prev) => !prev);
+                } else {
+                  setMobileOpen((prev) => !prev);
+                }
+              }}
+              title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-expanded={isOpen}
+              className="w-9 h-9 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-all duration-200 shrink-0"
+            >
+              {isOpen ? (
+                <X
+                  size={18}
+                  className="animate-in fade-in zoom-in-75 duration-150 text-strong"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Menu
+                  size={18}
+                  className="animate-in fade-in zoom-in-75 duration-150"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+
+            {/* Search Menu */}
+            <QuickSearchMenu
+              items={captainSearchItems}
+              placeholder="Cari tangkapan / menu... (Ctrl+K)"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <FullscreenToggle compact />
+            <ThemeToggle compact />
+            <UserProfileBadge
+              initials={userInfo.initials}
+              name={userInfo.name}
+              role={userInfo.roleLabel}
+              onLogout={handleLogout}
+            />
+          </div>
+        </header>
+
+        <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-8">
           <Outlet />
         </main>
       </div>
     </div>
-  )
+  );
 }

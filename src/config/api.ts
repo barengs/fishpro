@@ -4,15 +4,15 @@
  * Can be overridden with VITE_API_BASE_URL environment variable.
  */
 export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || 'https://api.fishpro.id'
-).replace(/\/+$/, '')
+  import.meta.env.VITE_API_BASE_URL || "https://api.fishpro.id"
+).replace(/\/+$/, "");
 
 export const API_ENDPOINTS = {
   // 1. Authentication
   AUTH: {
     LOGIN: `${API_BASE_URL}/api/auth/login/`,
     REFRESH: `${API_BASE_URL}/api/auth/refresh/`,
-    REGISTER: `${API_BASE_URL}/api/auth/`,
+    REGISTER: `${API_BASE_URL}/api/auth/register/`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout/`,
   },
 
@@ -20,6 +20,9 @@ export const API_ENDPOINTS = {
   OWNERS: {
     LIST: `${API_BASE_URL}/api/owners/owners/`,
     CAPTAINS: `${API_BASE_URL}/api/owners/captains/`,
+  },
+  CAPTAINS: {
+    LIST: `${API_BASE_URL}/api/owners/captains/`,
   },
 
   // 3. Ships & Quota
@@ -85,12 +88,12 @@ export const API_ENDPOINTS = {
     SWAGGER: `${API_BASE_URL}/api/docs/`,
     REDOC: `${API_BASE_URL}/api/docs/redoc/`,
   },
-} as const
+} as const;
 
 /**
  * Helper to build custom or dynamic API URL
  */
 export function getApiUrl(path: string): string {
-  const cleanPath = path.startsWith('/') ? path : `/${path}`
-  return `${API_BASE_URL}${cleanPath}`
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
 }

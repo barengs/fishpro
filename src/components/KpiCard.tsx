@@ -1,92 +1,148 @@
-import type { LucideIcon } from 'lucide-react'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import type { LucideIcon } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export type KpiColor = 'blue' | 'emerald' | 'amber' | 'purple' | 'cyan' | 'rose'
+export type KpiColor =
+  "blue" | "emerald" | "amber" | "purple" | "cyan" | "rose";
 
 interface KpiCardProps {
-  label: string
-  value: string
-  delta?: string
-  note?: string
-  trendUp?: boolean
-  color?: KpiColor
-  Icon?: LucideIcon
+  label: string;
+  value?: string;
+  delta?: string;
+  note?: string;
+  trendUp?: boolean;
+  color?: KpiColor;
+  Icon?: LucideIcon;
+  loading?: boolean;
+  href?: string;
+  linkText?: string;
 }
 
-const colorMap: Record<KpiColor, {
-  card: string
-  iconBg: string
-}> = {
+const colorMap: Record<
+  KpiColor,
+  {
+    card: string;
+    footer: string;
+    iconBg: string;
+  }
+> = {
   blue: {
-    card: 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-fco-blue text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
   },
   emerald: {
-    card: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-emerald-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
   },
   amber: {
-    card: 'bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-amber-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
   },
   purple: {
-    card: 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-purple-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
   },
   cyan: {
-    card: 'bg-gradient-to-br from-cyan-600 to-cyan-700 text-white shadow-lg shadow-cyan-600/20',
-    iconBg: 'bg-white/20 text-white'
+    card: "bg-cyan-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
   },
   rose: {
-    card: 'bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-600/20',
-    iconBg: 'bg-white/20 text-white'
-  }
-}
+    card: "bg-rose-700 text-white",
+    footer: "bg-black/20 hover:bg-black/30 text-white",
+    iconBg: "bg-white/20 text-white",
+  },
+};
 
 export function KpiCard({
   label,
-  value,
+  value = "0",
   delta,
   note,
   trendUp = true,
-  color = 'blue',
-  Icon
+  color = "blue",
+  Icon,
+  loading = false,
+  href,
+  linkText = "Lihat Detail",
 }: KpiCardProps) {
-  const styles = colorMap[color]
+  const styles = colorMap[color] || colorMap.blue;
 
   return (
     <div
-      className={`rounded-2xl p-5 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group border-none ${styles.card}`}
+      className={`rounded-lg flex flex-col justify-between overflow-hidden shadow-xs border-0 min-h-37 transition-transform duration-150 hover:-translate-y-0.5 ${styles.card}`}
     >
-      {/* Decorative background glow circles */}
-      <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none transition-transform group-hover:scale-125 duration-300" />
-      <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-white/5 pointer-events-none" />
-
-      <div className="flex items-center justify-between gap-3 mb-2 relative z-10">
-        <div className="text-sm font-semibold text-white/85">{label}</div>
-        {Icon && (
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-200 ${styles.iconBg}`}>
-            <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
+      {/* Card Body */}
+      <div className="p-4 sm:p-5 flex-1">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div className="min-w-0">
+            <div className="text-xs font-bold uppercase tracking-wider text-white mb-1 truncate">
+              {label}
+            </div>
+            {loading ? (
+              <div className="space-y-1.5 py-1 animate-pulse">
+                <div className="h-7 bg-white/25 rounded w-24" />
+              </div>
+            ) : (
+              <div className="text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white truncate">
+                {value}
+              </div>
+            )}
           </div>
+          {Icon && (
+            <div
+              className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${styles.iconBg}`}
+            >
+              <Icon size={20} strokeWidth={2.2} aria-hidden="true" />
+            </div>
+          )}
+        </div>
+
+        {delta && !loading && (
+          <div className="flex items-center gap-1.5 text-xs text-white mt-2 font-medium">
+            {trendUp ? (
+              <TrendingUp
+                size={14}
+                className="text-white shrink-0"
+                strokeWidth={2.4}
+                aria-hidden="true"
+              />
+            ) : (
+              <TrendingDown
+                size={14}
+                className="text-white shrink-0"
+                strokeWidth={2.4}
+                aria-hidden="true"
+              />
+            )}
+            <span className="truncate">{delta}</span>
+          </div>
+        )}
+
+        {note && !loading && (
+          <div className="text-2xs text-white/85 mt-1 truncate">{note}</div>
         )}
       </div>
 
-      <div className="text-2xl sm:text-3xl font-extrabold tracking-tight my-1 tabular-nums text-white relative z-10">
-        {value}
-      </div>
-
-      {delta && (
-        <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1 relative z-10 font-medium">
-          {trendUp ? (
-            <TrendingUp size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
-          ) : (
-            <TrendingDown size={14} className="text-white shrink-0" strokeWidth={2.6} aria-hidden="true" />
-          )}
-          <span>{delta}</span>
+      {/* SB Admin Style Footer Bar */}
+      {href ? (
+        <Link
+          to={href}
+          className={`px-4 sm:px-5 py-2.5 flex items-center text-xs font-semibold no-underline transition-colors ${styles.footer}`}
+        >
+          <span>{linkText}</span>
+        </Link>
+      ) : delta ? (
+        <div
+          className={`px-4 sm:px-5 py-2 flex items-center text-xs font-medium ${styles.footer}`}
+        >
+          <span className="truncate">{delta}</span>
         </div>
-      )}
-
-      {note && <div className="text-xs text-white/80 mt-1 relative z-10">{note}</div>}
+      ) : null}
     </div>
-  )
+  );
 }

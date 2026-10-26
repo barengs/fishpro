@@ -1,56 +1,334 @@
-import { useState } from 'react'
-import { PageToolbar } from '../../components/PageToolbar'
-import { DataTable, type Column } from '../../components/DataTable'
-import { CrudModal } from '../../components/CrudModal'
-import { useCrudModal } from '../../components/useCrudModal'
-import { CrudActions, FormField, inputCls } from '../../components/FormField'
-
-// Captain milik owner: full_name, license_number (unik), owner FK, date_of_birth,
-// contact_info, email, phone, address, years_of_experience + daftar ships yang dioperasikan.
-interface Row { id: number; name: string; license: string; exp: string; ship: string }
+import { useCallback, useEffect, useState } from "react";
+import { PageToolbar } from "../../components/PageToolbar";
+import { DataTable, type Column } from "../../components/DataTable";
+import { useCrudModal } from "../../components/useCrudModal";
+import { ConfirmDeleteModal } from "../../components/ConfirmDeleteModal";
+import { useConfirmDelete } from "../../components/useConfirmDelete";
+import { DetailModal } from "../../components/DetailModal";
+import { useDetailModal } from "../../components/useDetailModal";
+import { CrudActions } from "../../components/FormField";
+import { AlertBanner } from "../../components/ui";
+import { CaptainModal } from "../../components/modals/CaptainModal";
+import {
+  captainsService,
+  type Captain,
+  type CreateCaptainPayload,
+} from "../../services/captains";
+import { shipsService } from "../../services/ships";
+import { authService } from "../../services/auth";
 
 export function CaptainsPage() {
-  const [rows, setRows] = useState<Row[]>([
-    { id: 1, name: 'Budi Hartono', license: 'SKN-2019-00412', exp: '7 th', ship: 'KM Samudra Jaya' },
-    { id: 2, name: 'Agus Salim', license: 'SKN-2020-00087', exp: '5 th', ship: 'KM Bahari Satu' }
-  ])
-  const [f, setF] = useState({ full_name: '', license_number: '', date_of_birth: '', email: '', phone: '', address: '', years_of_experience: '', contact_info: '' })
-  const { open, openModal, closeModal } = useCrudModal()
+  const [rows, setRows] = useState<Captain[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [editingCaptain, setEditingCaptain] = useState<Captain | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const {
+    target: deleteTarget,
+    open: isDeleteOpen,
+    requestDelete,
+    cancelDelete,
+  } = useConfirmDelete<{ id: number; name: string }>();
+  const {
+    selected: selectedCaptain,
+    open: isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useDetailModal<Captain>();
 
-  const cols: Column<Row>[] = [
-    { key: 'name', header: 'Nahkoda / Lisensi', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft tabular-nums">{r.license}</div></div>) },
-    { key: 'exp', header: 'Pengalaman', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.exp}</span> },
-    { key: 'ship', header: 'Kapal', flex: 2, render: (r) => <span className="text-sm">{r.ship}</span> },
-    { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRows((p) => p.filter((x) => x.id !== r.id))} /> }
-  ]
+  const captainModal = useCrudModal();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!f.full_name || !f.license_number) return
-    setRows((p) => [...p, { id: Date.now(), name: f.full_name, license: f.license_number, exp: f.years_of_experience ? `${f.years_of_experience} th` : '-', ship: '-' }])
-    setF({ full_name: '', license_number: '', date_of_birth: '', email: '', phone: '', address: '', years_of_experience: '', contact_info: '' })
-    closeModal()
-  }
+  const currentUser = authService.getStoredUser();
+  const currentOwnerId =
+    currentUser?.profile?.owner_id ||
+    currentUser?.profile?.id ||
+    currentUser?.id;
+  const currentOwnerKey = `${currentOwnerId || ""}-${currentUser?.profile?.name || currentUser?.profile?.full_name || currentUser?.username || ""}`;
+
+  const fetchCaptains = useCallback(async (query?: string) => {
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const user = authService.getStoredUser();
+      const ownerId = user?.profile?.owner_id || user?.profile?.id || user?.id;
+      const ownerName = (
+        user?.profile?.name ||
+        user?.profile?.full_name ||
+        user?.username ||
+        ""
+      )
+        .toLowerCase()
+        .trim();
+
+      const [captainsData, ownerShips] = await Promise.all([
+        captainsService.getAll(query),
+        shipsService.getFleetForOwner(user).catch(() => []),
+      ]);
+
+      const ownerShipIds = new Set(ownerShips.map((s) => s.id));
+      const ownerShipRegs = new Set(
+        ownerShips.map((s) => s.registration_number.toLowerCase().trim()),
+      );
+      const ownerAssignedCaptainIds = new Set(
+        ownerShips.map((s) => s.captain).filter((c): c is number => Boolean(c)),
+      );
+      const ownerAssignedCaptainNames = new Set(
+        ownerShips
+          .map((s) => s.captain_name?.toLowerCase().trim())
+          .filter((n): n is string => Boolean(n)),
+      );
+
+      // Filter kepemilikan armada agar hanya menampilkan nahkoda milik armada owner yang sedang login
+      const ownerCaptains = captainsData.filter((c) => {
+        // 1. Relasi langsung pemilik
+        if (ownerId && c.owner === ownerId) return true;
+        if (
+          ownerName &&
+          c.owner_name &&
+          c.owner_name.toLowerCase().trim() === ownerName
+        ) {
+          return true;
+        }
+        // 2. Nahkoda yang ditunjuk pada kapal milik armada owner (KM Bintang Laut -> yahya)
+        if (ownerAssignedCaptainIds.has(c.id)) return true;
+        if (
+          c.full_name &&
+          ownerAssignedCaptainNames.has(c.full_name.toLowerCase().trim())
+        ) {
+          return true;
+        }
+        // 3. Kapal yang terhubung pada profil nahkoda merupakan kapal milik armada owner
+        if (c.ships && c.ships.length > 0) {
+          return c.ships.some(
+            (s) =>
+              ownerShipIds.has(s.id) ||
+              ownerShipRegs.has(s.registration_number.toLowerCase().trim()),
+          );
+        }
+        return false;
+      });
+
+      setRows(ownerCaptains);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Gagal memuat data nahkoda";
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCaptains(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, fetchCaptains, currentOwnerKey]);
+
+  const handleOpenAdd = () => {
+    setEditingCaptain(null);
+    setErrorMsg(null);
+    captainModal.openModal();
+  };
+
+  const handleOpenEdit = (captain: Captain) => {
+    setEditingCaptain(captain);
+    setErrorMsg(null);
+    captainModal.openModal();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    const targetId = deleteTarget.id;
+    try {
+      await captainsService.delete(targetId);
+      setRows((prev) => prev.filter((r) => r.id !== targetId));
+      setToastMsg(`Nahkoda "${deleteTarget.name}" berhasil dihapus.`);
+      setTimeout(() => setToastMsg(null), 3000);
+      cancelDelete();
+      fetchCaptains(search);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Gagal menghapus nahkoda";
+      setErrorMsg(msg);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleModalSubmit = async (payload: CreateCaptainPayload) => {
+    if (editingCaptain) {
+      await captainsService.update(editingCaptain.id, payload);
+      setToastMsg(`Data nahkoda "${payload.full_name}" berhasil diperbarui.`);
+    } else {
+      await captainsService.create(payload);
+      setToastMsg(`Nahkoda baru "${payload.full_name}" berhasil ditunjuk.`);
+    }
+    setTimeout(() => setToastMsg(null), 3000);
+    fetchCaptains(search);
+  };
+
+  const cols: Column<Captain>[] = [
+    {
+      key: "name",
+      header: "Nahkoda / Lisensi",
+      flex: 3,
+      render: (r) => (
+        <div>
+          <div className="text-sm font-semibold">{r.full_name}</div>
+          <div className="text-xs text-soft tabular-nums">
+            {r.license_number}
+            {r.ships &&
+              r.ships.length > 0 &&
+              ` · ${r.ships.map((s) => s.name).join(", ")}`}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "exp",
+      header: "Pengalaman",
+      flex: 1,
+      align: "center",
+      hideOnMobile: true,
+      render: (r) => (
+        <span className="text-sm tabular-nums">
+          {r.years_of_experience ? `${r.years_of_experience} th` : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "phone",
+      header: "Kontak",
+      flex: 2,
+      hideOnMobile: true,
+      render: (r) => (
+        <span className="text-sm tabular-nums">
+          {r.phone || r.contact_info || "—"}
+        </span>
+      ),
+    },
+    {
+      key: "aksi",
+      header: "Aksi",
+      flex: 1,
+      align: "right",
+      render: (r) => (
+        <CrudActions
+          onDetail={() => openDetail(r)}
+          onEdit={() => handleOpenEdit(r)}
+          onDelete={() => requestDelete({ id: r.id, name: r.full_name })}
+        />
+      ),
+    },
+  ];
 
   return (
     <div>
-      <PageToolbar title="Nahkoda" desc="Captain: full_name, license_number unik, date_of_birth, kontak, years_of_experience." searchPlaceholder="Cari nahkoda" addLabel="Tunjuk nahkoda" onAdd={openModal} />
-      <section className="surface-card border rounded-2xl p-6 shadow-xs">
-        <DataTable columns={cols} rows={rows} rowKey={(r) => String(r.id)} />
-      </section>
-      <CrudModal open={open} title="Tunjuk nahkoda" subtitle="Nahkoda baru dengan lisensi unik untuk armada Anda." onClose={closeModal} onSubmit={handleSubmit} submitLabel="Simpan nahkoda">
-        <FormField label="Nama nahkoda" htmlFor="cp-name" required><input id="cp-name" required value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} className={inputCls} /></FormField>
-        <FormField label="Nomor lisensi (unik)" htmlFor="cp-lic" required><input id="cp-lic" required value={f.license_number} onChange={(e) => setF({ ...f, license_number: e.target.value })} placeholder="SKN-...." className={inputCls} /></FormField>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Tanggal lahir" htmlFor="cp-dob"><input id="cp-dob" type="date" value={f.date_of_birth} onChange={(e) => setF({ ...f, date_of_birth: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Pengalaman (th)" htmlFor="cp-exp"><input id="cp-exp" type="number" value={f.years_of_experience} onChange={(e) => setF({ ...f, years_of_experience: e.target.value })} className={inputCls} /></FormField>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Email" htmlFor="cp-email"><input id="cp-email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Telepon" htmlFor="cp-phone"><input id="cp-phone" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} className={inputCls} /></FormField>
-        </div>
-        <FormField label="Alamat" htmlFor="cp-addr"><textarea id="cp-addr" rows={2} value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
-      </CrudModal>
+      <PageToolbar
+        title="Nahkoda Armada"
+        desc="Kelola nahkoda berlisensi yang bertugas mengoperasikan kapal armada Anda."
+        searchPlaceholder="Cari nahkoda / lisensi..."
+        searchValue={search}
+        onSearchChange={setSearch}
+        addLabel="Tunjuk nahkoda"
+        onAdd={handleOpenAdd}
+      />
+
+      <AlertBanner
+        variant="success"
+        message={toastMsg || ""}
+        onDismiss={() => setToastMsg(null)}
+      />
+      <AlertBanner
+        variant="error"
+        message={errorMsg || ""}
+        onDismiss={() => setErrorMsg(null)}
+      />
+
+      <DataTable
+        columns={cols}
+        rows={rows}
+        rowKey={(r) => String(r.id)}
+        loading={loading}
+        emptyText="Belum ada nahkoda ditunjuk dalam armada Anda."
+        onRowClick={openDetail}
+      />
+
+      <DetailModal
+        open={isDetailOpen}
+        title={selectedCaptain?.full_name || "Detail Nahkoda Armada"}
+        subtitle="Profil nahkoda, nomor lisensi resmi, dan kapal yang dikendalikan."
+        badge={
+          selectedCaptain ? (
+            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
+              Lisensi: {selectedCaptain.license_number}
+            </span>
+          ) : undefined
+        }
+        onClose={closeDetail}
+        actions={
+          selectedCaptain && (
+            <button
+              type="button"
+              onClick={() => {
+                const target = selectedCaptain;
+                closeDetail();
+                handleOpenEdit(target);
+              }}
+              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
+            >
+              Ubah Data
+            </button>
+          )
+        }
+        fields={[
+          {
+            label: "Nama Lengkap",
+            value: selectedCaptain?.full_name,
+          },
+          {
+            label: "Pengalaman Berlayar",
+            value: selectedCaptain?.years_of_experience
+              ? `${selectedCaptain.years_of_experience} Tahun`
+              : "—",
+          },
+          {
+            label: "Nomor Telepon",
+            value:
+              selectedCaptain?.phone || selectedCaptain?.contact_info || "—",
+          },
+          {
+            label: "Kapal yang Dikelola",
+            value:
+              (selectedCaptain?.ships || []).length > 0
+                ? (selectedCaptain?.ships || []).map((s) => s.name).join(", ")
+                : "Belum ditugaskan ke kapal armada",
+            fullWidth: true,
+          },
+        ]}
+      />
+
+      <CaptainModal
+        open={captainModal.open}
+        onClose={captainModal.closeModal}
+        onSubmit={handleModalSubmit}
+        editingCaptain={editingCaptain}
+        fixedOwnerId={currentOwnerId}
+      />
+
+      <ConfirmDeleteModal
+        open={isDeleteOpen}
+        title="Hapus Nahkoda dari Armada"
+        itemName={deleteTarget?.name}
+        message="Apakah Anda yakin ingin menghapus nahkoda ini? Kapal yang ditugaskan kepada nahkoda ini akan menjadi tanpa nahkoda."
+        loading={deleting}
+        onClose={cancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
-  )
+  );
 }

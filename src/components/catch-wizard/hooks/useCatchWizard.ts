@@ -1,0 +1,135 @@
+import { useEffect, useState } from "react";
+import {
+  emptyCatchForm,
+  type CatchReportFormData,
+} from "../../catchReportTypes";
+import { catchStep1Schema, catchStep2Schema } from "../../../utils/schemas";
+import { resolveDeviceLocation } from "../../../utils";
+import { fishSpeciesService, type FishSpecies } from "../../../services/fish";
+import { regionsService, type FishingArea } from "../../../services/regions";
+import { iotService, type ScaleReading } from "../../../services/iot";
+
+export function useCatchWizard({
+  onSubmit,
+}: {
+  onSubmit: (data: CatchReportFormData) => void;
+}) {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [form, setForm] = useState<CatchReportFormData>(emptyCatchForm);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [speciesList, setSpeciesList] = useState<FishSpecies[]>([]);
+  const [loadingSpecies, setLoadingSpecies] = useState(false);
+  const [wppList, setWppList] = useState<FishingArea[]>([]);
+  const [loadingWpp, setLoadingWpp] = useState(false);
+  const [pendingReadings, setPendingReadings] = useState<ScaleReading[]>([]);
+  const [loadingReadings, setLoadingReadings] = useState(false);
+
+  useEffect(() => {
+    let ignore = false;
+    async function fetchOptions() {
+      setLoadingSpecies(true);
+      setLoadingWpp(true);
+      setLoadingReadings(true);
+      try {
+        const [spData, areaData, readingsData] = await Promise.all([
+          fishSpeciesService.getAll().catch(() => []),
+          regionsService.getAll().catch(() => []),
+          iotService.getReadings(undefined, "pending").catch(() => []),
+        ]);
+        if (!ignore) {
+          setSpeciesList(Array.isArray(spData) ? spData : []);
+          setWppList(Array.isArray(areaData) ? areaData : []);
+          setPendingReadings(Array.isArray(readingsData) ? readingsData : []);
+        }
+      } finally {
+        if (!ignore) {
+          setLoadingSpecies(false);
+          setLoadingWpp(false);
+          setLoadingReadings(false);
+        }
+      }
+    }
+    fetchOptions();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const handleGetLocation = async () => {
+    setErrorMsg(null);
+    setIsLocating(true);
+
+    try {
+      const loc = await resolveDeviceLocation();
+      setForm((prev: CatchReportFormData) => ({
+        ...prev,
+        location_latitude: loc.latitude.toFixed(6),
+        location_longitude: loc.longitude.toFixed(6),
+        description: loc.description || prev.description,
+      }));
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal mendeteksi lokasi. Masukkan koordinat secara manual.";
+      setErrorMsg(msg);
+    } finally {
+      setIsLocating(false);
+    }
+  };
+
+  const handleNext = () => {
+    setErrorMsg(null);
+    if (currentStep === 1) {
+      const parsed = catchStep1Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Data langkah 1 belum valid.",
+        );
+        return;
+      }
+    } else if (currentStep === 2) {
+      const parsed = catchStep2Schema.safeParse(form);
+      if (!parsed.success) {
+        setErrorMsg(
+          parsed.error.issues[0]?.message || "Data langkah 2 belum valid.",
+        );
+        return;
+      }
+    }
+    setCurrentStep((p) => Math.min(3, p + 1));
+  };
+
+  const handlePrev = () => {
+    setErrorMsg(null);
+    setCurrentStep((p) => Math.max(1, p - 1));
+  };
+
+  const handleSubmit = () => {
+    onSubmit({ ...form });
+    setForm(emptyCatchForm);
+    setCurrentStep(1);
+    setErrorMsg(null);
+  };
+
+  return {
+    currentStep,
+    setCurrentStep,
+    form,
+    setForm,
+    errorMsg,
+    setErrorMsg,
+    isLocating,
+    handleGetLocation,
+    handleNext,
+    handlePrev,
+    handleSubmit,
+    speciesList,
+    loadingSpecies,
+    wppList,
+    loadingWpp,
+    pendingReadings,
+    loadingReadings,
+  };
+}

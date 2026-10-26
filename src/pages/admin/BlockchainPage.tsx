@@ -1,53 +1,295 @@
-import { PageHeader } from '../../components/PageHeader'
-import { DataTable, type Column } from '../../components/DataTable'
-import { StatusChip } from '../../components/StatusChip'
-
-// BlockchainBlock: index (PK), timestamp, data, previous_hash, hash (unique), nonce
-// FishCatchTransaction: fish_catch (FK), block (FK), ship_registration_number, fishing_area_code,
-// fish_species_code, fish_name, quantity, unit, catch_date, tarif_index, pnkp, pnbp, quota (FK nullable)
-interface BlockRow { index: number; hash: string; prev: string; tx: number; time: string }
-interface TxRow { id: number; ship: string; fish: string; qty: string; pnbp: string; block: string }
-
-const blocks: BlockRow[] = [
-  { index: 2316, hash: 'a3f9…c21e', prev: '9d11…04ab', tx: 6, time: '09 Okt 13:58' },
-  { index: 2317, hash: '7be0…19d4', prev: 'a3f9…c21e', tx: 4, time: '09 Okt 14:00' },
-  { index: 2318, hash: 'c04d…88a7', prev: '7be0…19d4', tx: 7, time: '09 Okt 14:02' }
-]
-const txs: TxRow[] = [
-  { id: 1, ship: 'REG-0412', fish: 'Tongkol', qty: '120 kg', pnbp: 'Rp 120.000', block: '#2318' },
-  { id: 2, ship: 'REG-0087', fish: 'Kerapu', qty: '85 kg', pnbp: 'Rp 212.500', block: '#2318' },
-  { id: 3, ship: 'REG-0233', fish: 'Cakalang', qty: '95 kg', pnbp: 'Rp 106.875', block: '#2317' }
-]
+import { PageHeader } from "../../components/PageHeader";
+import { DataTable, type Column } from "../../components/DataTable";
+import { DetailModal } from "../../components/DetailModal";
+import { StatusChip } from "../../components/StatusChip";
+import { AlertBanner } from "../../components/ui";
+import { BlockchainGraphCanvas } from "./components/BlockchainGraphCanvas";
+import type { FishCatchTransaction } from "../../services/blockchain";
+import { formatShortHash } from "../../utils";
+import { Check, ShieldCheck } from "lucide-react";
+import { useBlockchainViewer } from "./hooks/useBlockchainViewer";
 
 export function BlockchainPage() {
-  const blockCols: Column<BlockRow>[] = [
-    { key: 'ix', header: 'Blok', flex: 1, render: (r) => <span className="text-sm font-bold tabular-nums">#{r.index}</span> },
-    { key: 'hash', header: 'Hash', flex: 2, render: (r) => <span className="text-sm tabular-nums">{r.hash}</span> },
-    { key: 'prev', header: 'Prev Hash', flex: 2, render: (r) => <span className="text-sm tabular-nums text-soft">{r.prev}</span> },
-    { key: 'tx', header: 'TX', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.tx}</span> },
-    { key: 'time', header: 'Waktu', flex: 2, align: 'right', render: (r) => <span className="text-sm">{r.time}</span> }
-  ]
-  const txCols: Column<TxRow>[] = [
-    { key: 'ship', header: 'Kapal / Blok', flex: 2, render: (r) => (<div><div className="text-sm font-semibold tabular-nums">{r.ship}</div><div className="text-xs text-soft">{r.block}</div></div>) },
-    { key: 'fish', header: 'Ikan', flex: 2, render: (r) => <span className="text-sm">{r.fish}</span> },
-    { key: 'qty', header: 'Jumlah', flex: 1, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.qty}</span> },
-    { key: 'pnbp', header: 'PNBP', flex: 2, align: 'right', render: (r) => <span className="text-sm tabular-nums">{r.pnbp}</span> },
-    { key: 'st', header: 'Status', flex: 1, align: 'center', render: () => <StatusChip label="Terverifikasi" /> }
-  ]
+  const {
+    blocks,
+    transactions,
+    loading,
+    statusValid,
+    errorMsg,
+    selectedBlock,
+    isBlockDetailOpen,
+    openBlockDetail,
+    closeBlockDetail,
+    selectedTx,
+    isTxDetailOpen,
+    openTxDetail,
+    closeTxDetail,
+  } = useBlockchainViewer();
+
+  const txCols: Column<FishCatchTransaction>[] = [
+    {
+      key: "ship",
+      header: "Kapal / Registrasi",
+      flex: 3,
+      render: (r) => (
+        <div>
+          <div className="text-sm font-semibold tabular-nums text-strong">
+            {r.ship_registration_number}
+          </div>
+          <div className="text-xs text-soft">
+            {r.fishing_area_code && r.fishing_area_code !== "N/A"
+              ? `WPP ${r.fishing_area_code.replace(/^WPP\s*/i, "")}`
+              : "WPP Belum Tercatat"}
+          </div>
+          <div className="sm:hidden text-2xs text-soft mt-0.5 font-medium">
+            {r.fish_name} · {r.quantity} {r.unit}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "fish",
+      header: "Spesies Ikan",
+      flex: 3,
+      hideOnMobile: true,
+      render: (r) => (
+        <span className="text-sm font-semibold text-strong">{r.fish_name}</span>
+      ),
+    },
+    {
+      key: "qty",
+      header: "Bobot",
+      flex: 2,
+      align: "right",
+      hideOnMobile: true,
+      render: (r) => (
+        <span className="text-sm font-bold tabular-nums text-strong">
+          {r.quantity} {r.unit}
+        </span>
+      ),
+    },
+    {
+      key: "block",
+      header: "Blok",
+      flex: 2,
+      align: "center",
+      hideOnMobile: true,
+      render: (r) => {
+        const blkId = r.block_id ?? r.block_data?.index;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const found = blocks.find((b) => b.index === blkId);
+              if (found) openBlockDetail(found);
+            }}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xs bg-blue-500/10 text-fco-blue hover:bg-blue-500/20 text-xs font-bold font-mono transition-colors cursor-pointer border-none"
+            title="Buka detail blok"
+          >
+            <span>Blok #{blkId ?? "—"}</span>
+          </button>
+        );
+      },
+    },
+    {
+      key: "hash",
+      header: "Hash Transaksi",
+      flex: 3,
+      hideOnMobile: true,
+      render: (r) => {
+        const hash = r.block_data?.hash;
+        return (
+          <span
+            className="text-xs font-mono text-fco-blue truncate block max-w-56"
+            title={hash || "Tidak ada hash"}
+          >
+            {formatShortHash(hash, 8, 6)}
+          </span>
+        );
+      },
+    },
+    {
+      key: "st",
+      header: "Status",
+      flex: 2,
+      align: "center",
+      render: () => (
+        <StatusChip
+          label="Terverifikasi"
+          icon={
+            <Check
+              size={12}
+              className="text-fco-blue"
+              strokeWidth={2.6}
+              aria-hidden="true"
+            />
+          }
+        />
+      ),
+    },
+  ];
 
   return (
-    <div>
-      <PageHeader title="Blockchain" desc="Read-only: BlockchainBlock (index, hash, previous_hash, nonce) + FishCatchTransaction (ship, WPP, spesies, qty, PNBP, kuota). Penulisan otomatis via signal BE." />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Blok terbaru</h2>
-          <DataTable columns={blockCols} rows={blocks} rowKey={(r) => String(r.index)} />
-        </section>
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <h2 className="m-0 mb-4 text-base font-bold">Transaksi tangkapan</h2>
-          <DataTable columns={txCols} rows={txs} rowKey={(r) => String(r.id)} />
-        </section>
-      </div>
+    <div className="flex flex-col gap-6">
+      {/* 1. Header */}
+      <PageHeader
+        title="Buku Besar Blockchain"
+        desc="Pencatatan riwayat penangkapan ikan terdesentralisasi dengan enkripsi SHA-256 yang aman dan transparan."
+        actions={
+          statusValid !== null ? (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+              <ShieldCheck size={15} aria-hidden="true" />
+              <span>Rantai Blok Valid</span>
+            </div>
+          ) : null
+        }
+      />
+
+      {errorMsg && (
+        <AlertBanner variant="error" message={errorMsg} onDismiss={() => {}} />
+      )}
+
+      {/* 2. Visualisasi Graf Interaktif Rantai Blok */}
+      <section className="flex flex-col gap-2.5">
+        <BlockchainGraphCanvas
+          blocks={blocks}
+          selectedBlock={selectedBlock}
+          onSelectBlock={openBlockDetail}
+        />
+      </section>
+
+      {/* 3. Full-Width Table: Transaksi Tangkapan */}
+      <section className="flex flex-col gap-2.5">
+        <div className="flex items-center justify-between">
+          <h2 className="m-0 text-base font-bold text-strong">
+            Daftar Transaksi Tangkapan ({transactions.length})
+          </h2>
+          <span className="text-xs text-soft font-medium">
+            Tersimpan dalam rantai blok
+          </span>
+        </div>
+
+        <DataTable
+          columns={txCols}
+          rows={transactions}
+          rowKey={(r) => String(r.id)}
+          loading={loading}
+          emptyText="Belum ada transaksi tangkapan di jaringan blockchain."
+          onRowClick={openTxDetail}
+        />
+      </section>
+
+      {/* 4. Modal Detail Blok */}
+      <DetailModal
+        open={isBlockDetailOpen}
+        title={
+          selectedBlock
+            ? `Detail Blok #${selectedBlock.index}`
+            : "Detail Blok Blockchain"
+        }
+        subtitle="Informasi hash SHA-256, nonce, dan verifikasi tautan blok."
+        badge={
+          <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
+            Index: #{selectedBlock?.index}
+          </span>
+        }
+        onClose={closeBlockDetail}
+        fields={[
+          {
+            label: "Hash Blok",
+            value: (
+              <span className="font-mono font-bold text-fco-blue break-all">
+                {selectedBlock?.hash}
+              </span>
+            ),
+            fullWidth: true,
+          },
+          {
+            label: "Hash Blok Sebelumnya",
+            value: (
+              <span className="font-mono font-medium text-strong break-all">
+                {selectedBlock?.previous_hash || "0 (Genesis Block)"}
+              </span>
+            ),
+            fullWidth: true,
+          },
+          {
+            label: "Nonce",
+            value: selectedBlock?.nonce ?? "—",
+          },
+          {
+            label: "Waktu Pencatatan",
+            value: selectedBlock?.timestamp
+              ? new Date(selectedBlock.timestamp).toLocaleString("id-ID")
+              : "—",
+          },
+          {
+            label: "Payload Data",
+            value:
+              selectedBlock?.data || "Tidak ada data tambahan di blok ini.",
+            fullWidth: true,
+          },
+        ]}
+      />
+
+      {/* 5. Modal Detail Transaksi */}
+      <DetailModal
+        open={isTxDetailOpen}
+        title={
+          selectedTx
+            ? `Transaksi: ${selectedTx.ship_registration_number}`
+            : "Detail Transaksi Blockchain"
+        }
+        subtitle="Laporan tangkapan ikan yang tervalidasi dan tersimpan di dalam buku besar."
+        badge={<StatusChip label="Terverifikasi" />}
+        onClose={closeTxDetail}
+        fields={[
+          {
+            label: "Kapal (Nomor Registrasi)",
+            value: (
+              <span className="font-mono font-bold text-strong">
+                {selectedTx?.ship_registration_number}
+              </span>
+            ),
+          },
+          {
+            label: "Wilayah (WPP)",
+            value:
+              selectedTx?.fishing_area_code &&
+              selectedTx.fishing_area_code !== "N/A"
+                ? `WPP ${selectedTx.fishing_area_code.replace(/^WPP\s*/i, "")}`
+                : "—",
+          },
+          {
+            label: "Spesies Ikan",
+            value: selectedTx?.fish_name,
+          },
+          {
+            label: "Bobot Tangkapan",
+            value: selectedTx
+              ? `${selectedTx.quantity} ${selectedTx.unit}`
+              : "—",
+          },
+          {
+            label: "Blok Terkait",
+            value: (
+              <span className="font-mono font-bold text-fco-blue">
+                #{selectedTx?.block_id || selectedTx?.block_data?.index || "—"}
+              </span>
+            ),
+          },
+          {
+            label: "Hash Transaksi",
+            value: (
+              <span className="font-mono text-xs font-medium text-strong break-all">
+                {selectedTx?.block_data?.hash || "—"}
+              </span>
+            ),
+            fullWidth: true,
+          },
+        ]}
+      />
     </div>
-  )
+  );
 }

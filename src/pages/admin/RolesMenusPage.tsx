@@ -1,110 +1,98 @@
-import { useState } from 'react'
-import { PageToolbar } from '../../components/PageToolbar'
-import { DataTable, type Column } from '../../components/DataTable'
-import { CrudActions, FormField, inputCls } from '../../components/FormField'
-import { CrudModal } from '../../components/CrudModal'
-import { useCrudModal } from '../../components/useCrudModal'
+import { useSearchParams } from "react-router-dom";
+import { KeyRound, Menu, ShieldCheck, UserCog } from "lucide-react";
+import { RolesTab } from "./roles-menus/RolesTab";
+import { MenusTab } from "./roles-menus/MenusTab";
+import { RoleMenusTab } from "./roles-menus/RoleMenusTab";
+import { AdminUsersTab } from "./roles-menus/AdminUsersTab";
 
-// Role: name (unique), description, permissions (M2M)
-// UserRole: user (FK), role (FK) — unique (user, role)
-// Menu: name, url, icon, parent (self FK), order, is_active
-// RoleMenu: role (FK), menu (FK), can_view/create/edit/delete — unique (role, menu)
-// AdminProfile/AdminUser: username, email, full_name, phone, department, position
-interface RoleRow { id: number; name: string; desc: string }
-interface MenuRow { id: number; name: string; url: string; order: string }
+type AdminTab = "roles" | "menus" | "role-menus" | "admin-users";
+
+const tabItems: {
+  key: AdminTab;
+  label: string;
+  Icon: typeof ShieldCheck;
+}[] = [
+  { key: "roles", label: "Peran Pengguna", Icon: ShieldCheck },
+  { key: "menus", label: "Menu Navigasi", Icon: Menu },
+  { key: "role-menus", label: "Hak Akses Menu", Icon: KeyRound },
+  { key: "admin-users", label: "Akun Petugas", Icon: UserCog },
+];
 
 export function RolesMenusPage() {
-  const [tab, setTab] = useState<'roles' | 'menus' | 'admins'>('roles')
-  const [roles, setRoles] = useState<RoleRow[]>([
-    { id: 1, name: 'admin', desc: 'Administrator KKP penuh' },
-    { id: 2, name: 'regulator', desc: 'Pengawas & override kuota' },
-    { id: 3, name: 'owner', desc: 'Pemilik kapal & armada' },
-    { id: 4, name: 'captain', desc: 'Nahkoda operasional' }
-  ])
-  const [menus, setMenus] = useState<MenuRow[]>([
-    { id: 1, name: 'Ringkasan', url: '/admin', order: '1' },
-    { id: 2, name: 'Kapal', url: '/admin/ships', order: '2' },
-    { id: 3, name: 'Laporan Tangkapan', url: '/admin/catches', order: '3' }
-  ])
-  const [rForm, setRForm] = useState({ name: '', description: '' })
-  const [mForm, setMForm] = useState({ name: '', url: '', icon: '', parent: '', order: '0', is_active: true })
-  const [uForm, setUForm] = useState({ username: '', email: '', full_name: '', phone: '', department: '', position: '' })
-  const roleModal = useCrudModal()
-  const menuModal = useCrudModal()
-  const adminModal = useCrudModal()
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const roleCols: Column<RoleRow>[] = [
-    { key: 'name', header: 'Peran', flex: 2, render: (r) => <span className="text-sm font-bold">{r.name}</span> },
-    { key: 'desc', header: 'Deskripsi', flex: 3, render: (r) => <span className="text-sm text-soft">{r.desc}</span> },
-    { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setRoles((p) => p.filter((x) => x.id !== r.id))} /> }
-  ]
-  const menuCols: Column<MenuRow>[] = [
-    { key: 'name', header: 'Menu / URL', flex: 3, render: (r) => (<div><div className="text-sm font-semibold">{r.name}</div><div className="text-xs text-soft">{r.url}</div></div>) },
-    { key: 'order', header: 'Urutan', flex: 1, align: 'center', render: (r) => <span className="text-sm tabular-nums">{r.order}</span> },
-    { key: 'aksi', header: 'Aksi', flex: 1, align: 'right', render: (r) => <CrudActions onDelete={() => setMenus((p) => p.filter((x) => x.id !== r.id))} /> }
-  ]
+  const currentTabParam = searchParams.get("tab") as AdminTab;
+  const tab: AdminTab =
+    currentTabParam && tabItems.some((t) => t.key === currentTabParam)
+      ? currentTabParam
+      : "roles";
 
-  const tabMeta = {
-    roles: { title: 'Peran', desc: 'Role + UserRole + RoleMenu (can_view/create/edit/delete).', add: 'Tambah peran', modal: roleModal },
-    menus: { title: 'Menu', desc: 'Menu: name, url, icon, parent, order, is_active.', add: 'Tambah menu', modal: menuModal },
-    admins: { title: 'Admin', desc: 'AdminUser + AdminProfile: username, email, full_name, phone, department, position.', add: 'Tambah admin', modal: adminModal }
-  } as const
-  const meta = tabMeta[tab]
+  const handleTabChange = (nextTab: AdminTab) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("tab", nextTab);
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   return (
     <div>
-      <PageToolbar
-        title={meta.title}
-        desc={meta.desc}
-        searchPlaceholder="Cari..."
-        tabs={[{ key: 'roles', label: 'Peran (Role)' }, { key: 'menus', label: 'Menu' }, { key: 'admins', label: 'Admin' }]}
-        activeTab={tab}
-        onTabChange={(k) => setTab(k as typeof tab)}
-        addLabel={meta.add}
-        onAdd={meta.modal.openModal}
-      />
-      {tab === 'roles' && (
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <DataTable columns={roleCols} rows={roles} rowKey={(r) => String(r.id)} />
-        </section>
-      )}
-      {tab === 'menus' && (
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <DataTable columns={menuCols} rows={menus} rowKey={(r) => String(r.id)} />
-        </section>
-      )}
-      {tab === 'admins' && (
-        <section className="surface-card border rounded-2xl p-6 shadow-xs">
-          <p className="m-0 text-sm text-soft">Daftar admin dikelola via tabel UserRole di backend. Gunakan tombol di atas untuk menambah akun admin baru.</p>
-        </section>
-      )}
-      <CrudModal open={roleModal.open} title="Tambah peran" subtitle="Role baru dengan deskripsi dan permission default." onClose={roleModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!rForm.name) return; setRoles((p) => [...p, { id: Date.now(), name: rForm.name, desc: rForm.description }]); setRForm({ name: '', description: '' }); roleModal.closeModal() }} submitLabel="Simpan peran">
-        <FormField label="Nama peran (unik)" htmlFor="rl-name" required><input id="rl-name" required value={rForm.name} onChange={(e) => setRForm({ ...rForm, name: e.target.value })} className={inputCls} /></FormField>
-        <FormField label="Deskripsi" htmlFor="rl-desc"><textarea id="rl-desc" rows={2} value={rForm.description} onChange={(e) => setRForm({ ...rForm, description: e.target.value })} className="w-full border rounded-xl p-3 text-fco-md field-input focus:outline-none focus:border-fco-blue" /></FormField>
-      </CrudModal>
-      <CrudModal open={menuModal.open} title="Tambah menu" subtitle="Menu navigasi dinamis dengan parent dan urutan." onClose={menuModal.closeModal} onSubmit={(e) => { e.preventDefault(); if (!mForm.name) return; setMenus((p) => [...p, { id: Date.now(), name: mForm.name, url: mForm.url, order: mForm.order }]); menuModal.closeModal() }} submitLabel="Simpan menu">
-        <FormField label="Nama menu" htmlFor="mn-name" required><input id="mn-name" required value={mForm.name} onChange={(e) => setMForm({ ...mForm, name: e.target.value })} className={inputCls} /></FormField>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="URL" htmlFor="mn-url"><input id="mn-url" value={mForm.url} onChange={(e) => setMForm({ ...mForm, url: e.target.value })} placeholder="/admin/..." className={inputCls} /></FormField>
-          <FormField label="Ikon" htmlFor="mn-icon"><input id="mn-icon" value={mForm.icon} onChange={(e) => setMForm({ ...mForm, icon: e.target.value })} className={inputCls} /></FormField>
+      <div className="mb-6">
+        <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          Manajemen Peran & Hak Akses
+        </h1>
+        <p className="m-0 text-sm text-soft mt-1">
+          Pengaturan peran pengguna (roles), hak akses menu dinamis, dan akun
+          resmi administrator serta regulator.
+        </p>
+
+        {/* Style 1: Underline Tab Bar (GitHub / Vercel style) */}
+        <div className="border-b border-fco-border dark:border-fco-border-dark mt-6">
+          <nav
+            className="-mb-px flex gap-6 overflow-x-auto"
+            role="tablist"
+            aria-label="Sub-menu peran"
+          >
+            {tabItems.map((t) => {
+              const active = tab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => handleTabChange(t.key)}
+                  className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                    active
+                      ? "border-b-fco-blue text-fco-blue"
+                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
+                  }`}
+                >
+                  <t.Icon
+                    size={17}
+                    className={`shrink-0 transition-colors ${
+                      active
+                        ? "text-fco-blue"
+                        : "text-soft group-hover:text-strong"
+                    }`}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                  <span className="whitespace-nowrap">{t.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Menu induk (parent id)" htmlFor="mn-parent"><input id="mn-parent" value={mForm.parent} onChange={(e) => setMForm({ ...mForm, parent: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Urutan" htmlFor="mn-order"><input id="mn-order" type="number" value={mForm.order} onChange={(e) => setMForm({ ...mForm, order: e.target.value })} className={inputCls} /></FormField>
-        </div>
-      </CrudModal>
-      <CrudModal open={adminModal.open} title="Tambah admin" subtitle="AdminUser + AdminProfile baru." onClose={adminModal.closeModal} onSubmit={(e) => { e.preventDefault(); adminModal.closeModal() }} submitLabel="Simpan admin">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Username" htmlFor="au-user" required><input id="au-user" required value={uForm.username} onChange={(e) => setUForm({ ...uForm, username: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Email" htmlFor="au-email" required><input id="au-email" type="email" value={uForm.email} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} className={inputCls} /></FormField>
-        </div>
-        <FormField label="Nama lengkap" htmlFor="au-name"><input id="au-name" value={uForm.full_name} onChange={(e) => setUForm({ ...uForm, full_name: e.target.value })} className={inputCls} /></FormField>
-        <FormField label="Telepon" htmlFor="au-phone"><input id="au-phone" value={uForm.phone} onChange={(e) => setUForm({ ...uForm, phone: e.target.value })} className={inputCls} /></FormField>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField label="Departemen" htmlFor="au-dept"><input id="au-dept" value={uForm.department} onChange={(e) => setUForm({ ...uForm, department: e.target.value })} className={inputCls} /></FormField>
-          <FormField label="Posisi" htmlFor="au-pos"><input id="au-pos" value={uForm.position} onChange={(e) => setUForm({ ...uForm, position: e.target.value })} className={inputCls} /></FormField>
-        </div>
-      </CrudModal>
+      </div>
+
+      {tab === "roles" && <RolesTab />}
+      {tab === "menus" && <MenusTab />}
+      {tab === "role-menus" && <RoleMenusTab />}
+      {tab === "admin-users" && <AdminUsersTab />}
     </div>
-  )
+  );
 }

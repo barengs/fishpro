@@ -1,103 +1,275 @@
-import { useState } from 'react'
-import { AlertTriangle, Coins, Link2, Ship } from 'lucide-react'
-import { KpiCard } from '../../components/KpiCard'
-import { QuotaAuditTable, type ShipQuotaItem } from './components/QuotaAuditTable'
-import { ManualQuotaModal } from './components/ManualQuotaModal'
-import { ComplianceOverview } from './components/ComplianceOverview'
-import { BlockchainCard } from '../admin/components/BlockchainCard'
-
-const initialShips: ShipQuotaItem[] = [
-  { name: 'KM Bahari Satu', reg: 'REG-0087', owner: 'PT Samudra Biru', allocatedQuota: '15.000 kg', usedQuota: '12.900 kg', percentRemaining: '14%', aiRecommendedQuota: '18.500 kg', status: 'Mendekati Batas', statusBg: '#FFF1E0', statusColor: '#B54708' },
-  { name: 'KM Cahaya Timur', reg: 'REG-0319', owner: 'CV Bahari Jaya', allocatedQuota: '10.000 kg', usedQuota: '9.100 kg', percentRemaining: '9%', aiRecommendedQuota: '12.000 kg', status: 'Kritis', statusBg: '#FFF1E0', statusColor: '#B54708' },
-  { name: 'KM Mutiara Laut', reg: 'REG-0233', owner: 'PT Mina Perkasa', allocatedQuota: '25.000 kg', usedQuota: '19.500 kg', percentRemaining: '22%', aiRecommendedQuota: '24.000 kg', status: 'Waspada', statusBg: '#E8F0FE', statusColor: '#1A56DB' },
-  { name: 'KM Samudra Jaya', reg: 'REG-0412', owner: 'PT Laut Nusantara', allocatedQuota: '12.000 kg', usedQuota: '3.600 kg', percentRemaining: '70%', aiRecommendedQuota: '14.000 kg', status: 'Normal', statusBg: '#E8F0FE', statusColor: '#1A56DB' }
-]
+import { useEffect, useState } from "react";
+import { AlertTriangle, Coins, Link2, Ship } from "lucide-react";
+import { AlertBanner } from "../../components/ui";
+import { KpiCard } from "../../components/KpiCard";
+import {
+  QuotaAuditTable,
+  type ShipQuotaItem,
+} from "./components/QuotaAuditTable";
+import { ManualQuotaModal } from "./components/ManualQuotaModal";
+import { ComplianceOverview } from "./components/ComplianceOverview";
+import { BlockchainCard } from "../admin/components/BlockchainCard";
+import { WppMapViewer } from "../../components/map/WppMapViewer";
+import { shipsService } from "../../services/ships";
+import { blockchainService } from "../../services/blockchain";
+import { pnbpService } from "../../services/pnbp";
+import { formatNumber, formatRupiah } from "../../utils";
 
 export function RegulatorDashboard() {
-  const [ships, setShips] = useState<ShipQuotaItem[]>(initialShips)
-  const [selectedShip, setSelectedShip] = useState<ShipQuotaItem | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [ships, setShips] = useState<ShipQuotaItem[]>([]);
+  const [selectedShip, setSelectedShip] = useState<ShipQuotaItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Dynamic KPI states
+  const [totalMonitored, setTotalMonitored] = useState<number>(0);
+  const [criticalCount, setCriticalCount] = useState<number>(0);
+  const [blockchainValid, setBlockchainValid] = useState<boolean>(true);
+  const [pnbpStr, setPnbpStr] = useState<string>("Rp 0");
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadRegulatorData() {
+      try {
+        const [shipsData, chainStatus, chartRes] = await Promise.all([
+          shipsService.getAll().catch(() => []),
+          blockchainService.getStatus().catch(() => null),
+          pnbpService.getUnifiedChartData().catch(() => null),
+        ]);
+
+        if (ignore) return;
+
+        setTotalMonitored(shipsData.length);
+
+        if (shipsData.length > 0) {
+          const mapped: ShipQuotaItem[] = shipsData.map((s) => {
+            const q = s.current_year_quota;
+            const hasQuota = Boolean(q && typeof q === "object");
+            const pct = hasQuota ? q!.quota_percentage : null;
+            const totalQ = hasQuota ? Number(q!.total_quota) : null;
+            const usedQ = hasQuota ? Number(q!.used_quota) : null;
+            const isCritical = pct !== null && pct < 15;
+            const isWarning = pct !== null && pct < 35;
+
+            return {
+              name: s.name,
+              reg: s.registration_number,
+              owner: s.owner_name || (s.owner ? `Owner #${s.owner}` : "—"),
+              allocatedQuota:
+                totalQ !== null
+                  ? `${totalQ.toLocaleString("id-ID")} kg`
+                  : "Belum diatur",
+              usedQuota:
+                usedQ !== null ? `${usedQ.toLocaleString("id-ID")} kg` : "0 kg",
+              percentRemaining: pct !== null ? `${pct}%` : "0%",
+              aiRecommendedQuota: "—",
+              status: !hasQuota
+                ? "Belum Diatur"
+                : isCritical
+                  ? "Kritis"
+                  : isWarning
+                    ? "Waspada"
+                    : "Aman",
+              statusBg: !hasQuota
+                ? "#EEF1F6"
+                : isCritical
+                  ? "#FFF1E0"
+                  : "#E8F0FE",
+              statusColor: !hasQuota
+                ? "#4A5872"
+                : isCritical
+                  ? "#B54708"
+                  : "#1A56DB",
+            };
+          });
+
+          setShips(mapped);
+
+          const critCount = shipsData.filter(
+            (s) =>
+              s.current_year_quota &&
+              typeof s.current_year_quota === "object" &&
+              s.current_year_quota.quota_percentage < 15,
+          ).length;
+          setCriticalCount(critCount);
+        } else {
+          setShips([]);
+          setCriticalCount(0);
+        }
+
+        if (chainStatus && !ignore) {
+          setBlockchainValid(chainStatus.valid);
+        }
+
+        const summary = chartRes?.charts_data?.summary_stats;
+        if (!ignore) {
+          setPnbpStr(formatRupiah(summary?.total_pnbp_sum));
+        }
+      } catch {
+        // Ignored: keep empty state
+      }
+    }
+
+    loadRegulatorData();
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
 
   const handleOpenModal = (ship: ShipQuotaItem) => {
-    setSelectedShip(ship)
-    setIsModalOpen(true)
-  }
+    setSelectedShip(ship);
+    setIsModalOpen(true);
+  };
 
-  const handleSaveQuota = (data: { shipReg: string; year: number; newQuota: number; reason: string }) => {
-    setShips((prev) =>
-      prev.map((s) =>
-        s.reg === data.shipReg
-          ? {
-              ...s,
-              allocatedQuota: `${data.newQuota.toLocaleString('id-ID')} kg`,
-              status: 'Disesuaikan',
-              statusBg: '#E8F0FE',
-              statusColor: '#1A56DB'
-            }
-          : s
-      )
-    )
-    setToastMessage(`Kuota kapal ${data.shipReg} berhasil diupdate ke ${data.newQuota.toLocaleString('id-ID')} kg`)
-    setTimeout(() => setToastMessage(null), 4000)
-  }
+  const handleSaveQuota = async (data: {
+    shipReg: string;
+    year: number;
+    newQuota: number;
+    reason: string;
+  }) => {
+    try {
+      await shipsService.regulatorManualQuota({
+        ship_registration_number: data.shipReg,
+        year: data.year,
+        quota_amount: data.newQuota,
+      });
+
+      setShips((prev) =>
+        prev.map((s) =>
+          s.reg === data.shipReg
+            ? {
+                ...s,
+                allocatedQuota: `${data.newQuota.toLocaleString("id-ID")} kg`,
+                status: "Disesuaikan",
+                statusBg: "#E8F0FE",
+                statusColor: "#1A56DB",
+              }
+            : s,
+        ),
+      );
+      setToastMessage(
+        `Kuota kapal ${data.shipReg} berhasil diupdate ke ${data.newQuota.toLocaleString("id-ID")} kg via API backend.`,
+      );
+      setTimeout(() => setToastMessage(null), 4000);
+      setRefreshKey((k) => k + 1);
+    } catch (err: unknown) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Gagal menyesuaikan kuota kapal via API.",
+      );
+    }
+  };
 
   return (
     <div>
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-7">
-          <div>
-            <h1 className="m-0 text-3xl font-extrabold tracking-tight">Portal Pengawas & Regulator</h1>
-            <div className="text-sm text-soft mt-1">
-              Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen penyesuaian manual kuota KKP.
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedShip(null)
-                setIsModalOpen(true)
-              }}
-              className="inline-flex items-center gap-2 h-10 px-4 border-none rounded-fco bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-sm font-semibold cursor-pointer transition-colors shadow-xs"
-            >
-              + Override Kuota Manual
-            </button>
-          </div>
+      {/* Header */}
+      <div className="mb-7">
+        <h1 className="m-0 text-3xl font-extrabold tracking-tight">
+          Portal Pengawas & Regulator
+        </h1>
+        <div className="text-sm text-soft mt-1">
+          Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen
+          penyesuaian manual kuota KKP.
         </div>
+      </div>
 
-        {toastMessage && (
-          <div className="p-3.5 px-4.5 rounded-xl bg-fco-blue-light text-fco-blue text-sm font-semibold mb-5 border border-fco-blue-border">
-            ✓ {toastMessage}
-          </div>
-        )}
+      {toastMessage && (
+        <AlertBanner
+          variant="success"
+          message={toastMessage}
+          onDismiss={() => setToastMessage(null)}
+        />
+      )}
 
-        {/* Global KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-          <KpiCard label="Total Kapal Diawasi" value="1.284" note="Aktif izin berlayar (SIPI/SIKPI)" color="blue" Icon={Ship} />
-          <KpiCard label="Kapal Over-Quota" value="8" delta="Perlu tindakan regulator" trendUp={false} color="rose" Icon={AlertTriangle} />
-          <KpiCard label="Kepatuhan Blockchain" value="100%" note="Seluruh tx tersinkronisasi hash" color="emerald" Icon={Link2} />
-          <KpiCard label="Potensi PNBP Berjalan" value="Rp 4,4 M" delta="+6,8% dari estimasi bulan lalu" color="purple" Icon={Coins} />
-        </div>
+      {/* Global KPIs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        <KpiCard
+          label="Total Kapal Diawasi"
+          value={formatNumber(totalMonitored)}
+          note="Aktif izin berlayar (SIPI/SIKPI)"
+          color="blue"
+          Icon={Ship}
+        />
+        <KpiCard
+          label="Kapal Over-Quota / Kritis"
+          value={`${criticalCount}`}
+          delta={
+            criticalCount > 0
+              ? "Perlu tindakan override"
+              : totalMonitored > 0
+                ? "Semua kapal patuh"
+                : "Belum ada kapal"
+          }
+          trendUp={criticalCount === 0}
+          color="rose"
+          Icon={AlertTriangle}
+        />
+        <KpiCard
+          label="Kepatuhan Blockchain"
+          value={blockchainValid ? "100%" : "Perlu Cek"}
+          note={
+            blockchainValid
+              ? "Seluruh tx tersinkronisasi hash"
+              : "Integritas terganggu"
+          }
+          color="emerald"
+          Icon={Link2}
+        />
+        <KpiCard
+          label="Potensi PNBP Berjalan"
+          value={pnbpStr}
+          delta="Estimasi penerimaan resmi"
+          color="purple"
+          Icon={Coins}
+        />
+      </div>
 
-        {/* Audit Table */}
-        <div className="mb-5">
-          <QuotaAuditTable ships={ships} onAdjustQuota={handleOpenModal} />
-        </div>
+      {/* Radar Pengawasan WPP Maritim */}
+      <div className="mb-6">
+        <WppMapViewer
+          role="regulator"
+          vessels={ships.map((s, idx) => ({
+            id: idx + 1,
+            name: s.name,
+            reg: s.reg,
+            wppCode: s.reg.includes("0550") ? "712" : "573",
+            quotaPct: s.percentRemaining.includes("%")
+              ? parseInt(s.percentRemaining, 10)
+              : null,
+            active: s.status !== "Nonaktif",
+          }))}
+          onInspectVessel={(v) => {
+            const found = ships.find((s) => s.reg === v.reg);
+            if (found) handleOpenModal(found);
+          }}
+        />
+      </div>
 
-        {/* Side by side: Compliance + Blockchain */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <ComplianceOverview />
-          <BlockchainCard />
-        </div>
+      {/* Audit Table */}
+      <div className="mb-5">
+        <QuotaAuditTable ships={ships} onAdjustQuota={handleOpenModal} />
+      </div>
+
+      {/* Side by side: Compliance + Blockchain */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ComplianceOverview
+          totalShips={totalMonitored}
+          criticalCount={criticalCount}
+          blockchainValid={blockchainValid}
+        />
+        <BlockchainCard />
+      </div>
 
       <ManualQuotaModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveQuota}
-        initialShipReg={selectedShip?.reg || ''}
+        initialShipReg={selectedShip?.reg || ""}
       />
     </div>
-  )
+  );
 }
