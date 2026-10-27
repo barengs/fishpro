@@ -71,19 +71,30 @@ export function AdminDashboard() {
 
   return (
     <div>
-      {/* Page Title & Breadcrumb (SB Admin Style) */}
-      <div className="mb-6">
-        <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
-          Dashboard
-        </h1>
-        <div className="mt-3 p-3 px-4 rounded-md surface-inset border dark:border-fco-border-dark flex items-center gap-2 text-xs text-soft">
-          <span className="font-semibold text-strong">Dashboard</span>
-          <span>/</span>
-          <span>Ringkasan Nasional</span>
+      {/* Page Header (LemonLead Modern Style) */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-medium text-soft mb-1">
+            <span>Dashboard</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-fco-blue font-semibold">Ringkasan Nasional</span>
+          </div>
+          <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+            Dashboard Overview
+          </h1>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full surface-card border border-slate-200/80 dark:border-fco-border-dark text-xs font-medium text-soft shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-strong font-semibold">Live Data</span>
+            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span>WPP-NRI Terpadu</span>
+          </div>
         </div>
       </div>
 
-      {/* 4 Realtime Cards (SB Admin Style: Primary Blue, Warning Amber, Success Emerald, Danger Rose) */}
+      {/* 4 Realtime Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
           label="Kapal Aktif"
