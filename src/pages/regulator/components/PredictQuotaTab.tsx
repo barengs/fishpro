@@ -5,7 +5,6 @@ import {
   Cpu,
   Loader2,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
 import { SelectField } from "../../../components/ui";
 import { usePredictQuotaTab } from "../hooks/usePredictQuotaTab";
@@ -235,8 +234,8 @@ export function PredictQuotaTab({
                 Tingkat Kepercayaan Model
               </span>
               <div className="text-xl sm:text-2xl font-extrabold text-purple-700 dark:text-purple-300 tabular-nums">
-                {result.confidence
-                  ? `${(result.confidence * 100).toFixed(1)}%`
+                {result.confidence !== undefined && result.confidence !== null
+                  ? `${(result.confidence > 1 ? result.confidence : result.confidence * 100).toFixed(1)}%`
                   : "94.5%"}
               </div>
               <span className="text-2xs text-purple-600/80 dark:text-purple-300/80 mt-1">
@@ -245,9 +244,8 @@ export function PredictQuotaTab({
             </div>
 
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950 dark:text-emerald-100 flex flex-col justify-between">
-              <span className="text-2xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-1 flex items-center gap-1">
-                <TrendingUp size={13} />
-                <span>Rekomendasi Optimal NSGA-III</span>
+              <span className="text-2xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-1">
+                Rekomendasi Optimal NSGA-III
               </span>
               <div className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-300 tabular-nums">
                 {recommendedVal
@@ -261,30 +259,32 @@ export function PredictQuotaTab({
           </div>
 
           {/* Monthly Projections List if available */}
-          {result.nsga_optimized && result.nsga_optimized.length > 0 && (
+          {((result.nsga_optimized && result.nsga_optimized.length > 0) ||
+            (result.lstm_predictions && result.lstm_predictions.length > 0)) && (
             <div>
               <h4 className="m-0 text-sm font-bold text-strong mb-2.5">
                 Rincian Proyeksi Bulanan (NSGA-III vs LSTM)
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                {result.nsga_optimized.map((item, idx) => {
-                  const lstmVal =
-                    result.lstm_predictions?.[idx]?.predicted_value;
+                {(result.nsga_optimized || result.lstm_predictions)!.map((item, idx) => {
+                  const date = item.date;
+                  const nsgaVal = result.nsga_optimized?.[idx]?.optimized_value;
+                  const lstmVal = result.lstm_predictions?.[idx]?.predicted_value;
                   return (
                     <div
-                      key={item.date}
+                      key={date || idx}
                       className="p-3 rounded-lg surface-inset border dark:border-fco-border-dark flex flex-col gap-1 text-xs"
                     >
                       <div className="font-semibold text-strong font-mono">
-                        {item.date}
+                        {date}
                       </div>
-                      <div className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">
-                        NSGA-III:{" "}
-                        {Math.round(item.optimized_value).toLocaleString(
-                          "id-ID",
-                        )}{" "}
-                        kg
-                      </div>
+                      {nsgaVal !== undefined && (
+                        <div className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">
+                          NSGA-III:{" "}
+                          {Math.round(nsgaVal).toLocaleString("id-ID")}{" "}
+                          kg
+                        </div>
+                      )}
                       {lstmVal !== undefined && (
                         <div className="text-2xs text-soft tabular-nums">
                           LSTM: {Math.round(lstmVal).toLocaleString("id-ID")} kg

@@ -62,17 +62,19 @@ export function BlockchainCard() {
   ];
 
   return (
-    <section className="surface-card border rounded-lg shadow-xs overflow-hidden flex flex-col justify-between h-full">
+    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden flex flex-col justify-between h-full">
       <div>
-        {/* SB Admin Card Header */}
-        <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link2
-              size={16}
-              className="text-fco-blue shrink-0"
-              aria-hidden="true"
-            />
-            <h2 className="m-0 text-sm font-bold text-strong">
+        {/* Modern Card Header */}
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-fco-blue dark:text-blue-400 flex items-center justify-center shrink-0">
+              <Link2
+                size={16}
+                strokeWidth={2.2}
+                aria-hidden="true"
+              />
+            </div>
+            <h2 className="m-0 text-sm font-semibold text-strong">
               Integritas Blockchain
             </h2>
           </div>
@@ -127,12 +129,12 @@ export function BlockchainCard() {
         </div>
       </div>
 
-      <div className="p-4 px-5 sm:px-6 border-t border-fco-border-subtle surface-inset">
+      <div className="p-4 px-5 sm:px-6 border-t border-slate-100 dark:border-fco-border-dark">
         <Link
           to="/admin/blockchain"
-          className="text-xs font-semibold text-fco-blue hover:underline no-underline block text-center"
+          className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline block text-center"
         >
-          Buka Penjelajah Blockchain
+          Buka Penjelajah Blockchain →
         </Link>
       </div>
     </section>

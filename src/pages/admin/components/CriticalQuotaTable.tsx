@@ -87,30 +87,32 @@ export function CriticalQuotaTable() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-lg shadow-xs overflow-hidden">
-      {/* SB Admin Card Header */}
-      <div className="px-4.5 py-3 border-b border-fco-border-subtle surface-inset flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <AlertTriangle
-            size={16}
-            className="text-amber-500 shrink-0"
-            aria-hidden="true"
-          />
-          <h2 className="m-0 text-sm font-bold text-strong">
+    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden">
+      {/* Modern Card Header */}
+      <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <AlertTriangle
+              size={16}
+              strokeWidth={2.2}
+              aria-hidden="true"
+            />
+          </div>
+          <h2 className="m-0 text-sm font-semibold text-strong">
             Peringatan Kuota Kapal (Prioritas)
           </h2>
         </div>
         <Link
           to="/admin/ships"
-          className="text-xs font-semibold text-fco-blue hover:underline no-underline"
+          className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
         >
-          Lihat Semua Kapal
+          Lihat Semua Kapal →
         </Link>
       </div>
 
       <div className="overflow-x-auto">
         <div className="min-w-120">
-          <div className="flex items-center py-3 px-4 text-xs font-bold text-white bg-fco-blue gap-2">
+          <div className="flex items-center py-2.5 px-4 text-xs font-semibold text-soft bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-fco-border-dark gap-2">
             <div className="w-8 shrink-0 text-center">No</div>
             <div className="basis-3/8">Kapal</div>
             <div className="basis-3/8">Sisa kuota</div>
@@ -121,7 +123,7 @@ export function CriticalQuotaTable() {
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={`skel-${i}`}
-                className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2"
+                className="flex items-center py-3.5 px-4 border-b border-slate-100 dark:border-fco-border-dark text-sm gap-2"
               >
                 <div className="w-8 shrink-0 flex justify-center">
                   <Skeleton className="h-4 w-5 rounded-xs" />
@@ -140,14 +142,14 @@ export function CriticalQuotaTable() {
               </div>
             ))
           ) : rows.length === 0 ? (
-            <div className="py-8 text-center text-sm text-soft border-t border-fco-border-subtle bg-white dark:bg-fco-card-dark">
+            <div className="py-8 text-center text-sm text-soft bg-white dark:bg-fco-card-dark">
               Belum ada data kapal terdaftar di database KKP.
             </div>
           ) : (
             rows.map((q, i) => (
               <div
                 key={q.reg}
-                className="flex items-center py-3 px-4 border-t border-fco-border-subtle text-sm gap-2 bg-white dark:bg-fco-card-dark"
+                className="flex items-center py-3.5 px-4 border-b last:border-b-0 border-slate-100 dark:border-fco-border-dark text-sm gap-2 bg-white dark:bg-fco-card-dark hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
               >
                 <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
                   {i + 1}

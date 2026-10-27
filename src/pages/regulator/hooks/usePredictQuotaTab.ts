@@ -78,11 +78,28 @@ export function usePredictQuotaTab(
     }
   };
 
+  // ponytail: fallback sum if scalar recommended_quota missing; upgrade to backend unified model schema when available
   const recommendedVal =
     result?.recommended_quota ??
     result?.nsga_optimized_quota ??
     result?.predicted_quota ??
-    result?.optimal_quota;
+    result?.optimal_quota ??
+    (result?.nsga_optimized && result.nsga_optimized.length > 0
+      ? Math.round(
+          result.nsga_optimized.reduce(
+            (acc, cur) => acc + (cur.optimized_value || 0),
+            0,
+          ),
+        )
+      : undefined) ??
+    (result?.lstm_predictions && result.lstm_predictions.length > 0
+      ? Math.round(
+          result.lstm_predictions.reduce(
+            (acc, cur) => acc + (cur.predicted_value || 0),
+            0,
+          ),
+        )
+      : undefined);
 
   const handleApplyToShip = async () => {
     if (!result || !recommendedVal) return;

@@ -9,6 +9,47 @@ import { formatShortHash } from "../../utils";
 import { Check, ShieldCheck } from "lucide-react";
 import { useBlockchainViewer } from "./hooks/useBlockchainViewer";
 
+function formatJsonPayload(data: unknown): React.ReactNode {
+  if (!data) {
+    return (
+      <span className="text-soft italic text-xs">
+        Tidak ada data tambahan di blok ini.
+      </span>
+    );
+  }
+
+  let formatted: string;
+  let isJson = false;
+
+  try {
+    const parsed = typeof data === "string" ? JSON.parse(data) : data;
+    if (typeof parsed === "object" && parsed !== null) {
+      formatted = JSON.stringify(parsed, null, 2);
+      isJson = true;
+    } else {
+      formatted = String(data);
+    }
+  } catch {
+    formatted = String(data);
+  }
+
+  if (!isJson) {
+    return (
+      <span className="font-mono text-xs font-semibold text-strong">
+        {formatted}
+      </span>
+    );
+  }
+
+  return (
+    <div className="mt-1 p-3.5 rounded-xs bg-[#090d16] border border-white/10 text-cyan-300 font-mono text-xs overflow-x-auto max-h-64 leading-relaxed select-all shadow-inner">
+      <pre className="m-0 font-mono text-xs whitespace-pre">
+        <code>{formatted}</code>
+      </pre>
+    </div>
+  );
+}
+
 export function BlockchainPage() {
   const {
     blocks,
@@ -226,8 +267,7 @@ export function BlockchainPage() {
           },
           {
             label: "Payload Data",
-            value:
-              selectedBlock?.data || "Tidak ada data tambahan di blok ini.",
+            value: formatJsonPayload(selectedBlock?.data),
             fullWidth: true,
           },
         ]}
