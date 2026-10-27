@@ -144,7 +144,7 @@ export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
                 className={({ isActive }) =>
                   `w-full min-w-0 max-w-full box-border flex items-center gap-3 h-10 px-3.5 rounded-xl text-sm transition-all duration-150 no-underline cursor-pointer group ${
                     isActive
-                      ? "bg-white dark:bg-slate-800 text-fco-blue dark:text-blue-400 font-semibold shadow-xs border border-blue-100/80 dark:border-blue-950"
+                      ? "bg-fco-blue text-white font-semibold shadow-xs border border-fco-blue"
                       : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/40 font-medium border border-transparent"
                   }`
                 }
@@ -155,7 +155,7 @@ export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
                       size={18}
                       className={`shrink-0 transition-colors ${
                         isActive
-                          ? "text-fco-blue dark:text-blue-400"
+                          ? "text-white"
                           : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
                       }`}
                       strokeWidth={1.8}
