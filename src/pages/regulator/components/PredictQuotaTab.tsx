@@ -5,7 +5,6 @@ import {
   Cpu,
   Loader2,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
 import { SelectField } from "../../../components/ui";
 import { usePredictQuotaTab } from "../hooks/usePredictQuotaTab";
@@ -245,9 +244,8 @@ export function PredictQuotaTab({
             </div>
 
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950 dark:text-emerald-100 flex flex-col justify-between">
-              <span className="text-2xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-1 flex items-center gap-1">
-                <TrendingUp size={13} />
-                <span>Rekomendasi Optimal NSGA-III</span>
+              <span className="text-2xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-1">
+                Rekomendasi Optimal NSGA-III
               </span>
               <div className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-300 tabular-nums">
                 {recommendedVal

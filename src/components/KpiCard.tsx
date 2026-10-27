@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, MoreHorizontal, TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowRight, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type KpiColor =
@@ -16,6 +16,8 @@ interface KpiCardProps {
   delta?: string;
   note?: string;
   trendUp?: boolean;
+  showSparkline?: boolean;
+  sparklineData?: number[];
   color?: KpiColor;
   Icon?: LucideIcon;
   loading?: boolean;
@@ -62,12 +64,101 @@ const colorMap: Record<
   },
 };
 
+function renderSparklineSvg(data?: number[], trendUp = true) {
+  const width = 72;
+  const height = 30;
+  const padY = 5;
+  const padX = 2;
+
+  if (!data || data.length < 2) {
+    return trendUp ? (
+      <>
+        <path
+          d="M 2 23 C 18 25, 32 12, 48 16 C 58 19, 62 8, 70 7"
+          stroke="rgba(255, 255, 255, 0.85)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <circle
+          cx="70"
+          cy="7"
+          r="3"
+          fill="#ffffff"
+          stroke="rgba(255, 255, 255, 0.4)"
+          strokeWidth="1.5"
+        />
+      </>
+    ) : (
+      <>
+        <path
+          d="M 2 7 C 18 8, 32 20, 48 16 C 58 13, 62 24, 70 25"
+          stroke="rgba(255, 255, 255, 0.85)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <circle
+          cx="70"
+          cy="25"
+          r="3"
+          fill="#ffffff"
+          stroke="rgba(255, 255, 255, 0.4)"
+          strokeWidth="1.5"
+        />
+      </>
+    );
+  }
+
+  // ponytail: smooth cubic bezier interpolation from raw numbers; upgrade to chart.js micro-canvas when multi-metric overlay requested
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const stepX = (width - padX * 2) / (data.length - 1);
+  const plotH = height - padY * 2;
+
+  const points = data.map((val, idx) => ({
+    x: Number((padX + idx * stepX).toFixed(1)),
+    y: Number((height - padY - ((val - min) / range) * plotH).toFixed(1)),
+  }));
+
+  let pathD = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i];
+    const p1 = points[i + 1];
+    const cx = ((p0.x + p1.x) / 2).toFixed(1);
+    pathD += ` C ${cx} ${p0.y}, ${cx} ${p1.y}, ${p1.x} ${p1.y}`;
+  }
+
+  const lastPoint = points[points.length - 1];
+
+  return (
+    <>
+      <path
+        d={pathD}
+        stroke="rgba(255, 255, 255, 0.9)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx={lastPoint.x}
+        cy={lastPoint.y}
+        r="3"
+        fill="#ffffff"
+        stroke="rgba(255, 255, 255, 0.4)"
+        strokeWidth="1.5"
+      />
+    </>
+  );
+}
+
 export function KpiCard({
   label,
   value = "0",
   delta,
   note,
   trendUp = true,
+  showSparkline = false,
+  sparklineData,
   color = "blue",
   Icon,
   loading = false,
@@ -75,52 +166,6 @@ export function KpiCard({
   linkText = "Lihat Detail",
 }: KpiCardProps) {
   const styles = colorMap[color] || colorMap.blue;
-
-  // ponytail: SVG cubic sparkline hardcoded curve; upgrade to dynamic time-series path when endpoint provides historical array
-  const sparkline = (
-    <svg
-      className="w-16 h-8 shrink-0 overflow-visible"
-      viewBox="0 0 76 32"
-      fill="none"
-      aria-hidden="true"
-    >
-      {trendUp ? (
-        <>
-          <path
-            d="M 2 24 C 18 26, 32 10, 48 16 C 58 20, 62 8, 72 6"
-            stroke="rgba(255, 255, 255, 0.85)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <circle
-            cx="72"
-            cy="6"
-            r="3"
-            fill="#ffffff"
-            stroke="rgba(255, 255, 255, 0.4)"
-            strokeWidth="1.5"
-          />
-        </>
-      ) : (
-        <>
-          <path
-            d="M 2 8 C 18 6, 32 22, 48 16 C 58 12, 62 24, 72 26"
-            stroke="rgba(255, 255, 255, 0.85)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <circle
-            cx="72"
-            cy="26"
-            r="3"
-            fill="#ffffff"
-            stroke="rgba(255, 255, 255, 0.4)"
-            strokeWidth="1.5"
-          />
-        </>
-      )}
-    </svg>
-  );
 
   const cardContent = (
     <>
@@ -160,13 +205,6 @@ export function KpiCard({
           <div className="min-w-0 flex-1">
             {delta && !loading && (
               <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
-                <span className="inline-flex items-center shrink-0">
-                  {trendUp ? (
-                    <TrendingUp size={13} strokeWidth={2.6} className="text-white" aria-hidden="true" />
-                  ) : (
-                    <TrendingDown size={13} strokeWidth={2.6} className="text-white" aria-hidden="true" />
-                  )}
-                </span>
                 <span className="truncate">{delta}</span>
               </div>
             )}
@@ -174,9 +212,16 @@ export function KpiCard({
               <div className="text-2xs text-white/75 truncate mt-0.5">{note}</div>
             )}
           </div>
-          {!loading && (
+          {!loading && showSparkline && (
             <div className="shrink-0 pl-1">
-              {sparkline}
+              <svg
+                className="w-16 h-8 shrink-0 overflow-visible"
+                viewBox="0 0 76 32"
+                fill="none"
+                aria-hidden="true"
+              >
+                {renderSparklineSvg(sparklineData, trendUp)}
+              </svg>
             </div>
           )}
         </div>
