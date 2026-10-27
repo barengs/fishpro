@@ -26,40 +26,39 @@ interface KpiCardProps {
 const colorMap: Record<
   KpiColor,
   {
-    iconBg: string;
-    iconColor: string;
-    sparklineColor: string;
+    cardBg: string;
+    footerBorder: string;
   }
 > = {
   blue: {
-    iconBg: "bg-blue-50 dark:bg-blue-950/40",
-    iconColor: "text-fco-blue dark:text-blue-400",
-    sparklineColor: "#1a56db",
-  },
-  emerald: {
-    iconBg: "bg-emerald-50 dark:bg-emerald-950/40",
-    iconColor: "text-emerald-600 dark:text-emerald-400",
-    sparklineColor: "#059669",
+    cardBg:
+      "bg-gradient-to-br from-[#1a56db] via-[#1d4ed8] to-[#1e3a8a] text-white shadow-md shadow-blue-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
   },
   amber: {
-    iconBg: "bg-amber-50 dark:bg-amber-950/40",
-    iconColor: "text-amber-600 dark:text-amber-400",
-    sparklineColor: "#d97706",
+    cardBg:
+      "bg-gradient-to-br from-[#d97706] via-[#b45309] to-[#78350f] text-white shadow-md shadow-amber-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
   },
-  purple: {
-    iconBg: "bg-purple-50 dark:bg-purple-950/40",
-    iconColor: "text-purple-600 dark:text-purple-400",
-    sparklineColor: "#7c3aed",
-  },
-  cyan: {
-    iconBg: "bg-cyan-50 dark:bg-cyan-950/40",
-    iconColor: "text-cyan-600 dark:text-cyan-400",
-    sparklineColor: "#0891b2",
+  emerald: {
+    cardBg:
+      "bg-gradient-to-br from-[#059669] via-[#047857] to-[#064e3b] text-white shadow-md shadow-emerald-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
   },
   rose: {
-    iconBg: "bg-rose-50 dark:bg-rose-950/40",
-    iconColor: "text-rose-600 dark:text-rose-400",
-    sparklineColor: "#e11d48",
+    cardBg:
+      "bg-gradient-to-br from-[#e11d48] via-[#be123c] to-[#881337] text-white shadow-md shadow-rose-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
+  },
+  purple: {
+    cardBg:
+      "bg-gradient-to-br from-[#7c3aed] via-[#6d28d9] to-[#4c1d95] text-white shadow-md shadow-purple-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
+  },
+  cyan: {
+    cardBg:
+      "bg-gradient-to-br from-[#0891b2] via-[#0e7490] to-[#164e63] text-white shadow-md shadow-cyan-900/15",
+    footerBorder: "border-white/20 text-white/90 hover:text-white",
   },
 };
 
@@ -80,7 +79,7 @@ export function KpiCard({
   // ponytail: SVG cubic sparkline hardcoded curve; upgrade to dynamic time-series path when endpoint provides historical array
   const sparkline = (
     <svg
-      className="w-16 sm:w-18 h-8 shrink-0 overflow-visible"
+      className="w-16 h-8 shrink-0 overflow-visible"
       viewBox="0 0 76 32"
       fill="none"
       aria-hidden="true"
@@ -89,7 +88,7 @@ export function KpiCard({
         <>
           <path
             d="M 2 24 C 18 26, 32 10, 48 16 C 58 20, 62 8, 72 6"
-            stroke={styles.sparklineColor}
+            stroke="rgba(255, 255, 255, 0.85)"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -97,8 +96,8 @@ export function KpiCard({
             cx="72"
             cy="6"
             r="3"
-            fill={styles.sparklineColor}
-            stroke="#ffffff"
+            fill="#ffffff"
+            stroke="rgba(255, 255, 255, 0.4)"
             strokeWidth="1.5"
           />
         </>
@@ -106,7 +105,7 @@ export function KpiCard({
         <>
           <path
             d="M 2 8 C 18 6, 32 22, 48 16 C 58 12, 62 24, 72 26"
-            stroke={styles.sparklineColor}
+            stroke="rgba(255, 255, 255, 0.85)"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -114,8 +113,8 @@ export function KpiCard({
             cx="72"
             cy="26"
             r="3"
-            fill={styles.sparklineColor}
-            stroke="#ffffff"
+            fill="#ffffff"
+            stroke="rgba(255, 255, 255, 0.4)"
             strokeWidth="1.5"
           />
         </>
@@ -130,17 +129,15 @@ export function KpiCard({
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             {Icon && (
-              <div
-                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${styles.iconBg} ${styles.iconColor}`}
-              >
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-white/20 backdrop-blur-xs text-white shadow-2xs">
                 <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
               </div>
             )}
-            <span className="text-xs sm:text-sm font-semibold text-strong truncate">
+            <span className="text-xs sm:text-sm font-bold text-white leading-tight line-clamp-2">
               {label}
             </span>
           </div>
-          <div className="text-soft/60 group-hover:text-soft transition-colors shrink-0">
+          <div className="text-white/60 group-hover:text-white transition-colors shrink-0">
             <MoreHorizontal size={16} aria-hidden="true" />
           </div>
         </div>
@@ -148,10 +145,10 @@ export function KpiCard({
         {/* Main Value */}
         {loading ? (
           <div className="py-2 animate-pulse">
-            <div className="h-8 bg-slate-200 dark:bg-slate-700/60 rounded-md w-28" />
+            <div className="h-8 bg-white/25 rounded-md w-28" />
           </div>
         ) : (
-          <div className="text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-strong truncate my-1">
+          <div className="text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white truncate my-1">
             {value}
           </div>
         )}
@@ -159,36 +156,34 @@ export function KpiCard({
 
       {/* Bottom Area: Trend/Delta & Sparkline */}
       <div className="mt-3">
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
+        <div className="flex items-end justify-between gap-1.5">
+          <div className="min-w-0 flex-1">
             {delta && !loading && (
-              <div className="flex items-center gap-1.5 text-xs">
-                <span
-                  className={`inline-flex items-center shrink-0 ${
-                    trendUp
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-rose-600 dark:text-rose-400"
-                  }`}
-                >
+              <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
+                <span className="inline-flex items-center shrink-0">
                   {trendUp ? (
-                    <TrendingUp size={13} strokeWidth={2.6} aria-hidden="true" />
+                    <TrendingUp size={13} strokeWidth={2.6} className="text-white" aria-hidden="true" />
                   ) : (
-                    <TrendingDown size={13} strokeWidth={2.6} aria-hidden="true" />
+                    <TrendingDown size={13} strokeWidth={2.6} className="text-white" aria-hidden="true" />
                   )}
                 </span>
-                <span className="text-soft font-medium truncate">{delta}</span>
+                <span className="truncate">{delta}</span>
               </div>
             )}
             {note && !loading && (
-              <div className="text-2xs text-soft truncate mt-0.5">{note}</div>
+              <div className="text-2xs text-white/75 truncate mt-0.5">{note}</div>
             )}
           </div>
-          {!loading && sparkline}
+          {!loading && (
+            <div className="shrink-0 pl-1">
+              {sparkline}
+            </div>
+          )}
         </div>
 
         {/* Footer Link if href is passed */}
         {href && linkText && (
-          <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-fco-border-dark/60 flex items-center justify-between text-xs font-semibold text-fco-blue group-hover:text-fco-blue-hover transition-colors">
+          <div className={`mt-3 pt-2.5 border-t ${styles.footerBorder} flex items-center justify-between text-xs font-semibold transition-colors`}>
             <span>{linkText}</span>
             <ArrowRight
               size={13}
@@ -201,8 +196,7 @@ export function KpiCard({
     </>
   );
 
-  const containerClasses =
-    "surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group min-h-38";
+  const containerClasses = `${styles.cardBg} rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all duration-200 flex flex-col justify-between group min-h-38 border-0`;
 
   if (href) {
     return (
