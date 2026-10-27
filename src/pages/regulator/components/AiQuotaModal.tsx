@@ -21,10 +21,40 @@ export function AiQuotaModal({
   error,
   onApplyRecommendation,
 }: AiQuotaModalProps) {
-  const quotaVal =
-    result?.nsga_optimized_quota ||
-    result?.predicted_quota ||
-    result?.optimal_quota;
+  // ponytail: sum arrays if scalar totals not provided; upgrade to backend response normalization middleware when API schema is frozen
+  const lstmTotal =
+    result?.lstm_predicted_quota ??
+    (result?.lstm_predictions && result.lstm_predictions.length > 0
+      ? Math.round(
+          result.lstm_predictions.reduce(
+            (acc, cur) => acc + (cur.predicted_value || 0),
+            0,
+          ),
+        )
+      : undefined);
+
+  const nsgaTotal =
+    result?.nsga_optimized_quota ??
+    result?.recommended_quota ??
+    result?.optimal_quota ??
+    result?.predicted_quota ??
+    (result?.nsga_optimized && result.nsga_optimized.length > 0
+      ? Math.round(
+          result.nsga_optimized.reduce(
+            (acc, cur) => acc + (cur.optimized_value || 0),
+            0,
+          ),
+        )
+      : undefined);
+
+  const quotaVal = nsgaTotal ?? lstmTotal;
+
+  const confidencePct =
+    result?.confidence !== undefined && result.confidence !== null
+      ? result.confidence > 1
+        ? result.confidence
+        : result.confidence * 100
+      : null;
 
   return (
     <CrudModal
@@ -66,8 +96,8 @@ export function AiQuotaModal({
                   Hasil Prediksi LSTM
                 </div>
                 <div className="text-lg font-bold text-strong tabular-nums">
-                  {result.lstm_predicted_quota
-                    ? `${Number(result.lstm_predicted_quota).toLocaleString("id-ID")} kg`
+                  {lstmTotal !== undefined
+                    ? `${Number(lstmTotal).toLocaleString("id-ID")} kg`
                     : "—"}
                 </div>
               </div>
@@ -76,24 +106,67 @@ export function AiQuotaModal({
                   Rekomendasi Optimal NSGA-III
                 </div>
                 <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-300 tabular-nums">
-                  {quotaVal
+                  {quotaVal !== undefined
                     ? `${Number(quotaVal).toLocaleString("id-ID")} kg`
                     : "—"}
                 </div>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl surface-inset border text-xs font-mono max-h-48 overflow-y-auto">
-              <pre>{JSON.stringify(result, null, 2)}</pre>
-            </div>
+            {/* Breakdown List */}
+            {result.lstm_predictions && result.lstm_predictions.length > 0 && (
+              <div className="surface-inset border rounded-xl p-3.5">
+                <div className="flex items-center justify-between text-xs font-semibold text-strong mb-2.5 px-0.5">
+                  <span>Proyeksi Tren ({result.lstm_predictions.length} Periode)</span>
+                  {confidencePct !== null && (
+                    <span className="text-2xs text-purple-600 dark:text-purple-400 font-mono">
+                      Akurasi: {confidencePct.toFixed(1)}%
+                    </span>
+                  )}
+                </div>
+                <div className="max-h-44 overflow-y-auto flex flex-col gap-1 pr-1">
+                  {result.lstm_predictions.map((p, idx) => {
+                    const nsgaItem = result.nsga_optimized?.[idx];
+                    return (
+                      <div
+                        key={p.date || idx}
+                        className="flex items-center justify-between py-1.5 px-2.5 rounded-lg bg-white/70 dark:bg-slate-800/70 text-xs"
+                      >
+                        <span className="font-mono text-soft text-2xs sm:text-xs">{p.date}</span>
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-strong tabular-nums text-2xs sm:text-xs">
+                            LSTM: {Math.round(p.predicted_value).toLocaleString("id-ID")} kg
+                          </span>
+                          {nsgaItem && (
+                            <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums text-2xs sm:text-xs">
+                              NSGA: {Math.round(nsgaItem.optimized_value).toLocaleString("id-ID")} kg
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-            {quotaVal ? (
+            {/* Raw JSON Accordion */}
+            <details className="text-2xs text-soft cursor-pointer">
+              <summary className="hover:text-strong transition-colors py-1">
+                Data Lengkap Payload JSON
+              </summary>
+              <div className="mt-2 p-3 rounded-xl surface-inset border font-mono max-h-36 overflow-y-auto">
+                <pre>{JSON.stringify(result, null, 2)}</pre>
+              </div>
+            </details>
+
+            {quotaVal !== undefined ? (
               <button
                 type="button"
                 onClick={() => onApplyRecommendation(Number(quotaVal))}
-                className="w-full h-11 rounded-xl border-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold cursor-pointer transition-colors"
+                className="w-full h-11 rounded-xl border-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold cursor-pointer transition-colors shadow-xs"
               >
-                Terapkan Rekomendasi AI Ini ke Kuota Resmi
+                Terapkan Rekomendasi AI ({Number(quotaVal).toLocaleString("id-ID")} kg) ke Kuota Resmi
               </button>
             ) : null}
           </div>
