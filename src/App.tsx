@@ -160,6 +160,7 @@ const MyShipPage = lazy(() =>
     default: m.MyShipPage,
   })),
 );
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function PageLoader() {
   return (
@@ -290,15 +291,8 @@ export default function App() {
                 <Route path="ship" element={<MyShipPage />} />
               </Route>
 
-              {/* Catch-all */}
-              <Route
-                path="*"
-                element={
-                  <PublicRoute>
-                    <Navigate to="/onboard" replace />
-                  </PublicRoute>
-                }
-              />
+              {/* Catch-all 404 */}
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
