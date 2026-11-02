@@ -13,6 +13,7 @@ export function ResetPasswordWizard({
   const {
     identifier,
     setIdentifier,
+    maskedEmail,
     otp,
     setOtp,
     newPassword,
@@ -21,6 +22,7 @@ export function ResetPasswordWizard({
     setConfirmPassword,
     error,
     setError,
+    loading,
     handleSendOtp,
     handleVerifyOtp,
     handleSavePassword,
@@ -44,7 +46,7 @@ export function ResetPasswordWizard({
           {step === 2 && (
             <>
               Kode 6 digit dikirim ke{" "}
-              <span className="font-semibold text-strong">{identifier}</span>
+              <span className="font-semibold text-strong">{maskedEmail || identifier}</span>
             </>
           )}
           {step === 3 && "Pilih kata sandi baru minimal 8 karakter."}
@@ -93,19 +95,21 @@ export function ResetPasswordWizard({
                 id="reset-id"
                 type="text"
                 required
+                disabled={loading}
                 autoComplete="email"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="nama@email.com atau REG-0412"
-                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft disabled:opacity-60"
               />
             </div>
           </div>
           <button
             type="submit"
-            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors"
+            disabled={loading}
+            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Kirim kode verifikasi
+            {loading ? "Mengirim kode..." : "Kirim kode verifikasi"}
           </button>
         </form>
       )}
@@ -119,13 +123,14 @@ export function ResetPasswordWizard({
                 key={i}
                 id={`otp-${i}`}
                 type="text"
+                disabled={loading}
                 inputMode="numeric"
                 maxLength={1}
                 value={digit}
                 onChange={(e) => handleOtpChange(i, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                 aria-label={`Digit ${i + 1}`}
-                className="w-11 sm:w-12 h-13 sm:h-14 border border-fco-border rounded-xl text-center text-xl font-bold field-input focus:outline-hidden focus:border-fco-blue transition"
+                className="w-11 sm:w-12 h-13 sm:h-14 border border-fco-border rounded-xl text-center text-xl font-bold field-input focus:outline-hidden focus:border-fco-blue transition disabled:opacity-60"
               />
             ))}
           </div>
@@ -133,21 +138,24 @@ export function ResetPasswordWizard({
           <div className="flex items-center justify-between text-xs sm:text-sm">
             <button
               type="button"
+              disabled={loading}
               onClick={() => {
                 setError(null);
                 setStep(1);
               }}
-              className="inline-flex items-center gap-1.5 bg-transparent border-none text-soft hover:text-strong font-medium cursor-pointer p-0 transition-colors"
+              className="inline-flex items-center gap-1.5 bg-transparent border-none text-soft hover:text-strong font-medium cursor-pointer p-0 transition-colors disabled:opacity-60"
             >
               Ubah email
             </button>
             <button
               type="button"
-              onClick={() => {
+              disabled={loading}
+              onClick={(e) => {
                 setError(null);
                 setOtp(["", "", "", "", "", ""]);
+                handleSendOtp(e);
               }}
-              className="bg-transparent border-none text-fco-blue hover:text-fco-blue-hover font-semibold cursor-pointer p-0 transition-colors"
+              className="bg-transparent border-none text-fco-blue hover:text-fco-blue-hover font-semibold cursor-pointer p-0 transition-colors disabled:opacity-60"
             >
               Kirim ulang
             </button>
@@ -155,9 +163,10 @@ export function ResetPasswordWizard({
 
           <button
             type="submit"
-            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors"
+            disabled={loading}
+            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Verifikasi
+            {loading ? "Memverifikasi..." : "Verifikasi"}
           </button>
         </form>
       )}
@@ -189,11 +198,12 @@ export function ResetPasswordWizard({
                 id="new-pass"
                 type="password"
                 required
+                disabled={loading}
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft disabled:opacity-60"
               />
             </div>
           </div>
@@ -221,19 +231,21 @@ export function ResetPasswordWizard({
                 id="confirm-pass"
                 type="password"
                 required
+                disabled={loading}
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi kata sandi baru"
-                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft"
+                className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft disabled:opacity-60"
               />
             </div>
           </div>
           <button
             type="submit"
-            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors"
+            disabled={loading}
+            className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Simpan kata sandi
+            {loading ? "Menyimpan sandi..." : "Simpan kata sandi"}
           </button>
         </form>
       )}

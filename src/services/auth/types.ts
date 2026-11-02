@@ -59,3 +59,45 @@ export interface StoredUser {
   is_superuser?: boolean;
   profile?: UserProfile;
 }
+
+export interface RefreshTokenResponse {
+  token: string;
+  refresh_token: string;
+}
+
+export interface PasswordResetRequestPayload {
+  identifier: string;
+}
+
+export interface PasswordResetRequestResponse {
+  success: boolean;
+  message: string;
+  identifier: string;
+  masked_email?: string;
+  otp_preview?: string;
+}
+
+export interface PasswordResetVerifyPayload {
+  identifier: string;
+  otp: string;
+}
+
+export interface PasswordResetVerifyResponse {
+  success: boolean;
+  message: string;
+  reset_token: string;
+}
+
+export interface PasswordResetConfirmPayload {
+  identifier?: string;
+  otp?: string;
+  reset_token?: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface PasswordResetConfirmResponse {
+  success: boolean;
+  message: string;
+}
+

@@ -5,6 +5,11 @@ import type {
   RegisterPayload,
   RegisterResponse,
   StoredUser,
+  RefreshTokenResponse,
+  PasswordResetRequestResponse,
+  PasswordResetVerifyResponse,
+  PasswordResetConfirmPayload,
+  PasswordResetConfirmResponse,
 } from "./types";
 
 export const authService = {
@@ -92,6 +97,68 @@ export const authService = {
     }
 
     return data;
+  },
+
+  async refreshToken(): Promise<RefreshTokenResponse | null> {
+    const refreshToken = localStorage.getItem("refresh_token");
+    if (!refreshToken) return null;
+
+    try {
+      const data = await apiClient<RefreshTokenResponse>(
+        API_ENDPOINTS.AUTH.REFRESH,
+        {
+          method: "POST",
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        },
+      );
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("auth_token", data.token);
+      }
+      if (data.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token);
+      }
+      return data;
+    } catch {
+      return null;
+    }
+  },
+
+  async requestPasswordReset(
+    identifier: string,
+  ): Promise<PasswordResetRequestResponse> {
+    return apiClient<PasswordResetRequestResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_REQUEST,
+      {
+        method: "POST",
+        body: JSON.stringify({ identifier }),
+      },
+    );
+  },
+
+  async verifyPasswordResetOtp(
+    identifier: string,
+    otp: string,
+  ): Promise<PasswordResetVerifyResponse> {
+    return apiClient<PasswordResetVerifyResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_VERIFY,
+      {
+        method: "POST",
+        body: JSON.stringify({ identifier, otp }),
+      },
+    );
+  },
+
+  async confirmPasswordReset(
+    payload: PasswordResetConfirmPayload,
+  ): Promise<PasswordResetConfirmResponse> {
+    return apiClient<PasswordResetConfirmResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_CONFIRM,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
   },
 
   async logout(): Promise<void> {

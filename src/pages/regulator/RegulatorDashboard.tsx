@@ -13,6 +13,7 @@ import { WppMapViewer } from "../../components/map/WppMapViewer";
 import { shipsService } from "../../services/ships";
 import { blockchainService } from "../../services/blockchain";
 import { pnbpService } from "../../services/pnbp";
+import { dashboardService } from "../../services/dashboard";
 import { formatNumber, formatRupiah } from "../../utils";
 
 export function RegulatorDashboard() {
@@ -33,7 +34,8 @@ export function RegulatorDashboard() {
 
     async function loadRegulatorData() {
       try {
-        const [shipsData, chainStatus, chartRes] = await Promise.all([
+        const [dashData, shipsData, chainStatus, chartRes] = await Promise.all([
+          dashboardService.getRegulatorDashboard().catch(() => null),
           shipsService.getAll().catch(() => []),
           blockchainService.getStatus().catch(() => null),
           pnbpService.getUnifiedChartData().catch(() => null),
@@ -41,7 +43,13 @@ export function RegulatorDashboard() {
 
         if (ignore) return;
 
-        setTotalMonitored(shipsData.length);
+        if (dashData && dashData.status === "success" && dashData.kpi) {
+          setTotalMonitored(dashData.kpi.total_ships_supervised);
+          setCriticalCount(dashData.kpi.critical_ships_count);
+          setBlockchainValid(true);
+        } else {
+          setTotalMonitored(shipsData.length);
+        }
 
         if (shipsData.length > 0) {
           const mapped: ShipQuotaItem[] = shipsData.map((s) => {

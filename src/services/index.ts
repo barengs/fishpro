@@ -11,3 +11,5 @@ export * from "./blockchain";
 export * from "./pnbp";
 export * from "./admin";
 export * from "./iot";
+export * from "./dashboard";
+

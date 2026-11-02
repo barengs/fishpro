@@ -9,6 +9,7 @@ import { shipsService } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
 import { authService } from "../../services/auth";
+import { dashboardService } from "../../services/dashboard";
 import {
   calculateCatchTotalVolume,
   formatNumber,
@@ -42,19 +43,25 @@ export function AdminDashboard() {
     async function loadStats() {
       setLoading(true);
       try {
-        const [ships, catches, chartRes] = await Promise.all([
+        const [dashData, ships, catches, chartRes] = await Promise.all([
+          dashboardService.getAdminDashboard().catch(() => null),
           shipsService.getAll().catch(() => []),
           catchesService.getAll().catch(() => []),
           pnbpService.getUnifiedChartData().catch(() => null),
         ]);
 
-        const activeShips = ships.filter((s) => s.active !== false).length;
-        const totalCatches = catches.length;
+        const activeShips = dashData?.kpi?.total_ships ?? ships.filter((s) => s.active !== false).length;
+        const totalCatches = dashData?.kpi?.total_catches ?? catches.length;
         const summary = chartRes?.charts_data?.summary_stats;
 
-        const totalPnbpStr = formatRupiah(summary?.total_pnbp_sum);
+        const totalPnbpStr = dashData?.kpi?.total_pnbp
+          ? formatRupiah(dashData.kpi.total_pnbp)
+          : formatRupiah(summary?.total_pnbp_sum);
+
         const rawVolume =
-          summary?.total_volume_sum || calculateCatchTotalVolume(catches);
+          dashData?.kpi?.total_volume_kg ??
+          summary?.total_volume_sum ??
+          calculateCatchTotalVolume(catches);
         const totalVolumeStr = formatWeight(rawVolume);
 
         // Extract real time-series numbers for time-sensitive metrics

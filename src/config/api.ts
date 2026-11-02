@@ -14,6 +14,18 @@ export const API_ENDPOINTS = {
     REFRESH: `${API_BASE_URL}/api/auth/refresh/`,
     REGISTER: `${API_BASE_URL}/api/auth/register/`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout/`,
+    RESET_PASSWORD_REQUEST: `${API_BASE_URL}/api/auth/reset-password/request/`,
+    RESET_PASSWORD_VERIFY: `${API_BASE_URL}/api/auth/reset-password/verify/`,
+    RESET_PASSWORD_CONFIRM: `${API_BASE_URL}/api/auth/reset-password/confirm/`,
+    RESET_PASSWORD_DIRECT: `${API_BASE_URL}/api/auth/reset-password/`,
+  },
+
+  // Role-Based Dashboards
+  DASHBOARD: {
+    ADMIN: `${API_BASE_URL}/api/dashboard/admin/`,
+    REGULATOR: `${API_BASE_URL}/api/dashboard/regulator/`,
+    OWNER: `${API_BASE_URL}/api/dashboard/owner/`,
+    CAPTAIN: `${API_BASE_URL}/api/dashboard/captain/`,
   },
 
   // 2. Owners & Captains

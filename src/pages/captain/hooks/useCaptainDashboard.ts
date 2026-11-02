@@ -10,6 +10,7 @@ import {
   type BlockchainStatus,
 } from "../../../services/blockchain";
 import { authService, getUserDisplayInfo } from "../../../services/auth";
+import { dashboardService } from "../../../services/dashboard";
 import { fishSpeciesService } from "../../../services/fish";
 import { extractCatchReportMetrics } from "../../../utils";
 
@@ -31,6 +32,77 @@ export function useCaptainDashboard() {
 
     async function loadData() {
       try {
+        // 1. Try dedicated role dashboard endpoint first
+        const dashData = await dashboardService
+          .getCaptainDashboard()
+          .catch(() => null);
+
+        if (ignore) return;
+
+        if (dashData && dashData.status === "success") {
+          if (dashData.ship) {
+            setShip({
+              id: dashData.ship.id,
+              name: dashData.ship.name,
+              registration_number: dashData.ship.registration_number,
+              gross_tonnage: dashData.ship.gross_tonnage,
+              length: dashData.ship.length || undefined,
+              width: dashData.ship.width || undefined,
+              year_built: dashData.ship.year_built || undefined,
+              home_port: dashData.ship.home_port || undefined,
+              active: dashData.ship.active,
+              owner_name: "",
+              current_year_quota: dashData.quota
+                ? {
+                    year: dashData.quota.year,
+                    total_quota: dashData.quota.total_quota_kg,
+                    used_quota: dashData.quota.used_quota_kg,
+                    remaining_quota: dashData.quota.remaining_quota_kg,
+                    quota_percentage: dashData.quota.quota_percentage,
+                  }
+                : undefined,
+            } as ShipType);
+          } else {
+            setShip(null);
+          }
+
+          if (dashData.recent_catches && dashData.recent_catches.length > 0) {
+            setReports(
+              dashData.recent_catches.map((c) => ({
+                date: c.date,
+                species: c.species,
+                qty: `${c.quantity} ${c.unit}`,
+                pnbp: c.pnbp
+                  ? `Rp ${Number(c.pnbp).toLocaleString("id-ID")}`
+                  : "—",
+              })),
+            );
+          } else {
+            setReports([]);
+          }
+
+          if (dashData.blockchain) {
+            setBlockchainStatus({
+              valid: true,
+              message: "Rantai blockchain terverifikasi",
+              block_count: dashData.blockchain.last_block_index + 1,
+              transaction_count: dashData.blockchain.total_transactions,
+            });
+            if (dashData.blockchain.last_block_hash) {
+              setLastBlock({
+                index: dashData.blockchain.last_block_index,
+                hash: dashData.blockchain.last_block_hash,
+                previous_hash: "",
+                timestamp: new Date().toISOString(),
+                data: "",
+                nonce: 0,
+              });
+            }
+          }
+          return;
+        }
+
+        // 2. Fallback to individual API requests
         const [targetShip, chainStatus, blocks] = await Promise.all([
           shipsService.getShipForCaptain(currentUser).catch(() => null),
           blockchainService.getStatus().catch(() => null),
