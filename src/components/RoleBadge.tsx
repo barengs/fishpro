@@ -15,12 +15,14 @@ interface RoleBadgeProps {
   className?: string;
   size?: "sm" | "md";
   showDot?: boolean;
+  variant?: "solid" | "subtle";
 }
 
 interface RoleConfig {
   defaultLabel: string;
   Icon: LucideIcon;
-  badgeClass: string;
+  solidClass: string;
+  subtleClass: string;
   dotClass: string;
 }
 
@@ -28,37 +30,47 @@ const roleConfigs: Record<string, RoleConfig> = {
   superadmin: {
     defaultLabel: "Super Admin",
     Icon: ShieldCheck,
-    badgeClass:
-      "bg-slate-900/90 text-slate-100 border-slate-700/80 dark:bg-slate-100 dark:text-slate-900 dark:border-white/90 shadow-2xs",
-    dotClass: "bg-indigo-400 dark:bg-indigo-600",
+    solidClass:
+      "bg-purple-600 text-white shadow-2xs",
+    subtleClass:
+      "bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20",
+    dotClass: "bg-purple-400 dark:bg-purple-500",
   },
   admin: {
     defaultLabel: "Staf",
     Icon: Scale,
-    badgeClass:
-      "surface-card text-strong border-slate-200/90 dark:border-slate-700/80 shadow-2xs",
-    dotClass: "bg-emerald-500 dark:bg-emerald-400",
+    solidClass:
+      "bg-emerald-600 text-white shadow-2xs",
+    subtleClass:
+      "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20",
+    dotClass: "bg-emerald-400 dark:bg-emerald-500",
   },
   regulator: {
     defaultLabel: "Regulator",
     Icon: Eye,
-    badgeClass:
-      "bg-sky-500/10 text-sky-800 dark:text-sky-300 border-sky-500/20",
-    dotClass: "bg-sky-500 dark:bg-sky-400",
+    solidClass:
+      "bg-blue-600 text-white shadow-2xs",
+    subtleClass:
+      "bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20",
+    dotClass: "bg-blue-400 dark:bg-blue-500",
   },
   owner: {
     defaultLabel: "Pemilik Kapal",
     Icon: Building2,
-    badgeClass:
-      "bg-teal-500/10 text-teal-800 dark:text-teal-300 border-teal-500/20",
-    dotClass: "bg-teal-500 dark:bg-teal-400",
+    solidClass:
+      "bg-teal-600 text-white shadow-2xs",
+    subtleClass:
+      "bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20",
+    dotClass: "bg-teal-400 dark:bg-teal-500",
   },
   captain: {
     defaultLabel: "Nahkoda",
     Icon: Anchor,
-    badgeClass:
-      "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/20",
-    dotClass: "bg-amber-500 dark:bg-amber-400",
+    solidClass:
+      "bg-amber-500 text-white shadow-2xs",
+    subtleClass:
+      "bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20",
+    dotClass: "bg-amber-400 dark:bg-amber-500",
   },
 };
 
@@ -66,8 +78,9 @@ export function RoleBadge({
   role = "admin",
   label,
   className = "",
-  size = "md",
-  showDot = true,
+  size = "sm",
+  showDot = false,
+  variant = "solid",
 }: RoleBadgeProps) {
   const normRole = (role || "").toLowerCase().replace(/[\s_-]+/g, "");
   const config =
@@ -76,12 +89,16 @@ export function RoleBadge({
 
   const displayLabel = label || config.defaultLabel;
   const isSmall = size === "sm";
+  const badgeStyle =
+    variant === "solid" ? config.solidClass : config.subtleClass;
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-medium border rounded-md tracking-tight select-none transition-all ${
-        isSmall ? "px-2 py-0.5 text-2xs" : "px-2.5 py-1 text-xs"
-      } ${config.badgeClass} ${className}`}
+      className={`inline-flex items-center gap-1 font-bold tracking-tight select-none whitespace-nowrap transition-all ${
+        isSmall
+          ? "px-2 py-0.5 text-[11px] leading-tight rounded-xs"
+          : "px-2.5 py-1 text-xs leading-normal rounded-md"
+      } ${badgeStyle} ${className}`}
     >
       {showDot && (
         <span
@@ -90,13 +107,14 @@ export function RoleBadge({
         />
       )}
       <config.Icon
-        size={isSmall ? 11 : 13}
-        className="shrink-0 opacity-80"
-        strokeWidth={2}
+        size={isSmall ? 10 : 12}
+        className="shrink-0 opacity-90"
+        strokeWidth={2.4}
         aria-hidden="true"
       />
-      <span className="font-semibold">{displayLabel}</span>
+      <span>{displayLabel}</span>
     </span>
   );
 }
+
 

@@ -154,12 +154,14 @@ export function RolesTab() {
       render: (r) => {
         const norm = r.name.toLowerCase();
         let customLabel: string | undefined = undefined;
-        if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
-        else if (norm === "admin") customLabel = "Akses Lapangan (Staf)";
-        else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
-        else customLabel = "Akses Terbatas";
+        if (norm === "superadmin") customLabel = "Akses Penuh";
+        else if (norm === "admin") customLabel = "Staf Lapangan";
+        else if (norm === "regulator") customLabel = "Pengawasan";
+        else if (norm === "owner") customLabel = "Pemilik";
+        else if (norm === "captain") customLabel = "Nahkoda";
+        else customLabel = "Terbatas";
 
-        return <RoleBadge role={r.name} label={customLabel} size="sm" />;
+        return <RoleBadge role={r.name} label={customLabel} size="sm" variant="solid" />;
       },
     },
     {
@@ -232,12 +234,14 @@ export function RolesTab() {
             (() => {
               const norm = selectedRole.name.toLowerCase();
               let customLabel: string | undefined = undefined;
-              if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
-              else if (norm === "admin") customLabel = "Akses Lapangan (Staf)";
-              else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
-              else customLabel = "Akses Terbatas";
+              if (norm === "superadmin") customLabel = "Akses Penuh";
+              else if (norm === "admin") customLabel = "Staf Lapangan";
+              else if (norm === "regulator") customLabel = "Pengawasan";
+              else if (norm === "owner") customLabel = "Pemilik Kapal";
+              else if (norm === "captain") customLabel = "Nahkoda";
+              else customLabel = "Terbatas";
 
-              return <RoleBadge role={selectedRole.name} label={customLabel} />;
+              return <RoleBadge role={selectedRole.name} label={customLabel} variant="solid" />;
             })()
           ) : undefined
         }
