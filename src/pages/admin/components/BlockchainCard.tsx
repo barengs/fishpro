@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Link2, ShieldAlert } from "lucide-react";
+import { Check, Link2, ShieldAlert, ShieldCheck } from "lucide-react";
 import { StatusChip } from "../../../components/StatusChip";
 import {
   blockchainService,
   type BlockchainBlock,
   type BlockchainStatus,
 } from "../../../services/blockchain";
+import { authService } from "../../../services/auth";
 import { formatNumber, formatShortHash } from "../../../utils";
 
 export function BlockchainCard() {
@@ -130,12 +131,19 @@ export function BlockchainCard() {
       </div>
 
       <div className="p-4 px-5 sm:px-6 border-t border-slate-100 dark:border-fco-border-dark">
-        <Link
-          to="/admin/blockchain"
-          className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline block text-center"
-        >
-          Buka Penjelajah Blockchain →
-        </Link>
+        {authService.isSuperAdmin() ? (
+          <Link
+            to="/admin/blockchain"
+            className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline block text-center"
+          >
+            Buka Penjelajah Blockchain →
+          </Link>
+        ) : (
+          <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-soft">
+            <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+            <span>Integritas Terjaga · Dikelola Super Admin</span>
+          </div>
+        )}
       </div>
     </section>
   );

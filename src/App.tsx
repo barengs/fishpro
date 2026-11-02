@@ -220,34 +220,69 @@ export default function App() {
                 }
               />
 
-              {/* Protected: Admin */}
+              {/* Protected: Admin & Super Admin */}
               <Route
                 path="/admin"
                 element={
-                  <ProtectedRoute allowedRoles={["admin"]}>
+                  <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
                     <AdminLayout />
                   </ProtectedRoute>
                 }
               >
                 <Route index element={<AdminDashboard />} />
                 <Route path="ships" element={<ShipsPage />} />
-                <Route path="users" element={<UsersPage />} />
+                <Route
+                  path="users"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <UsersPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="owners" element={<OwnersTab />} />
                 <Route path="captains" element={<CaptainsTab />} />
                 <Route path="catches" element={<CatchesPage />} />
                 <Route path="species" element={<SpeciesPage />} />
                 <Route path="areas" element={<AreasPage />} />
-                <Route path="quota" element={<QuotaPnbpPage />} />
-                <Route path="blockchain" element={<BlockchainPage />} />
-                <Route path="iot-devices" element={<IotDevicesPage />} />
-                <Route path="roles" element={<RolesMenusPage />} />
+                <Route
+                  path="quota"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <QuotaPnbpPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="blockchain"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <BlockchainPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="iot-devices"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <IotDevicesPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="roles"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <RolesMenusPage />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
 
               {/* Protected: Regulator */}
               <Route
                 path="/regulator"
                 element={
-                  <ProtectedRoute allowedRoles={["regulator", "admin"]}>
+                  <ProtectedRoute allowedRoles={["regulator", "admin", "superadmin"]}>
                     <RegulatorLayout />
                   </ProtectedRoute>
                 }
@@ -267,7 +302,7 @@ export default function App() {
               <Route
                 path="/owner"
                 element={
-                  <ProtectedRoute allowedRoles={["owner", "admin"]}>
+                  <ProtectedRoute allowedRoles={["owner", "admin", "superadmin"]}>
                     <OwnerLayout />
                   </ProtectedRoute>
                 }
@@ -281,7 +316,7 @@ export default function App() {
               <Route
                 path="/captain"
                 element={
-                  <ProtectedRoute allowedRoles={["captain", "admin"]}>
+                  <ProtectedRoute allowedRoles={["captain", "admin", "superadmin"]}>
                     <CaptainLayout />
                   </ProtectedRoute>
                 }

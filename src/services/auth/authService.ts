@@ -15,27 +15,30 @@ export const authService = {
     });
 
     if (data.token) {
-      const usernameLower = (data.username || "").toLowerCase();
       const rawUserAs = (data.user_as || "").toLowerCase();
       const rolesList = (data.roles || []).map((r) => r.toLowerCase());
 
       let detectedRole = data.user_as || "owner";
       if (
+        rawUserAs === "superadmin" ||
+        rawUserAs === "super_admin" ||
+        rolesList.includes("superadmin") ||
+        rolesList.includes("super_admin")
+      ) {
+        detectedRole = "superadmin";
+      } else if (
         rawUserAs === "admin" ||
-        rolesList.includes("admin") ||
-        usernameLower.startsWith("admin")
+        rolesList.includes("admin")
       ) {
         detectedRole = "admin";
       } else if (
         rawUserAs === "regulator" ||
-        rolesList.includes("regulator") ||
-        usernameLower.includes("regulator")
+        rolesList.includes("regulator")
       ) {
         detectedRole = "regulator";
       } else if (
         rawUserAs === "captain" ||
-        rolesList.includes("captain") ||
-        usernameLower.includes("captain")
+        rolesList.includes("captain")
       ) {
         detectedRole = "captain";
       } else if (rawUserAs === "owner" || rolesList.includes("owner")) {
@@ -117,8 +120,16 @@ export const authService = {
     const rawRole = (user?.role || storedUserAs || "").toLowerCase();
     const rolesList = (user?.roles || []).map((r) => r.toLowerCase());
 
-    if (rawRole === "admin" || rolesList.includes("admin")) {
-      return "admin";
+    const isAdmin =
+      rawRole === "admin" ||
+      rawRole === "superadmin" ||
+      rawRole === "super_admin" ||
+      rolesList.includes("admin") ||
+      rolesList.includes("superadmin") ||
+      rolesList.includes("super_admin");
+
+    if (isAdmin) {
+      return this.isSuperAdmin() ? "superadmin" : "admin";
     }
     if (rawRole === "regulator" || rolesList.includes("regulator")) {
       return "regulator";
@@ -130,6 +141,42 @@ export const authService = {
       return "owner";
     }
     return storedUserAs || null;
+  },
+
+  isSuperAdmin(): boolean {
+    const user = this.getStoredUser();
+    if (!user) return false;
+
+    // Check manual simulation override for testing / presentation demos
+    const simulated = localStorage.getItem("simulated_admin_role");
+    if (simulated === "superadmin") return true;
+    if (simulated === "admin") return false;
+
+    const rawRole = (user.role || "").toLowerCase();
+    const rolesList = (user.roles || []).map((r) => r.toLowerCase());
+    const isSuperuser = Boolean(user.is_superuser);
+
+    // Read directly from registered user role / database flags
+    return (
+      rawRole === "superadmin" ||
+      rawRole === "super_admin" ||
+      rolesList.includes("superadmin") ||
+      rolesList.includes("super_admin") ||
+      isSuperuser
+    );
+  },
+
+  setSimulatedAdminRole(role: "superadmin" | "admin" | null): void {
+    if (!role) {
+      localStorage.removeItem("simulated_admin_role");
+    } else {
+      localStorage.setItem("simulated_admin_role", role);
+    }
+  },
+
+  getSimulatedAdminRole(): "superadmin" | "admin" | null {
+    const role = localStorage.getItem("simulated_admin_role");
+    return role === "superadmin" || role === "admin" ? role : null;
   },
 
   getStoredUser(): StoredUser | null {
@@ -152,6 +199,7 @@ export const authService = {
 
 export function getRoleDashboardPath(role?: string | null): string {
   switch (role) {
+    case "superadmin":
     case "admin":
       return "/admin";
     case "regulator":

@@ -24,7 +24,7 @@ export interface LoginResponse {
   refresh_token?: string;
   user_id: number;
   username: string;
-  user_as: "admin" | "owner" | "captain" | "regulator" | "user";
+  user_as: "superadmin" | "admin" | "owner" | "captain" | "regulator" | "user";
   roles: string[];
   profile?: UserProfile;
 }
@@ -56,5 +56,6 @@ export interface StoredUser {
   username: string;
   role: string;
   roles?: string[];
+  is_superuser?: boolean;
   profile?: UserProfile;
 }

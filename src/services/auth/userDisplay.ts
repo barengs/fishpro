@@ -36,29 +36,32 @@ export function getUserDisplayInfo(): UserDisplayInfo {
   let roleLabel = "Pengguna FCO";
   const rawRole = (user.role || "").toLowerCase();
   const rawRoles = (user.roles || []).map((r) => r.toLowerCase());
-  const usernameLower = (user.username || "").toLowerCase();
+
+  const isSuperAdmin = authService.isSuperAdmin();
 
   const isRegulator =
     rawRole === "regulator" ||
-    rawRoles.includes("regulator") ||
-    usernameLower.includes("regulator");
+    rawRoles.includes("regulator");
 
   const isAdmin =
-    rawRole === "admin" ||
-    rawRoles.includes("admin") ||
-    usernameLower.startsWith("admin");
+    !isSuperAdmin &&
+    (rawRole === "admin" ||
+      rawRoles.includes("admin"));
 
   const isCaptain =
     rawRole === "captain" ||
-    rawRoles.includes("captain") ||
-    usernameLower.includes("captain");
+    rawRoles.includes("captain");
 
   const isOwner = rawRole === "owner" || rawRoles.includes("owner");
 
-  if (isAdmin) {
+  if (isSuperAdmin) {
+    roleLabel = profile?.position
+      ? `Super Admin · ${profile.position}`
+      : "Super Admin (IT Governance)";
+  } else if (isAdmin) {
     roleLabel = profile?.department
-      ? `Admin · ${profile.department}`
-      : "Admin KKP";
+      ? `Staf Admin · ${profile.department}`
+      : "Staf Admin (Operasional)";
   } else if (isRegulator) {
     roleLabel = profile?.department
       ? `Pengawas · ${profile.department}`

@@ -13,6 +13,7 @@ import {
   MapPin,
   Ship,
 } from "lucide-react";
+import { authService } from "../../../services/auth";
 
 interface AdminSidebarNavProps {
   onNavigate?: () => void;
@@ -28,6 +29,7 @@ interface NavItem {
 
 interface NavGroup {
   title: string;
+  superAdminOnly?: boolean;
   items: NavItem[];
 }
 
@@ -91,7 +93,8 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Kepatuhan & Sistem",
+    title: "Tata Kelola Sistem",
+    superAdminOnly: true,
     items: [
       {
         label: "Kuota & PNBP",
@@ -122,13 +125,17 @@ const navGroups: NavGroup[] = [
 ];
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
-  // ponytail: static nav groups array; upgrade to dynamic permission-filtered tree when role-menus API supports hierarchical nesting
+  const isSuperAdmin = authService.isSuperAdmin();
+  const visibleGroups = navGroups.filter(
+    (group) => !group.superAdminOnly || isSuperAdmin,
+  );
+
   return (
     <nav
       className="flex flex-col gap-4 py-1 pb-4 w-full min-w-0 overflow-hidden"
       aria-label="Navigasi Admin"
     >
-      {navGroups.map((group) => (
+      {visibleGroups.map((group) => (
         <div key={group.title} className="flex flex-col gap-1">
           <div className="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
             {group.title}

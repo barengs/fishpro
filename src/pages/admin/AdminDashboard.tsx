@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ClipboardList, Coins, Fish, Ship } from "lucide-react";
+import { Ship, Fish, ClipboardList, Coins, ShieldCheck, UserCheck } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { PnbpChart } from "./components/PnbpChart";
 import { BlockchainCard } from "./components/BlockchainCard";
@@ -8,6 +8,7 @@ import { WppBarChart } from "./components/WppBarChart";
 import { shipsService } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { pnbpService } from "../../services/pnbp";
+import { authService } from "../../services/auth";
 import {
   calculateCatchTotalVolume,
   formatNumber,
@@ -123,30 +124,73 @@ export function AdminDashboard() {
     loadStats();
   }, []);
 
+  const isSuperAdmin = authService.isSuperAdmin();
+
   return (
     <div>
       {/* Page Header (LemonLead Modern Style) */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-soft mb-1">
             <span>Dashboard</span>
             <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-fco-blue font-semibold">Ringkasan Nasional</span>
+            <span className="text-fco-blue font-semibold">
+              {isSuperAdmin
+                ? "Tata Kelola & Ringkasan Nasional"
+                : "Pelayanan & Operasional Harian"}
+            </span>
           </div>
           <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
-            Dashboard Overview
+            {isSuperAdmin
+              ? "Dashboard Overview (Super Admin)"
+              : "Dashboard Staf Operasional"}
           </h1>
         </div>
 
         <div className="flex items-center gap-2.5">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full surface-card border border-slate-200/80 dark:border-fco-border-dark text-xs font-medium text-soft shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-strong font-semibold">Live Data</span>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isSuperAdmin ? "bg-purple-500" : "bg-emerald-500"
+              } animate-pulse`}
+            />
+            <span className="text-strong font-semibold flex items-center gap-1.5">
+              {isSuperAdmin ? (
+                <>
+                  <ShieldCheck size={14} className="text-purple-600" />
+                  <span>Super Admin</span>
+                </>
+              ) : (
+                <>
+                  <UserCheck size={14} className="text-emerald-600" />
+                  <span>Staf Admin</span>
+                </>
+              )}
+            </span>
             <span className="text-slate-300 dark:text-slate-600">|</span>
-            <span>WPP-NRI Terpadu</span>
+            <span>{isSuperAdmin ? "Akses Tata Kelola Penuh" : "Akses Operasional"}</span>
           </div>
         </div>
       </div>
+
+      {/* Role Banner Indicator */}
+      {!isSuperAdmin && (
+        <div className="mb-6 p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-start gap-3 text-xs text-slate-700 dark:text-slate-300">
+          <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/60 text-fco-blue flex items-center justify-center shrink-0 font-bold mt-0.5">
+            i
+          </div>
+          <div className="flex-1 leading-relaxed">
+            <strong className="text-strong font-semibold">
+              Ruang Lingkup Staf Pelayanan:
+            </strong>{" "}
+            Anda memiliki akses operasional untuk memverifikasi kapal armada,
+            administrasi pemilik & nahkoda, pencatatan tangkapan, serta katalog
+            spesies dan zona WPP. Modul penetapan tarif kuota, audit
+            blockchain, dan hak akses RBAC dikelola khusus oleh{" "}
+            <strong>Super Administrator</strong>.
+          </div>
+        </div>
+      )}
 
       {/* 4 Realtime Cards (Sparkline only on Volume & PNBP time-series) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -199,8 +243,10 @@ export function AdminDashboard() {
           color="rose"
           Icon={Coins}
           loading={loading}
-          href="/admin/quota"
-          linkText="Lihat Detail PNBP"
+          href={isSuperAdmin ? "/admin/quota" : "/admin/catches"}
+          linkText={
+            isSuperAdmin ? "Lihat Detail Kebijakan" : "Lihat Laporan Tangkapan"
+          }
         />
       </div>
 

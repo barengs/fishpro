@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   Anchor,
@@ -159,7 +159,24 @@ export function AdminLayout() {
   );
   const navigate = useNavigate();
   const toast = useToast();
+  const [roleRevision, setRoleRevision] = useState(0);
+
+  const isSuperAdmin = authService.isSuperAdmin();
   const userInfo = getUserDisplayInfo();
+
+  const filteredSearchItems = useMemo(() => {
+    if (isSuperAdmin) return adminSearchItems;
+    return adminSearchItems.filter(
+      (item) =>
+        ![
+          "/admin/quota",
+          "/admin/blockchain",
+          "/admin/iot-devices",
+          "/admin/roles",
+          "/admin/users",
+        ].includes(item.to),
+    );
+  }, [isSuperAdmin]);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
@@ -172,11 +189,37 @@ export function AdminLayout() {
   }
 
   const userRole = authService.getUserRole();
-  if (userRole && userRole !== "admin") {
+  if (userRole && userRole !== "admin" && userRole !== "superadmin") {
     return <Navigate to={authService.getDashboardUrl()} replace />;
   }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
+
+  const handleRoleSwitch = (target: "superadmin" | "admin") => {
+    authService.setSimulatedAdminRole(target);
+    setRoleRevision((prev) => prev + 1);
+
+    if (target === "admin") {
+      const pathname = window.location.pathname;
+      const restrictedPaths = [
+        "/admin/quota",
+        "/admin/blockchain",
+        "/admin/iot-devices",
+        "/admin/roles",
+        "/admin/users",
+      ];
+      if (restrictedPaths.some((p) => pathname.startsWith(p))) {
+        navigate("/admin", { replace: true });
+      }
+      toast.success(
+        "Beralih ke mode Staf Admin: Modul tata kelola sistem disembunyikan.",
+      );
+    } else {
+      toast.success(
+        "Beralih ke mode Super Admin: Akses penuh tata kelola sistem aktif.",
+      );
+    }
+  };
 
   const handleLogout = async () => {
     await authService.logout();
@@ -203,19 +246,23 @@ export function AdminLayout() {
 
           {/* Navigation Links */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav />
+            <AdminSidebarNav key={roleRevision} />
           </div>
 
           {/* Bottom-left: Clean System Status Indicator */}
           <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                Sistem KKP
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isSuperAdmin ? "bg-purple-500" : "bg-emerald-500"
+                } animate-pulse shrink-0`}
+              />
+              <span className="font-semibold text-strong text-2xs uppercase tracking-wider truncate">
+                {isSuperAdmin ? "Super Admin" : "Staf Admin"}
               </span>
             </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
+            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shrink-0">
+              {isSuperAdmin ? "IT Governance" : "Operasional"}
             </span>
           </div>
         </div>
@@ -258,18 +305,51 @@ export function AdminLayout() {
           </div>
 
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
+            <AdminSidebarNav key={roleRevision} onNavigate={() => setMobileOpen(false)} />
+          </div>
+
+          {/* Mobile Role Switcher */}
+          <div className="px-3 py-2 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between text-xs bg-slate-50/50 dark:bg-[#10161f]">
+            <span className="text-2xs font-semibold text-soft">Peran:</span>
+            <div className="inline-flex items-center p-0.5 rounded-lg surface-inset border border-slate-200/80 dark:border-fco-border-dark">
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch("superadmin")}
+                className={`px-2 py-0.5 rounded text-2xs font-semibold border-0 cursor-pointer ${
+                  isSuperAdmin
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "text-soft bg-transparent"
+                }`}
+              >
+                Super
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch("admin")}
+                className={`px-2 py-0.5 rounded text-2xs font-semibold border-0 cursor-pointer ${
+                  !isSuperAdmin
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "text-soft bg-transparent"
+                }`}
+              >
+                Staf
+              </button>
+            </div>
           </div>
 
           <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isSuperAdmin ? "bg-purple-500" : "bg-emerald-500"
+                } animate-pulse`}
+              />
               <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                Sistem KKP
+                {isSuperAdmin ? "Super Admin" : "Staf Admin"}
               </span>
             </div>
             <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
+              {isSuperAdmin ? "IT Governance" : "Operasional"}
             </span>
           </div>
         </div>
@@ -316,13 +396,45 @@ export function AdminLayout() {
 
             {/* Quick Search Menu */}
             <QuickSearchMenu
-              items={adminSearchItems}
+              items={filteredSearchItems}
               placeholder="Cari menu... (Ctrl+K)"
             />
           </div>
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Quick Role Simulation Switcher for Super Admin vs Staf Admin */}
+            <div
+              className="hidden sm:inline-flex items-center p-0.5 rounded-xl surface-inset border border-slate-200/80 dark:border-fco-border-dark text-xs"
+              role="group"
+              aria-label="Penggantian Peran Admin"
+            >
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch("superadmin")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer ${
+                  isSuperAdmin
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "text-soft hover:text-strong bg-transparent"
+                }`}
+                title="Super Admin: Tata Kelola Sistem, RBAC, Blockchain, IoT, dan Master Kuota"
+              >
+                Super Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch("admin")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer ${
+                  !isSuperAdmin
+                    ? "bg-fco-blue text-white shadow-2xs"
+                    : "text-soft hover:text-strong bg-transparent"
+                }`}
+                title="Staf Admin: Operasional Harian Pelayanan (Armada, Laporan, Spesies, WPP)"
+              >
+                Staf Admin
+              </button>
+            </div>
+
             <FullscreenToggle compact />
             <ThemeToggle compact />
             <UserProfileBadge
