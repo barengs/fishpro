@@ -218,21 +218,12 @@ export function AdminLayout() {
     setRoleRevision((prev) => prev + 1);
 
     if (target === "admin") {
-      const pathname = window.location.pathname;
-      const restrictedPaths = [
-        "/admin/quota",
-        "/admin/blockchain",
-        "/admin/iot-devices",
-        "/admin/roles",
-        "/admin/users",
-      ];
-      if (restrictedPaths.some((p) => pathname.startsWith(p))) {
-        navigate("/admin", { replace: true });
-      }
+      navigate("/staff", { replace: true });
       toast.success(
         "Beralih ke mode Staf: Akses tugas operasional & penimbangan lapangan aktif.",
       );
     } else {
+      navigate("/admin", { replace: true });
       toast.success(
         "Beralih ke mode Super Admin: Akses penuh tata kelola sistem aktif.",
       );

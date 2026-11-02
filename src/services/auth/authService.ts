@@ -267,8 +267,9 @@ export const authService = {
 export function getRoleDashboardPath(role?: string | null): string {
   switch (role) {
     case "superadmin":
-    case "admin":
       return "/admin";
+    case "admin":
+      return "/staff";
     case "regulator":
       return "/regulator";
     case "captain":

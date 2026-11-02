@@ -28,6 +28,18 @@ const ResetPasswordPage = lazy(() =>
   })),
 );
 
+// Lazy-loaded Staff pages
+const StaffLayout = lazy(() =>
+  import("./pages/staff/components/StaffSidebar").then((m) => ({
+    default: m.StaffLayout,
+  })),
+);
+const StaffDashboard = lazy(() =>
+  import("./pages/staff/StaffDashboard").then((m) => ({
+    default: m.StaffDashboard,
+  })),
+);
+
 // Lazy-loaded Admin pages
 const AdminLayout = lazy(() =>
   import("./pages/admin/components/AdminSidebar").then((m) => ({
@@ -220,7 +232,26 @@ export default function App() {
                 }
               />
 
-              {/* Protected: Admin & Super Admin */}
+              {/* Protected: Staff (Staf Lapangan Operasional) */}
+              <Route
+                path="/staff"
+                element={
+                  <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+                    <StaffLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<StaffDashboard />} />
+                <Route path="scales" element={<IotScalesPage />} />
+                <Route path="catches" element={<CatchesPage />} />
+                <Route path="ships" element={<ShipsPage />} />
+                <Route path="owners" element={<OwnersTab />} />
+                <Route path="captains" element={<CaptainsTab />} />
+                <Route path="species" element={<SpeciesPage />} />
+                <Route path="areas" element={<AreasPage />} />
+              </Route>
+
+              {/* Protected: Super Admin (Tata Kelola Sistem) */}
               <Route
                 path="/admin"
                 element={

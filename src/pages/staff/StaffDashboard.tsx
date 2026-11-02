@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { RoleBadge } from "../../components/RoleBadge";
-import { WppBarChart } from "./components/WppBarChart";
+import { WppBarChart } from "../admin/components/WppBarChart";
 import { shipsService } from "../../services/ships";
 import { catchesService, type FishCatch } from "../../services/catches";
 import { iotService } from "../../services/iot";
@@ -144,7 +144,7 @@ export function StaffDashboard() {
           color="blue"
           Icon={Scale}
           loading={loading}
-          href="/admin/scales"
+          href="/staff/scales"
           linkText="Buka Terminal Timbang"
         />
         <KpiCard
@@ -155,7 +155,7 @@ export function StaffDashboard() {
           color="emerald"
           Icon={ClipboardList}
           loading={loading}
-          href="/admin/catches"
+          href="/staff/catches"
           linkText="Daftar Tangkapan"
         />
         <KpiCard
@@ -168,7 +168,7 @@ export function StaffDashboard() {
           color="amber"
           Icon={Fish}
           loading={loading}
-          href="/admin/catches"
+          href="/staff/catches"
           linkText="Detail Bobot"
         />
         <KpiCard
@@ -179,7 +179,7 @@ export function StaffDashboard() {
           color="purple"
           Icon={Ship}
           loading={loading}
-          href="/admin/ships"
+          href="/staff/ships"
           linkText="Data Armada"
         />
       </div>
@@ -200,35 +200,35 @@ export function StaffDashboard() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            to="/admin/scales"
+            to="/staff/scales"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-fco-blue hover:bg-fco-blue-hover text-white no-underline transition-colors shadow-2xs"
           >
             <Scale size={15} />
             <span>Mulai Timbang IoT</span>
           </Link>
           <Link
-            to="/admin/catches"
+            to="/staff/catches"
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <ClipboardList size={14} className="text-soft" />
             <span>Entri Tangkapan</span>
           </Link>
           <Link
-            to="/admin/ships"
+            to="/staff/ships"
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Ship size={14} className="text-soft" />
             <span>Verifikasi Kapal</span>
           </Link>
           <Link
-            to="/admin/owners"
+            to="/staff/owners"
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Building2 size={14} className="text-soft" />
             <span>Pemilik Kapal</span>
           </Link>
           <Link
-            to="/admin/captains"
+            to="/staff/captains"
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Anchor size={14} className="text-soft" />
@@ -251,7 +251,7 @@ export function StaffDashboard() {
               </p>
             </div>
             <Link
-              to="/admin/catches"
+              to="/staff/catches"
               className="text-xs font-semibold text-fco-blue hover:underline no-underline"
             >
               Lihat semua &rarr;
