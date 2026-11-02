@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Anchor,
-  Building2,
   ClipboardList,
   Fish,
   Scale,
   Ship,
-  Sparkles,
 } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { RoleBadge } from "../../components/RoleBadge";
@@ -182,59 +179,6 @@ export function StaffDashboard() {
           href="/staff/ships"
           linkText="Data Armada"
         />
-      </div>
-
-      {/* Aksi Cepat Tugas Lapangan */}
-      <div className="mb-6 p-4 rounded-xl surface-card border border-fco-border flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="text-sm font-bold text-strong flex items-center gap-2">
-            <span>Tugas & Aksi Lapangan</span>
-            <span className="inline-flex items-center gap-1 text-2xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-              <Sparkles size={11} />
-              <span>Realtime IoT</span>
-            </span>
-          </div>
-          <div className="text-xs text-soft mt-0.5">
-            Pintasan kerja harian staf untuk penimbangan tangkapan dan verifikasi armada nelayan.
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/staff/scales"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-fco-blue hover:bg-fco-blue-hover text-white no-underline transition-colors shadow-2xs"
-          >
-            <Scale size={15} />
-            <span>Mulai Timbang IoT</span>
-          </Link>
-          <Link
-            to="/staff/catches"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <ClipboardList size={14} className="text-soft" />
-            <span>Entri Tangkapan</span>
-          </Link>
-          <Link
-            to="/staff/ships"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <Ship size={14} className="text-soft" />
-            <span>Verifikasi Kapal</span>
-          </Link>
-          <Link
-            to="/staff/owners"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <Building2 size={14} className="text-soft" />
-            <span>Pemilik Kapal</span>
-          </Link>
-          <Link
-            to="/staff/captains"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <Anchor size={14} className="text-soft" />
-            <span>Nahkoda</span>
-          </Link>
-        </div>
       </div>
 
       {/* Grid: Laporan Tangkapan Masuk + Distribusi WPP */}

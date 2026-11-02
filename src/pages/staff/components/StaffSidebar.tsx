@@ -116,23 +116,6 @@ export function StaffSidebar() {
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 
-  const user = authService.getStoredUser();
-  const canSwitchRole =
-    user?.is_superuser ||
-    (user?.roles || []).includes("superadmin") ||
-    localStorage.getItem("simulated_admin_role") !== null;
-
-  const handleRoleSwitch = (target: "superadmin" | "admin") => {
-    authService.setSimulatedAdminRole(target);
-    if (target === "superadmin") {
-      navigate("/admin", { replace: true });
-      toast.success("Beralih ke mode Super Admin: Akses tata kelola aktif.");
-    } else {
-      navigate("/staff", { replace: true });
-      toast.success("Mode Staf Lapangan aktif.");
-    }
-  };
-
   const handleLogout = async () => {
     await authService.logout();
     toast.success("Logout berhasil. Sesi telah diakhiri.");
@@ -267,31 +250,6 @@ export function StaffSidebar() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {canSwitchRole && (
-              <div
-                className="hidden sm:inline-flex items-center p-0.5 rounded-xl surface-inset border border-slate-200/80 dark:border-fco-border-dark text-xs"
-                role="group"
-                aria-label="Penggantian Peran"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleRoleSwitch("superadmin")}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer text-soft hover:text-strong bg-transparent"
-                  title="Beralih ke Super Admin (Tata Kelola)"
-                >
-                  Super Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRoleSwitch("admin")}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer bg-fco-blue text-white shadow-2xs"
-                  title="Staf Lapangan (Operasional)"
-                >
-                  Staf
-                </button>
-              </div>
-            )}
-
             <FullscreenToggle compact />
             <ThemeToggle compact />
             <UserProfileBadge

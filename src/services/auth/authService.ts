@@ -215,16 +215,10 @@ export const authService = {
     const user = this.getStoredUser();
     if (!user) return false;
 
-    // Check manual simulation override for testing / presentation demos
-    const simulated = localStorage.getItem("simulated_admin_role");
-    if (simulated === "superadmin") return true;
-    if (simulated === "admin") return false;
-
     const rawRole = (user.role || "").toLowerCase();
     const rolesList = (user.roles || []).map((r) => r.toLowerCase());
     const isSuperuser = Boolean(user.is_superuser);
 
-    // Read directly from registered user role / database flags
     return (
       rawRole === "superadmin" ||
       rawRole === "super_admin" ||
@@ -232,19 +226,6 @@ export const authService = {
       rolesList.includes("super_admin") ||
       isSuperuser
     );
-  },
-
-  setSimulatedAdminRole(role: "superadmin" | "admin" | null): void {
-    if (!role) {
-      localStorage.removeItem("simulated_admin_role");
-    } else {
-      localStorage.setItem("simulated_admin_role", role);
-    }
-  },
-
-  getSimulatedAdminRole(): "superadmin" | "admin" | null {
-    const role = localStorage.getItem("simulated_admin_role");
-    return role === "superadmin" || role === "admin" ? role : null;
   },
 
   getStoredUser(): StoredUser | null {

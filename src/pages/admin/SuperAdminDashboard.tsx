@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  BarChart3,
-  Cpu,
   Coins,
-  KeyRound,
+  Cpu,
   Link2,
-  ShieldCheck,
   Ship,
-  Users,
 } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { RoleBadge } from "../../components/RoleBadge";
@@ -173,51 +168,6 @@ export function SuperAdminDashboard() {
           href="/admin/iot-devices"
           linkText="Kelola Perangkat IoT"
         />
-      </div>
-
-      {/* Baris Tata Kelola Cepat */}
-      <div className="mb-6 p-4 rounded-xl surface-card border border-fco-border flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-            <ShieldCheck size={20} />
-          </div>
-          <div>
-            <div className="text-sm font-bold text-strong">Akses Tata Kelola Khusus Super Admin</div>
-            <div className="text-xs text-soft">
-              Kelola alokasi kuota AI, parameter smart scales, dan hak akses RBAC sistem.
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/admin/quota"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <BarChart3 size={14} className="text-soft" />
-            <span>Alokasi Kuota</span>
-          </Link>
-          <Link
-            to="/admin/blockchain"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <Link2 size={14} className="text-soft" />
-            <span>Audit Ledger</span>
-          </Link>
-          <Link
-            to="/admin/roles"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <KeyRound size={14} className="text-soft" />
-            <span>Peran & Menu</span>
-          </Link>
-          <Link
-            to="/admin/users"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
-          >
-            <Users size={14} className="text-soft" />
-            <span>Manajemen Pengguna</span>
-          </Link>
-        </div>
       </div>
 
       {/* Grid Grafik PNBP & Status Blockchain */}

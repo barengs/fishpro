@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   Anchor,
@@ -177,24 +177,9 @@ export function AdminLayout() {
   );
   const navigate = useNavigate();
   const toast = useToast();
-  const [roleRevision, setRoleRevision] = useState(0);
 
   const isSuperAdmin = authService.isSuperAdmin();
   const userInfo = getUserDisplayInfo();
-
-  const filteredSearchItems = useMemo(() => {
-    if (isSuperAdmin) return adminSearchItems;
-    return adminSearchItems.filter(
-      (item) =>
-        ![
-          "/admin/quota",
-          "/admin/blockchain",
-          "/admin/iot-devices",
-          "/admin/roles",
-          "/admin/users",
-        ].includes(item.to),
-    );
-  }, [isSuperAdmin]);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
@@ -206,29 +191,12 @@ export function AdminLayout() {
     return <Navigate to="/login" replace />;
   }
 
-  const userRole = authService.getUserRole();
-  if (userRole && userRole !== "admin" && userRole !== "superadmin") {
-    return <Navigate to={authService.getDashboardUrl()} replace />;
+  // Pure role-based guard: if staff visits /admin, direct to /staff
+  if (!isSuperAdmin) {
+    return <Navigate to="/staff" replace />;
   }
 
   const isOpen = isDesktop ? sidebarOpen : mobileOpen;
-
-  const handleRoleSwitch = (target: "superadmin" | "admin") => {
-    authService.setSimulatedAdminRole(target);
-    setRoleRevision((prev) => prev + 1);
-
-    if (target === "admin") {
-      navigate("/staff", { replace: true });
-      toast.success(
-        "Beralih ke mode Staf: Akses tugas operasional & penimbangan lapangan aktif.",
-      );
-    } else {
-      navigate("/admin", { replace: true });
-      toast.success(
-        "Beralih ke mode Super Admin: Akses penuh tata kelola sistem aktif.",
-      );
-    }
-  };
 
   const handleLogout = async () => {
     await authService.logout();
@@ -255,7 +223,7 @@ export function AdminLayout() {
 
           {/* Navigation Links */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav key={roleRevision} />
+            <AdminSidebarNav />
           </div>
 
           {/* Bottom-left: Clean System Status Indicator */}
@@ -305,42 +273,13 @@ export function AdminLayout() {
           </div>
 
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav key={roleRevision} onNavigate={() => setMobileOpen(false)} />
-          </div>
-
-          {/* Mobile Role Switcher */}
-          <div className="px-3 py-2 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between text-xs bg-slate-50/50 dark:bg-[#10161f]">
-            <span className="text-2xs font-semibold text-soft">Peran:</span>
-            <div className="inline-flex items-center p-0.5 rounded-lg surface-inset border border-slate-200/80 dark:border-fco-border-dark">
-              <button
-                type="button"
-                onClick={() => handleRoleSwitch("superadmin")}
-                className={`px-2 py-0.5 rounded text-2xs font-semibold border-0 cursor-pointer ${
-                  isSuperAdmin
-                    ? "bg-fco-blue text-white shadow-2xs"
-                    : "text-soft bg-transparent"
-                }`}
-              >
-                Super
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleSwitch("admin")}
-                className={`px-2 py-0.5 rounded text-2xs font-semibold border-0 cursor-pointer ${
-                  !isSuperAdmin
-                    ? "bg-fco-blue text-white shadow-2xs"
-                    : "text-soft bg-transparent"
-                }`}
-              >
-                Staf
-              </button>
-            </div>
+            <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
           </div>
 
           <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <RoleBadge role={isSuperAdmin ? "superadmin" : "admin"} size="sm" />
+            <RoleBadge role="superadmin" size="sm" />
             <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded surface-card border border-fco-border-subtle shrink-0">
-              {isSuperAdmin ? "Tata Kelola" : "Operasional"}
+              Tata Kelola
             </span>
           </div>
         </div>
@@ -387,45 +326,13 @@ export function AdminLayout() {
 
             {/* Quick Search Menu */}
             <QuickSearchMenu
-              items={filteredSearchItems}
+              items={adminSearchItems}
               placeholder="Cari menu... (Ctrl+K)"
             />
           </div>
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Quick Role Simulation Switcher for Super Admin vs Staf Admin */}
-            <div
-              className="hidden sm:inline-flex items-center p-0.5 rounded-xl surface-inset border border-slate-200/80 dark:border-fco-border-dark text-xs"
-              role="group"
-              aria-label="Penggantian Peran Admin"
-            >
-              <button
-                type="button"
-                onClick={() => handleRoleSwitch("superadmin")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer ${
-                  isSuperAdmin
-                    ? "bg-fco-blue text-white shadow-2xs"
-                    : "text-soft hover:text-strong bg-transparent"
-                }`}
-                title="Super Admin: Tata Kelola Sistem, RBAC, Blockchain, IoT, dan Master Kuota"
-              >
-                Super Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleSwitch("admin")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border-0 cursor-pointer ${
-                  !isSuperAdmin
-                    ? "bg-fco-blue text-white shadow-2xs"
-                    : "text-soft hover:text-strong bg-transparent"
-                }`}
-                title="Staf Lapangan: Operasional Lapangan, Penimbangan IoT Dermaga, Armada, dan Laporan Tangkapan"
-              >
-                Staf
-              </button>
-            </div>
-
             <FullscreenToggle compact />
             <ThemeToggle compact />
             <UserProfileBadge
