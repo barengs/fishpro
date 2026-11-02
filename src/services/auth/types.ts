@@ -19,6 +19,16 @@ export interface UserProfile {
   years_of_experience?: number;
 }
 
+export interface UserPermittedMenu {
+  name: string;
+  url: string;
+  icon?: string;
+  can_view?: boolean;
+  can_create?: boolean;
+  can_edit?: boolean;
+  can_delete?: boolean;
+}
+
 export interface LoginResponse {
   token: string;
   refresh_token?: string;
@@ -27,6 +37,7 @@ export interface LoginResponse {
   user_as: "superadmin" | "admin" | "owner" | "captain" | "regulator" | "user";
   roles: string[];
   profile?: UserProfile;
+  menus?: UserPermittedMenu[];
 }
 
 export interface RegisterPayload {
@@ -58,6 +69,7 @@ export interface StoredUser {
   roles?: string[];
   is_superuser?: boolean;
   profile?: UserProfile;
+  menus?: UserPermittedMenu[];
 }
 
 export interface RefreshTokenResponse {

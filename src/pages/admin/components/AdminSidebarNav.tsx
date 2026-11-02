@@ -140,9 +140,15 @@ const navGroups: NavGroup[] = [
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
   const isSuperAdmin = authService.isSuperAdmin();
-  const visibleGroups = navGroups.filter(
-    (group) => !group.superAdminOnly || isSuperAdmin,
-  );
+  const visibleGroups = navGroups
+    .filter((group) => !group.superAdminOnly || isSuperAdmin)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        authService.hasMenuPermission(item.to),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <nav

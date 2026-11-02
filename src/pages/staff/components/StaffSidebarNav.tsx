@@ -10,6 +10,7 @@ import {
   Scale,
   Ship,
 } from "lucide-react";
+import { authService } from "../../../services/auth";
 
 interface StaffSidebarNavProps {
   onNavigate?: () => void;
@@ -101,12 +102,21 @@ const staffNavGroups: NavGroup[] = [
 ];
 
 export function StaffSidebarNav({ onNavigate }: StaffSidebarNavProps) {
+  const visibleGroups = staffNavGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        authService.hasMenuPermission(item.to),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
+
   return (
     <nav
       className="flex flex-col gap-4 py-1 pb-4 w-full min-w-0 overflow-hidden"
       aria-label="Navigasi Staf Lapangan"
     >
-      {staffNavGroups.map((group) => (
+      {visibleGroups.map((group) => (
         <div key={group.title} className="flex flex-col gap-1">
           <div className="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
             {group.title}

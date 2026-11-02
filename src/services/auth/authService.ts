@@ -64,6 +64,7 @@ export const authService = {
           role: detectedRole,
           roles: data.roles || [detectedRole],
           profile: data.profile,
+          menus: data.menus || [],
         }),
       );
     }
@@ -257,6 +258,22 @@ export const authService = {
 
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
+  },
+
+  getUserMenus(): import("./types").UserPermittedMenu[] {
+    return this.getStoredUser()?.menus || [];
+  },
+
+  hasMenuPermission(urlPath: string): boolean {
+    if (this.isSuperAdmin()) return true;
+    const menus = this.getUserMenus();
+    if (!menus || menus.length === 0) return true;
+    return menus.some((m) => {
+      if (m.can_view === false) return false;
+      const cleanMenuUrl = (m.url || "").replace(/\/+$/, "");
+      const cleanPath = urlPath.replace(/\/+$/, "");
+      return cleanPath === cleanMenuUrl || cleanPath.startsWith(cleanMenuUrl + "/");
+    });
   },
 
   getDashboardUrl(): string {
