@@ -19,6 +19,7 @@ import { Logo } from "../../../components/Logo";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import { RoleBadge } from "../../../components/RoleBadge";
 import {
   QuickSearchMenu,
   type QuickSearchItem,
@@ -251,18 +252,9 @@ export function AdminLayout() {
 
           {/* Bottom-left: Clean System Status Indicator */}
           <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2 min-w-0">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isSuperAdmin ? "bg-purple-500" : "bg-emerald-500"
-                } animate-pulse shrink-0`}
-              />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider truncate">
-                {isSuperAdmin ? "Super Admin" : "Staf Admin"}
-              </span>
-            </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shrink-0">
-              {isSuperAdmin ? "IT Governance" : "Operasional"}
+            <RoleBadge role={isSuperAdmin ? "superadmin" : "admin"} size="sm" />
+            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded surface-card border border-fco-border-subtle shrink-0">
+              {isSuperAdmin ? "Tata Kelola" : "Operasional"}
             </span>
           </div>
         </div>
@@ -338,18 +330,9 @@ export function AdminLayout() {
           </div>
 
           <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isSuperAdmin ? "bg-purple-500" : "bg-emerald-500"
-                } animate-pulse`}
-              />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                {isSuperAdmin ? "Super Admin" : "Staf Admin"}
-              </span>
-            </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              {isSuperAdmin ? "IT Governance" : "Operasional"}
+            <RoleBadge role={isSuperAdmin ? "superadmin" : "admin"} size="sm" />
+            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded surface-card border border-fco-border-subtle shrink-0">
+              {isSuperAdmin ? "Tata Kelola" : "Operasional"}
             </span>
           </div>
         </div>

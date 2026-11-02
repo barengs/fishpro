@@ -9,6 +9,7 @@ import { DetailModal } from "../../../components/DetailModal";
 import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
+import { RoleBadge } from "../../../components/RoleBadge";
 import { roleSchema } from "../../../utils/schemas";
 import {
   rolesService,
@@ -152,31 +153,13 @@ export function RolesTab() {
       hideOnMobile: true,
       render: (r) => {
         const norm = r.name.toLowerCase();
-        const isSuper = norm === "superadmin";
-        const isAdmin = norm === "admin";
-        const isReg = norm === "regulator";
+        let customLabel: string | undefined = undefined;
+        if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
+        else if (norm === "admin") customLabel = "Akses Operasional (Staf Admin)";
+        else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
+        else customLabel = "Akses Terbatas";
 
-        let badgeClass = "bg-slate-500/10 text-slate-700 dark:text-slate-300";
-        let label = "Akses Menu Terbatas";
-
-        if (isSuper) {
-          badgeClass = "bg-purple-500/10 text-purple-700 dark:text-purple-300";
-          label = "Akses Penuh (Super Admin)";
-        } else if (isAdmin) {
-          badgeClass = "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
-          label = "Akses Operasional (Staf Admin)";
-        } else if (isReg) {
-          badgeClass = "bg-blue-500/10 text-fco-blue dark:text-blue-400";
-          label = "Akses Pengawasan (Regulator)";
-        }
-
-        return (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${badgeClass}`}
-          >
-            {label}
-          </span>
-        );
+        return <RoleBadge role={r.name} label={customLabel} size="sm" />;
       },
     },
     {
@@ -248,31 +231,13 @@ export function RolesTab() {
           selectedRole ? (
             (() => {
               const norm = selectedRole.name.toLowerCase();
-              const isSuper = norm === "superadmin";
-              const isAdmin = norm === "admin";
-              const isReg = norm === "regulator";
+              let customLabel: string | undefined = undefined;
+              if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
+              else if (norm === "admin") customLabel = "Akses Operasional (Staf Admin)";
+              else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
+              else customLabel = "Akses Terbatas";
 
-              let badgeClass = "bg-slate-500/10 text-slate-700 dark:text-slate-300";
-              let label = "Akses Menu Terbatas";
-
-              if (isSuper) {
-                badgeClass = "bg-purple-500/10 text-purple-700 dark:text-purple-300";
-                label = "Akses Penuh (Super Admin)";
-              } else if (isAdmin) {
-                badgeClass = "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
-                label = "Akses Operasional (Staf Admin)";
-              } else if (isReg) {
-                badgeClass = "bg-blue-500/10 text-fco-blue dark:text-blue-400";
-                label = "Akses Pengawasan (Regulator)";
-              }
-
-              return (
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${badgeClass}`}
-                >
-                  {label}
-                </span>
-              );
+              return <RoleBadge role={selectedRole.name} label={customLabel} />;
             })()
           ) : undefined
         }

@@ -12,6 +12,7 @@ import {
   Link2,
   MapPin,
   Ship,
+  Users,
 } from "lucide-react";
 import { authService } from "../../../services/auth";
 
@@ -47,7 +48,7 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Armada",
+    title: "Pelayanan Armada",
     items: [
       {
         label: "Kapal",
@@ -70,7 +71,7 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Operasional",
+    title: "Data Hasil Laut",
     items: [
       {
         label: "Laporan Tangkapan",
@@ -113,6 +114,12 @@ const navGroups: NavGroup[] = [
         to: "/admin/iot-devices",
         Icon: Cpu,
         prefetch: () => import("../IotDevicesPage"),
+      },
+      {
+        label: "Manajemen Pengguna",
+        to: "/admin/users",
+        Icon: Users,
+        prefetch: () => import("../UsersPage"),
       },
       {
         label: "Peran & Hak Akses",

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Loader2, LogOut, User } from "lucide-react";
+import { RoleBadge } from "./RoleBadge";
 
 interface UserProfileBadgeProps {
   initials: string;
@@ -92,7 +93,9 @@ export function UserProfileBadge({
             <div className="text-sm font-semibold tracking-tight text-strong truncate">
               {name}
             </div>
-            <div className="text-xs text-soft mt-0.5">{role}</div>
+            <div className="mt-1">
+              <RoleBadge role={role} size="sm" />
+            </div>
           </div>
           <a
             href="#profil"
