@@ -230,6 +230,7 @@ export default function App() {
                 }
               >
                 <Route index element={<AdminDashboard />} />
+                <Route path="scales" element={<IotScalesPage />} />
                 <Route path="ships" element={<ShipsPage />} />
                 <Route
                   path="users"

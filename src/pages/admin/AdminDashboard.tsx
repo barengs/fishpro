@@ -1,9 +1,9 @@
 import { authService } from "../../services/auth";
 import { SuperAdminDashboard } from "./SuperAdminDashboard";
-import { StaffAdminDashboard } from "./StaffAdminDashboard";
+import { StaffDashboard } from "./StaffDashboard";
 
 export function AdminDashboard() {
   const isSuperAdmin = authService.isSuperAdmin();
 
-  return isSuperAdmin ? <SuperAdminDashboard /> : <StaffAdminDashboard />;
+  return isSuperAdmin ? <SuperAdminDashboard /> : <StaffDashboard />;
 }

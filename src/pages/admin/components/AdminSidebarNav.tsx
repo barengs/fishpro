@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Link2,
   MapPin,
+  Scale,
   Ship,
   Users,
 } from "lucide-react";
@@ -71,8 +72,14 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Data Hasil Laut",
+    title: "Operasional & Penimbangan",
     items: [
+      {
+        label: "Timbangan IoT",
+        to: "/admin/scales",
+        Icon: Scale,
+        prefetch: () => import("../../regulator/IotScalesPage"),
+      },
       {
         label: "Laporan Tangkapan",
         to: "/admin/catches",

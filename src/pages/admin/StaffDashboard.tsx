@@ -5,17 +5,16 @@ import {
   Building2,
   ClipboardList,
   Fish,
-  PlusCircle,
+  Scale,
   Ship,
-  Users,
+  Sparkles,
 } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { RoleBadge } from "../../components/RoleBadge";
 import { WppBarChart } from "./components/WppBarChart";
 import { shipsService } from "../../services/ships";
 import { catchesService, type FishCatch } from "../../services/catches";
-import { ownersService } from "../../services/owners";
-import { captainsService } from "../../services/captains";
+import { iotService } from "../../services/iot";
 import { dashboardService } from "../../services/dashboard";
 import {
   calculateCatchTotalVolume,
@@ -23,24 +22,24 @@ import {
   formatWeight,
 } from "../../utils";
 
-interface StaffAdminMetrics {
+interface StaffMetrics {
   activeShipsCount: number;
   totalShipsCount: number;
   totalCatchesCount: number;
   totalVolumeStr: string;
   volumeSparkline?: number[];
   volumeTrendUp?: boolean;
-  totalPartnersCount: number;
+  activeScalesCount: number;
 }
 
-export function StaffAdminDashboard() {
+export function StaffDashboard() {
   const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState<StaffAdminMetrics>({
+  const [metrics, setMetrics] = useState<StaffMetrics>({
     activeShipsCount: 0,
     totalShipsCount: 0,
     totalCatchesCount: 0,
     totalVolumeStr: "0 kg",
-    totalPartnersCount: 0,
+    activeScalesCount: 0,
   });
   const [recentCatches, setRecentCatches] = useState<FishCatch[]>([]);
 
@@ -48,12 +47,11 @@ export function StaffAdminDashboard() {
     async function loadStaffStats() {
       setLoading(true);
       try {
-        const [dashData, ships, catches, owners, captains] = await Promise.all([
+        const [dashData, ships, catches, devices] = await Promise.all([
           dashboardService.getAdminDashboard().catch(() => null),
           shipsService.getAll().catch(() => []),
           catchesService.getAll().catch(() => []),
-          ownersService.getAll().catch(() => []),
-          captainsService.getAll().catch(() => []),
+          iotService.getDevices().catch(() => []),
         ]);
 
         const activeShips =
@@ -72,7 +70,7 @@ export function StaffAdminDashboard() {
         });
         setRecentCatches(sortedCatches.slice(0, 6));
 
-        // Volume sparkline
+        // Generate volume sparkline
         const volByDate: Record<string, number> = {};
         for (const c of [...catches].sort(
           (a, b) =>
@@ -101,7 +99,7 @@ export function StaffAdminDashboard() {
           totalVolumeStr,
           volumeSparkline,
           volumeTrendUp,
-          totalPartnersCount: owners.length + captains.length,
+          activeScalesCount: devices.filter((d) => d.is_active !== false).length,
         });
       } catch {
         // Keeps safe default metrics
@@ -115,53 +113,53 @@ export function StaffAdminDashboard() {
 
   return (
     <div>
-      {/* Header Operasional */}
+      {/* Header Staf Lapangan */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-soft mb-1">
-            <span>Pelayanan</span>
+            <span>Pelayanan Pelabuhan</span>
             <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-strong font-medium">Operasional Harian</span>
+            <span className="text-strong font-medium">Operasional Lapangan</span>
           </div>
           <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
-            Pelayanan & Operasional Armada
+            Dashboard Staf Lapangan
           </h1>
           <p className="m-0 text-sm text-soft mt-1">
-            Verifikasi pendaftaran kapal, administrasi data pemilik dan nahkoda, serta validasi laporan hasil tangkapan.
+            Operasional penimbangan tangkapan IoT di dermaga, administrasi kapal, dan verifikasi hasil laut.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <RoleBadge role="admin" />
+          <RoleBadge role="admin" label="Staf Lapangan" />
         </div>
       </div>
 
-      {/* 4 Cards Operasional */}
+      {/* 4 Cards Operasional Lapangan */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
-          label="Kapal Aktif Melaut"
-          value={formatNumber(metrics.activeShipsCount)}
-          delta={`${metrics.totalShipsCount} armada terdaftar`}
+          label="Timbangan IoT Terpasang"
+          value={formatNumber(metrics.activeScalesCount)}
+          delta="Timbangan aktif di dermaga"
           showSparkline={false}
           color="blue"
-          Icon={Ship}
+          Icon={Scale}
           loading={loading}
-          href="/admin/ships"
-          linkText="Buka Data Kapal"
+          href="/admin/scales"
+          linkText="Buka Terminal Timbang"
         />
         <KpiCard
-          label="Laporan Tangkapan"
+          label="Laporan Tangkapan Masuk"
           value={formatNumber(metrics.totalCatchesCount)}
-          delta="Laporan hasil tangkap masuk"
+          delta="Hasil verifikasi di pelabuhan"
           showSparkline={false}
           color="emerald"
           Icon={ClipboardList}
           loading={loading}
           href="/admin/catches"
-          linkText="Verifikasi Laporan"
+          linkText="Daftar Tangkapan"
         />
         <KpiCard
-          label="Total Volume Hasil Laut"
+          label="Total Volume Ditimbang"
           value={metrics.totalVolumeStr}
           delta="Akumulasi produksi tervalidasi"
           showSparkline={true}
@@ -171,54 +169,67 @@ export function StaffAdminDashboard() {
           Icon={Fish}
           loading={loading}
           href="/admin/catches"
-          linkText="Detail Volume"
+          linkText="Detail Bobot"
         />
         <KpiCard
-          label="Pemilik & Nahkoda"
-          value={formatNumber(metrics.totalPartnersCount)}
-          delta="Pengusaha & kapten terdaftar"
+          label="Kapal Aktif Melaut"
+          value={formatNumber(metrics.activeShipsCount)}
+          delta={`${metrics.totalShipsCount} armada terdaftar`}
           showSparkline={false}
           color="purple"
-          Icon={Users}
+          Icon={Ship}
           loading={loading}
-          href="/admin/owners"
-          linkText="Kelola Mitra"
+          href="/admin/ships"
+          linkText="Data Armada"
         />
       </div>
 
-      {/* Aksi Cepat Pelayanan */}
+      {/* Aksi Cepat Tugas Lapangan */}
       <div className="mb-6 p-4 rounded-xl surface-card border border-fco-border flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-sm font-bold text-strong">Aksi Pelayanan Cepat</div>
-          <div className="text-xs text-soft">
-            Jalan pintas untuk pencatatan dan verifikasi data harian nelayan.
+          <div className="text-sm font-bold text-strong flex items-center gap-2">
+            <span>Tugas & Aksi Lapangan</span>
+            <span className="inline-flex items-center gap-1 text-2xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Sparkles size={11} />
+              <span>Realtime IoT</span>
+            </span>
+          </div>
+          <div className="text-xs text-soft mt-0.5">
+            Pintasan kerja harian staf untuk penimbangan tangkapan dan verifikasi armada nelayan.
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            to="/admin/catches"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-fco-blue hover:bg-fco-blue-hover text-white no-underline transition-colors shadow-2xs"
+            to="/admin/scales"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-fco-blue hover:bg-fco-blue-hover text-white no-underline transition-colors shadow-2xs"
           >
-            <PlusCircle size={14} />
+            <Scale size={15} />
+            <span>Mulai Timbang IoT</span>
+          </Link>
+          <Link
+            to="/admin/catches"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
+          >
+            <ClipboardList size={14} className="text-soft" />
             <span>Entri Tangkapan</span>
           </Link>
           <Link
             to="/admin/ships"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Ship size={14} className="text-soft" />
-            <span>Tambah Kapal</span>
+            <span>Verifikasi Kapal</span>
           </Link>
           <Link
             to="/admin/owners"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Building2 size={14} className="text-soft" />
             <span>Pemilik Kapal</span>
           </Link>
           <Link
             to="/admin/captains"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold surface-inset hover:surface-page border border-fco-border-subtle text-strong no-underline transition-colors"
           >
             <Anchor size={14} className="text-soft" />
             <span>Nahkoda</span>
@@ -226,7 +237,7 @@ export function StaffAdminDashboard() {
         </div>
       </div>
 
-      {/* Data Operasional Utama: Tangkapan Terkini + Distribusi WPP */}
+      {/* Grid: Laporan Tangkapan Masuk + Distribusi WPP */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Tabel Tangkapan Terbaru */}
         <div className="lg:col-span-3 surface-card border border-fco-border rounded-xl p-5">
@@ -236,7 +247,7 @@ export function StaffAdminDashboard() {
                 Laporan Tangkapan Masuk
               </h2>
               <p className="m-0 text-xs text-soft mt-0.5">
-                Daftar laporan hasil penangkapan ikan teranyar dari armada
+                Daftar laporan hasil penangkapan ikan teranyar dari armada di dermaga
               </p>
             </div>
             <Link
@@ -250,7 +261,10 @@ export function StaffAdminDashboard() {
           {loading ? (
             <div className="space-y-3 py-4">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-12 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse" />
+                <div
+                  key={i}
+                  className="h-12 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse"
+                />
               ))}
             </div>
           ) : recentCatches.length === 0 ? (
@@ -270,7 +284,10 @@ export function StaffAdminDashboard() {
                 </thead>
                 <tbody className="divide-y divide-fco-border-subtle">
                   {recentCatches.map((c) => (
-                    <tr key={c.id} className="hover:surface-page transition-colors">
+                    <tr
+                      key={c.id}
+                      className="hover:surface-page transition-colors"
+                    >
                       <td className="py-2.5 px-3 text-soft font-mono">
                         {c.catch_date || "—"}
                       </td>

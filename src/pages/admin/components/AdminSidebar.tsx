@@ -12,6 +12,7 @@ import {
   Link2,
   MapPin,
   Menu,
+  Scale,
   Ship,
   X,
 } from "lucide-react";
@@ -61,6 +62,22 @@ const adminSearchItems: QuickSearchItem[] = [
     category: "Armada",
     icon: Anchor,
     keywords: ["nahkoda", "captain", "lisensi", "sikpi", "pelaut", "kapten"],
+  },
+  {
+    label: "Timbangan IoT (Live)",
+    to: "/admin/scales",
+    category: "Operasional Lapangan",
+    icon: Scale,
+    keywords: [
+      "timbangan",
+      "iot",
+      "timbang",
+      "scale",
+      "live",
+      "bobot",
+      "dermaga",
+      "pelabuhan",
+    ],
   },
   {
     label: "Laporan Tangkapan",
@@ -213,7 +230,7 @@ export function AdminLayout() {
         navigate("/admin", { replace: true });
       }
       toast.success(
-        "Beralih ke mode Staf Admin: Modul tata kelola sistem disembunyikan.",
+        "Beralih ke mode Staf: Akses tugas operasional & penimbangan lapangan aktif.",
       );
     } else {
       toast.success(
@@ -412,9 +429,9 @@ export function AdminLayout() {
                     ? "bg-fco-blue text-white shadow-2xs"
                     : "text-soft hover:text-strong bg-transparent"
                 }`}
-                title="Staf Admin: Operasional Harian Pelayanan (Armada, Laporan, Spesies, WPP)"
+                title="Staf Lapangan: Operasional Lapangan, Penimbangan IoT Dermaga, Armada, dan Laporan Tangkapan"
               >
-                Staf Admin
+                Staf
               </button>
             </div>
 

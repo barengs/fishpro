@@ -129,7 +129,7 @@ export function RolesTab() {
             {r.name.toLowerCase() === "superadmin"
               ? "Super Administrator"
               : r.name.toLowerCase() === "admin"
-                ? "Staf Administrator"
+                ? "Staf Lapangan"
                 : r.description || "Akses terbatas"}
           </div>
         </div>
@@ -155,7 +155,7 @@ export function RolesTab() {
         const norm = r.name.toLowerCase();
         let customLabel: string | undefined = undefined;
         if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
-        else if (norm === "admin") customLabel = "Akses Operasional (Staf Admin)";
+        else if (norm === "admin") customLabel = "Akses Lapangan (Staf)";
         else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
         else customLabel = "Akses Terbatas";
 
@@ -233,7 +233,7 @@ export function RolesTab() {
               const norm = selectedRole.name.toLowerCase();
               let customLabel: string | undefined = undefined;
               if (norm === "superadmin") customLabel = "Akses Penuh (Super Admin)";
-              else if (norm === "admin") customLabel = "Akses Operasional (Staf Admin)";
+              else if (norm === "admin") customLabel = "Akses Lapangan (Staf)";
               else if (norm === "regulator") customLabel = "Akses Pengawasan (Regulator)";
               else customLabel = "Akses Terbatas";
 

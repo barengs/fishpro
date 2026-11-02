@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Anchor, Building2, Eye, ShieldCheck, UserCheck } from "lucide-react";
+import { Anchor, Building2, Eye, Scale, ShieldCheck } from "lucide-react";
 
 export type RoleType =
   | "superadmin"
@@ -33,8 +33,8 @@ const roleConfigs: Record<string, RoleConfig> = {
     dotClass: "bg-indigo-400 dark:bg-indigo-600",
   },
   admin: {
-    defaultLabel: "Staf Admin",
-    Icon: UserCheck,
+    defaultLabel: "Staf",
+    Icon: Scale,
     badgeClass:
       "surface-card text-strong border-slate-200/90 dark:border-slate-700/80 shadow-2xs",
     dotClass: "bg-emerald-500 dark:bg-emerald-400",

@@ -60,8 +60,8 @@ export function getUserDisplayInfo(): UserDisplayInfo {
       : "Super Admin (IT Governance)";
   } else if (isAdmin) {
     roleLabel = profile?.department
-      ? `Staf Admin · ${profile.department}`
-      : "Staf Admin (Operasional)";
+      ? `Staf · ${profile.department}`
+      : "Staf (Operasional Lapangan)";
   } else if (isRegulator) {
     roleLabel = profile?.department
       ? `Pengawas · ${profile.department}`
