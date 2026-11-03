@@ -3,8 +3,9 @@ import { DataTable, type Column } from "../../../components/DataTable";
 import { useCrudModal } from "../../../components/useCrudModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { StatusChip } from "../../../components/StatusChip";
+import { RoleBadge } from "../../../components/RoleBadge";
 import { AlertBanner } from "../../../components/ui";
-import { AdminUserModal } from "./AdminUserModal";
+import { AdminUserModal, type UserRegisterType } from "./AdminUserModal";
 import {
   adminUsersService,
   rolesService,
@@ -51,16 +52,22 @@ export function AdminUsersTab() {
   }, [search]);
 
   const handleUserSubmit = async (
-    type: "admin" | "regulator",
+    type: UserRegisterType,
     adminForm: RegisterAdminPayload,
     regulatorForm: RegisterRegulatorPayload,
   ) => {
     try {
-      if (type === "admin") {
+      if (type === "staff") {
         if (!adminForm.username.trim() || !adminForm.password) return;
         await adminUsersService.registerAdmin(adminForm);
         setToastMsg(
-          `Pengguna admin "${adminForm.username}" berhasil didaftarkan.`,
+          `Akun Staf Lapangan "${adminForm.username}" berhasil didaftarkan.`,
+        );
+      } else if (type === "superadmin") {
+        if (!adminForm.username.trim() || !adminForm.password) return;
+        await adminUsersService.registerAdmin(adminForm);
+        setToastMsg(
+          `Akun Super Admin "${adminForm.username}" berhasil didaftarkan.`,
         );
       } else {
         if (
@@ -108,6 +115,24 @@ export function AdminUsersTab() {
           </div>
         </div>
       ),
+    },
+    {
+      key: "role",
+      header: "Peran",
+      flex: 2,
+      render: (r) => {
+        const roleStr = (r.role || "").toLowerCase();
+        const posStr = (r.admin_profile?.position || "").toLowerCase();
+        const isSuper = roleStr === "superadmin" || posStr.includes("super");
+        return (
+          <RoleBadge
+            role={isSuper ? "superadmin" : "admin"}
+            label={isSuper ? "Super Admin" : "Staf Lapangan"}
+            size="sm"
+            variant="solid"
+          />
+        );
+      },
     },
     {
       key: "dept",

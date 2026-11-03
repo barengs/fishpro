@@ -1,25 +1,27 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Anchor, Building2 } from "lucide-react";
+import { Anchor, Building2, UserCog } from "lucide-react";
 import { OwnersTab } from "./OwnersTab";
 import { CaptainsTab } from "./CaptainsTab";
+import { AdminUsersTab } from "./roles-menus/AdminUsersTab";
 
-type UserTab = "owners" | "captains";
+type UserTab = "staff" | "owners" | "captains";
 
 const tabs: {
   key: UserTab;
   label: string;
   Icon: typeof Building2;
 }[] = [
+  { key: "staff", label: "Staf & Petugas", Icon: UserCog },
   { key: "owners", label: "Pemilik Kapal", Icon: Building2 },
   { key: "captains", label: "Nahkoda", Icon: Anchor },
 ];
 
 export function UsersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialTab = (searchParams.get("tab") as UserTab) || "owners";
+  const initialTab = (searchParams.get("tab") as UserTab) || "staff";
   const [tab, setTab] = useState<UserTab>(
-    initialTab === "captains" ? "captains" : "owners",
+    tabs.some((t) => t.key === initialTab) ? initialTab : "staff",
   );
 
   const handleTabChange = (nextTab: UserTab) => {
@@ -34,8 +36,7 @@ export function UsersPage() {
           Manajemen Pengguna
         </h1>
         <p className="m-0 text-sm text-soft mt-1">
-          Kelola data pemilik kapal armada dan nahkoda berlisensi yang terdaftar
-          di sistem.
+          Kelola data akun staf operasional kantor/lapangan, pemilik kapal, dan nahkoda terdaftar.
         </p>
 
         {/* Style 1: Underline Tab Bar (GitHub / Vercel style) */}
@@ -78,7 +79,9 @@ export function UsersPage() {
         </div>
       </div>
 
-      {tab === "owners" ? <OwnersTab /> : <CaptainsTab />}
+      {tab === "staff" && <AdminUsersTab />}
+      {tab === "owners" && <OwnersTab />}
+      {tab === "captains" && <CaptainsTab />}
     </div>
   );
 }
