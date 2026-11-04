@@ -153,13 +153,14 @@ export function RolesTab() {
       hideOnMobile: true,
       render: (r) => {
         const norm = r.name.toLowerCase();
-        let customLabel: string | undefined = undefined;
-        if (norm === "superadmin") customLabel = "Akses Penuh";
-        else if (norm === "admin") customLabel = "Staf Lapangan";
-        else if (norm === "regulator") customLabel = "Pengawasan";
-        else if (norm === "owner") customLabel = "Pemilik";
-        else if (norm === "captain") customLabel = "Nahkoda";
-        else customLabel = "Terbatas";
+        const roleLabels: Record<string, string> = {
+          superadmin: "Akses Penuh",
+          admin: "Staf Lapangan",
+          regulator: "Pengawasan",
+          owner: "Pemilik",
+          captain: "Nahkoda",
+        };
+        const customLabel = roleLabels[norm] ?? "Terbatas";
 
         return <RoleBadge role={r.name} label={customLabel} size="sm" variant="solid" />;
       },
@@ -233,13 +234,14 @@ export function RolesTab() {
           selectedRole ? (
             (() => {
               const norm = selectedRole.name.toLowerCase();
-              let customLabel: string | undefined = undefined;
-              if (norm === "superadmin") customLabel = "Akses Penuh";
-              else if (norm === "admin") customLabel = "Staf Lapangan";
-              else if (norm === "regulator") customLabel = "Pengawasan";
-              else if (norm === "owner") customLabel = "Pemilik Kapal";
-              else if (norm === "captain") customLabel = "Nahkoda";
-              else customLabel = "Terbatas";
+              const roleLabels: Record<string, string> = {
+                superadmin: "Akses Penuh",
+                admin: "Staf Lapangan",
+                regulator: "Pengawasan",
+                owner: "Pemilik Kapal",
+                captain: "Nahkoda",
+              };
+              const customLabel = roleLabels[norm] ?? "Terbatas";
 
               return <RoleBadge role={selectedRole.name} label={customLabel} variant="solid" />;
             })()

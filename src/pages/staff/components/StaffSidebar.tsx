@@ -109,6 +109,12 @@ export function StaffSidebar() {
   const navigate = useNavigate();
   const toast = useToast();
 
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const userRole = authService.getUserRole();
   if (userRole && userRole !== "admin" && userRole !== "superadmin") {
     return <Navigate to={authService.getDashboardUrl()} replace />;
@@ -123,12 +129,6 @@ export function StaffSidebar() {
   };
 
   const userInfo = getUserDisplayInfo();
-
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <div className="min-h-screen surface-page flex">
