@@ -34,6 +34,7 @@ export function WppMapViewer({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const polygonLayersRef = useRef<Record<string, L.Polygon>>({});
+  const labelMarkersRef = useRef<L.Marker[]>([]);
   const [hoveredWpp, setHoveredWpp] = useState<WppPolygonGeo | null>(null);
   const [mapTileStyle, setMapTileStyle] = useState<"standard" | "satellite">(
     "standard",
@@ -99,9 +100,11 @@ export function WppMapViewer({
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Clear previous polygons
+    // Clear previous polygons and label markers
     Object.values(polygonLayersRef.current).forEach((p) => map.removeLayer(p));
     polygonLayersRef.current = {};
+    labelMarkersRef.current.forEach((m) => map.removeLayer(m));
+    labelMarkersRef.current = [];
 
     WPP_REAL_POLYGONS.forEach((wpp) => {
       const isSelected =
@@ -110,12 +113,11 @@ export function WppMapViewer({
         catchesPerWpp[wpp.code] || catchesPerWpp[`WPP ${wpp.code}`] || 0;
 
       const polygon = L.polygon(wpp.polygon, {
-        color: isSelected ? "#0284c7" : "#0284c7",
-        weight: isSelected ? 3 : 1.8,
-        opacity: isSelected ? 1 : 0.85,
-        fillColor: isSelected ? "#38bdf8" : "#0284c7",
-        fillOpacity: isSelected ? 0.35 : 0.15,
-        dashArray: isSelected ? undefined : "6, 6",
+        color: isSelected ? "#ffffff" : wpp.borderColor,
+        weight: isSelected ? 3.5 : 2,
+        opacity: isSelected ? 1 : 0.9,
+        fillColor: wpp.color,
+        fillOpacity: isSelected ? 0.6 : 0.38,
       });
 
       polygon.on("click", () => {
@@ -125,9 +127,9 @@ export function WppMapViewer({
       polygon.on("mouseover", () => {
         setHoveredWpp(wpp);
         polygon.setStyle({
-          fillOpacity: 0.35,
-          weight: 2.5,
-          color: "#38bdf8",
+          fillOpacity: 0.65,
+          weight: 3,
+          color: "#ffffff",
         });
       });
 
@@ -135,9 +137,9 @@ export function WppMapViewer({
         setHoveredWpp(null);
         if (selectedWpp?.replace(/^WPP\s*/i, "").trim() !== wpp.code) {
           polygon.setStyle({
-            fillOpacity: 0.15,
-            weight: 1.8,
-            color: "#0284c7",
+            fillOpacity: 0.38,
+            weight: 2,
+            color: wpp.borderColor,
           });
         }
       });
@@ -146,16 +148,18 @@ export function WppMapViewer({
       const labelIcon = L.divIcon({
         className: "custom-wpp-badge",
         html: `
-          <div style="background:#091424;color:#ffffff;border:1.5px solid #0284c7;padding:2px 8px;border-radius:3px;font-size:11px;font-family:monospace;font-weight:bold;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.4);text-align:center;">
-            WPP ${escapeHtml(wpp.code)}
-            ${catchVolume > 0 ? `<div style="color:#38bdf8;font-size:9px;font-weight:bold;">${formatWeight(catchVolume)}</div>` : ""}
+          <div style="background:rgba(9, 20, 36, 0.92);backdrop-filter:blur(3px);color:#ffffff;border:1.5px solid ${wpp.color};padding:2.5px 7px;border-radius:5px;font-size:11px;font-family:sans-serif;box-shadow:0 3px 8px rgba(0,0,0,0.45);text-align:center;min-width:64px;line-height:1.2;">
+            <div style="color:${wpp.color};font-size:10.5px;font-weight:800;letter-spacing:0.3px;">WPP ${escapeHtml(wpp.code)}</div>
+            <div style="font-size:9px;color:#93c5fd;font-style:italic;font-weight:600;white-space:nowrap;">${escapeHtml(wpp.ocean)}</div>
+            ${catchVolume > 0 ? `<div style="color:#4ade80;font-size:8.5px;font-weight:750;margin-top:1px;">${formatWeight(catchVolume)}</div>` : ""}
           </div>
         `,
-        iconSize: [68, 26],
-        iconAnchor: [34, 13],
+        iconSize: [80, 36],
+        iconAnchor: [40, 18],
       });
 
-      L.marker(wpp.center, { icon: labelIcon, interactive: false }).addTo(map);
+      const marker = L.marker(wpp.center, { icon: labelIcon, interactive: false }).addTo(map);
+      labelMarkersRef.current.push(marker);
 
       polygon.addTo(map);
       polygonLayersRef.current[wpp.code] = polygon;
