@@ -139,9 +139,9 @@ export function CrudActions({
           onClick={onDetail}
           title="Lihat Detail"
           aria-label="Lihat Detail"
-          className="w-8 h-8 rounded-lg border border-blue-200 dark:border-blue-700/60 bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-300 hover:bg-fco-blue hover:text-white hover:border-fco-blue dark:hover:bg-fco-blue dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          className="w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
         >
-          <Eye size={15} strokeWidth={2.2} aria-hidden="true" />
+          <Eye size={15} strokeWidth={2.4} aria-hidden="true" />
         </button>
       )}
       {onEdit && (
@@ -150,9 +150,9 @@ export function CrudActions({
           onClick={onEdit}
           title="Ubah Data"
           aria-label="Ubah Data"
-          className="w-8 h-8 rounded-lg border border-amber-200 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 hover:bg-amber-500 hover:text-white hover:border-amber-500 dark:hover:bg-amber-500 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          className="w-8 h-8 rounded-md bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
         >
-          <Pencil size={14} strokeWidth={2.2} aria-hidden="true" />
+          <Pencil size={14} strokeWidth={2.4} aria-hidden="true" />
         </button>
       )}
       {onDelete && (
@@ -161,9 +161,9 @@ export function CrudActions({
           onClick={onDelete}
           title="Hapus Data"
           aria-label="Hapus Data"
-          className="w-8 h-8 rounded-lg border border-rose-200 dark:border-rose-700/60 bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white hover:border-rose-600 dark:hover:bg-rose-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          className="w-8 h-8 rounded-md bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
         >
-          <Trash2 size={14} strokeWidth={2.2} aria-hidden="true" />
+          <Trash2 size={14} strokeWidth={2.4} aria-hidden="true" />
         </button>
       )}
     </div>
