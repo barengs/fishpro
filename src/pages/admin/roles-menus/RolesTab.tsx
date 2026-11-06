@@ -121,10 +121,11 @@ export function RolesTab() {
     {
       key: "name",
       header: "Nama Peran",
-      flex: 2,
+      flex: 1.5,
+      minWidth: 140,
       render: (r) => (
         <div>
-          <span className="text-sm font-bold text-strong">{r.name}</span>
+          <span className="text-sm font-bold text-strong tracking-tight">{r.name}</span>
           <div className="sm:hidden text-2xs text-soft mt-0.5 line-clamp-1">
             {r.name.toLowerCase() === "superadmin"
               ? "Super Administrator"
@@ -139,6 +140,7 @@ export function RolesTab() {
       key: "desc",
       header: "Deskripsi",
       flex: 3,
+      minWidth: 200,
       hideOnMobile: true,
       render: (r) => (
         <span className="text-sm text-soft line-clamp-1">
@@ -149,7 +151,9 @@ export function RolesTab() {
     {
       key: "perms",
       header: "Tingkat Akses",
-      flex: 2,
+      flex: 1.8,
+      minWidth: 170,
+      align: "center",
       hideOnMobile: true,
       render: (r) => {
         const norm = r.name.toLowerCase();
@@ -162,13 +166,12 @@ export function RolesTab() {
         };
         const customLabel = roleLabels[norm] ?? "Terbatas";
 
-        return <RoleBadge role={r.name} label={customLabel} size="sm" variant="solid" />;
+        return <RoleBadge role={r.name} label={customLabel} size="md" variant="solid" />;
       },
     },
     {
       key: "aksi",
       header: "Aksi",
-      flex: 1,
       align: "right",
       render: (r) => (
         <CrudActions

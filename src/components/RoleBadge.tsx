@@ -13,7 +13,7 @@ interface RoleBadgeProps {
   role?: RoleType | null;
   label?: string;
   className?: string;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
   showDot?: boolean;
   variant?: "solid" | "subtle";
 }
@@ -78,7 +78,7 @@ export function RoleBadge({
   role = "admin",
   label,
   className = "",
-  size = "sm",
+  size = "md",
   showDot = false,
   variant = "solid",
 }: RoleBadgeProps) {
@@ -88,17 +88,26 @@ export function RoleBadge({
     (normRole.includes("super") ? roleConfigs.superadmin : roleConfigs.admin);
 
   const displayLabel = label || config.defaultLabel;
-  const isSmall = size === "sm";
   const badgeStyle =
     variant === "solid" ? config.solidClass : config.subtleClass;
 
+  const sizeClasses: Record<"sm" | "md" | "lg", string> = {
+    sm: "min-w-[70px] h-6 px-2.5 text-[11px] font-bold rounded-md gap-1.5 justify-center text-center shadow-2xs",
+    md: "min-w-[84px] h-7 px-3.5 text-xs font-bold rounded-md gap-1.5 justify-center text-center shadow-2xs",
+    lg: "min-w-[100px] h-8 px-4 text-sm font-bold rounded-lg gap-2 justify-center text-center shadow-xs",
+  };
+
+  const iconSizes: Record<"sm" | "md" | "lg", number> = {
+    sm: 12,
+    md: 14,
+    lg: 16,
+  };
+
+  const currentSize = size || "md";
+
   return (
     <span
-      className={`inline-flex items-center gap-1 font-bold tracking-tight select-none whitespace-nowrap transition-all ${
-        isSmall
-          ? "px-2 py-0.5 text-[11px] leading-tight rounded-xs"
-          : "px-2.5 py-1 text-xs leading-normal rounded-md"
-      } ${badgeStyle} ${className}`}
+      className={`inline-flex items-center font-bold tracking-tight select-none whitespace-nowrap transition-all ${sizeClasses[currentSize]} ${badgeStyle} ${className}`}
     >
       {showDot && (
         <span
@@ -107,8 +116,8 @@ export function RoleBadge({
         />
       )}
       <config.Icon
-        size={isSmall ? 10 : 12}
-        className="shrink-0 opacity-90"
+        size={iconSizes[currentSize]}
+        className="shrink-0 opacity-95"
         strokeWidth={2.4}
         aria-hidden="true"
       />

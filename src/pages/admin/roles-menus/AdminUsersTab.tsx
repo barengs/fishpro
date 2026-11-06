@@ -119,7 +119,8 @@ export function AdminUsersTab() {
     {
       key: "role",
       header: "Peran",
-      flex: 2,
+      flex: 1.5,
+      align: "center",
       render: (r) => {
         const roleStr = (r.role || "").toLowerCase();
         const posStr = (r.admin_profile?.position || "").toLowerCase();
@@ -128,7 +129,7 @@ export function AdminUsersTab() {
           <RoleBadge
             role={isSuper ? "superadmin" : "admin"}
             label={isSuper ? "Super Admin" : "Staf Lapangan"}
-            size="sm"
+            size="md"
             variant="solid"
           />
         );

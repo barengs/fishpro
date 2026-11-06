@@ -117,6 +117,8 @@ export function DataTable<T>({
             )}
             {columns.map((c) => {
               const isAction = c.key === "aksi";
+              const isCentered = !isAction && c.align === "center";
+              const isRight = isAction || c.align === "right";
               const hideCls = c.hideOnMobile
                 ? "hidden sm:block"
                 : c.hideOnTablet
@@ -128,16 +130,16 @@ export function DataTable<T>({
                   key={c.key}
                   style={
                     isAction
-                      ? { flex: "0 0 auto", minWidth: 80 }
+                      ? { flex: "0 0 120px", minWidth: 120 }
                       : {
                           flex: c.flex ?? 1,
                           minWidth: c.minWidth ?? undefined,
                         }
                   }
                   className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
-                    c.align === "right"
+                    isRight
                       ? "text-right"
-                      : c.align === "center"
+                      : isCentered
                         ? "text-center"
                         : ""
                   } ${c.className || ""}`}
@@ -186,17 +188,17 @@ export function DataTable<T>({
                       key={c.key}
                       style={
                         isAction
-                          ? { flex: "0 0 auto", minWidth: 80 }
+                          ? { flex: "0 0 120px", minWidth: 120 }
                           : {
                               flex: c.flex ?? 1,
                               minWidth: c.minWidth ?? undefined,
                             }
                       }
-                      className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                      className={`${isAction ? "shrink-0 justify-end flex items-center" : "min-w-0 overflow-hidden"} ${hideCls} ${
                         isRight
-                          ? "justify-end"
+                          ? "justify-end flex items-center"
                           : isCentered
-                            ? "justify-center"
+                            ? "justify-center flex items-center"
                             : ""
                       } ${c.className || ""}`}
                     >
@@ -269,17 +271,17 @@ export function DataTable<T>({
                       key={c.key}
                       style={
                         isAction
-                          ? { flex: "0 0 auto", minWidth: 80 }
+                          ? { flex: "0 0 120px", minWidth: 120 }
                           : {
                               flex: c.flex ?? 1,
                               minWidth: c.minWidth ?? undefined,
                             }
                       }
-                      className={`${isAction ? "shrink-0 justify-end" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
+                      className={`${isAction ? "shrink-0 justify-end flex items-center" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
                         isRight
-                          ? "justify-end text-right"
+                          ? "justify-end text-right flex items-center"
                           : isCentered
-                            ? "justify-center text-center"
+                            ? "justify-center text-center flex items-center"
                             : ""
                       } ${c.className || ""}`}
                     >
