@@ -335,6 +335,7 @@ export function RegulatorLayout() {
               initials={userInfo.initials}
               name={userInfo.name}
               role={userInfo.roleLabel}
+              rawRole={userInfo.rawRole}
               avatarBg="#0284C7"
               onLogout={handleLogout}
             />

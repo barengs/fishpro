@@ -4,6 +4,7 @@ export interface UserDisplayInfo {
   name: string;
   initials: string;
   roleLabel: string;
+  rawRole: string;
   username: string;
 }
 
@@ -15,6 +16,7 @@ export function getUserDisplayInfo(): UserDisplayInfo {
       name: "Tamu",
       initials: "TM",
       roleLabel: "Belum Masuk",
+      rawRole: "guest",
       username: "guest",
     };
   }
@@ -77,10 +79,21 @@ export function getUserDisplayInfo(): UserDisplayInfo {
         : "Pemilik Kapal";
   }
 
+  const rawRoleKey = isSuperAdmin
+    ? "superadmin"
+    : isRegulator
+      ? "regulator"
+      : isCaptain
+        ? "captain"
+        : isOwner
+          ? "owner"
+          : "admin";
+
   return {
     name: fullName,
     initials,
     roleLabel,
+    rawRole: rawRoleKey,
     username: user.username,
   };
 }

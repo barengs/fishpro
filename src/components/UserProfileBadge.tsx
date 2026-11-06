@@ -6,6 +6,7 @@ interface UserProfileBadgeProps {
   initials: string;
   name: string;
   role: string;
+  rawRole?: string;
   avatarBg?: string;
   onLogout?: () => void | Promise<void>;
   isLoggingOut?: boolean;
@@ -15,6 +16,7 @@ export function UserProfileBadge({
   initials,
   name,
   role,
+  rawRole,
   avatarBg = "#1A56DB",
   onLogout,
   isLoggingOut: externalLoggingOut,
@@ -94,7 +96,7 @@ export function UserProfileBadge({
               {name}
             </div>
             <div className="mt-1">
-              <RoleBadge role={role} size="sm" />
+              <RoleBadge role={rawRole || role} size="sm" />
             </div>
           </div>
           <a

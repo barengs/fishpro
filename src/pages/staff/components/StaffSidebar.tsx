@@ -256,6 +256,7 @@ export function StaffSidebar() {
               initials={userInfo.initials}
               name={userInfo.name}
               role={userInfo.roleLabel}
+              rawRole={userInfo.rawRole}
               onLogout={handleLogout}
             />
           </div>

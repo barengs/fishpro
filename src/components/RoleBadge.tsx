@@ -74,6 +74,13 @@ const roleConfigs: Record<string, RoleConfig> = {
   },
 };
 
+// Aliases for Indonesian role labels
+roleConfigs.nahkoda = roleConfigs.captain;
+roleConfigs.pemilik = roleConfigs.owner;
+roleConfigs.pengawas = roleConfigs.regulator;
+roleConfigs.staf = roleConfigs.admin;
+roleConfigs.staff = roleConfigs.admin;
+
 export function RoleBadge({
   role = "admin",
   label,
@@ -83,9 +90,16 @@ export function RoleBadge({
   variant = "solid",
 }: RoleBadgeProps) {
   const normRole = (role || "").toLowerCase().replace(/[\s_-]+/g, "");
-  const config =
-    roleConfigs[normRole] ||
-    (normRole.includes("super") ? roleConfigs.superadmin : roleConfigs.admin);
+  
+  let config = roleConfigs[normRole];
+  if (!config) {
+    if (normRole.includes("super")) config = roleConfigs.superadmin;
+    else if (normRole.includes("captain") || normRole.includes("nahkoda")) config = roleConfigs.captain;
+    else if (normRole.includes("owner") || normRole.includes("pemilik")) config = roleConfigs.owner;
+    else if (normRole.includes("regulator") || normRole.includes("pengawas")) config = roleConfigs.regulator;
+    else if (normRole.includes("admin") || normRole.includes("staf") || normRole.includes("staff")) config = roleConfigs.admin;
+    else config = roleConfigs.admin;
+  }
 
   const displayLabel = label || config.defaultLabel;
   const badgeStyle =
