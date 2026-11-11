@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     REGULATOR: `${API_BASE_URL}/api/dashboard/regulator/`,
     OWNER: `${API_BASE_URL}/api/dashboard/owner/`,
     CAPTAIN: `${API_BASE_URL}/api/dashboard/captain/`,
+    WPP_POTENTIAL: `${API_BASE_URL}/api/dashboard/wpp-potential/`,
   },
 
   // 2. Owners & Captains

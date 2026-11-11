@@ -4,6 +4,7 @@ import { KpiCard } from "../../components/KpiCard";
 import { FleetTable } from "./components/FleetTable";
 import { PnbpPredictionBars } from "./components/PnbpPredictionBars";
 import { AiAdviceCard } from "./components/AiAdviceCard";
+import { WppPotentialCard } from "../../components/WppPotentialCard";
 import { shipsService, type Ship as ShipType } from "../../services/ships";
 import { catchesService } from "../../services/catches";
 import { authService } from "../../services/auth";
@@ -182,6 +183,15 @@ export function OwnerDashboard() {
           color="amber"
           Icon={BarChart3}
           loading={loading}
+        />
+      </div>
+
+      {/* AI WPP Potential Forecast */}
+      <div className="mb-6">
+        <WppPotentialCard
+          role="owner"
+          shipName={ships[0]?.name}
+          shipReg={ships[0]?.registration_number}
         />
       </div>
 

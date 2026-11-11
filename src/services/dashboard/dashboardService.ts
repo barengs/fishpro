@@ -5,6 +5,7 @@ import type {
   RegulatorDashboardData,
   OwnerDashboardData,
   CaptainDashboardData,
+  WppPotentialItem,
 } from "./types";
 
 export const dashboardService = {
@@ -25,5 +26,17 @@ export const dashboardService = {
 
   async getCaptainDashboard(): Promise<CaptainDashboardData> {
     return apiClient<CaptainDashboardData>(API_ENDPOINTS.DASHBOARD.CAPTAIN);
+  },
+
+  async getWppPotentialForecast(): Promise<{
+    status: string;
+    top_recommendation: WppPotentialItem;
+    rankings: WppPotentialItem[];
+  }> {
+    return apiClient<{
+      status: string;
+      top_recommendation: WppPotentialItem;
+      rankings: WppPotentialItem[];
+    }>(API_ENDPOINTS.DASHBOARD.WPP_POTENTIAL);
   },
 };

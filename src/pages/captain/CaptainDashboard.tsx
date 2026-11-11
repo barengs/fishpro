@@ -6,6 +6,7 @@ import { AlertBanner } from "../../components/ui";
 import { QuotaHeroCard } from "./components/QuotaHeroCard";
 import { ShipSpecsCard } from "./components/ShipSpecsCard";
 import { RecentCatchesTable } from "./components/RecentCatchesTable";
+import { WppPotentialCard } from "../../components/WppPotentialCard";
 import { formatRupiah, formatShortHash } from "../../utils";
 import { useCaptainDashboard } from "./hooks/useCaptainDashboard";
 
@@ -186,6 +187,15 @@ export function CaptainDashboard() {
             </div>
           </section>
         </div>
+      </div>
+
+      {/* AI WPP Potential Forecast */}
+      <div className="mb-5">
+        <WppPotentialCard
+          role="captain"
+          shipName={ship?.name}
+          shipReg={ship?.registration_number}
+        />
       </div>
 
       {/* Recent Catches Table & Ship Specs */}

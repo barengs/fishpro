@@ -61,6 +61,20 @@ export interface RegulatorDashboardData {
   }>;
 }
 
+export interface WppPotentialItem {
+  wpp_code: string;
+  wpp_name: string;
+  ocean: string;
+  score: number;
+  level: "Sangat Tinggi" | "Tinggi" | "Sedang";
+  status_color: "emerald" | "blue" | "amber";
+  dominant_species: string;
+  peak_months: string;
+  estimated_monthly_tonnage: number;
+  quota_utilization_pct: number;
+  recommendation_reason: string;
+}
+
 export interface OwnerDashboardData {
   status: string;
   owner: {
@@ -86,6 +100,7 @@ export interface OwnerDashboardData {
     remaining_quota_kg: number | null;
     total_quota_kg: number | null;
   }>;
+  wpp_potential_ranking?: WppPotentialItem[];
 }
 
 export interface CaptainDashboardData {
@@ -120,4 +135,5 @@ export interface CaptainDashboardData {
     last_block_hash: string | null;
     total_transactions: number;
   };
+  wpp_potential_ranking?: WppPotentialItem[];
 }
