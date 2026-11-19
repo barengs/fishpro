@@ -135,11 +135,20 @@ export const iotService = {
   },
 
   /**
-   * Helper SSE Stream URL
+   * Helper SSE Stream URL (Legacy HTTP)
    */
   getStreamUrl(deviceId?: string): string {
     return deviceId
       ? `${API_ENDPOINTS.IOT.STREAM}?device_id=${encodeURIComponent(deviceId)}`
       : API_ENDPOINTS.IOT.STREAM;
+  },
+
+  /**
+   * Helper WebSocket Stream URL (Django Channels)
+   */
+  getWebSocketUrl(deviceId?: string): string {
+    return deviceId
+      ? `${API_ENDPOINTS.IOT.WS_STREAM}${encodeURIComponent(deviceId)}/`
+      : `${API_ENDPOINTS.IOT.WS_STREAM}all/`;
   },
 };

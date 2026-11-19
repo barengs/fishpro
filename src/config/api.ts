@@ -7,6 +7,8 @@ export const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "https://api.fishpro.id"
 ).replace(/\/+$/, "");
 
+export const WS_BASE_URL = API_BASE_URL.replace(/^http/, "ws");
+
 export const API_ENDPOINTS = {
   // 1. Authentication
   AUTH: {
@@ -90,6 +92,7 @@ export const API_ENDPOINTS = {
     DEVICES: `${API_BASE_URL}/api/iot/devices/`,
     RECEIVE_WEIGHT: `${API_BASE_URL}/api/iot/receive-weight/`,
     STREAM: `${API_BASE_URL}/api/iot/stream/`,
+    WS_STREAM: `${WS_BASE_URL}/ws/scales/`,
     LATEST: `${API_BASE_URL}/api/iot/latest/`,
     READINGS: `${API_BASE_URL}/api/iot/readings/`,
     SAVE_CATCH: `${API_BASE_URL}/api/iot/save-catch/`,

@@ -117,44 +117,13 @@ export function useIotScales() {
   }, []);
 
   // Setup Smart Polling: menggantikan SSE gantung yang mengunci Gunicorn worker
+  // Real-time WebSocket connection via Django Channels with Polling fallback
   useEffect(() => {
     if (!selectedDeviceId) return;
     let ignore = false;
+    let ws: WebSocket | null = null;
     let pollTimer: ReturnType<typeof setTimeout> | null = null;
-
-    async function pollLatestWeight() {
-      // Lewati polling jika tab browser tidak aktif / disembunyikan
-      if (typeof document !== "undefined" && document.hidden) {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 5000);
-        }
-        return;
-      }
-
-      try {
-        const latest = await iotService.getLatestReading(
-          selectedDeviceId,
-          "pending",
-        );
-        if (!ignore) {
-          setLatestReading((prev) => {
-            // Hanya set state baru jika id atau bobot berbeda
-            if (!prev && !latest) return null;
-            if (prev?.id === latest?.id && prev?.weight === latest?.weight) {
-              return prev;
-            }
-            return latest;
-          });
-          setSseConnected(true);
-        }
-      } catch {
-        if (!ignore) setSseConnected(false);
-      } finally {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 2500);
-        }
-      }
-    }
+    let wsActive = false;
 
     async function initialLoad() {
       try {
@@ -165,22 +134,112 @@ export function useIotScales() {
         if (!ignore) {
           setLatestReading(latest);
           setReadings(list);
-          setSseConnected(true);
         }
       } catch {
         // Ignored
-      } finally {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 2500);
-        }
       }
     }
 
     initialLoad();
 
+    // 1. Try WebSocket connection via Django Channels
+    try {
+      const wsUrl = iotService.getWebSocketUrl(selectedDeviceId);
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        if (!ignore) {
+          wsActive = true;
+          setSseConnected(true);
+        }
+      };
+
+      ws.onmessage = (event) => {
+        if (ignore) return;
+        try {
+          const data = JSON.parse(event.data);
+          if (data.weight !== undefined || data.event === "weight_update") {
+            const newReading: ScaleReading = {
+              id: data.reading_id || String(Date.now()),
+              device_id: data.device_id || selectedDeviceId,
+              weight: Number(data.weight),
+              unit: data.unit || "kg",
+              status: data.status || "pending",
+              created_at: data.created_at || new Date().toISOString(),
+              scale_name: data.scale_name,
+              port_name: data.port_name,
+              is_stable: data.is_stable ?? true,
+            };
+            setLatestReading(newReading);
+            setReadings((prev) => {
+              if (prev.some((r) => r.id === newReading.id)) return prev;
+              return [newReading, ...prev.slice(0, 19)];
+            });
+            setSseConnected(true);
+          }
+        } catch {
+          // JSON parse ignored
+        }
+      };
+
+      ws.onerror = () => {
+        wsActive = false;
+        if (!ignore) startPollingFallback();
+      };
+
+      ws.onclose = () => {
+        wsActive = false;
+        if (!ignore) startPollingFallback();
+      };
+    } catch {
+      startPollingFallback();
+    }
+
+    // 2. Polling fallback if WebSocket drops or is unavailable
+    function startPollingFallback() {
+      if (pollTimer || wsActive) return;
+
+      async function poll() {
+        if (typeof document !== "undefined" && document.hidden) {
+          if (!ignore) pollTimer = setTimeout(poll, 5000);
+          return;
+        }
+
+        try {
+          const latest = await iotService.getLatestReading(
+            selectedDeviceId,
+            "pending",
+          );
+          if (!ignore) {
+            setLatestReading((prev) => {
+              if (!prev && !latest) return null;
+              if (prev?.id === latest?.id && prev?.weight === latest?.weight) {
+                return prev;
+              }
+              return latest;
+            });
+            setSseConnected(true);
+          }
+        } catch {
+          if (!ignore) setSseConnected(false);
+        } finally {
+          if (!ignore && !wsActive) {
+            pollTimer = setTimeout(poll, 2500);
+          }
+        }
+      }
+
+      pollTimer = setTimeout(poll, 1500);
+    }
+
     return () => {
       ignore = true;
-      if (pollTimer) clearTimeout(pollTimer);
+      if (ws) {
+        ws.close();
+      }
+      if (pollTimer) {
+        clearTimeout(pollTimer);
+      }
       setSseConnected(false);
     };
   }, [selectedDeviceId]);
