@@ -28,6 +28,7 @@ export interface ScaleReading {
   is_stable: boolean;
   status: "pending" | "saved" | "discarded";
   session_id?: string;
+  anomaly_warning?: string | null;
   fish_catch?: number | null;
   catch_detail?: number | null;
   operator_notes?: string | null;
@@ -67,6 +68,9 @@ export interface SendIoTWeightPayload {
   device_id: string;
   weight: number;
   unit?: string;
+  tare?: number;
+  is_stable?: boolean;
+  session_id?: string;
   api_key?: string;
 }
 
@@ -77,6 +81,9 @@ export interface SendIoTWeightResponse {
   device_id: string;
   weight: number;
   unit: string;
+  tare?: number;
   is_stable: boolean;
+  session_id?: string;
+  anomaly_warning?: string | null;
   created_at: string;
 }

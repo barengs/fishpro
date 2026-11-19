@@ -164,13 +164,19 @@ export function useIotScales() {
               device_id: data.device_id || selectedDeviceId,
               weight: Number(data.weight),
               unit: data.unit || "kg",
+              tare: data.tare !== undefined ? Number(data.tare) : 0,
               status: data.status || "pending",
               created_at: data.created_at || new Date().toISOString(),
               scale_name: data.scale_name,
               port_name: data.port_name,
               is_stable: data.is_stable ?? true,
+              session_id: data.session_id,
+              anomaly_warning: data.anomaly_warning,
             };
             setLatestReading(newReading);
+            if (data.anomaly_warning) {
+              toast.warning(data.anomaly_warning);
+            }
             setReadings((prev) => {
               if (prev.some((r) => r.id === newReading.id)) return prev;
               return [newReading, ...prev.slice(0, 19)];

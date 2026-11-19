@@ -208,8 +208,18 @@ export function ScaleReadingsTable({
             ),
           },
           {
+            label: "Tara (Wadah)",
+            value: selectedDetailReading?.tare
+              ? `${selectedDetailReading.tare} ${selectedDetailReading.unit}`
+              : "0 kg",
+          },
+          {
             label: "Stabilitas Sensor",
-            value: selectedDetailReading?.is_stable ? "Stabil" : "Fluktuatif",
+            value: selectedDetailReading?.is_stable ? "Stabil" : "Fluktuatif (Perlu Kalibrasi)",
+          },
+          {
+            label: "ID Sesi / Batch",
+            value: selectedDetailReading?.session_id || "—",
           },
           {
             label: "Waktu Penerimaan",
