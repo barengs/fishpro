@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
@@ -12,6 +12,9 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [searchParams] = useSearchParams();
+  const isSessionExpired = searchParams.get("expired") === "1";
+  const redirectTarget = searchParams.get("redirect");
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -53,9 +56,13 @@ export function LoginForm() {
         `Login berhasil. Selamat datang kembali, ${data.username}!`,
       );
 
-      // Navigate directly to resolved role dashboard with replace: true to clean history stack
+      // Navigate directly to resolved role dashboard or return URL with replace: true to clean history stack
       const targetDashboard = authService.getDashboardUrl();
-      navigate(targetDashboard, { replace: true });
+      const safeRedirect =
+        redirectTarget && redirectTarget.startsWith("/")
+          ? redirectTarget
+          : targetDashboard;
+      navigate(safeRedirect, { replace: true });
     } catch (err: unknown) {
       const message =
         err instanceof Error
@@ -84,6 +91,22 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {isSessionExpired && !errorMsg && (
+        <div
+          role="status"
+          className="flex items-center gap-2.5 p-3 px-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 text-sm font-semibold border border-amber-200 dark:border-amber-500/20"
+        >
+          <AlertCircle
+            size={16}
+            className="shrink-0 text-amber-600 dark:text-amber-400"
+            aria-hidden="true"
+          />
+          <span>
+            Sesi Anda telah berakhir demi keamanan. Silakan masuk kembali.
+          </span>
+        </div>
+      )}
+
       {errorMsg && Object.keys(fieldErrors).length === 0 && (
         <div
           role="alert"

@@ -49,6 +49,51 @@ export function subscribeApiCache(
   };
 }
 
+let isRedirectingToLogin = false;
+
+/**
+ * Handle HTTP 401 Unauthorized globally:
+ * Clears expired credentials and redirects user to /login with session-expired flag.
+ */
+function handleUnauthorizedSession(requestUrl: string): void {
+  if (isRedirectingToLogin) return;
+  if (typeof window === "undefined") return;
+
+  // Do not redirect if the request is an authentication attempt
+  if (
+    requestUrl.includes("/api/auth/login") ||
+    requestUrl.includes("/api/auth/register") ||
+    requestUrl.includes("/api/auth/reset-password")
+  ) {
+    return;
+  }
+
+  const currentPath = window.location.pathname;
+  if (
+    currentPath.startsWith("/login") ||
+    currentPath.startsWith("/register") ||
+    currentPath.startsWith("/onboard") ||
+    currentPath.startsWith("/reset-password")
+  ) {
+    return;
+  }
+
+  isRedirectingToLogin = true;
+
+  // Clear auth storage
+  localStorage.removeItem("token");
+  localStorage.removeItem("auth_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_as");
+  localStorage.removeItem("user");
+
+  clearApiCache();
+
+  // Redirect to login page with return URL parameter
+  const returnUrl = encodeURIComponent(currentPath + window.location.search);
+  window.location.href = `/login?expired=1&redirect=${returnUrl}`;
+}
+
 function parseErrorMessage(data: unknown): string {
   if (!data) return "";
   if (typeof data === "string") return data;
@@ -89,6 +134,10 @@ function revalidateInBackground(
   const promise = (async () => {
     try {
       const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        handleUnauthorizedSession(url);
+        return;
+      }
       if (!response.ok) return;
       const data =
         response.status === 204 ? {} : await response.json().catch(() => null);
@@ -184,6 +233,9 @@ export async function apiClient<T = unknown>(
     if (!response.ok) {
       if (options.silentStatusCodes?.includes(response.status)) {
         return null as T;
+      }
+      if (response.status === 401) {
+        handleUnauthorizedSession(url);
       }
       const parsed = parseErrorMessage(data);
       const errorMsg =
