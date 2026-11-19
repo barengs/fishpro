@@ -266,6 +266,28 @@ export function useIotScales() {
       return;
     }
 
+    // Client-side Quota Threshold Pre-check
+    const selectedShip = ships.find(
+      (s) => s.registration_number === selectedShipReg,
+    );
+    const tareVal = latestReading.tare ? Number(latestReading.tare) : 0;
+    const netWeight = Math.max(0, Number(latestReading.weight) - tareVal);
+    if (selectedShip?.current_year_quota) {
+      const rem = Number(selectedShip.current_year_quota.remaining_quota);
+      if (rem <= 0) {
+        const msg = `Kuota tangkapan kapal '${selectedShip.name}' tahun ${selectedShip.current_year_quota.year} telah habis (0 kg tersisa).`;
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
+      if (netWeight > rem) {
+        const msg = `Sisa kuota kapal '${selectedShip.name}' (${rem.toLocaleString("id-ID")} kg) tidak mencukupi untuk bobot bersih (${netWeight.toLocaleString("id-ID")} kg).`;
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
+    }
+
     setSaving(true);
     setErrorMsg(null);
     setSaveSuccess(null);
@@ -285,8 +307,19 @@ export function useIotScales() {
       toast.success(
         `Tangkapan ${res.weight} kg untuk kapal ${res.ship_name} berhasil disimpan dan tersegel di blockchain!`,
       );
+      if (res.quota_warning) {
+        toast.warning(res.quota_warning);
+      }
       setLatestReading(null);
       fetchReadings(selectedDeviceId);
+
+      // Refresh ship quota data
+      try {
+        const updatedShips = await shipsService.getAll();
+        setShips(Array.isArray(updatedShips) ? updatedShips : []);
+      } catch {
+        // Ignored
+      }
     } catch (err: unknown) {
       const msg =
         err instanceof Error

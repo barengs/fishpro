@@ -56,10 +56,14 @@ export interface SaveScaleCatchResponse {
   ship_name: string;
   fish_species: string;
   weight: number;
+  gross_weight?: number;
+  tare?: number;
   unit: string;
   pnkp?: number | null;
   pnbp?: number | null;
   remaining_quota?: number | null;
+  quota_percentage?: number | null;
+  quota_warning?: string | null;
   reading_id: string;
   blockchain_status: string;
 }
