@@ -179,6 +179,7 @@ export function useCaptainDashboard() {
         location_latitude: data.location_latitude,
         location_longitude: data.location_longitude,
         description: data.description || "",
+        scale_reading_id: data.scale_reading_id || null,
         catch_details: [
           {
             fish_species: speciesId,
@@ -186,6 +187,7 @@ export function useCaptainDashboard() {
             unit: data.unit || "kg",
             value: data.value ? parseFloat(data.value) : null,
             notes: data.description || "",
+            scale_reading_id: data.scale_reading_id || null,
           },
         ],
       });

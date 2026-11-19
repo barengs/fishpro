@@ -21,6 +21,7 @@ export interface CreateCatchDetailPayload {
   unit?: string;
   value?: number | null;
   notes?: string | null;
+  scale_reading_id?: string | null;
 }
 
 export interface FishCatch {
@@ -54,4 +55,5 @@ export interface CreateFishCatchPayload {
 
 export interface CreateFishCatchWithDetailsPayload extends CreateFishCatchPayload {
   catch_details: CreateCatchDetailPayload[];
+  scale_reading_id?: string | null;
 }
