@@ -151,4 +151,57 @@ export const iotService = {
       ? `${API_ENDPOINTS.IOT.WS_STREAM}${encodeURIComponent(deviceId)}/`
       : `${API_ENDPOINTS.IOT.WS_STREAM}all/`;
   },
+
+  /**
+   * Helper URL Ekspor CSV Laporan Timbangan
+   */
+  getExportCsvUrl(params?: {
+    device_id?: string;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+  }): string {
+    const searchParams = new URLSearchParams();
+    if (params?.device_id) searchParams.append("device_id", params.device_id);
+    if (params?.status) searchParams.append("status", params.status);
+    if (params?.start_date) searchParams.append("start_date", params.start_date);
+    if (params?.end_date) searchParams.append("end_date", params.end_date);
+
+    const query = searchParams.toString();
+    return query
+      ? `${API_ENDPOINTS.IOT.EXPORT_CSV}?${query}`
+      : API_ENDPOINTS.IOT.EXPORT_CSV;
+  },
+
+  /**
+   * Unduh file CSV laporan timbangan langsung dari backend
+   */
+  async downloadReadingsCsv(params?: {
+    device_id?: string;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+  }): Promise<void> {
+    const url = this.getExportCsvUrl(params);
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("access_token");
+    const res = await fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) {
+      throw new Error(
+        `Gagal mengunduh file CSV (${res.status} ${res.statusText})`,
+      );
+    }
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    const today = new Date().toISOString().split("T")[0];
+    a.download = `laporan_timbangan_pelabuhan_${today}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(downloadUrl);
+  },
 };

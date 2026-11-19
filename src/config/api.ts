@@ -95,6 +95,7 @@ export const API_ENDPOINTS = {
     WS_STREAM: `${WS_BASE_URL}/ws/scales/`,
     LATEST: `${API_BASE_URL}/api/iot/latest/`,
     READINGS: `${API_BASE_URL}/api/iot/readings/`,
+    EXPORT_CSV: `${API_BASE_URL}/api/iot/readings/export-csv/`,
     SAVE_CATCH: `${API_BASE_URL}/api/iot/save-catch/`,
   },
 

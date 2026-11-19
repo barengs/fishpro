@@ -1,27 +1,101 @@
-import { RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { FileSpreadsheet, RefreshCw } from "lucide-react";
 import { DataTable, type Column } from "../../../../components/DataTable";
 import { StatusChip } from "../../../../components/StatusChip";
 import { DetailModal } from "../../../../components/DetailModal";
 import { useDetailModal } from "../../../../components/useDetailModal";
-import { type ScaleReading } from "../../../../services/iot";
+import { useToast } from "../../../../components/toast";
+import { iotService, type ScaleReading } from "../../../../services/iot";
+import { ScaleReportModal } from "./ScaleReportModal";
 
 interface ScaleReadingsTableProps {
   readings: ScaleReading[];
   loading: boolean;
   onRefresh: () => void;
+  selectedDeviceId?: string;
 }
 
 export function ScaleReadingsTable({
   readings,
   loading,
   onRefresh,
+  selectedDeviceId,
 }: ScaleReadingsTableProps) {
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [downloadingCsv, setDownloadingCsv] = useState(false);
+  const toast = useToast();
+
   const {
     selected: selectedDetailReading,
     open: isDetailOpen,
     openDetail,
     closeDetail,
   } = useDetailModal<ScaleReading>();
+
+  const handleDownloadCsv = async () => {
+    setDownloadingCsv(true);
+    try {
+      await iotService.downloadReadingsCsv({
+        device_id: selectedDeviceId || undefined,
+      });
+      toast.success("File CSV laporan timbangan berhasil diunduh!");
+    } catch {
+      // Client-side fallback if backend endpoint unreachable
+      try {
+        const headers = [
+          "ID Pembacaan",
+          "Waktu Ditimbang",
+          "ID Perangkat",
+          "Pelabuhan",
+          "Bobot Bruto (kg)",
+          "Tara Wadah (kg)",
+          "Bobot Netto (kg)",
+          "Stabilitas",
+          "Status",
+          "ID Sesi",
+          "ID Tangkapan",
+          "Catatan",
+        ];
+        const rows = readings.map((r) => {
+          const bruto = Number(r.weight || 0);
+          const tare = Number(r.tare || 0);
+          const netto = Math.max(0, bruto - tare);
+          return [
+            `"${r.id}"`,
+            `"${r.created_at}"`,
+            `"${r.device_id}"`,
+            `"${r.port_name || "Pelabuhan"}"`,
+            bruto.toFixed(2),
+            tare.toFixed(2),
+            netto.toFixed(2),
+            r.is_stable ? "Stabil" : "Fluktuatif",
+            r.status,
+            `"${r.session_id || ""}"`,
+            r.fish_catch ? `"${r.fish_catch}"` : '""',
+            `"${(r.operator_notes || "").replace(/"/g, '""')}"`,
+          ].join(",");
+        });
+        const csvContent =
+          "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `laporan_timbangan_${new Date().toISOString().split("T")[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success("File CSV berhasil dibuat dan diunduh!");
+      } catch {
+        toast.error("Gagal membuat file CSV");
+      }
+    } finally {
+      setDownloadingCsv(false);
+    }
+  };
 
   const historyCols: Column<ScaleReading>[] = [
     {
@@ -134,14 +208,24 @@ export function ScaleReadingsTable({
             Log audit seluruh sesi penimbangan ikan resmi di pelabuhan.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onRefresh}
-          className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors self-start sm:self-auto"
-        >
-          <RefreshCw size={13} />
-          <span>Muat Ulang</span>
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setIsReportOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
+          >
+            <FileSpreadsheet size={14} className="text-emerald-600" />
+            <span>Laporan & Ekspor</span>
+          </button>
+          <button
+            type="button"
+            onClick={onRefresh}
+            className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors"
+          >
+            <RefreshCw size={13} />
+            <span>Muat Ulang</span>
+          </button>
+        </div>
       </div>
 
       <DataTable
@@ -238,6 +322,15 @@ export function ScaleReadingsTable({
             fullWidth: true,
           },
         ]}
+      />
+
+      <ScaleReportModal
+        open={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        readings={readings}
+        selectedDeviceId={selectedDeviceId}
+        onDownloadCsv={handleDownloadCsv}
+        downloadingCsv={downloadingCsv}
       />
     </div>
   );
