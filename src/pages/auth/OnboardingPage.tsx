@@ -114,16 +114,17 @@ export function OnboardingPage() {
         {/* 2. Hero Headline Section (Minimalist, High Contrast typography) */}
         <section className="w-full max-w-5xl mx-auto px-4 sm:px-8 pt-16 sm:pt-24 pb-12 text-center flex flex-col items-center">
           <h1 className="m-0 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] text-strong max-w-4xl">
-            Dari laut, tercatat{" "}
+            Catat hasil tangkapan,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500">
-              pasti
+              langsung dari dermaga
             </span>
             .
           </h1>
 
           <p className="mt-5 mb-8 text-base sm:text-xl text-soft max-w-2xl leading-relaxed font-normal">
-            Pantau kapal, catat hasil tangkapan langsung dari timbangan
-            pelabuhan, dan simpan catatan resmi yang aman dan transparan.
+            Timbang ikan di pelabuhan tanpa perlu catat manual. Sisa kuota kapal
+            otomatis diperbarui, tarif PNBP langsung terhitung, dan seluruh data
+            terkunci aman tanpa risiko salah input.
           </p>
 
           {/* Call to Action Button */}
@@ -142,13 +143,13 @@ export function OnboardingPage() {
                   to="/register"
                   className="h-12 px-7 rounded-xs bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-bold flex items-center justify-center transition-all shadow-md hover:shadow-lg no-underline active:scale-[0.99]"
                 >
-                  Daftarkan Armada Anda
+                  Mulai Daftar Akun
                 </Link>
                 <Link
                   to="/login"
                   className="h-12 px-6 rounded-xs border border-fco-border-subtle surface-card hover:surface-page text-strong text-sm font-bold flex items-center justify-center transition-colors no-underline"
                 >
-                  Eksplorasi Portal
+                  Masuk ke Portal
                 </Link>
               </>
             )}
@@ -166,13 +167,13 @@ export function OnboardingPage() {
               <span className="block text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums font-mono">
                 100%
               </span>
-              <span>Data Terverifikasi</span>
+              <span>Tercatat Resmi</span>
             </div>
             <div>
               <span className="block text-2xl font-black text-fco-blue tabular-nums font-mono">
                 94.5%
               </span>
-              <span>Ketepatan Kuota AI</span>
+              <span>Akurasi Prediksi Kuota</span>
             </div>
           </div>
         </section>
@@ -186,10 +187,10 @@ export function OnboardingPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <span className="text-2xs font-bold uppercase tracking-wider text-fco-blue block mb-1">
-                  Kemudahan Sistem
+                  Solusi Terpadu
                 </span>
                 <h2 className="m-0 text-xl sm:text-2xl font-extrabold text-strong">
-                  Fitur Andalan Layanan
+                  Semua Kebutuhan Pelabuhan dalam Satu Sistem
                 </h2>
               </div>
 
@@ -303,7 +304,7 @@ export function OnboardingPage() {
                 to="/register"
                 className="h-9 px-4 rounded-xs bg-fco-blue hover:bg-fco-blue-hover text-white text-xs font-bold inline-flex items-center justify-center shrink-0 no-underline transition-colors shadow-2xs"
               >
-                Gunakan Fitur Ini
+                Coba Fitur Ini
               </Link>
             </div>
           </div>
@@ -316,14 +317,14 @@ export function OnboardingPage() {
         >
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-2xs font-bold uppercase tracking-wider text-fco-blue block mb-1">
-              Menu Sesuai Kebutuhan
+              Akses Khusus
             </span>
             <h2 className="m-0 text-2xl sm:text-4xl font-extrabold text-strong tracking-tight">
-              Pilih Halaman Sesuai Peran Anda
+              Disesuaikan untuk Setiap Pihak di Pelabuhan
             </h2>
             <p className="mt-3 text-sm text-soft leading-relaxed">
-              Setiap pengguna punya halaman khusus agar pekerjaan lebih fokus,
-              mudah dipantau, dan langsung tepat sasaran.
+              Tampilan dan data disesuaikan untuk kebutuhan nahkoda di laut,
+              pemilik kapal di kantor, maupun pengawas di dermaga.
             </p>
           </div>
 
@@ -396,43 +397,43 @@ export function OnboardingPage() {
             </div>
 
             <h2 className="m-0 text-2xl sm:text-3xl font-extrabold text-strong tracking-tight">
-              Catatan Aman dan Tidak Bisa Diubah Sepihak
+              Data Tangkapan Terkunci dan Bebas Manipulasi
             </h2>
 
             <p className="mt-3 mb-8 text-sm text-soft max-w-xl leading-relaxed">
-              Semua data tangkapan otomatis terkunci dengan teknologi rantai
-              data (blockchain). Informasi berat, nama kapal, dan perhitungan
-              PNBP tersimpan permanen dan bisa dicek kapan pun.
+              Setiap kali ikan ditimbang, datanya langsung disegel dengan sistem
+              blockchain. Berat timbangan, kapal pembongkar, dan tagihan PNBP
+              terkunci permanen sehingga tidak ada yang bisa mengubahnya sepihak.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full text-left">
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  01. Otomatis dari Timbangan
+                  01. Masuk Otomatis dari Sensor
                 </span>
                 <span className="text-xs text-soft">
-                  Berat ikan dibaca langsung dari timbangan dermaga tanpa perlu
-                  diketik manual.
+                  Angka timbangan masuk otomatis dari load cell dermaga tanpa
+                  perlu dicatat manual.
                 </span>
               </div>
 
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  02. Terkunci Rapat
+                  02. Bersegel Kriptografi
                 </span>
                 <span className="text-xs text-soft">
-                  Setiap catatan terhubung ke data sebelumnya sehingga tidak
+                  Tiap transaksi diikat ke blok data sebelumnya. Catatan tidak
                   bisa diedit atau dihapus diam-diam.
                 </span>
               </div>
 
               <div className="p-4 rounded-xs border border-fco-border-subtle surface-inset">
                 <span className="font-mono text-xs font-bold text-fco-blue block mb-1">
-                  03. Terbuka & Jelas
+                  03. Mudah Diverifikasi
                 </span>
                 <span className="text-xs text-soft">
-                  Petugas dan dinas terkait bisa langsung memeriksa keaslian
-                  catatan secara instan.
+                  Petugas dinas dan pemilik kapal bisa mengecek keabsahan
+                  catatan kapan saja lewat kode verifikasi resmi.
                 </span>
               </div>
             </div>
@@ -449,7 +450,7 @@ export function OnboardingPage() {
               Pertanyaan yang Sering Diajukan
             </h2>
             <p className="mt-2 text-xs text-soft">
-              Segala hal yang perlu Anda ketahui mengenai tata kelola FCO
+              Hal-hal penting seputar cara kerja timbangan, kuota kapal, dan pencatatan tangkapan.
             </p>
           </div>
 
@@ -493,12 +494,12 @@ export function OnboardingPage() {
             <h3 className="m-0 text-lg font-bold text-strong mb-2">
               {isLoggedIn
                 ? "Akses Portal Manajemen Anda"
-                : "Siap Mendaftarkan Armada Perikanan Anda?"}
+                : "Siap Merapikan Pencatatan Hasil Tangkapan?"}
             </h3>
             <p className="m-0 text-xs text-soft max-w-md leading-relaxed mb-5">
               {isLoggedIn
                 ? `Anda sedang masuk sebagai ${userInfo.name} (${userInfo.roleLabel}). Buka portal untuk melanjutkan operasional.`
-                : "Registrasi cepat 4 tahap dengan perlindungan autentikasi peran resmi. Gratis tanpa biaya awal."}
+                : "Pendaftaran cepat untuk nahkoda, pemilik kapal, maupun pengawas pelabuhan. Langsung terhubung ke sistem dermaga."}
             </p>
             {isLoggedIn ? (
               <Link
@@ -513,7 +514,7 @@ export function OnboardingPage() {
                 to="/register"
                 className="h-11 px-7 rounded-xs bg-fco-blue hover:bg-fco-blue-hover text-white text-xs font-bold inline-flex items-center justify-center transition-all no-underline shadow-xs"
               >
-                Mulai Pendaftaran Akun
+                Daftar Sekarang
               </Link>
             )}
           </div>
