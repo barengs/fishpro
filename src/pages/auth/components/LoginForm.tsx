@@ -69,7 +69,7 @@ export function LoginForm() {
           ? err.message
           : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
       setErrorMsg(message);
-      setFieldErrors({ username: "Kredensial tidak valid", password: " " });
+      setFieldErrors({ username: "Nama pengguna atau kata sandi tidak cocok", password: " " });
       setTimeout(
         () => document.getElementById("login-identifier")?.focus(),
         50,

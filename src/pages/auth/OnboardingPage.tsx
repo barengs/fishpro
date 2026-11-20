@@ -499,7 +499,7 @@ export function OnboardingPage() {
             <p className="m-0 text-xs text-soft max-w-md leading-relaxed mb-5">
               {isLoggedIn
                 ? `Anda sedang masuk sebagai ${userInfo.name} (${userInfo.roleLabel}). Buka portal untuk melanjutkan operasional.`
-                : "Pendaftaran cepat untuk nahkoda, pemilik kapal, maupun pengawas pelabuhan. Langsung terhubung ke sistem dermaga."}
+                : "Pendaftaran cepat untuk nahkoda dan pemilik kapal. Terhubung langsung ke sistem pencatatan dermaga pelabuhan."}
             </p>
             {isLoggedIn ? (
               <Link

@@ -38,7 +38,7 @@ export const pillarCards: PillarCard[] = [
     id: "blockchain",
     category: "Keamanan Data",
     title: "Segel Catatan Anti-Ubah",
-    desc: "Setiap laporan hasil timbang langsung disegel dengan kriptografi rantai blok. Angka berat dan tanggal tidak bisa diedit atau dihapus sepihak.",
+    desc: "Setiap laporan hasil timbang langsung disegel secara digital dengan teknologi blockchain. Angka berat dan tanggal tidak bisa diedit atau dihapus sepihak.",
     badge: "Blockchain",
     gradient: "from-emerald-600 to-teal-700",
     accentColor: "#059669",
@@ -135,7 +135,7 @@ export const roleCards = [
 export const onboardingFaqs = [
   {
     q: "Bagaimana alur penimbangan ikan di pelabuhan?",
-    a: "Ikan ditimbang di timbangan dermaga yang terhubung ke sistem. Berat kotor dan tara wadah otomatis terbaca, tarif PNBP langsung muncul, dan kuota kapal terpotong otomatis tanpa perlu formulir kertas.",
+    a: "Ikan ditimbang di timbangan dermaga yang terhubung ke sistem. Berat ikan otomatis terbaca, tagihan PNBP langsung terhitung, dan sisa kuota kapal langsung terbarui tanpa perlu formulir kertas.",
   },
   {
     q: "Apakah angka hasil timbangan bisa diubah setelah disimpan?",
@@ -147,6 +147,6 @@ export const onboardingFaqs = [
   },
   {
     q: "Bagaimana cara mendaftar ke sistem?",
-    a: "Klik tombol 'Daftar' di bagian atas halaman, pilih jenis peran akun Anda (Nahkoda, Pemilik Kapal, atau Pengawas), lalu ikuti formulir pendaftaran singkat dengan melampirkan nomor izin resmi.",
+    a: "Klik tombol 'Daftar' di bagian atas halaman, pilih peran akun Anda (Pemilik Kapal atau Nahkoda), lalu ikuti formulir pendaftaran singkat. Untuk akun pengawas atau dinas pelabuhan, akses akun disiapkan langsung oleh administrator sistem.",
   },
 ];

@@ -126,7 +126,7 @@ export function useRegisterWizard() {
         setFieldErrors(errors);
         setErrorMsg(
           parsed.error.issues[0]?.message ||
-            "Harap lengkapi kredensial akun dengan benar.",
+            "Harap lengkapi nama pengguna dan kata sandi dengan benar.",
         );
         focusFirstErrorField(errors);
         return;

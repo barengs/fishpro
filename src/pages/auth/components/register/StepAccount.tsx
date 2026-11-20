@@ -55,10 +55,10 @@ export function StepAccount({
   return (
     <div>
       <h3 className="m-0 mb-1 text-base sm:text-lg font-extrabold text-strong">
-        Kredensial Akun Masuk
+        Data Akun & Kata Sandi
       </h3>
       <p className="m-0 mb-5 text-sm text-soft">
-        Kredensial resmi yang akan digunakan untuk masuk ke portal sistem FCO.
+        Informasi akun yang akan Anda gunakan untuk masuk ke portal FISHPRO.
       </p>
 
       <div className="flex flex-col gap-4">

@@ -35,7 +35,7 @@ export function getUserDisplayInfo(): UserDisplayInfo {
   }
 
   // Format human-friendly role label
-  let roleLabel = "Pengguna FCO";
+  let roleLabel = "Pengguna FISHPRO";
   const rawRole = (user.role || "").toLowerCase();
   const rawRoles = (user.roles || []).map((r) => r.toLowerCase());
 
