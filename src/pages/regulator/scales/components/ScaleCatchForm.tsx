@@ -70,11 +70,7 @@ export function ScaleCatchForm({
     (s) => s.registration_number === selectedShipReg,
   );
   const quota = selectedShip?.current_year_quota;
-  const tareWeight = latestReading?.tare ? Number(latestReading.tare) : 0;
-  const grossWeight = latestReading ? Number(latestReading.weight) : 0;
-  const netWeightNum = latestReading
-    ? Math.max(0, grossWeight - tareWeight)
-    : 0;
+  const weightNum = latestReading ? Number(latestReading.weight) : 0;
 
   const remainingQuotaNum = quota ? Number(quota.remaining_quota) : null;
   const totalQuotaNum = quota ? Number(quota.total_quota) : null;
@@ -84,7 +80,7 @@ export function ScaleCatchForm({
   const isQuotaInsufficient =
     remainingQuotaNum !== null &&
     !isQuotaExhausted &&
-    netWeightNum > remainingQuotaNum;
+    weightNum > remainingQuotaNum;
   const isQuotaWarning =
     quotaPercent !== null &&
     !isQuotaExhausted &&
@@ -108,13 +104,8 @@ export function ScaleCatchForm({
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0">
             <span className="text-xs font-mono font-bold text-fco-blue px-2.5 py-1 rounded-xs bg-blue-500/10">
-              Netto: {netWeightNum > 0 ? netWeightNum.toFixed(2) : currentWeightNum} kg
+              Berat: {currentWeightNum} kg
             </span>
-            {tareWeight > 0 && (
-              <span className="text-2xs font-mono text-soft">
-                Bruto: {grossWeight.toFixed(2)} kg · Tara: {tareWeight.toFixed(2)} kg
-              </span>
-            )}
           </div>
         </div>
 
@@ -204,17 +195,17 @@ export function ScaleCatchForm({
                   </strong>{" "}
                   / Alokasi: {totalQuotaNum?.toLocaleString("id-ID")} kg
                 </div>
-                {netWeightNum > 0 && remainingQuotaNum !== null && (
+                {weightNum > 0 && remainingQuotaNum !== null && (
                   <div className="text-soft">
                     Setelah timbang:{" "}
                     <span
                       className={
-                        remainingQuotaNum - netWeightNum < 0
+                        remainingQuotaNum - weightNum < 0
                           ? "text-red-500 font-bold"
                           : "text-strong font-semibold"
                       }
                     >
-                      {Math.max(0, remainingQuotaNum - netWeightNum).toLocaleString("id-ID")} kg
+                      {Math.max(0, remainingQuotaNum - weightNum).toLocaleString("id-ID")} kg
                     </span>
                   </div>
                 )}
@@ -228,7 +219,7 @@ export function ScaleCatchForm({
               )}
               {isQuotaInsufficient && (
                 <p className="m-0 text-2xs font-medium text-red-700 dark:text-red-300">
-                  Bobot bersih timbangan ({netWeightNum.toFixed(2)} kg) melebihi sisa kuota kapal yang tersedia ({remainingQuotaNum?.toLocaleString("id-ID")} kg).
+                  Bobot hasil timbang ({weightNum.toFixed(2)} kg) melebihi sisa kuota kapal yang tersedia ({remainingQuotaNum?.toLocaleString("id-ID")} kg).
                 </p>
               )}
               {isQuotaWarning && (
@@ -382,7 +373,7 @@ export function ScaleCatchForm({
               <span className="font-bold">#{saveSuccess.catch_id}</span>
             </div>
             <div>
-              <span className="text-soft block text-2xs">Berat Bersih (Netto)</span>
+              <span className="text-soft block text-2xs">Berat Tangkapan</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400">
                 {saveSuccess.weight} {saveSuccess.unit}
               </span>

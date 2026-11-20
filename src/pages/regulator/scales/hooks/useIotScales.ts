@@ -164,7 +164,6 @@ export function useIotScales() {
               device_id: data.device_id || selectedDeviceId,
               weight: Number(data.weight),
               unit: data.unit || "kg",
-              tare: data.tare !== undefined ? Number(data.tare) : 0,
               status: data.status || "pending",
               created_at: data.created_at || new Date().toISOString(),
               scale_name: data.scale_name,
@@ -270,8 +269,7 @@ export function useIotScales() {
     const selectedShip = ships.find(
       (s) => s.registration_number === selectedShipReg,
     );
-    const tareVal = latestReading.tare ? Number(latestReading.tare) : 0;
-    const netWeight = Math.max(0, Number(latestReading.weight) - tareVal);
+    const measuredWeight = Number(latestReading.weight) || 0;
     if (selectedShip?.current_year_quota) {
       const rem = Number(selectedShip.current_year_quota.remaining_quota);
       if (rem <= 0) {
@@ -280,8 +278,8 @@ export function useIotScales() {
         toast.error(msg);
         return;
       }
-      if (netWeight > rem) {
-        const msg = `Sisa kuota kapal '${selectedShip.name}' (${rem.toLocaleString("id-ID")} kg) tidak mencukupi untuk bobot bersih (${netWeight.toLocaleString("id-ID")} kg).`;
+      if (measuredWeight > rem) {
+        const msg = `Sisa kuota kapal '${selectedShip.name}' (${rem.toLocaleString("id-ID")} kg) tidak mencukupi untuk bobot hasil timbang (${measuredWeight.toLocaleString("id-ID")} kg).`;
         setErrorMsg(msg);
         toast.error(msg);
         return;

@@ -42,12 +42,10 @@ export function ScaleReportModal({
   if (!open) return null;
 
   const totalSessions = readings.length;
-  const totalGross = readings.reduce(
+  const totalWeight = readings.reduce(
     (sum, r) => sum + Number(r.weight || 0),
     0,
   );
-  const totalTare = readings.reduce((sum, r) => sum + Number(r.tare || 0), 0);
-  const totalNet = Math.max(0, totalGross - totalTare);
   const savedCount = readings.filter((r) => r.status === "saved").length;
   const pendingCount = readings.filter((r) => r.status === "pending").length;
 
@@ -135,10 +133,10 @@ export function ScaleReportModal({
           </div>
 
           {/* Executive Summary Statistics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-3 rounded-xs border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 print:border-slate-300 print:bg-white">
               <span className="block text-2xs text-slate-500 font-semibold uppercase tracking-wider">
-                Total Sesi
+                Total Sesi Timbang
               </span>
               <span className="text-lg font-bold font-mono">
                 {totalSessions} <span className="text-2xs font-normal">sesi</span>
@@ -148,46 +146,31 @@ export function ScaleReportModal({
               </span>
             </div>
 
-            <div className="p-3 rounded-xs border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 print:border-slate-300 print:bg-white">
-              <span className="block text-2xs text-slate-500 font-semibold uppercase tracking-wider">
-                Total Bruto
-              </span>
-              <span className="text-lg font-bold font-mono text-slate-900 dark:text-white print:text-black">
-                {totalGross.toLocaleString("id-ID", {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                <span className="text-2xs font-normal">kg</span>
-              </span>
-              <span className="block text-3xs text-slate-400 mt-0.5">
-                Total beban kotor
-              </span>
-            </div>
-
-            <div className="p-3 rounded-xs border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 print:border-slate-300 print:bg-white">
-              <span className="block text-2xs text-slate-500 font-semibold uppercase tracking-wider">
-                Total Tara
-              </span>
-              <span className="text-lg font-bold font-mono text-amber-600 dark:text-amber-400 print:text-black">
-                {totalTare.toLocaleString("id-ID", {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                <span className="text-2xs font-normal">kg</span>
-              </span>
-              <span className="block text-3xs text-slate-400 mt-0.5">
-                Beban wadah/krat
-              </span>
-            </div>
-
             <div className="p-3 rounded-xs border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 print:border-slate-300 print:bg-white">
               <span className="block text-2xs text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-wider">
-                Total Netto (Bersih)
+                Total Berat Ditimbang
               </span>
               <span className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400 print:text-black">
-                {totalNet.toLocaleString("id-ID", { minimumFractionDigits: 2 })}{" "}
+                {totalWeight.toLocaleString("id-ID", {
+                  minimumFractionDigits: 2,
+                })}{" "}
                 <span className="text-2xs font-normal">kg</span>
               </span>
               <span className="block text-3xs text-emerald-700/80 dark:text-emerald-300/80 mt-0.5">
-                Dasar PNBP resmi
+                Akumulasi bobot resmi
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xs border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 print:border-slate-300 print:bg-white">
+              <span className="block text-2xs text-slate-500 font-semibold uppercase tracking-wider">
+                Status Integrasi
+              </span>
+              <span className="text-lg font-bold font-mono text-slate-900 dark:text-white print:text-black">
+                {savedCount}{" "}
+                <span className="text-2xs font-normal text-slate-500">/ {totalSessions} tercatat</span>
+              </span>
+              <span className="block text-3xs text-slate-400 mt-0.5">
+                {totalSessions > 0 ? `${Math.round((savedCount / totalSessions) * 100)}% tersimpan ke sistem` : "Belum ada sesi"}
               </span>
             </div>
           </div>
@@ -200,9 +183,7 @@ export function ScaleReportModal({
                   <th className="py-2 px-2 w-8 text-center">No</th>
                   <th className="py-2 px-2">Waktu Ditimbang</th>
                   <th className="py-2 px-2">Perangkat / Pelabuhan</th>
-                  <th className="py-2 px-2 text-right">Bruto (kg)</th>
-                  <th className="py-2 px-2 text-right">Tara (kg)</th>
-                  <th className="py-2 px-2 text-right">Netto (kg)</th>
+                  <th className="py-2 px-2 text-right">Berat (kg)</th>
                   <th className="py-2 px-2 text-center">Stabilitas</th>
                   <th className="py-2 px-2 text-center">Status</th>
                   <th className="py-2 px-2 text-center">Tangkapan</th>
@@ -212,7 +193,7 @@ export function ScaleReportModal({
                 {readings.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={9}
+                      colSpan={7}
                       className="py-6 text-center text-slate-400 font-sans"
                     >
                       Tidak ada riwayat pembacaan sensor timbangan pada periode ini.
@@ -220,9 +201,7 @@ export function ScaleReportModal({
                   </tr>
                 ) : (
                   readings.map((r, idx) => {
-                    const bruto = Number(r.weight || 0);
-                    const tare = Number(r.tare || 0);
-                    const netto = Math.max(0, bruto - tare);
+                    const berat = Number(r.weight || 0);
                     return (
                       <tr
                         key={r.id}
@@ -248,14 +227,8 @@ export function ScaleReportModal({
                             {r.port_name || "Pelabuhan"}
                           </span>
                         </td>
-                        <td className="py-2 px-2 text-right font-bold">
-                          {bruto.toFixed(2)}
-                        </td>
-                        <td className="py-2 px-2 text-right text-slate-500">
-                          {tare.toFixed(2)}
-                        </td>
                         <td className="py-2 px-2 text-right font-extrabold text-emerald-600 dark:text-emerald-400 print:text-black">
-                          {netto.toFixed(2)}
+                          {berat.toFixed(2)}
                         </td>
                         <td className="py-2 px-2 text-center font-sans text-3xs">
                           {r.is_stable ? (

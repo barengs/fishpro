@@ -15,10 +15,6 @@ export function ScaleDisplay({
   const currentWeightNum = latestReading
     ? Number(latestReading.weight).toFixed(2)
     : "0.00";
-  const tareWeight = latestReading?.tare ? Number(latestReading.tare) : 0;
-  const netWeightNum = latestReading
-    ? Math.max(0, Number(latestReading.weight) - tareWeight).toFixed(2)
-    : "0.00";
 
   return (
     <div
@@ -70,11 +66,6 @@ export function ScaleDisplay({
         <div className="text-xs sm:text-sm font-bold uppercase tracking-widest text-emerald-400 mt-2">
           KILOGRAM (KG)
         </div>
-        {tareWeight > 0 && (
-          <div className="mt-2 text-2xs text-slate-300 font-mono">
-            Netto: <span className="font-bold text-white">{netWeightNum} kg</span> (Tara: {tareWeight.toFixed(2)} kg)
-          </div>
-        )}
       </div>
 
       {/* Scale Status Footer */}

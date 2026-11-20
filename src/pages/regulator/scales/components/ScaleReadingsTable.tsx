@@ -47,9 +47,7 @@ export function ScaleReadingsTable({
           "Waktu Ditimbang",
           "ID Perangkat",
           "Pelabuhan",
-          "Bobot Bruto (kg)",
-          "Tara Wadah (kg)",
-          "Bobot Netto (kg)",
+          "Berat (kg)",
           "Stabilitas",
           "Status",
           "ID Sesi",
@@ -57,17 +55,13 @@ export function ScaleReadingsTable({
           "Catatan",
         ];
         const rows = readings.map((r) => {
-          const bruto = Number(r.weight || 0);
-          const tare = Number(r.tare || 0);
-          const netto = Math.max(0, bruto - tare);
+          const berat = Number(r.weight || 0);
           return [
             `"${r.id}"`,
             `"${r.created_at}"`,
             `"${r.device_id}"`,
             `"${r.port_name || "Pelabuhan"}"`,
-            bruto.toFixed(2),
-            tare.toFixed(2),
-            netto.toFixed(2),
+            berat.toFixed(2),
             r.is_stable ? "Stabil" : "Fluktuatif",
             r.status,
             `"${r.session_id || ""}"`,
@@ -290,12 +284,6 @@ export function ScaleReadingsTable({
                 {selectedDetailReading?.weight} {selectedDetailReading?.unit}
               </span>
             ),
-          },
-          {
-            label: "Tara (Wadah)",
-            value: selectedDetailReading?.tare
-              ? `${selectedDetailReading.tare} ${selectedDetailReading.unit}`
-              : "0 kg",
           },
           {
             label: "Stabilitas Sensor",
