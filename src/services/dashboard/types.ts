@@ -83,11 +83,17 @@ export interface OwnerDashboardData {
   };
   kpi: {
     ships_count: number;
+    active_ships_count?: number;
     unassigned_captains_count: number;
     catches_count: number;
     total_volume_kg: number;
     total_pnbp: number;
     average_quota_pct: number;
+    quota_radar?: {
+      safe: number;
+      warning: number;
+      critical: number;
+    };
   };
   fleet: Array<{
     id: number;
@@ -99,6 +105,16 @@ export interface OwnerDashboardData {
     quota_percentage: number | null;
     remaining_quota_kg: number | null;
     total_quota_kg: number | null;
+  }>;
+  recent_landings?: Array<{
+    ship_name: string;
+    ship_reg: string;
+    date: string;
+    species: string;
+    quantity: number;
+    unit: string;
+    pnbp: number;
+    seal_status: string;
   }>;
   wpp_potential_ranking?: WppPotentialItem[];
 }
@@ -123,14 +139,37 @@ export interface CaptainDashboardData {
     remaining_quota_kg: number;
     quota_percentage: number;
   } | null;
+  latest_catch?: {
+    date: string;
+    species: string;
+    quantity: number;
+    unit: string;
+    pnbp: number;
+    seal_status: string;
+    is_verified: boolean;
+  } | null;
+  catches_summary?: {
+    total_landings_count: number;
+    total_volume_kg: number;
+    total_pnbp: number;
+    seal_status: string;
+  };
+  seal_verification?: {
+    status: string;
+    is_verified: boolean;
+    total_verified_records: number;
+    description: string;
+  };
   recent_catches: Array<{
     date: string;
     species: string;
     quantity: number;
     unit: string;
     pnbp: number;
+    seal_status?: string;
   }>;
   blockchain: {
+    status?: string;
     last_block_index: number;
     last_block_hash: string | null;
     total_transactions: number;
