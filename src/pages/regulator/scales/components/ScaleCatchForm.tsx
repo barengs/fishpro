@@ -100,11 +100,10 @@ export function ScaleCatchForm({
         <div className="flex items-start sm:items-center justify-between gap-3 pb-3 border-b border-fco-border-subtle">
           <div>
             <h2 className="m-0 text-base font-bold text-strong">
-              Simpan Laporan Tangkapan Pelabuhan
+              Catat Hasil Timbangan Dermaga
             </h2>
             <p className="m-0 text-xs text-soft mt-0.5 leading-relaxed">
-              Tautkan bobot timbangan digital ke data kapal dan simpan ke
-              blockchain.
+              Hubungkan hasil timbangan dengan kapal pembongkar untuk dicatat resmi ke sistem pelabuhan.
             </p>
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0">
@@ -327,7 +326,7 @@ export function ScaleCatchForm({
                   className="animate-spin"
                   aria-hidden="true"
                 />
-                <span>Merekam ke Blockchain & Menyimpan...</span>
+                <span>Menyimpan ke sistem dermaga...</span>
               </>
             ) : isQuotaExhausted ? (
               <>
@@ -343,20 +342,20 @@ export function ScaleCatchForm({
               <>
                 <CheckCircle2 size={18} strokeWidth={2.2} aria-hidden="true" />
                 <span className="hidden sm:inline">
-                  Simpan Tangkapan Resmi (Potong Kuota, PNBP, & Blockchain)
+                  Simpan Hasil Timbangan & Perbarui Kuota
                 </span>
-                <span className="sm:hidden">Simpan Tangkapan Resmi</span>
+                <span className="sm:hidden">Simpan Hasil Timbangan</span>
               </>
             )}
           </button>
           <div className="flex items-center justify-between text-2xs text-soft pt-1">
             <span className="flex items-center gap-1.5">
               <Link2 size={13} className="text-fco-blue" />
-              <span>Verifikasi Blockchain SHA-256</span>
+              <span>Segel Kriptografi Rantai Blok</span>
             </span>
             <span className="flex items-center gap-1.5">
               <Sparkles size={13} className="text-fco-blue" />
-              <span>Kalkulasi PNBP Otomatis</span>
+              <span>Tarif PNBP Otomatis</span>
             </span>
           </div>
         </div>

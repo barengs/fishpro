@@ -149,8 +149,8 @@ export function IotDevicesPage() {
   return (
     <div>
       <PageToolbar
-        title="Perangkat Timbangan Pintar IoT"
-        desc="Kelola daftar perangkat keras timbangan digital pelabuhan resmi yang terhubung ke jaringan FCO."
+        title="Timbangan Digital Pelabuhan"
+        desc="Daftar unit timbangan dermaga yang terhubung ke sistem untuk pencatatan otomatis hasil tangkapan."
         searchPlaceholder="Cari ID perangkat / pelabuhan..."
         searchValue={search}
         onSearchChange={setSearch}

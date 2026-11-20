@@ -32,7 +32,7 @@ export function ScaleDisplay({
         <div className="flex items-center gap-2">
           <Radio size={15} className="text-emerald-400 animate-pulse" />
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Sensor Timbangan Digital
+            Timbangan Dermaga
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -93,18 +93,18 @@ export function ScaleDisplay({
           />
           <span>
             {loading && !latestReading
-              ? "Menghubungkan ke Sensor..."
+              ? "Menghubungkan ke timbangan..."
               : latestReading?.is_stable === false
-                ? "Beban Fluktuatif (Menunggu Stabil)"
+                ? "Beban belum stabil..."
                 : latestReading
-                  ? "Beban Terdeteksi (Pending)"
+                  ? "Ada beban di timbangan"
                   : "Siap Menimbang"}
           </span>
         </span>
         <span className="font-mono text-2xs text-slate-400">
           {latestReading
             ? `ID: #${latestReading.id.slice(0, 8)}`
-            : "Menunggu beban dermaga..."}
+            : "Timbangan kosong"}
         </span>
       </div>
     </div>

@@ -135,8 +135,8 @@ export function CatchesPage() {
   return (
     <div>
       <PageToolbar
-        title="Laporan Tangkapan Ikan (Fish Catches)"
-        desc="Kelola laporan tangkapan kapal nasional terintegrasi API backend & verifikasi blockchain otomatis."
+        title="Laporan Hasil Tangkapan"
+        desc="Kelola seluruh catatan hasil tangkapan kapal, rincian jenis ikan, dan verifikasi segel resmi pelabuhan."
         searchPlaceholder="Filter kapal / tanggal..."
         searchValue={search}
         onSearchChange={setSearch}

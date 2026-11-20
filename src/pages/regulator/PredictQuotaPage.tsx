@@ -8,8 +8,8 @@ export function PredictQuotaPage() {
   return (
     <div>
       <PageHeader
-        title="Prediksi Kuota AI (LSTM + NSGA-III)"
-        desc="Simulasi proyeksi kuota tangkapan berbasis deep learning LSTM dan optimasi kelestarian perairan NSGA-III."
+        title="Proyeksi Kuota Penangkapan"
+        desc="Perkiraan batas kuota tangkapan berbasis histori kapal dan daya dukung perairan untuk menjaga kelestarian laut."
       />
       <PredictQuotaTab
         onQuotaApplied={() => {

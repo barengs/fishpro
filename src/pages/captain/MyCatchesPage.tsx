@@ -191,7 +191,7 @@ export function MyCatchesPage() {
             ? `Laporan Tangkapan: ${selectedCatch.catch_date}`
             : "Detail Tangkapan Ikan"
         }
-        subtitle="Rincian hasil tangkapan laut, koordinat GPS penangkapan, dan estimasi PNBP resmi KKP."
+        subtitle="Daftar hasil tangkapan kapal, titik koordinat melaut, dan rincian tarif resmi PNBP."
         badge={
           selectedCatch ? <StatusChip label="Tercatat Resmi" /> : undefined
         }

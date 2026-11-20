@@ -150,8 +150,8 @@ export function CaptainDashboard() {
               </div>
               <p className="m-0 text-xs text-soft mb-4 leading-relaxed">
                 {hasShip
-                  ? `Semua laporan tangkapan ${ship!.name} disegel permanen ke buku besar blockchain terdistribusi.`
-                  : "Semua laporan tangkapan kapal disegel permanen ke buku besar blockchain terdistribusi."}
+                  ? `Setiap hasil tangkapan ${ship!.name} langsung tercatat resmi ke buku besar digital tanpa risiko diubah sepihak.`
+                  : "Setiap hasil tangkapan kapal langsung tercatat resmi ke buku besar digital tanpa risiko diubah sepihak."}
               </p>
               <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
                 <div className="flex justify-between py-2.5">

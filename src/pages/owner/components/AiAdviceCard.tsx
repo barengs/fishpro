@@ -21,8 +21,8 @@ const defaultTips: TipItem[] = [
     Icon: UserCheck,
   },
   {
-    title: "Optimalisasi kuota berbasis AI",
-    text: "Gunakan model prediksi NSGA-III untuk merencanakan alokasi musim penangkapan berikutnya.",
+    title: "Rencanakan kuota musim depan",
+    text: "Periksa tren tangkapan untuk memperkirakan kebutuhan kuota armada di musim berikutnya.",
     Icon: AlertCircle,
   },
 ];
@@ -116,7 +116,7 @@ export function AiAdviceCard() {
   return (
     <section className="surface-card border rounded-xs p-5 shadow-2xs">
       <h2 className="mt-0 mb-3 text-base font-bold text-strong">
-        Rekomendasi & Wawasan AI
+        Saran & Catatan Operasional
       </h2>
       <div className="flex flex-col gap-3">
         {tips.map((t) => (

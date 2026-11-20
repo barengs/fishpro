@@ -125,8 +125,8 @@ export function ShipsPage() {
   return (
     <div>
       <PageToolbar
-        title="Kapal Nasional"
-        desc="Daftar seluruh kapal penangkap ikan terdaftar di sistem KKP (nama, registrasi, GT, pemilik, nahkoda)."
+        title="Data Kapal Perikanan"
+        desc="Daftar seluruh kapal penangkap ikan yang terdaftar resmi beserta spesifikasi teknis, pemilik, dan nahkodanya."
         searchPlaceholder="Cari nama / nomor registrasi..."
         searchValue={search}
         onSearchChange={setSearch}

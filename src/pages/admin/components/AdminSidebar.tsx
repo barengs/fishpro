@@ -200,7 +200,7 @@ export function AdminLayout() {
 
   const handleLogout = async () => {
     await authService.logout();
-    toast.success("Logout berhasil. Sesi telah diakhiri.");
+    toast.success("Anda telah berhasil keluar dari akun.");
     navigate("/login", { replace: true });
   };
 
