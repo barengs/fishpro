@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BarChart3, Check, Coins, Ship } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Coins, Scale, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { StatusChip } from "../../components/StatusChip";
 import { AlertBanner } from "../../components/ui";
@@ -7,7 +7,7 @@ import { QuotaHeroCard } from "./components/QuotaHeroCard";
 import { ShipSpecsCard } from "./components/ShipSpecsCard";
 import { RecentCatchesTable } from "./components/RecentCatchesTable";
 import { WppPotentialCard } from "../../components/WppPotentialCard";
-import { formatRupiah, formatShortHash } from "../../utils";
+import { formatRupiah } from "../../utils";
 import { useCaptainDashboard } from "./hooks/useCaptainDashboard";
 
 export function CaptainDashboard() {
@@ -16,8 +16,6 @@ export function CaptainDashboard() {
     ship,
     hasShip,
     quota,
-    blockchainStatus,
-    lastBlock,
     toast,
     setToast,
     userInfo,
@@ -125,64 +123,75 @@ export function CaptainDashboard() {
           <section className="surface-card border rounded-xl p-6 shadow-xs flex flex-col justify-between h-full">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="m-0 text-base font-bold text-strong">
-                  Status blockchain
-                </h2>
+                <div className="flex items-center gap-2">
+                  <Scale size={18} className="text-fco-blue" />
+                  <h2 className="m-0 text-base font-bold text-strong">
+                    Timbangan Dermaga Terakhir
+                  </h2>
+                </div>
                 <StatusChip
-                  label={
-                    blockchainStatus?.valid === false
-                      ? "Peringatan"
-                      : "Terverifikasi"
-                  }
-                  bg={blockchainStatus?.valid === false ? "#FFF1E0" : "#E8F0FE"}
-                  color={
-                    blockchainStatus?.valid === false ? "#B54708" : "#1A56DB"
-                  }
+                  label="Tersegel Resmi"
+                  bg="#ECFDF5"
+                  color="#059669"
                   icon={
                     <Check
                       size={14}
-                      className="text-fco-blue"
+                      className="text-emerald-600"
                       strokeWidth={2.6}
                       aria-hidden="true"
                     />
                   }
                 />
               </div>
+
               <p className="m-0 text-xs text-soft mb-4 leading-relaxed">
                 {hasShip
-                  ? `Setiap hasil tangkapan ${ship!.name} langsung tercatat resmi ke buku besar digital tanpa risiko diubah sepihak.`
-                  : "Setiap hasil tangkapan kapal langsung tercatat resmi ke buku besar digital tanpa risiko diubah sepihak."}
+                  ? `Catatan penimbangan resmi hasil bongkar muat kapal ${ship!.name} di dermaga pelabuhan.`
+                  : "Catatan penimbangan resmi hasil bongkar muat kapal di dermaga pelabuhan."}
               </p>
-              <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
-                <div className="flex justify-between py-2.5">
-                  <span className="text-soft">Blok terakhir</span>
-                  <span className="font-semibold tabular-nums">
-                    {lastBlock ? `#${lastBlock.index}` : "—"}
-                  </span>
+
+              {reports.length > 0 ? (
+                <div className="flex flex-col divide-y divide-fco-border-subtle text-sm">
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-soft text-xs">Waktu Ditimbang</span>
+                    <span className="font-semibold tabular-nums text-strong">
+                      {reports[0].date}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-soft text-xs">Komoditas / Ikan</span>
+                    <span className="font-bold text-strong">
+                      {reports[0].species}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-soft text-xs">Berat Ditimbang</span>
+                    <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400">
+                      {reports[0].qty}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-soft text-xs">Pungutan PNBP</span>
+                    <span className="font-mono font-bold text-fco-blue">
+                      {reports[0].pnbp}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between py-2.5">
-                  <span className="text-soft">Hash verifikasi</span>
-                  <span className="font-semibold tabular-nums text-fco-blue">
-                    {formatShortHash(lastBlock?.hash, 4, 4)}
-                  </span>
+              ) : (
+                <div className="p-4 rounded-xs surface-inset border border-fco-border-subtle text-center text-xs text-soft my-2">
+                  Belum ada riwayat penimbangan di dermaga. Data akan otomatis tercatat saat kapal membongkar muatan.
                 </div>
-                <div className="flex justify-between py-2.5">
-                  <span className="text-soft">Total laporan kapal</span>
-                  <span className="font-semibold tabular-nums">
-                    {reports.length} transaksi
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
+
             <div className="mt-4 pt-3 border-t border-fco-border-subtle flex items-center justify-between text-xs text-soft">
-              <span>
-                Integritas ledger: {blockchainStatus?.valid ? "100%" : "—"}
-              </span>
+              <span>Total: {reports.length} sesi timbang tercatat</span>
               <Link
                 to="/captain/catches"
-                className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline"
+                className="text-fco-blue hover:text-fco-blue-hover font-semibold no-underline inline-flex items-center gap-1"
               >
-                Lihat riwayat
+                <span>Lihat semua</span>
+                <ArrowRight size={13} />
               </Link>
             </div>
           </section>
