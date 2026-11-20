@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CrudModal } from "../CrudModal";
+import { CrudModal } from "./CrudModal";
 import { SelectField, TextField, TextareaField } from "../ui";
 import { type CreateOwnerPayload, type Owner } from "../../services/owners";
 import { ownerSchema } from "../../utils/schemas";

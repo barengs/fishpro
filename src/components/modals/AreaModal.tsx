@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { CrudModal } from "../CrudModal";
+import { CrudModal } from "./CrudModal";
 import { TextField, TextareaField } from "../ui";
 import {
   type CreateFishingAreaPayload,
