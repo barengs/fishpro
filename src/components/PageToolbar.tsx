@@ -43,15 +43,15 @@ export function PageToolbar({
     <div className="mb-6">
       {hasHeader && (
         <div className="mb-5">
-          <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
             {title}
           </h1>
-          {desc && <p className="m-0 text-sm text-soft mt-1">{desc}</p>}
+          {desc && <p className="m-0 text-[13px] text-subtext dark:text-slate-400 mt-1">{desc}</p>}
         </div>
       )}
 
       {tabs && tabs.length > 1 && (
-        <div className="border-b border-fco-border dark:border-fco-border-dark mb-5">
+        <div className="border-b border-[#E5E7EB] dark:border-slate-800 mb-5">
           <nav className="-mb-px flex gap-6 overflow-x-auto" role="tablist">
             {tabs.map((t) => {
               const active = activeTab === t.key;
@@ -62,10 +62,10 @@ export function PageToolbar({
                   role="tab"
                   aria-selected={active}
                   onClick={() => onTabChange?.(t.key)}
-                  className={`inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                  className={`inline-flex items-center gap-2 py-2.5 px-1 border-b-2 font-semibold text-[13px] transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
                     active
-                      ? "border-b-fco-blue text-fco-blue"
-                      : "border-b-transparent text-soft hover:text-strong hover:border-b-fco-border dark:hover:border-b-fco-border-dark"
+                      ? "border-b-brand-600 text-brand-600 dark:text-brand-400"
+                      : "border-b-transparent text-subtext dark:text-slate-400 hover:text-ink dark:hover:text-white hover:border-b-line"
                   }`}
                 >
                   <span className="whitespace-nowrap">{t.label}</span>
@@ -81,8 +81,8 @@ export function PageToolbar({
           {hasSearch ? (
             <div className="relative w-full sm:w-72 md:w-80">
               <Search
-                size={17}
-                className="text-soft absolute left-3.5 top-3 pointer-events-none"
+                size={15}
+                className="text-subtext dark:text-slate-400 absolute left-3 top-2.5 pointer-events-none"
                 strokeWidth={1.8}
                 aria-hidden="true"
               />
@@ -91,7 +91,7 @@ export function PageToolbar({
                 value={searchValue ?? ""}
                 onChange={(e) => onSearchChange?.(e.target.value)}
                 placeholder={searchPlaceholder ?? "Cari data..."}
-                className="w-full h-10 border dark:border-fco-border-dark rounded-fco pl-10 pr-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
+                className="w-full h-9 border border-[#E5E7EB] dark:border-slate-700 bg-[#F9FAFB] dark:bg-slate-800/80 rounded-lg pl-9 pr-3.5 text-[13px] font-medium text-ink dark:text-white placeholder:text-subtext dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-all shadow-subtle"
               />
             </div>
           ) : (
@@ -106,9 +106,9 @@ export function PageToolbar({
                 <button
                   type="button"
                   onClick={onAdd}
-                  className="inline-flex items-center gap-2 h-10 px-4.5 rounded-fco border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm font-semibold cursor-pointer transition-colors shadow-xs whitespace-nowrap"
+                  className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-transparent bg-brand-600 hover:bg-brand-700 text-white text-[13px] font-semibold cursor-pointer transition-colors shadow-subtle whitespace-nowrap"
                 >
-                  <Plus size={16} strokeWidth={2.2} aria-hidden="true" />
+                  <Plus size={15} strokeWidth={2.2} aria-hidden="true" />
                   <span>{addLabel}</span>
                 </button>
               )}

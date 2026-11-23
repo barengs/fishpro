@@ -139,9 +139,9 @@ export function CrudActions({
           onClick={onDetail}
           title="Lihat Detail"
           aria-label="Lihat Detail"
-          className="w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-charcoal hover:text-ink dark:text-slate-300 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors shadow-subtle"
         >
-          <Eye size={15} strokeWidth={2.4} aria-hidden="true" />
+          <Eye size={14} strokeWidth={1.8} aria-hidden="true" />
         </button>
       )}
       {onEdit && (
@@ -150,9 +150,9 @@ export function CrudActions({
           onClick={onEdit}
           title="Ubah Data"
           aria-label="Ubah Data"
-          className="w-8 h-8 rounded-md bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 dark:hover:bg-amber-950/40 dark:hover:text-amber-400 dark:hover:border-amber-800 text-charcoal dark:text-slate-300 flex items-center justify-center cursor-pointer transition-colors shadow-subtle"
         >
-          <Pencil size={14} strokeWidth={2.4} aria-hidden="true" />
+          <Pencil size={13} strokeWidth={1.8} aria-hidden="true" />
         </button>
       )}
       {onDelete && (
@@ -161,9 +161,9 @@ export function CrudActions({
           onClick={onDelete}
           title="Hapus Data"
           aria-label="Hapus Data"
-          className="w-8 h-8 rounded-md bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 shadow-2xs hover:shadow-xs border-none"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 dark:hover:border-rose-800 text-charcoal dark:text-slate-300 flex items-center justify-center cursor-pointer transition-colors shadow-subtle"
         >
-          <Trash2 size={14} strokeWidth={2.4} aria-hidden="true" />
+          <Trash2 size={13} strokeWidth={1.8} aria-hidden="true" />
         </button>
       )}
     </div>
