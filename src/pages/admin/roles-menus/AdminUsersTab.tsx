@@ -131,6 +131,7 @@ export function AdminUsersTab() {
             label={isSuper ? "Super Admin" : "Staf Lapangan"}
             size="md"
             variant="solid"
+            fixedWidth
           />
         );
       },

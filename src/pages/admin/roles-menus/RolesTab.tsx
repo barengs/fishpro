@@ -166,7 +166,7 @@ export function RolesTab() {
         };
         const customLabel = roleLabels[norm] ?? "Terbatas";
 
-        return <RoleBadge role={r.name} label={customLabel} size="md" variant="solid" />;
+        return <RoleBadge role={r.name} label={customLabel} size="md" variant="solid" fixedWidth />;
       },
     },
     {
@@ -246,7 +246,7 @@ export function RolesTab() {
               };
               const customLabel = roleLabels[norm] ?? "Terbatas";
 
-              return <RoleBadge role={selectedRole.name} label={customLabel} variant="solid" />;
+              return <RoleBadge role={selectedRole.name} label={customLabel} variant="solid" fixedWidth />;
             })()
           ) : undefined
         }

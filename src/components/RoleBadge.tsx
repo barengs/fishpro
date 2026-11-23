@@ -16,6 +16,7 @@ interface RoleBadgeProps {
   size?: "sm" | "md" | "lg";
   showDot?: boolean;
   variant?: "solid" | "subtle";
+  fixedWidth?: boolean | string;
 }
 
 interface RoleConfig {
@@ -88,6 +89,7 @@ export function RoleBadge({
   size = "md",
   showDot = false,
   variant = "solid",
+  fixedWidth = false,
 }: RoleBadgeProps) {
   const normRole = (role || "").toLowerCase().replace(/[\s_-]+/g, "");
   
@@ -119,9 +121,22 @@ export function RoleBadge({
 
   const currentSize = size || "md";
 
+  const fixedWidthClasses: Record<"sm" | "md" | "lg", string> = {
+    sm: "w-[110px]",
+    md: "w-[136px]",
+    lg: "w-[150px]",
+  };
+
+  const widthClass =
+    typeof fixedWidth === "string"
+      ? fixedWidth
+      : fixedWidth
+      ? fixedWidthClasses[currentSize]
+      : "";
+
   return (
     <span
-      className={`inline-flex items-center font-bold tracking-tight select-none whitespace-nowrap transition-all ${sizeClasses[currentSize]} ${badgeStyle} ${className}`}
+      className={`inline-flex items-center font-bold tracking-tight select-none whitespace-nowrap transition-all ${sizeClasses[currentSize]} ${widthClass} ${badgeStyle} ${className}`}
     >
       {showDot && (
         <span
