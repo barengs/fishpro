@@ -188,13 +188,10 @@ export function MyCatchesPage() {
         open={isDetailOpen}
         title={
           selectedCatch
-            ? `Laporan Tangkapan: ${selectedCatch.catch_date}`
+            ? `Laporan Tangkapan: ${selectedCatch.ship_name || (ship?.name ? ship.name : selectedCatch.catch_date)}`
             : "Detail Tangkapan Ikan"
         }
-        subtitle="Daftar hasil tangkapan kapal, titik koordinat melaut, dan rincian tarif resmi PNBP."
-        badge={
-          selectedCatch ? <StatusChip label="Tercatat Resmi" /> : undefined
-        }
+        subtitle="Data hasil tangkapan ikan, koordinat penangkapan GPS, dan hitungan PNBP."
         onClose={closeDetail}
         fields={[
           {
@@ -208,23 +205,22 @@ export function MyCatchesPage() {
             value: selectedCatch?.catch_date || "—",
           },
           {
-            label: "Kategori Tangkapan",
+            label: "Jenis Tangkapan",
             value:
               selectedCatch?.catch_type === "pelagic"
-                ? "Ikan Pelagis"
+                ? "PELAGIC"
                 : selectedCatch?.catch_type === "demersal"
-                  ? "Ikan Demersal"
-                  : selectedCatch?.catch_type === "reef"
-                    ? "Ikan Karang"
-                    : selectedCatch?.catch_type || "—",
+                  ? "DEMERSAL"
+                  : selectedCatch?.catch_type?.toUpperCase() || "PELAGIC",
+          },
+          {
+            label: "Status",
+            value: "Tercatat Resmi",
           },
           {
             label: "Koordinat GPS",
             value: selectedCatch ? (
-              <span className="font-mono text-xs">
-                {selectedCatch.location_latitude},{" "}
-                {selectedCatch.location_longitude}
-              </span>
+              `${selectedCatch.location_latitude}, ${selectedCatch.location_longitude}`
             ) : (
               "—"
             ),
@@ -236,7 +232,7 @@ export function MyCatchesPage() {
               const details = selectedCatch?.catch_details || [];
               if (details.length === 0) {
                 return (
-                  <span className="text-soft text-xs">
+                  <span className="text-subtext text-xs">
                     Belum ada rincian spesifik spesies.
                   </span>
                 );
@@ -246,48 +242,44 @@ export function MyCatchesPage() {
                 (acc, cur) => acc + (Number(cur.quantity) || 0),
                 0,
               );
-              const totalPnbp = details.reduce(
-                (acc, cur) => acc + (Number(cur.pnbp) || 0),
-                0,
-              );
 
               return (
-                <div className="rounded-xl border border-fco-border-subtle surface-inset overflow-hidden mt-1">
-                  <div className="max-h-52 overflow-y-auto divide-y divide-fco-border-subtle">
+                <div className="rounded-2xl border border-gray-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden mt-1.5">
+                  <div className="max-h-60 overflow-y-auto">
                     <table className="w-full text-left text-xs border-collapse">
-                      <thead className="bg-fco-blue sticky top-0 z-1 text-white font-bold">
+                      <thead className="bg-[#F8F9FA] dark:bg-slate-800/60 sticky top-0 z-1 border-b border-gray-200/70 dark:border-slate-800 text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                         <tr>
-                          <th className="py-2.5 px-3 w-10 text-center">No</th>
-                          <th className="py-2.5 px-3">Spesies / WPP</th>
-                          <th className="py-2.5 px-3 text-right">Volume</th>
-                          <th className="py-2.5 px-3 text-right">PNBP</th>
+                          <th className="py-3 px-4 w-12 text-center font-bold">NO</th>
+                          <th className="py-3 px-4 font-bold">SPESIES / WPP</th>
+                          <th className="py-3 px-4 text-right font-bold">VOLUME</th>
+                          <th className="py-3 px-4 text-right font-bold">PNBP</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-fco-border-subtle text-strong">
+                      <tbody className="divide-y divide-gray-100 dark:divide-slate-800/60 text-ink dark:text-white">
                         {details.map((d, i) => (
                           <tr
                             key={i}
-                            className="hover:surface-page transition-colors"
+                            className="hover:bg-gray-50/50 dark:hover:bg-slate-800/40 transition-colors"
                           >
-                            <td className="py-2.5 px-3 text-center tabular-nums text-soft font-semibold w-10">
+                            <td className="py-3.5 px-4 text-center tabular-nums text-gray-400 dark:text-slate-500 font-normal w-12">
                               {i + 1}
                             </td>
-                            <td className="py-2.5 px-3">
-                              <div className="font-semibold text-strong">
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-sm text-gray-900 dark:text-white">
                                 {d.fish_species_name ||
                                   `Spesies #${d.fish_species}`}
                               </div>
                               {d.wpp && (
-                                <div className="text-2xs text-soft font-medium">
+                                <div className="text-xs text-gray-400 font-normal mt-0.5">
                                   Wilayah: {d.wpp}
                                 </div>
                               )}
                             </td>
-                            <td className="py-2.5 px-3 text-right font-bold tabular-nums">
-                              {d.quantity} {d.unit}
+                            <td className="py-3.5 px-4 text-right font-semibold text-sm text-gray-900 dark:text-white tabular-nums">
+                              {Number(d.quantity).toFixed(2)} {d.unit || "kg"}
                             </td>
-                            <td className="py-2.5 px-3 text-right font-mono text-fco-blue tabular-nums">
-                              {d.pnbp
+                            <td className="py-3.5 px-4 text-right text-sm text-gray-400 dark:text-slate-400 tabular-nums">
+                              {d.pnbp && Number(d.pnbp) > 0
                                 ? `Rp ${Number(d.pnbp).toLocaleString("id-ID")}`
                                 : "—"}
                             </td>
@@ -298,19 +290,15 @@ export function MyCatchesPage() {
                   </div>
 
                   {/* Summary Bar */}
-                  <div className="p-2.5 px-3 surface-card border-t border-fco-border-subtle flex flex-wrap items-center justify-between gap-2 text-xs font-bold">
-                    <span className="text-soft font-medium">
+                  <div className="px-4 py-3 bg-[#F8F9FA] dark:bg-slate-800/60 border-t border-gray-200/70 dark:border-slate-800 flex items-center justify-between text-xs">
+                    <span className="text-gray-500 dark:text-slate-400 font-medium">
                       {details.length} Spesies
                     </span>
-                    <div className="flex items-center gap-3.5 tabular-nums">
-                      <span>
-                        Total: {Number(totalQty).toLocaleString("id-ID")} kg
+                    <div className="flex items-center gap-1.5 tabular-nums">
+                      <span className="text-gray-500 dark:text-slate-400">Total</span>
+                      <span className="font-bold text-sm text-gray-900 dark:text-white">
+                        {Number(totalQty).toLocaleString("id-ID")} kg
                       </span>
-                      {totalPnbp > 0 && (
-                        <span className="text-fco-blue">
-                          PNBP: Rp {Number(totalPnbp).toLocaleString("id-ID")}
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -318,8 +306,8 @@ export function MyCatchesPage() {
             })(),
           },
           {
-            label: "Keterangan / Catatan Lokasi",
-            value: selectedCatch?.description || "Tidak ada catatan tambahan.",
+            label: "Catatan Lokasi",
+            value: selectedCatch?.description || "Operasi penangkapan bulan 08/2026",
             fullWidth: true,
           },
         ]}

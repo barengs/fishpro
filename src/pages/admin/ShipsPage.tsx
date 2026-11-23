@@ -158,31 +158,7 @@ export function ShipsPage() {
         open={isDetailOpen}
         title={selectedShip?.name || "Detail Kapal"}
         subtitle="Spesifikasi teknis, identitas registrasi, dan penugasan kapal."
-        badge={
-          selectedShip ? (
-            <StatusChip
-              label={selectedShip.active ? "Aktif Beroperasi" : "Nonaktif"}
-              bg={selectedShip.active ? undefined : "#EEF1F6"}
-              color={selectedShip.active ? undefined : "#4A5872"}
-            />
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedShip && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedShip;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nomor Registrasi",

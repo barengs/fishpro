@@ -212,31 +212,7 @@ export function OwnersTab() {
         open={isDetailOpen}
         title={selectedOwner?.full_name || "Detail Pemilik Kapal"}
         subtitle="Identitas legalitas pemilik kapal atau perusahaan perikanan."
-        badge={
-          selectedOwner ? (
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              {selectedOwner.owner_type === "company"
-                ? "Perusahaan (PT/CV)"
-                : "Perorangan"}
-            </span>
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedOwner && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedOwner;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Lengkap / Perusahaan",

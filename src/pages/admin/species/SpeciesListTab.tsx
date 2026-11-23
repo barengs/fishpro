@@ -150,29 +150,7 @@ export function SpeciesListTab() {
         open={isDetailOpen}
         title={selectedSpecies?.name || "Detail Spesies Ikan"}
         subtitle="Informasi taksonomi biologis dan klasifikasi resmi spesies perikanan."
-        badge={
-          selectedSpecies?.scientific_name ? (
-            <span className="font-mono italic text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              {selectedSpecies.scientific_name}
-            </span>
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedSpecies && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedSpecies;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Umum Ikan",

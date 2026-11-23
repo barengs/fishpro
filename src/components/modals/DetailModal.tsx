@@ -53,19 +53,19 @@ export function DetailModal({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-130 bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-popover z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]"
+        className="relative w-full max-w-[540px] bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-3xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]"
       >
         {/* Clean, Focused Header */}
-        <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0">
+        <div className="px-7 sm:px-8 pt-7 sm:pt-8 pb-5 border-b border-[#E5E7EB] dark:border-slate-800 flex items-start justify-between gap-4 shrink-0">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="m-0 text-base sm:text-lg font-bold tracking-tight text-ink dark:text-white truncate">
+              <h2 className="m-0 text-xl sm:text-2xl font-bold tracking-tight text-ink dark:text-white leading-tight">
                 {title}
               </h2>
               {badge}
             </div>
             {subtitle && (
-              <p className="m-0 mt-0.5 text-xs text-subtext dark:text-slate-400 font-normal truncate">
+              <p className="m-0 mt-2 text-xs sm:text-[13px] text-subtext dark:text-slate-400 font-normal leading-relaxed">
                 {subtitle}
               </p>
             )}
@@ -75,36 +75,34 @@ export function DetailModal({
             type="button"
             onClick={onClose}
             aria-label="Tutup detail"
-            className="w-7 h-7 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-charcoal hover:text-ink dark:text-slate-300 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors shrink-0 shadow-subtle"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-white p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
-            <X size={15} aria-hidden="true" />
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Content: Clean Definition Rows */}
-        <div className="px-6 py-2 overflow-y-auto flex-1">
-          <dl className="m-0 divide-y divide-[#E5E7EB] dark:divide-slate-800">
+        {/* Content: Clean 2-column Grid matching the reference */}
+        <div className="px-7 sm:px-8 py-6 overflow-y-auto flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
             {fields.map((f, idx) => (
               <div
                 key={idx}
-                className={`py-3 ${
-                  f.fullWidth
-                    ? "flex flex-col gap-1"
-                    : "grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-1 sm:gap-3 sm:items-baseline"
-                }`}
+                className={f.fullWidth ? "col-span-full" : "col-span-1"}
               >
-                <dt className="text-xs text-soft font-medium">{f.label}</dt>
-                <dd className="m-0 text-sm font-semibold text-strong wrap-break-word leading-relaxed min-w-0">
+                <div className="text-xs text-subtext dark:text-slate-400 font-normal">
+                  {f.label}
+                </div>
+                <div className="mt-1 text-sm font-bold text-ink dark:text-white leading-relaxed">
                   {f.value || "—"}
-                </dd>
+                </div>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
 
         {/* Footer: Only render if custom actions are provided */}
         {actions && (
-          <div className="px-6 py-3 border-t border-fco-border-subtle flex items-center justify-end gap-2.5 shrink-0 surface-card">
+          <div className="px-7 sm:px-8 py-3 border-t border-[#E5E7EB] dark:border-slate-800 flex items-center justify-end gap-2.5 shrink-0 bg-gray-50/50 dark:bg-slate-800/30">
             {actions}
           </div>
         )}

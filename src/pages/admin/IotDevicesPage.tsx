@@ -182,37 +182,7 @@ export function IotDevicesPage() {
         open={isDetailOpen}
         title={selectedDevice?.name || "Detail Perangkat Timbangan"}
         subtitle="Spesifikasi perangkat keras IoT dan kredensial koneksi sensor dermaga."
-        badge={
-          selectedDevice ? (
-            <StatusChip
-              label={selectedDevice.is_active ? "Perangkat Aktif" : "Nonaktif"}
-              fixedWidth
-              icon={
-                selectedDevice.is_active ? (
-                  <Wifi size={13} className="shrink-0" strokeWidth={2.4} />
-                ) : (
-                  <WifiOff size={13} className="shrink-0" strokeWidth={2.4} />
-                )
-              }
-            />
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedDevice && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedDevice;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "ID Perangkat (Device ID)",

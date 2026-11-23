@@ -159,29 +159,6 @@ export function FleetPage() {
         open={isDetailOpen}
         title={selectedShip?.name || "Detail Kapal Armada"}
         subtitle="Data registrasi, spesifikasi kapal, dan kesiapan operasi armada Anda."
-        badge={
-          selectedShip ? (
-            <StatusChip
-              label={
-                !selectedShip.active
-                  ? "Nonaktif"
-                  : !selectedShip.captain
-                    ? "Tanpa Nahkoda"
-                    : "Siap Operasi"
-              }
-              bg={
-                !selectedShip.active || !selectedShip.captain
-                  ? "#FFF1E0"
-                  : undefined
-              }
-              color={
-                !selectedShip.active || !selectedShip.captain
-                  ? "#B54708"
-                  : undefined
-              }
-            />
-          ) : undefined
-        }
         onClose={closeDetail}
         fields={[
           {
@@ -221,21 +198,6 @@ export function FleetPage() {
             fullWidth: true,
           },
         ]}
-        actions={
-          selectedShip && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedShip;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
       />
 
       <CrudModal

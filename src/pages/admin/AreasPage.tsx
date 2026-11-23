@@ -168,29 +168,7 @@ export function AreasPage() {
       <DetailModal
         open={Boolean(selectedDetailArea)}
         title={selectedDetailArea?.nama || "Detail Wilayah"}
-        badge={
-          selectedDetailArea ? (
-            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              Kode: {selectedDetailArea.code}
-            </span>
-          ) : undefined
-        }
         onClose={() => setSelectedDetailArea(null)}
-        actions={
-          selectedDetailArea && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedDetailArea;
-                setSelectedDetailArea(null);
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Wilayah",
