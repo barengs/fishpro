@@ -3,7 +3,6 @@ import { BarChart3, Coins, Fish, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { FleetTable } from "./components/FleetTable";
 import { PnbpPredictionBars } from "./components/PnbpPredictionBars";
-import { AiAdviceCard } from "./components/AiAdviceCard";
 import { WppPotentialCard } from "../../components/WppPotentialCard";
 import { shipsService, type Ship as ShipType } from "../../services/ships";
 import { catchesService } from "../../services/catches";
@@ -127,13 +126,13 @@ export function OwnerDashboard() {
 
   return (
     <div>
-      <div className="mb-7">
-        <h1 className="m-0 text-3xl font-extrabold tracking-tight">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
           Armada Anda
         </h1>
-        <div className="text-sm text-soft mt-1">
+        <p className="text-[13px] text-subtext dark:text-slate-400 mt-1">
           Pantau kapal, nahkoda, kuota, dan PNBP armada secara terpadu.
-        </div>
+        </p>
       </div>
 
       {/* Realtime Owner KPIs */}
@@ -195,13 +194,12 @@ export function OwnerDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
         <div className="lg:col-span-3">
           <FleetTable ships={ships.length > 0 ? ships : undefined} />
         </div>
         <div className="lg:col-span-2 flex flex-col gap-4 min-w-0">
           <PnbpPredictionBars />
-          <AiAdviceCard />
         </div>
       </div>
     </div>

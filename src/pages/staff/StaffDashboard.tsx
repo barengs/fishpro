@@ -111,17 +111,17 @@ export function StaffDashboard() {
   return (
     <div>
       {/* Header Staf Lapangan */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-soft mb-1">
+          <div className="flex items-center gap-2 text-xs font-medium text-subtext dark:text-slate-400 mb-1">
             <span>Pelayanan Pelabuhan</span>
             <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-strong font-medium">Operasional Lapangan</span>
+            <span className="text-ink dark:text-white font-semibold">Operasional Lapangan</span>
           </div>
-          <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
             Dashboard Staf Lapangan
           </h1>
-          <p className="m-0 text-sm text-soft mt-1">
+          <p className="m-0 text-[13px] text-subtext dark:text-slate-400 mt-1">
             Operasional penimbangan tangkapan IoT di dermaga, administrasi kapal, dan verifikasi hasil laut.
           </p>
         </div>
@@ -184,26 +184,26 @@ export function StaffDashboard() {
       {/* Grid: Laporan Tangkapan Masuk + Distribusi WPP */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Tabel Tangkapan Terbaru */}
-        <div className="lg:col-span-3 surface-card border border-fco-border rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="lg:col-span-3 bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden">
+          <div className="p-4 sm:p-5 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
             <div>
-              <h2 className="m-0 text-base font-bold text-strong">
+              <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
                 Laporan Tangkapan Masuk
               </h2>
-              <p className="m-0 text-xs text-soft mt-0.5">
+              <p className="m-0 text-xs text-subtext dark:text-slate-400 mt-0.5">
                 Daftar laporan hasil penangkapan ikan teranyar dari armada di dermaga
               </p>
             </div>
             <Link
               to="/staff/catches"
-              className="text-xs font-semibold text-fco-blue hover:underline no-underline"
+              className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline"
             >
               Lihat semua &rarr;
             </Link>
           </div>
 
           {loading ? (
-            <div className="space-y-3 py-4">
+            <div className="space-y-3 p-4">
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
@@ -212,36 +212,36 @@ export function StaffDashboard() {
               ))}
             </div>
           ) : recentCatches.length === 0 ? (
-            <div className="py-10 text-center text-sm text-soft">
+            <div className="py-10 text-center text-sm text-subtext dark:text-slate-400">
               Belum ada laporan tangkapan yang masuk.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-fco-border-subtle text-soft font-semibold">
-                    <th className="py-2.5 px-3">Tanggal</th>
-                    <th className="py-2.5 px-3">Nama Kapal</th>
-                    <th className="py-2.5 px-3">Tipe</th>
-                    <th className="py-2.5 px-3 text-right">Rincian Spesies</th>
+                  <tr className="bg-[#F9FAFB] dark:bg-slate-800/60 border-b border-[#E5E7EB] dark:border-slate-700 text-[11px] font-semibold uppercase tracking-wider text-subtext dark:text-slate-400">
+                    <th className="py-3 px-4">Tanggal</th>
+                    <th className="py-3 px-4">Nama Kapal</th>
+                    <th className="py-3 px-4">Tipe</th>
+                    <th className="py-3 px-4 text-right">Rincian Spesies</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-fco-border-subtle">
+                <tbody className="divide-y divide-[#E5E7EB] dark:divide-slate-800">
                   {recentCatches.map((c) => (
                     <tr
                       key={c.id}
-                      className="hover:surface-page transition-colors"
+                      className="hover:bg-[#F9FAFB] dark:hover:bg-slate-800/40 transition-colors"
                     >
-                      <td className="py-2.5 px-3 text-soft font-mono">
+                      <td className="py-3 px-4 text-subtext dark:text-slate-400 font-mono">
                         {c.catch_date || "—"}
                       </td>
-                      <td className="py-2.5 px-3 font-semibold text-strong">
+                      <td className="py-3 px-4 font-semibold text-ink dark:text-white">
                         {c.ship_name || `Kapal #${c.ship}`}
                       </td>
-                      <td className="py-2.5 px-3 capitalize text-soft">
+                      <td className="py-3 px-4 capitalize text-subtext dark:text-slate-400">
                         {c.catch_type || "Pelagis"}
                       </td>
-                      <td className="py-2.5 px-3 text-right text-strong font-medium">
+                      <td className="py-3 px-4 text-right text-ink dark:text-white font-medium">
                         {c.catch_details?.length
                           ? `${c.catch_details.length} jenis ikan`
                           : "1 jenis ikan"}

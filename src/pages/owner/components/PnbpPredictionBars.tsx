@@ -71,18 +71,18 @@ export function PnbpPredictionBars() {
   }, []);
 
   return (
-    <section className="surface-card border rounded-xs p-5 shadow-2xs">
+    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-subtle">
       <div className="flex justify-between items-start mb-1">
-        <h2 className="m-0 text-base font-bold text-strong">
+        <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
           Prediksi PNBP Armada
         </h2>
         {summaryInfo && (
-          <span className="text-xs text-fco-blue font-semibold tabular-nums">
+          <span className="text-xs text-brand-600 dark:text-brand-400 font-semibold tabular-nums">
             {summaryInfo}
           </span>
         )}
       </div>
-      <div className="text-xs text-soft mb-4">
+      <div className="text-[12px] text-subtext dark:text-slate-400 mb-4">
         Proyeksi tren penerimaan armada berbasis pipeline machine learning
       </div>
 
@@ -93,15 +93,15 @@ export function PnbpPredictionBars() {
               key={idx}
               className="flex-1 h-full flex flex-col justify-end items-center gap-2"
             >
-              <Skeleton className={`w-full rounded-xs ${h}`} />
-              <Skeleton className="h-3 w-8 rounded-xs" />
+              <Skeleton className={`w-full rounded-md ${h}`} />
+              <Skeleton className="h-3 w-8 rounded-md" />
             </div>
           ))}
         </div>
       ) : bars.length === 0 ? (
-        <div className="py-5 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-fco-border-subtle surface-inset rounded-xs">
-          <BarChart3 size={18} className="text-soft" />
-          <p className="m-0 text-xs text-soft leading-relaxed max-w-xs">
+        <div className="py-5 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-[#E5E7EB] dark:border-slate-800 bg-[#F9FAFB] dark:bg-slate-800/40 rounded-xl">
+          <BarChart3 size={18} className="text-subtext" />
+          <p className="m-0 text-xs text-subtext dark:text-slate-400 leading-relaxed max-w-xs">
             Belum ada proyeksi PNBP untuk armada Anda. Grafik akan terisi
             otomatis setelah kapal melakukan penimbangan hasil tangkapan.
           </p>
@@ -114,11 +114,11 @@ export function PnbpPredictionBars() {
                 key={b.label}
                 className="flex-1 h-full flex flex-col justify-end items-center gap-1.5"
               >
-                <div className="text-2xs font-bold text-strong h-3">
+                <div className="text-[10px] font-bold text-ink dark:text-white h-3">
                   {b.top}
                 </div>
                 <div
-                  className="w-full rounded-xs transition-all duration-300"
+                  className="w-full rounded-t-md transition-all duration-300"
                   style={{ height: b.h, backgroundColor: b.color }}
                 />
               </div>
@@ -129,16 +129,16 @@ export function PnbpPredictionBars() {
             {bars.map((b) => (
               <div
                 key={b.label}
-                className="flex-1 text-center text-2xs text-soft font-medium"
+                className="flex-1 text-center text-[10.5px] text-subtext dark:text-slate-400 font-medium"
               >
                 {b.label}
               </div>
             ))}
           </div>
 
-          <div className="flex gap-4 mt-3 pt-2 border-t border-fco-border-subtle text-2xs text-soft">
+          <div className="flex gap-4 mt-3 pt-2.5 border-t border-[#E5E7EB] dark:border-slate-800 text-[11px] text-subtext dark:text-slate-400">
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-fco-blue" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#1A56DB]" />
               Aktual
             </span>
             <span className="flex items-center gap-1.5">

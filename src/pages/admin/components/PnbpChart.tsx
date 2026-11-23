@@ -113,23 +113,23 @@ export function PnbpChart() {
       : predPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
-    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden">
+    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden">
       {/* Modern Card Header */}
-      <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex flex-wrap items-center justify-between gap-3">
+      <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-fco-blue dark:text-blue-400 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-charcoal dark:text-slate-300 flex items-center justify-center shrink-0">
             <LineChart
-              size={16}
-              strokeWidth={2.2}
+              size={14}
+              strokeWidth={1.8}
               aria-hidden="true"
             />
           </div>
-          <h2 className="m-0 text-sm font-semibold text-strong">
+          <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
             PNBP Bulanan: Aktual dan Prediksi
           </h2>
         </div>
 
-        <div className="flex items-center gap-4 text-xs text-soft">
+        <div className="flex items-center gap-4 text-xs text-subtext dark:text-slate-400">
           <span className="flex items-center gap-1.5">
             <svg width="18" height="4" viewBox="0 0 20 4" aria-hidden="true">
               <line
@@ -137,7 +137,7 @@ export function PnbpChart() {
                 y1="2"
                 x2="20"
                 y2="2"
-                stroke="#1A56DB"
+                stroke="#2563EB"
                 strokeWidth="2.5"
                 strokeLinecap="round"
               />
@@ -151,7 +151,7 @@ export function PnbpChart() {
                 y1="2"
                 x2="20"
                 y2="2"
-                stroke="#3F82E8"
+                stroke="#60A5FA"
                 strokeWidth="2.5"
                 strokeDasharray="4 3"
               />

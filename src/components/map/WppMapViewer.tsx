@@ -228,7 +228,7 @@ export function WppMapViewer({
   };
 
   return (
-    <div className="relative isolate z-0 surface-card border border-fco-border-subtle rounded-xs overflow-hidden shadow-2xs">
+    <div className="relative isolate z-0 surface-card border border-[var(--bd)] rounded-lg overflow-hidden shadow-none">
       {/* Real Leaflet Map Container */}
       <div className="relative w-full h-97.5 sm:h-112.5 bg-slate-900 overflow-hidden">
         <div ref={mapContainerRef} className="w-full h-full z-0" />
@@ -236,14 +236,14 @@ export function WppMapViewer({
         {/* Floating Map Controls (Top-Right) */}
         <div className="absolute top-3 right-3 z-20 flex items-center gap-2 pointer-events-auto">
           {/* Layer Segmented Control */}
-          <div className="inline-flex items-center rounded-xs border border-white/10 bg-[#0f172a]/90 backdrop-blur-md p-0.5 shadow-lg">
+          <div className="inline-flex items-center rounded-[6px] border border-white/10 bg-[#0f172a]/90 backdrop-blur-md p-0.5 shadow-none">
             <button
               type="button"
               onClick={() => setMapTileStyle("standard")}
-              className={`h-7.5 px-3 rounded-xs text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
+              className={`h-7.5 px-3 rounded-[4px] text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
                 mapTileStyle === "standard"
-                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
-                  : "bg-transparent text-white/70 hover:text-white font-medium"
+                  ? "bg-[var(--pr)] text-white font-medium shadow-none"
+                  : "bg-transparent text-white/70 hover:text-white font-normal"
               }`}
             >
               <Map size={13} />
@@ -252,10 +252,10 @@ export function WppMapViewer({
             <button
               type="button"
               onClick={() => setMapTileStyle("satellite")}
-              className={`h-7.5 px-3 rounded-xs text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
+              className={`h-7.5 px-3 rounded-[4px] text-xs cursor-pointer border-none transition-all flex items-center gap-1.5 ${
                 mapTileStyle === "satellite"
-                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
-                  : "bg-transparent text-white/70 hover:text-white font-medium"
+                  ? "bg-[var(--pr)] text-white font-medium shadow-none"
+                  : "bg-transparent text-white/70 hover:text-white font-normal"
               }`}
             >
               <Eye size={13} />

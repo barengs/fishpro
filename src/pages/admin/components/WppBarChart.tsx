@@ -75,22 +75,22 @@ export function WppBarChart() {
   }, []);
 
   return (
-    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden">
+    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden">
       {/* Modern Card Header */}
-      <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-fco-blue dark:text-blue-400 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-charcoal dark:text-slate-300 flex items-center justify-center shrink-0">
             <BarChart3
-              size={16}
-              strokeWidth={2.2}
+              size={14}
+              strokeWidth={1.8}
               aria-hidden="true"
             />
           </div>
-          <h2 className="m-0 text-sm font-semibold text-strong">
+          <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
             Tangkapan per Wilayah (WPP)
           </h2>
         </div>
-        <span className="text-2xs font-semibold text-soft uppercase tracking-wider">
+        <span className="text-[10px] font-semibold text-subtext dark:text-slate-400 uppercase tracking-wider">
           Distribusi Zona
         </span>
       </div>

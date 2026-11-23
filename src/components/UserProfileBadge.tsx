@@ -17,7 +17,7 @@ export function UserProfileBadge({
   name,
   role,
   rawRole,
-  avatarBg = "#1A56DB",
+  avatarBg: _avatarBg,
   onLogout,
   isLoggingOut: externalLoggingOut,
 }: UserProfileBadgeProps) {
@@ -64,24 +64,23 @@ export function UserProfileBadge({
         aria-haspopup="menu"
         aria-expanded={dropdownOpen}
         aria-label={`Menu profil ${name} (${initials})`}
-        className="flex items-center gap-3 p-1.5 rounded-xl border-none bg-transparent hover:surface-page cursor-pointer transition-colors"
+        className="flex items-center gap-2.5 pl-1 pr-1.5 py-1 rounded-lg border-none bg-transparent hover:bg-gray-100/70 dark:hover:bg-slate-800 transition-colors cursor-pointer text-left"
       >
         <div
-          className="w-9 h-9 rounded-full text-white text-fco-sm font-bold flex items-center justify-center shrink-0"
-          style={{ backgroundColor: avatarBg }}
+          className="w-8 h-8 rounded-full bg-[#111827] text-white text-[11.5px] font-semibold flex items-center justify-center shrink-0 shadow-subtle"
         >
           {initials}
         </div>
-        <div className="min-w-0 text-left hidden sm:block">
-          <div className="text-sm font-semibold text-strong truncate max-w-40">
+        <div className="min-w-0 text-left hidden sm:block leading-tight">
+          <div className="text-[13px] font-semibold text-ink dark:text-white truncate max-w-36">
             {name}
           </div>
-          <div className="text-xs text-soft whitespace-nowrap">{role}</div>
+          <div className="text-[11px] text-subtext dark:text-slate-400 whitespace-nowrap mt-0.5">{role}</div>
         </div>
         <ChevronDown
-          size={16}
-          className={`text-soft transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
-          strokeWidth={2}
+          size={14}
+          className={`text-subtext dark:text-slate-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+          strokeWidth={1.75}
           aria-hidden="true"
         />
       </button>
@@ -89,10 +88,10 @@ export function UserProfileBadge({
       {dropdownOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-2 w-56 surface-card border rounded-xl shadow-lg p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-xl shadow-popover p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
         >
-          <div className="px-3 py-2 border-b border-fco-border-subtle mb-1">
-            <div className="text-sm font-semibold tracking-tight text-strong truncate">
+          <div className="px-3 py-2 border-b border-[#E5E7EB] dark:border-slate-800 mb-1">
+            <div className="text-[13px] font-semibold text-ink dark:text-white truncate">
               {name}
             </div>
             <div className="mt-1">
@@ -103,12 +102,12 @@ export function UserProfileBadge({
             href="#profil"
             role="menuitem"
             onClick={() => setDropdownOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-strong hover:surface-page no-underline transition-colors"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-inkSoft dark:text-slate-300 hover:bg-[#F3F4F6] dark:hover:bg-slate-800 no-underline transition-colors"
           >
             <User
-              size={16}
-              className="text-soft"
-              strokeWidth={1.8}
+              size={15}
+              className="text-subtext dark:text-slate-400"
+              strokeWidth={1.75}
               aria-hidden="true"
             />
             Profil saya
@@ -119,23 +118,23 @@ export function UserProfileBadge({
               role="menuitem"
               disabled={isLoggingOut}
               onClick={handleLogoutClick}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-colors text-left disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-none bg-transparent cursor-pointer transition-colors"
             >
               {isLoggingOut ? (
                 <Loader2
-                  size={16}
-                  className="animate-spin text-red-600 dark:text-red-400 shrink-0"
+                  size={15}
+                  className="animate-spin text-rose-600"
                   aria-hidden="true"
                 />
               ) : (
                 <LogOut
-                  size={16}
-                  strokeWidth={1.8}
-                  className="shrink-0"
+                  size={15}
+                  className="text-rose-600 dark:text-rose-400"
+                  strokeWidth={1.75}
                   aria-hidden="true"
                 />
               )}
-              <span>{isLoggingOut ? "Mengeluarkan..." : "Keluar"}</span>
+              <span>{isLoggingOut ? "Keluar..." : "Keluar dari Akun"}</span>
             </button>
           )}
         </div>

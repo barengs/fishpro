@@ -4,99 +4,94 @@
 
 @theme {
   --font-sans:
-    "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Inter", -apple-system,
+    "Inter", "Plus Jakarta Sans Variable", "Plus Jakarta Sans", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --color-fco-blue: #1a56db;
-  --color-fco-blue-hover: #123fa8;
-  --color-fco-blue-light: #e8f0fe;
-  --color-fco-blue-border: #bcd3f8;
-  --color-fco-dark: #0f1f3d;
-  --color-fco-navy: #0f2a63;
-  --color-fco-border: #cbd5e1;
-  --color-fco-border-subtle: #e2e8f0;
-  --color-fco-bg: #f8fafc;
-  --color-fco-muted: #5b6b86;
-  --color-fco-placeholder: #7d8ca6;
+  --color-canvas: #F8F9FB;
+  --color-line: #E5E7EB;
+  --color-ink: #09090B;
+  --color-ink-soft: #111827;
+  --color-charcoal: #1F2937;
+  --color-charcoal-muted: #374151;
+  --color-subtext: #6B7280;
+  --color-faint: #9CA3AF;
+  --color-brand-50: #EFF6FF;
+  --color-brand-100: #DBEAFE;
+  --color-brand-600: #2563EB;
+  --color-brand-700: #1D4ED8;
+  --color-fco-blue: #2563eb;
+  --color-fco-blue-hover: #1d4ed8;
+  --color-fco-blue-light: #eff6ff;
+  --color-fco-blue-border: #dbeafe;
+  --color-fco-dark: #09090b;
+  --color-fco-navy: #111827;
+  --color-fco-border: #e5e7eb;
+  --color-fco-border-subtle: #f3f4f6;
+  --color-fco-bg: #f8f9fb;
+  --color-fco-muted: #6b7280;
+  --color-fco-placeholder: #9ca3af;
   --color-fco-ice: #cfe0fa;
   --color-fco-mist: #d6e4ff;
   --color-fco-pale: #c9d8f5;
   --color-fco-faint: #9fb6e6;
-  --color-fco-sky: #7fb0ff;
-  --text-fco-xs: 0.6875rem;
-  --text-fco-sm: 0.8125rem;
-  --text-fco-md: 0.9375rem;
-  --text-fco-lg: 1.0625rem;
-  --text-fco-kpi: 1.75rem;
-  --text-fco-hero: 2.375rem;
-  --text-fco-display: 2.75rem;
-  --leading-fco-tight: 1.1;
-  --leading-fco-snug: 1.15;
-  --radius-xs: 2px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 3px;
-  --radius-2xl: 4px;
-  --radius-3xl: 4px;
-  --radius-fco: 2px;
-  --radius-fco-lg: 3px;
-  --radius-fco-xl: 3px;
+  --color-fco-sky: #0ea5e9;
+  --shadow-subtle: 0 1px 2px rgba(9, 9, 11, 0.03);
+  --shadow-popover: 0 12px 28px -6px rgba(9, 9, 11, 0.12), 0 4px 10px -4px rgba(9, 9, 11, 0.05);
   /* Dark surfaces — cool slate, subtle blue */
-  --color-fco-surface-dark: #161e29;
-  --color-fco-card-dark: #1e2836;
-  --color-fco-text-dark: #e8eef6;
-  --color-fco-muted-dark: #9fb0c7;
-  --color-fco-border-dark: #33435c;
-  --color-fco-track-dark: #33445c;
+  --color-fco-surface-dark: #111827;
+  --color-fco-card-dark: #111827;
+  --color-fco-text-dark: #f3f4f6;
+  --color-fco-muted-dark: #9ca3af;
+  --color-fco-border-dark: #1f2937;
+  --color-fco-track-dark: #1f2937;
 }
 
 .dark body {
-  background-color: #0f151c;
+  background-color: #0b1220;
   color: var(--color-fco-text-dark);
 }
 
 /* Semantic surface tokens: light default, dark override */
 .surface-page {
-  background-color: var(--color-fco-bg);
+  background-color: #f8f9fb;
 }
 .dark .surface-page {
-  background-color: #0f151c;
+  background-color: #0b1220;
 }
 .surface-card {
   background-color: #fff;
-  border-color: var(--color-fco-border);
+  border-color: #e5e7eb;
 }
 .dark .surface-card {
-  background-color: var(--color-fco-card-dark);
-  border-color: var(--color-fco-border-dark);
+  background-color: #111827;
+  border-color: #1f2937;
 }
 .surface-inset {
-  background-color: var(--color-fco-bg);
-  border-color: var(--color-fco-border-subtle);
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
 }
 .dark .surface-inset {
   background-color: #161e29;
-  border-color: var(--color-fco-border-dark);
+  border-color: #1f2937;
 }
 .surface-topbar {
   background-color: #fff;
-  border-color: var(--color-fco-border);
+  border-color: #e5e7eb;
 }
 .dark .surface-topbar {
-  background-color: var(--color-fco-surface-dark);
-  border-color: var(--color-fco-border-dark);
+  background-color: #111827;
+  border-color: #1f2937;
 }
 .text-strong {
-  color: var(--color-fco-dark);
+  color: #09090b;
 }
 .dark .text-strong {
-  color: var(--color-fco-text-dark);
+  color: #f3f4f6;
 }
 .text-soft {
-  color: var(--color-fco-muted);
+  color: #6b7280;
 }
 .dark .text-soft {
-  color: var(--color-fco-muted-dark);
+  color: #9ca3af;
 }
 .track-bar {
   background-color: var(--color-fco-blue-light);

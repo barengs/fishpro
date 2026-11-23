@@ -61,9 +61,12 @@ const navItems = [
 export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav
-      className="flex flex-col gap-1 py-1 pb-4 w-full min-w-0 overflow-hidden"
+      className="flex flex-col gap-0.5 py-1 pb-4 w-full min-w-0 overflow-hidden"
       aria-label="Navigasi Nahkoda"
     >
+      <p className="px-2.5 mb-1.5 mt-2 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-faint dark:text-slate-400">
+        Menu Utama
+      </p>
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -72,23 +75,23 @@ export function CaptainSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           onClick={onNavigate}
           onMouseEnter={item.prefetch}
           className={({ isActive }) =>
-            `w-full min-w-0 max-w-full box-border flex items-center gap-3 h-10 px-3.5 rounded-xl text-sm transition-all duration-150 no-underline cursor-pointer group ${
+            `w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13.5px] transition-colors cursor-pointer no-underline ${
               isActive
-                ? "bg-fco-blue text-white font-semibold shadow-xs border border-fco-blue"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/40 font-medium border border-transparent"
+                ? "bg-[#F3F4F6] dark:bg-slate-800 text-ink dark:text-white font-semibold"
+                : "text-inkSoft dark:text-slate-300 hover:bg-[#F3F4F6]/70 dark:hover:bg-slate-800/60 font-medium"
             }`
           }
         >
           {({ isActive }) => (
             <>
               <item.Icon
-                size={18}
+                size={17}
                 className={`shrink-0 transition-colors ${
                   isActive
-                    ? "text-white"
-                    : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
+                    ? "text-ink dark:text-white"
+                    : "text-charcoal dark:text-slate-400"
                 }`}
-                strokeWidth={1.8}
+                strokeWidth={isActive ? 2.2 : 1.75}
                 aria-hidden="true"
               />
               <span className="truncate">{item.label}</span>
@@ -143,35 +146,50 @@ export function CaptainLayout() {
   };
 
   return (
-    <div className="min-h-screen surface-page text-strong flex">
+    <div className="min-h-screen bg-[#F8F9FB] dark:bg-[#0b1220] text-ink dark:text-white flex">
       {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Nahkoda"
-        className={`hidden lg:flex flex-col bg-[#fafbfc] dark:bg-[#121820] text-strong fixed top-0 bottom-0 left-0 z-30 shadow-2xs transition-all duration-300 ease-in-out overflow-hidden ${
-          sidebarOpen ? "w-64 border-r border-slate-200/80 dark:border-fco-border-dark" : "w-0 border-r-0"
+        className={`hidden lg:flex flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden ${
+          sidebarOpen ? "w-[240px] border-r border-[#E5E7EB] dark:border-slate-800" : "w-0 border-r-0"
         }`}
       >
-        <div className="w-64 flex flex-col h-full shrink-0 overflow-hidden">
-          <div className="h-16 px-5 border-b border-slate-200/80 dark:border-fco-border-dark flex items-center shrink-0">
-            <Link to="/captain" className="no-underline">
-              <Logo variant="light" size={28} />
-            </Link>
-          </div>
-
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <CaptainSidebarNav />
-          </div>
-
-          <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                Operasional Laut
-              </span>
+        <div className="w-[240px] flex flex-col h-full shrink-0 overflow-hidden justify-between">
+          <div className="flex flex-col min-h-0 overflow-hidden">
+            <div className="h-16 px-4 border-b border-[#E5E7EB]/80 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <Link to="/captain" className="no-underline flex items-center gap-2">
+                <Logo variant="light" size={26} />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(false)}
+                title="Tutup Sidebar"
+                className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
+              >
+                <X size={14} />
+              </button>
             </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
-            </span>
+
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+              <CaptainSidebarNav />
+            </div>
+          </div>
+
+          <div className="p-3 border-t border-[#E5E7EB]/80 dark:border-slate-800 space-y-2 shrink-0">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-skyaccent text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                  CPT
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-medium text-subtext leading-none">Kapal</p>
+                  <p className="text-[12px] font-semibold text-ink dark:text-white truncate mt-0.5">
+                    Nahkoda Laut
+                  </p>
+                </div>
+              </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
           </div>
         </div>
       </aside>
@@ -186,55 +204,54 @@ export function CaptainLayout() {
         aria-hidden={!mobileOpen}
       >
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-xs cursor-pointer"
+          className="absolute inset-0 bg-[#09090B]/25 backdrop-blur-[1px] cursor-pointer"
           onClick={() => setMobileOpen(false)}
         />
         <div
           role="dialog"
           aria-label="Menu navigasi mobile"
-          className={`relative w-64 max-w-[80vw] h-full bg-[#fafbfc] dark:bg-[#121820] border-r border-slate-200/80 dark:border-fco-border-dark text-strong flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out overflow-hidden ${
+          className={`relative w-[240px] max-w-[80vw] h-full bg-white dark:bg-[#111827] border-r border-[#E5E7EB] dark:border-slate-800 text-ink dark:text-white flex flex-col shadow-popover z-10 transition-transform duration-300 ease-in-out overflow-hidden justify-between ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="h-16 px-4 border-b border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between shrink-0">
-            <Link to="/captain" className="no-underline">
-              <Logo variant="light" size={28} />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-soft hover:text-strong border-none cursor-pointer transition-colors"
-            >
-              <X size={18} aria-hidden="true" />
-            </button>
+          <div className="flex flex-col min-h-0 overflow-hidden">
+            <div className="h-16 px-4 border-b border-[#E5E7EB]/80 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <Link to="/captain" className="no-underline">
+                <Logo variant="light" size={26} />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-charcoal hover:text-ink border-none cursor-pointer transition-colors"
+              >
+                <X size={15} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+              <CaptainSidebarNav onNavigate={() => setMobileOpen(false)} />
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <CaptainSidebarNav onNavigate={() => setMobileOpen(false)} />
-          </div>
-
-          <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
+          <div className="p-3 border-t border-[#E5E7EB]/80 dark:border-slate-800 shrink-0">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700 text-xs">
+              <span className="font-semibold text-ink dark:text-white text-2xs uppercase">
                 Operasional Laut
               </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
-            </span>
           </div>
         </div>
       </div>
 
       {/* 3. Main View Area */}
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:pl-64" : "lg:pl-0"
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out ${
+          sidebarOpen ? "lg:pl-[240px]" : "lg:pl-0"
         }`}
       >
-        <header className="h-16 px-4 sm:px-7 surface-card border-b border-fco-border-subtle sticky top-0 z-20 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
+        <header className="h-16 px-4 sm:px-6 bg-white dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-slate-800 sticky top-0 z-30 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-1 max-w-md">
             <button
               type="button"
               onClick={() => {
@@ -247,33 +264,26 @@ export function CaptainLayout() {
               title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-expanded={isOpen}
-              className="w-9 h-9 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-all duration-200 shrink-0"
+              className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
             >
               {isOpen ? (
-                <X
-                  size={18}
-                  className="animate-in fade-in zoom-in-75 duration-150 text-strong"
-                  aria-hidden="true"
-                />
+                <X size={15} aria-hidden="true" />
               ) : (
-                <Menu
-                  size={18}
-                  className="animate-in fade-in zoom-in-75 duration-150"
-                  aria-hidden="true"
-                />
+                <Menu size={15} aria-hidden="true" />
               )}
             </button>
 
             {/* Search Menu */}
             <QuickSearchMenu
               items={captainSearchItems}
-              placeholder="Cari tangkapan / menu... (Ctrl+K)"
+              placeholder="Search tangkapan / menu... (Ctrl+K)"
             />
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <FullscreenToggle compact />
             <ThemeToggle compact />
+            <div className="h-5 w-px bg-[#E5E7EB] dark:bg-slate-700 mx-1 hidden sm:block" />
             <UserProfileBadge
               initials={userInfo.initials}
               name={userInfo.name}
@@ -284,7 +294,7 @@ export function CaptainLayout() {
           </div>
         </header>
 
-        <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-8">
+        <main className="flex-1 min-w-0 p-4 sm:p-6 max-w-[1440px] w-full mx-auto space-y-5">
           <Outlet />
         </main>
       </div>

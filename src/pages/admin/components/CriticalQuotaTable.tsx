@@ -87,24 +87,24 @@ export function CriticalQuotaTable() {
   }, []);
 
   return (
-    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden">
+    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden">
       {/* Modern Card Header */}
-      <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
             <AlertTriangle
-              size={16}
-              strokeWidth={2.2}
+              size={14}
+              strokeWidth={1.8}
               aria-hidden="true"
             />
           </div>
-          <h2 className="m-0 text-sm font-semibold text-strong">
+          <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
             Peringatan Kuota Kapal (Prioritas)
           </h2>
         </div>
         <Link
           to="/admin/ships"
-          className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
+          className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline"
         >
           Lihat Semua Kapal →
         </Link>
@@ -112,7 +112,7 @@ export function CriticalQuotaTable() {
 
       <div className="overflow-x-auto">
         <div className="min-w-120">
-          <div className="flex items-center py-2.5 px-4 text-xs font-semibold text-soft bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-fco-border-dark gap-2">
+          <div className="flex items-center py-3 px-4 text-[11px] font-semibold uppercase tracking-wider text-subtext dark:text-slate-400 bg-[#F9FAFB] dark:bg-slate-800/60 border-b border-[#E5E7EB] dark:border-slate-700 gap-2">
             <div className="w-8 shrink-0 text-center">No</div>
             <div className="basis-3/8">Kapal</div>
             <div className="basis-3/8">Sisa kuota</div>
@@ -123,78 +123,80 @@ export function CriticalQuotaTable() {
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={`skel-${i}`}
-                className="flex items-center py-3.5 px-4 border-b border-slate-100 dark:border-fco-border-dark text-sm gap-2"
+                className="flex items-center py-3.5 px-4 border-b border-[#E5E7EB] dark:border-slate-800 text-sm gap-2"
               >
                 <div className="w-8 shrink-0 flex justify-center">
-                  <Skeleton className="h-4 w-5 rounded-xs" />
+                  <Skeleton className="h-4 w-5 rounded-md" />
                 </div>
                 <div className="basis-3/8 space-y-1.5 pr-2">
-                  <Skeleton className="h-4 w-3/4 rounded-xs" />
-                  <Skeleton className="h-3 w-1/2 rounded-xs opacity-60" />
+                  <Skeleton className="h-4 w-3/4 rounded-md" />
+                  <Skeleton className="h-3 w-1/2 rounded-md opacity-60" />
                 </div>
                 <div className="basis-3/8 space-y-1.5 pr-2">
-                  <Skeleton className="h-3 w-1/3 rounded-xs" />
-                  <Skeleton className="h-2 w-full rounded-xs" />
+                  <Skeleton className="h-3 w-1/3 rounded-md" />
+                  <Skeleton className="h-2 w-full rounded-md" />
                 </div>
                 <div className="basis-2/8 flex justify-end">
-                  <Skeleton className="h-5 w-16 rounded-xs" />
+                  <Skeleton className="h-5 w-16 rounded-md" />
                 </div>
               </div>
             ))
           ) : rows.length === 0 ? (
-            <div className="py-8 text-center text-sm text-soft bg-white dark:bg-fco-card-dark">
+            <div className="py-8 text-center text-sm text-subtext dark:text-slate-400 bg-white dark:bg-[#111827]">
               Belum ada data kapal terdaftar di database KKP.
             </div>
           ) : (
-            rows.map((q, i) => (
-              <div
-                key={q.reg}
-                className="flex items-center py-3.5 px-4 border-b last:border-b-0 border-slate-100 dark:border-fco-border-dark text-sm gap-2 bg-white dark:bg-fco-card-dark hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
-              >
-                <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
-                  {i + 1}
-                </div>
-                <div className="basis-3/8 min-w-0">
-                  <div className="font-semibold text-strong truncate">
-                    {q.name}
+            <div className="divide-y divide-[#E5E7EB] dark:divide-slate-800">
+              {rows.map((q, i) => (
+                <div
+                  key={q.reg}
+                  className="flex items-center py-3.5 px-4 text-sm gap-2 hover:bg-[#F9FAFB] dark:hover:bg-slate-800/30 transition-colors"
+                >
+                  <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-subtext dark:text-slate-400">
+                    {i + 1}
                   </div>
-                  <div className="text-2xs text-soft font-mono truncate">
-                    {q.reg}
+                  <div className="basis-3/8 min-w-0">
+                    <div className="font-semibold text-ink dark:text-white truncate">
+                      {q.name}
+                    </div>
+                    <div className="text-[11px] text-subtext dark:text-slate-400 font-mono truncate">
+                      {q.reg}
+                    </div>
+                  </div>
+                  <div className="basis-3/8">
+                    {q.hasQuota && q.pct !== null ? (
+                      <>
+                        <div className="text-xs font-medium text-subtext dark:text-slate-400 mb-1 tabular-nums">
+                          {q.pct}% tersisa
+                        </div>
+                        <ProgressBar
+                          width={q.width}
+                          height={6}
+                          barBg={
+                            q.pct < 15
+                              ? "#EF4444"
+                              : q.pct < 30
+                                ? "#F59E0B"
+                                : "#2563EB"
+                          }
+                        />
+                      </>
+                    ) : (
+                      <span className="text-xs text-subtext dark:text-slate-500 italic">
+                        Belum ada alokasi
+                      </span>
+                    )}
+                  </div>
+                  <div className="basis-2/8 text-right">
+                    <StatusChip
+                      label={q.chip}
+                      bg={q.chipBg}
+                      color={q.chipColor}
+                    />
                   </div>
                 </div>
-                <div className="basis-3/8">
-                  {q.hasQuota && q.pct !== null ? (
-                    <>
-                      <div className="text-xs font-medium text-soft mb-1 tabular-nums">
-                        {q.pct}% tersisa
-                      </div>
-                      <ProgressBar
-                        width={q.width}
-                        height={6}
-                        barBg={
-                          q.pct < 15
-                            ? "#EF4444"
-                            : q.pct < 30
-                              ? "#F59E0B"
-                              : "#1A56DB"
-                        }
-                      />
-                    </>
-                  ) : (
-                    <span className="text-xs text-soft italic">
-                      Belum ada alokasi
-                    </span>
-                  )}
-                </div>
-                <div className="basis-2/8 text-right">
-                  <StatusChip
-                    label={q.chip}
-                    bg={q.chipBg}
-                    color={q.chipColor}
-                  />
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>

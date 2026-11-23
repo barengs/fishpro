@@ -100,17 +100,17 @@ export function SuperAdminDashboard() {
   return (
     <div>
       {/* Header Tata Kelola */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-soft mb-1">
+          <div className="flex items-center gap-2 text-xs font-medium text-subtext dark:text-slate-400 mb-1">
             <span>Tata Kelola</span>
             <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-strong font-medium">Ringkasan Sistem Nasional</span>
+            <span className="text-ink dark:text-white font-semibold">Ringkasan Sistem Nasional</span>
           </div>
-          <h1 className="m-0 text-2xl sm:text-3xl font-extrabold tracking-tight text-strong">
+          <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
             Tata Kelola & Regulasi Sistem
           </h1>
-          <p className="m-0 text-sm text-soft mt-1">
+          <p className="m-0 text-[13px] text-subtext dark:text-slate-400 mt-1">
             Pemantauan kepatuhan kuota AI, integritas audit blockchain, dan telemetri dermaga pelabuhan.
           </p>
         </div>

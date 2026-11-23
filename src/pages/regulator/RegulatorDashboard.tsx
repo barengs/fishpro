@@ -175,14 +175,14 @@ export function RegulatorDashboard() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-7">
-        <h1 className="m-0 text-3xl font-extrabold tracking-tight">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
           Portal Pengawas & Regulator
         </h1>
-        <div className="text-sm text-soft mt-1">
+        <p className="text-[13px] text-subtext dark:text-slate-400 mt-1">
           Verifikasi kepatuhan kuota, audit pelaporan tangkapan, dan instrumen
           penyesuaian manual kuota KKP.
-        </div>
+        </p>
       </div>
 
       {toastMessage && (

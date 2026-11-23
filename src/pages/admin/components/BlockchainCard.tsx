@@ -63,19 +63,19 @@ export function BlockchainCard() {
   ];
 
   return (
-    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden flex flex-col justify-between h-full">
+    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden flex flex-col justify-between h-full">
       <div>
         {/* Modern Card Header */}
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-fco-blue dark:text-blue-400 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-charcoal dark:text-slate-300 flex items-center justify-center shrink-0">
               <Link2
-                size={16}
-                strokeWidth={2.2}
+                size={14}
+                strokeWidth={1.8}
                 aria-hidden="true"
               />
             </div>
-            <h2 className="m-0 text-sm font-semibold text-strong">
+            <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
               Integritas Blockchain
             </h2>
           </div>
@@ -106,7 +106,7 @@ export function BlockchainCard() {
               ) : (
                 <Check
                   size={14}
-                  className="text-fco-blue"
+                  className="text-brand-600"
                   strokeWidth={2.6}
                   aria-hidden="true"
                 />
@@ -115,14 +115,14 @@ export function BlockchainCard() {
           />
         </div>
 
-        <div className="p-5 sm:p-6 flex flex-col">
+        <div className="p-5 sm:p-6 flex flex-col divide-y divide-[#E5E7EB] dark:divide-slate-800">
           {chain.map((c) => (
             <div
               key={c.label}
-              className="flex items-center justify-between py-3 border-t first:border-t-0 border-fco-border-subtle text-xs sm:text-sm"
+              className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0"
             >
-              <span className="text-soft">{c.label}</span>
-              <span className="font-semibold tabular-nums text-strong font-mono">
+              <span className="text-xs text-subtext dark:text-slate-400 font-medium">{c.label}</span>
+              <span className="text-xs sm:text-sm font-semibold tabular-nums text-ink dark:text-white">
                 {c.value}
               </span>
             </div>
@@ -130,16 +130,16 @@ export function BlockchainCard() {
         </div>
       </div>
 
-      <div className="p-4 px-5 sm:px-6 border-t border-slate-100 dark:border-fco-border-dark">
+      <div className="p-4 px-5 sm:px-6 border-t border-[#E5E7EB] dark:border-slate-800 bg-[#F9FAFB] dark:bg-slate-800/40">
         {authService.isSuperAdmin() ? (
           <Link
             to="/admin/blockchain"
-            className="text-xs font-semibold text-fco-blue hover:text-fco-blue-hover no-underline block text-center"
+            className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline block text-center"
           >
             Buka Penjelajah Blockchain →
           </Link>
         ) : (
-          <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-soft">
+          <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-subtext dark:text-slate-400">
             <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
             <span>Integritas Terjaga · Dikelola Super Admin</span>
           </div>
