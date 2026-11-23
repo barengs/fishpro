@@ -106,11 +106,11 @@ export function FleetPage() {
       hideOnMobile: true,
       render: (r) =>
         !r.active ? (
-          <StatusChip label="Nonaktif" bg="#EEF1F6" color="#4A5872" />
+          <StatusChip label="Nonaktif" fixedWidth="w-[136px]" />
         ) : !r.captain ? (
-          <StatusChip label="Tanpa nahkoda" bg="#FFF1E0" color="#B54708" />
+          <StatusChip label="Tanpa nahkoda" fixedWidth="w-[136px]" />
         ) : (
-          <StatusChip label="Aktif" />
+          <StatusChip label="Aktif" fixedWidth="w-[136px]" />
         ),
     },
     {

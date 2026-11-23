@@ -167,11 +167,11 @@ export function ScaleReadingsTable({
       hideOnMobile: true,
       render: (r) =>
         r.status === "saved" ? (
-          <StatusChip label="Tersimpan Resmi" />
+          <StatusChip label="Tersimpan Resmi" fixedWidth="w-[140px]" />
         ) : r.status === "discarded" ? (
-          <StatusChip label="Dilewati" bg="#EEF1F6" color="#4A5872" />
+          <StatusChip label="Dilewati" fixedWidth="w-[140px]" />
         ) : (
-          <StatusChip label="Menunggu Input" bg="#FFF1E0" color="#B54708" />
+          <StatusChip label="Menunggu Input" fixedWidth="w-[140px]" />
         ),
     },
     {

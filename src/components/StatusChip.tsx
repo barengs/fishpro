@@ -7,6 +7,7 @@ interface StatusChipProps {
   icon?: ReactNode;
   className?: string;
   size?: "sm" | "md";
+  fixedWidth?: boolean | string;
 }
 
 const statusColorMap: Record<string, string> = {
@@ -63,6 +64,7 @@ export function StatusChip({
   icon,
   className = "",
   size = "md",
+  fixedWidth = false,
 }: StatusChipProps) {
   const norm = (label || "").trim().toLowerCase();
   const mappedCls = statusColorMap[norm];
@@ -75,9 +77,21 @@ export function StatusChip({
       ? "h-6 px-2.5 text-[11px] min-w-[64px]"
       : "h-7 px-3.5 text-xs min-w-[76px]";
 
+  const fixedWidthClasses: Record<"sm" | "md", string> = {
+    sm: "w-[96px]",
+    md: "w-[124px]",
+  };
+
+  const widthClass =
+    typeof fixedWidth === "string"
+      ? fixedWidth
+      : fixedWidth
+      ? fixedWidthClasses[size || "md"]
+      : "";
+
   return (
     <span
-      className={`inline-flex items-center justify-center gap-1.5 rounded-md font-bold text-center whitespace-nowrap shadow-2xs select-none transition-all ${sizeClass} ${colorClass} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-md font-bold text-center whitespace-nowrap shadow-2xs select-none transition-all ${sizeClass} ${widthClass} ${colorClass} ${className}`}
       style={inlineStyle}
     >
       {icon}

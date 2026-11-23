@@ -115,14 +115,14 @@ export function IotDevicesPage() {
         r.is_active ? (
           <StatusChip
             label="Aktif"
-            icon={<Wifi size={13} className="text-emerald-500" />}
+            fixedWidth
+            icon={<Wifi size={13} className="shrink-0" strokeWidth={2.4} />}
           />
         ) : (
           <StatusChip
             label="Nonaktif"
-            bg="#EEF1F6"
-            color="#4A5872"
-            icon={<WifiOff size={13} className="text-slate-400" />}
+            fixedWidth
+            icon={<WifiOff size={13} className="shrink-0" strokeWidth={2.4} />}
           />
         ),
     },
@@ -186,8 +186,14 @@ export function IotDevicesPage() {
           selectedDevice ? (
             <StatusChip
               label={selectedDevice.is_active ? "Perangkat Aktif" : "Nonaktif"}
-              bg={selectedDevice.is_active ? undefined : "#EEF1F6"}
-              color={selectedDevice.is_active ? undefined : "#4A5872"}
+              fixedWidth
+              icon={
+                selectedDevice.is_active ? (
+                  <Wifi size={13} className="shrink-0" strokeWidth={2.4} />
+                ) : (
+                  <WifiOff size={13} className="shrink-0" strokeWidth={2.4} />
+                )
+              }
             />
           ) : undefined
         }
