@@ -106,11 +106,11 @@ export function DataTable<T>({
       <div className="overflow-x-auto">
         <div className="min-w-full">
           {/* Table Column Headers */}
-          <div className="flex items-center py-3 px-3 sm:px-4 text-[11px] font-semibold uppercase tracking-wider text-subtext dark:text-slate-400 gap-2.5 sm:gap-3 bg-[#F9FAFB] dark:bg-slate-800/60 border-b border-[#E5E7EB] dark:border-slate-700">
+          <div className="flex items-center py-3 px-3 sm:px-4 text-xs font-bold text-white gap-2.5 sm:gap-3 bg-brand-600 dark:bg-blue-600">
             {showRowNumber && (
               <div
                 style={{ flex: "0 0 38px" }}
-                className="shrink-0 text-center text-[11px] font-semibold text-subtext dark:text-slate-400"
+                className="shrink-0 text-center text-xs font-bold text-white/90"
               >
                 <span>{rowNumberHeader}</span>
               </div>
