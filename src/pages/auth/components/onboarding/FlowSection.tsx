@@ -58,15 +58,15 @@ export function FlowSection() {
   return (
     <section className="s" id="alur">
       <div className="wrap">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight max-w-2xl text-[#0f172a] dark:text-[#f8fafc]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight max-w-2xl text-[#0f172a] dark:text-[#f8fafc]">
           Dari timbangan sampai terverifikasi, tiga langkah
         </h2>
-        <p className="mt-4 max-w-xl t2">
+        <p className="mt-3 sm:mt-4 max-w-xl text-sm sm:text-base t2 leading-relaxed">
           Setiap kali ikan ditimbang, datanya langsung disegel di sistem. Berat
           ikan, kapal pembongkar, dan tagihan PNBP terkunci permanen.
         </p>
 
-        <div className="mt-14" ref={flowRef} id="flow">
+        <div className="mt-8 sm:mt-12 md:mt-14" ref={flowRef} id="flow">
           <div className="relative h-8 mb-6" ref={trackRef} id="flowtrack">
             <div className="absolute left-0 right-0 top-1/2 border-t bd"></div>
             <svg
@@ -106,33 +106,33 @@ export function FlowSection() {
               />
             </svg>
           </div>
-          <ol className="grid md:grid-cols-3 gap-10 md:gap-14 list-none p-0 m-0">
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 md:gap-14 list-none p-0 m-0">
             <li>
               <p className="text-sm ac font-medium">1</p>
-              <h3 className="mt-1 text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
+              <h3 className="mt-1 text-lg sm:text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
                 Timbang di dermaga
               </h3>
-              <p className="mt-2 t2 leading-relaxed">
+              <p className="mt-2 text-sm t2 leading-relaxed">
                 Ikan ditimbang di timbangan dermaga. Angkanya masuk ke sistem
                 otomatis dari sensor, tanpa dicatat manual.
               </p>
             </li>
             <li>
               <p className="text-sm ac font-medium">2</p>
-              <h3 className="mt-1 text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
+              <h3 className="mt-1 text-lg sm:text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
                 Tercatat dan terhitung
               </h3>
-              <p className="mt-2 t2 leading-relaxed">
+              <p className="mt-2 text-sm t2 leading-relaxed">
                 Sisa kuota kapal diperbarui. Tarif PNBP dihitung dari berat ikan
                 dan ukuran GT kapal.
               </p>
             </li>
             <li>
               <p className="text-sm ac font-medium">3</p>
-              <h3 className="mt-1 text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
+              <h3 className="mt-1 text-lg sm:text-xl font-medium text-[#0f172a] dark:text-[#f8fafc]">
                 Terkunci dan bisa dicek
               </h3>
-              <p className="mt-2 t2 leading-relaxed">
+              <p className="mt-2 text-sm t2 leading-relaxed">
                 Catatan disegel dengan blockchain sehingga tidak bisa diubah
                 atau dihapus diam-diam. Petugas dinas dan pemilik kapal bisa
                 memeriksanya.

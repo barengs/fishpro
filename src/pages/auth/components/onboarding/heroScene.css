@@ -1,4 +1,4 @@
-/* Hero Scene & Animation Styles matching sample HTML */
+/* Hero Scene & Animation Styles with Full Mobile & Desktop Responsiveness */
 
 .hero-bg {
   background: #cfdcea;
@@ -12,7 +12,19 @@
   position: relative;
   max-width: 1440px;
   margin: 0 auto;
-  height: 780px;
+  height: 560px;
+}
+
+@media (min-width: 480px) {
+  .hero {
+    height: 600px;
+  }
+}
+
+@media (min-width: 640px) {
+  .hero {
+    height: 650px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -55,6 +67,24 @@
   will-change: transform;
 }
 
+/* Responsive vertical offset for SVG elements: tighter on mobile, spacious on desktop */
+.hero-svg-content {
+  transform: translate(0, 30px);
+}
+
+@media (min-width: 640px) {
+  .hero-svg-content {
+    transform: translate(0, 60px);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-svg-content {
+    transform: translate(0, 100px);
+  }
+}
+
+/* Animations */
 .wv {
   animation: wv linear infinite;
 }
@@ -309,8 +339,14 @@ a.lnk, .lnk {
 }
 
 section.s {
-  padding: 88px 0;
+  padding: 56px 0;
   border-top: 1px solid #e2e8f0;
+}
+
+@media (min-width: 768px) {
+  section.s {
+    padding: 88px 0;
+  }
 }
 
 :where(.dark) section.s {

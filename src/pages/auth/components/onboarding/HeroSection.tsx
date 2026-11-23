@@ -148,7 +148,7 @@ export function HeroSection() {
         {/* Animated Background Scene with 5 Layers */}
         <div className="scene">
           <div className="stage" id="stage" ref={stageRef}>
-            {/* 1. Langit: paling jauh, 0.2x. Awan melayang pelan, tiga camar terbang */}
+            {/* 1. Langit: 0.2x */}
             <svg
               ref={(el) => {
                 layerRefs.current[0] = el;
@@ -214,7 +214,7 @@ export function HeroSection() {
               </g>
             </svg>
 
-            {/* 2. Ombak belakang: 0.4x. Dua lapis ombak bergulir, dua perahu kecil, ikan melompat */}
+            {/* 2. Ombak belakang: 0.4x */}
             <svg
               ref={(el) => {
                 layerRefs.current[1] = el;
@@ -227,7 +227,7 @@ export function HeroSection() {
               preserveAspectRatio="xMidYMax slice"
               aria-hidden="true"
             >
-              <g transform="translate(0,100)">
+              <g className="hero-svg-content">
                 <path
                   className="wv"
                   style={
@@ -275,7 +275,7 @@ export function HeroSection() {
                       animationDuration: "30s",
                     } as React.CSSProperties
                   }
-                  d="M-400 388q200 -14 400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0V620H-400z"
+                  d="M-400 388q200 -14 400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0V620H-400z"
                   fill="#6B88AB"
                 />
                 <g transform="translate(60,402)">
@@ -287,7 +287,7 @@ export function HeroSection() {
               </g>
             </svg>
 
-            {/* 3. Kapal: 0.6x. Naik-turun pelan; saat scroll bergeser maks 120px ke dermaga */}
+            {/* 3. Kapal: 0.6x */}
             <svg
               ref={(el) => {
                 layerRefs.current[2] = el;
@@ -302,7 +302,7 @@ export function HeroSection() {
               role="img"
               aria-label="Kapal penangkap ikan sandar mendekati dermaga"
             >
-              <g transform="translate(0,100)">
+              <g className="hero-svg-content">
                 <g className="bob">
                   <rect x="324" y="285" width="6" height="112" fill="#0F3562" />
                   <path
@@ -327,7 +327,7 @@ export function HeroSection() {
               </g>
             </svg>
 
-            {/* 4. Ombak depan: 0.8x. Bergulir lebih cepat, dua pelampung */}
+            {/* 4. Ombak depan: 0.8x */}
             <svg
               ref={(el) => {
                 layerRefs.current[3] = el;
@@ -341,7 +341,7 @@ export function HeroSection() {
               preserveAspectRatio="xMidYMax slice"
               aria-hidden="true"
             >
-              <g transform="translate(0,100)">
+              <g className="hero-svg-content">
                 <g
                   className="wv"
                   style={
@@ -356,7 +356,7 @@ export function HeroSection() {
                     fill="#0F3562"
                   />
                   <path
-                    d="M-240 455q120 -16 240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0"
+                    d="M-240 455q120 -16 240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0"
                     fill="none"
                     stroke="#9FB4CC"
                     strokeWidth="2"
@@ -395,7 +395,7 @@ export function HeroSection() {
               role="img"
               aria-label="Staf dermaga menimbang ikan hasil tangkapan nelayan dengan timbangan digital IoT"
             >
-              <g transform="translate(0,100)">
+              <g className="hero-svg-content">
                 <g fill="#1E3A5F">
                   <rect x="720" y="411" width="14" height="110" />
                   <rect x="830" y="411" width="14" height="110" />
@@ -615,30 +615,30 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Hero copy: exactly as in sample HTML */}
-        <div className="hero-copy text-center px-5 pt-14 md:pt-16">
+        {/* Hero copy: exactly as in sample HTML, with fluid responsive typography */}
+        <div className="hero-copy text-center px-4 sm:px-6 pt-10 sm:pt-14 md:pt-16">
           <h1
-            className="mx-auto max-w-3xl text-3xl sm:text-4xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-[#0f172a] dark:text-[#f8fafc]"
+            className="mx-auto max-w-3xl text-2xl sm:text-4xl md:text-6xl font-semibold tracking-tight leading-[1.12] text-[#0f172a] dark:text-[#f8fafc]"
           >
             Catat hasil tangkapan langsung dari dermaga
           </h1>
           <p
-            className="mx-auto mt-5 max-w-xl text-base md:text-lg text-[#334155] dark:text-[#cbd5e1]"
+            className="mx-auto mt-3 sm:mt-5 max-w-xl text-sm sm:text-base md:text-lg text-[#334155] dark:text-[#cbd5e1] leading-relaxed"
           >
             Ikan ditimbang di dermaga, angkanya langsung masuk ke sistem. Sisa
             kuota kapal dan tarif PNBP dihitung otomatis, tanpa catat manual.
           </p>
-          <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-6">
+          <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
             <Link
               to="/register"
-              className="btn no-underline"
+              className="btn no-underline w-full sm:w-auto text-center"
               style={{ background: "#0f3562" }}
             >
               Daftar akun
             </Link>
             <Link
               to="/login"
-              className="lnk text-sm"
+              className="lnk text-sm text-center py-1"
               style={{ color: "#0f3562" }}
             >
               Sudah punya akun? Masuk ke portal
