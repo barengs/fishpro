@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { usePageTransition } from "../../../../components/PageTransitionContext";
 
 export function OnboardingFooter() {
+  const { navigateWithTransition } = usePageTransition();
+
   return (
     <footer className="border-t bd py-8">
       <div className="wrap flex flex-col md:flex-row gap-4 justify-between text-sm t2">
@@ -9,15 +11,27 @@ export function OnboardingFooter() {
           dan Perikanan RI
         </p>
         <div className="flex gap-6">
-          <Link to="/login" className="hover:underline">
+          <button
+            type="button"
+            onClick={() => navigateWithTransition("/login")}
+            className="hover:underline bg-transparent border-0 p-0 text-inherit font-inherit cursor-pointer text-sm"
+          >
             Masuk portal
-          </Link>
-          <Link to="/register" className="hover:underline">
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateWithTransition("/register")}
+            className="hover:underline bg-transparent border-0 p-0 text-inherit font-inherit cursor-pointer text-sm"
+          >
             Registrasi
-          </Link>
-          <Link to="/reset-password" className="hover:underline">
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateWithTransition("/reset-password")}
+            className="hover:underline bg-transparent border-0 p-0 text-inherit font-inherit cursor-pointer text-sm"
+          >
             Bantuan sandi
-          </Link>
+          </button>
         </div>
       </div>
     </footer>

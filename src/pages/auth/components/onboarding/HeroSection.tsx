@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import { buttonTapVariants } from "../../../../utils/motionVariants";
+import { usePageTransition } from "../../../../components/PageTransitionContext";
 import "./heroScene.css";
 
 export function HeroSection() {
+    const { navigateWithTransition } = usePageTransition();
     const heroRef = useRef<HTMLDivElement>(null);
     const stageRef = useRef<HTMLDivElement>(null);
     const layerRefs = useRef<(SVGSVGElement | null)[]>([]);
@@ -496,22 +497,24 @@ export function HeroSection() {
                     </p>
                     <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
                         <motion.div whileTap={buttonTapVariants} className="w-full sm:w-auto">
-                            <Link
-                                to="/register"
-                                className="btn no-underline w-full sm:w-auto text-center inline-block"
+                            <button
+                                type="button"
+                                onClick={() => navigateWithTransition("/register")}
+                                className="btn no-underline w-full sm:w-auto text-center inline-block cursor-pointer font-inherit border-0"
                                 style={{ background: "#0f3562" }}
                             >
                                 Daftar akun
-                            </Link>
+                            </button>
                         </motion.div>
                         <motion.div whileTap={buttonTapVariants} className="w-full sm:w-auto">
-                            <Link
-                                to="/login"
-                                className="lnk text-sm text-center py-1 inline-block"
+                            <button
+                                type="button"
+                                onClick={() => navigateWithTransition("/login")}
+                                className="lnk text-sm text-center py-1 inline-block cursor-pointer bg-transparent border-0 font-inherit"
                                 style={{ color: "#0f3562" }}
                             >
                                 Sudah punya akun? Masuk ke portal
-                            </Link>
+                            </button>
                         </motion.div>
                     </div>
                 </motion.div>

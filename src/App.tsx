@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 import { ToastProvider } from "./components/toast";
+import { PageTransitionProvider } from "./components/PageTransitionContext";
 import {
   PublicRoute,
   ProtectedRoute,
@@ -205,10 +206,11 @@ export default function App() {
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
-          <LenisScrollManager />
-          <BackButtonGuard />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+          <PageTransitionProvider>
+            <LenisScrollManager />
+            <BackButtonGuard />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
               {/* Root redirect */}
               <Route
                 path="/"
@@ -363,6 +365,7 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
+          </PageTransitionProvider>
         </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>

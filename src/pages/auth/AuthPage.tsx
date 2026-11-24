@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ThemeToggle } from "../../components/ThemeToggle";
 import { authService } from "../../services/auth";
 import { useToast } from "../../components/toast";
 import { loginSchema } from "../../utils/schemas";
+import { usePageTransition } from "../../components/PageTransitionContext";
 import "./authLayout.css";
 
 export function AuthPage() {
@@ -11,6 +12,7 @@ export function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
+  const { navigateWithTransition } = usePageTransition();
 
   // State untuk melacak view aktif dan trigger curtain transition di mobile
   const [curtainActive, setCurtainActive] = useState(false);
@@ -290,7 +292,12 @@ export function AuthPage() {
     <div className="page" id="page" data-view={currentView}>
       {/* Top Header */}
       <div className="hdr">
-        <Link to="/onboard" className="brand" aria-label="FishPro">
+        <button
+          type="button"
+          onClick={() => navigateWithTransition("/onboard")}
+          className="brand bg-transparent border-0 p-0 cursor-pointer font-inherit text-left"
+          aria-label="FishPro"
+        >
           <svg viewBox="0 0 32 32" aria-hidden="true">
             <rect className="bg" width="32" height="32" rx="4" />
             <g className="fg" fill="none" strokeWidth="2" strokeLinecap="round">
@@ -300,12 +307,16 @@ export function AuthPage() {
             </g>
           </svg>
           FISHPRO
-        </Link>
+        </button>
         <div className="actions">
           <ThemeToggle compact />
-          <Link className="btn-outline" to="/onboard">
+          <button
+            type="button"
+            className="btn-outline cursor-pointer"
+            onClick={() => navigateWithTransition("/onboard")}
+          >
             Beranda
-          </Link>
+          </button>
         </div>
       </div>
 

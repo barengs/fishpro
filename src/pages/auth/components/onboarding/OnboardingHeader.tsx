@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { usePageTransition } from "../../../../components/PageTransitionContext";
 
 export function OnboardingHeader() {
+    const { navigateWithTransition } = usePageTransition();
+
     return (
         <header className="border-b bd bg-[var(--sf,#ffffff)] transition-colors">
             <div className="wrap flex items-center justify-between h-16">
@@ -35,15 +38,20 @@ export function OnboardingHeader() {
                     </a>
                 </nav>
                 <div className="flex gap-5 text-sm">
-                    <Link to="/login" className="t2 hover:text-[var(--pr,#0f3562)] transition-colors no-underline">
+                    <button
+                        type="button"
+                        onClick={() => navigateWithTransition("/login")}
+                        className="t2 hover:text-[var(--pr,#0f3562)] transition-colors bg-transparent border-0 p-0 cursor-pointer font-inherit text-sm"
+                    >
                         Masuk
-                    </Link>
-                    <Link
-                        to="/register"
-                        className="font-medium text-[var(--pr,#0f3562)] hover:text-[var(--ph,#0a2748)] transition-colors no-underline"
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigateWithTransition("/register")}
+                        className="font-medium text-[var(--pr,#0f3562)] hover:text-[var(--ph,#0a2748)] transition-colors bg-transparent border-0 p-0 cursor-pointer font-inherit text-sm"
                     >
                         Daftar
-                    </Link>
+                    </button>
                 </div>
             </div>
         </header>
