@@ -107,7 +107,7 @@ export function CenteredAuth({
 
       <main className="flex-1 flex flex-col justify-center items-center w-full px-3 sm:px-6 py-6 sm:py-10 my-auto">
         <div
-          className={`w-full ${register ? "max-w-160" : wide ? "max-w-220" : "max-w-135"}`}
+          className={`w-full ${register ? "max-w-160" : wide ? "max-w-6xl" : "max-w-135"}`}
         >
           {children}
         </div>
