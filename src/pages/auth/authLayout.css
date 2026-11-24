@@ -1,0 +1,229 @@
+
+:root{
+  --bg:#fff; --surface:#fff; --text:#0f172a; --muted:#52607a; --faint:#64748b;
+  --border:#d5dbe5; --border-strong:#b8c1d0; --primary:#2563eb; --primary-hover:#1d4ed8;
+  --ring:rgba(37,99,235,.28); --danger:#c62828; --danger-bg:#fdeceb; --panel:#1e3a8a;
+  --radius:10px;
+  --dur:.8s;
+  --ease:cubic-bezier(.65,0,.25,1);
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --surface:#111a2e; --text:#e8edf6; --muted:#a3b0c7; --faint:#8b99b2;
+  --border:#26324b; --border-strong:#3a4966; --primary:#3b82f6; --primary-hover:#2f6fe0;
+  --ring:rgba(59,130,246,.35); --danger:#ff8a80; --danger-bg:#2a1618; --panel:#0f2352;
+}
+*{box-sizing:border-box;margin:0}
+html,body{min-height:100%}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+
+/* ===== Kerangka: dua kolom form + satu panel yang meluncur ===== */
+.page{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.col{display:flex;flex-direction:column;padding:88px clamp(20px,5vw,64px) 24px;min-width:0}
+.center{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 0 40px}
+.form-wrap{width:100%;max-width:400px}
+
+/* Panel penutup: berada di kanan saat Masuk, meluncur ke kiri saat Daftar/Lupa */
+.panel{--panel-photo:none;position:absolute;z-index:3;top:0;bottom:0;left:0;width:50%;
+  transform:translateX(100%);transition:transform var(--dur) var(--ease);
+  background-color:var(--panel);
+  background-image:linear-gradient(rgba(15,35,90,.62),rgba(15,35,90,.8)),var(--panel-photo);
+  background-size:cover;background-position:center;color:#fff;
+  display:grid;align-items:end;padding:56px clamp(32px,5vw,72px);will-change:transform}
+.page[data-view="daftar"] .panel,
+.page[data-view="lupa"] .panel{transform:none}
+.copy{grid-area:1/1;transition:opacity .35s ease .3s,visibility 0s linear 0s}
+.copy.off{opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s linear .25s}
+.panel p.quote{font-size:clamp(22px,2.3vw,30px);font-weight:600;line-height:1.3;letter-spacing:-.01em;max-width:18em}
+.panel p.sub{margin-top:12px;font-size:15px;color:rgba(255,255,255,.82);max-width:30em}
+.btn-ghost{margin-top:24px;height:44px;padding:0 24px;border-radius:var(--radius);border:1.5px solid rgba(255,255,255,.7);background:transparent;color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:background .15s}
+.btn-ghost:hover{background:rgba(255,255,255,.14)}
+.panel :focus-visible{outline-color:#fff}
+
+/* Header melintang di atas panel; warnanya menyesuaikan sisi yang ditempati */
+.hdr{position:absolute;z-index:5;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:24px clamp(20px,5vw,64px);pointer-events:none}
+.hdr>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.01em;text-decoration:none;color:var(--text);transition:color var(--dur) var(--ease)}
+.brand svg{width:32px;height:32px;display:block}
+.brand .bg{fill:#2563eb;transition:fill var(--dur) var(--ease)}
+.brand .fg{stroke:#fff;transition:stroke var(--dur) var(--ease)}
+.actions{display:flex;gap:8px;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius);border:0;background:transparent;display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:color var(--dur) var(--ease),background .15s}
+.icon-btn:hover{background:rgba(100,116,139,.14)}
+.btn-outline{height:38px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);font-weight:600;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;color:var(--text);transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),color var(--dur) var(--ease)}
+.btn-outline:hover{border-color:var(--border-strong)}
+
+@media (min-width:901px){
+  .col-daftar,.col-lupa{grid-column:2;grid-row:1}
+  .page[data-view="masuk"] .col-lupa,
+  .page[data-view="daftar"] .col-lupa,
+  .page[data-view="lupa"] .col-daftar{display:none}
+  .page[data-view="daftar"] .brand,
+  .page[data-view="lupa"] .brand{color:#fff}
+  .page[data-view="daftar"] .brand .bg,
+  .page[data-view="lupa"] .brand .bg{fill:#fff}
+  .page[data-view="daftar"] .brand .fg,
+  .page[data-view="lupa"] .brand .fg{stroke:#1e3a8a}
+  .page[data-view="daftar"] .brand:focus-visible,
+  .page[data-view="lupa"] .brand:focus-visible{outline-color:#fff}
+  .page[data-view="masuk"] .actions .icon-btn{color:rgba(255,255,255,.88)}
+  .page[data-view="masuk"] .actions .icon-btn:hover{background:rgba(255,255,255,.16)}
+  .page[data-view="masuk"] .actions .btn-outline{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+  .page[data-view="masuk"] .actions .btn-outline:hover{background:rgba(255,255,255,.14)}
+  .page[data-view="masuk"] .actions :focus-visible{outline-color:#fff}
+}
+
+/* ===== Form ===== */
+h1{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.2;outline:0}
+.lead{margin-top:8px;color:var(--muted);font-size:15px}
+form{margin-top:28px;display:flex;flex-direction:column;gap:18px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.control{position:relative}
+.control>svg.lead-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--faint);pointer-events:none}
+.control input[type=text],.control input[type=email],.control input[type=password],.control input[type=tel],.control input[type=number],.control select{width:100%;height:44px;padding:0 44px 0 42px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);font-size:15px;transition:border-color .15s,box-shadow .15s}
+.control select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:38px;text-overflow:ellipsis}
+.control>svg.trail-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--faint);pointer-events:none}
+.control input::placeholder{color:var(--faint);opacity:.8}
+.control input:hover,.control select:hover{border-color:var(--border-strong)}
+.control input:focus,.control select:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
+.control .toggle{position:absolute;right:4px;top:4px;width:36px;height:36px;border:0;background:transparent;border-radius:8px;display:grid;place-items:center;color:var(--faint);cursor:pointer}
+.control .toggle:hover{color:var(--text)}
+.control .toggle svg{width:18px;height:18px}
+.hint{margin-top:6px;font-size:13px;color:var(--muted)}
+.field.invalid input,.field.invalid select{border-color:var(--danger)}
+.field.invalid input:focus,.field.invalid select:focus{box-shadow:0 0 0 4px rgba(198,40,40,.2)}
+.caps{display:none;margin-top:6px;font-size:13px;color:var(--muted);align-items:center;gap:6px}
+.caps.on{display:flex}
+.caps svg{width:14px;height:14px;flex:none}
+.alert{display:none;gap:10px;padding:12px 14px;border-radius:var(--radius);background:var(--danger-bg);color:var(--danger);font-size:14px;font-weight:500;border:1px solid color-mix(in srgb,var(--danger) 35%,transparent)}
+.alert.show{display:flex}
+.alert svg{width:18px;height:18px;flex:none;margin-top:1px}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.check{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:14px}
+.check input{width:18px;height:18px;accent-color:var(--primary);cursor:pointer;margin-top:2px;flex:none}
+a.link{color:var(--primary);font-weight:600;text-decoration:none}
+a.link:hover{text-decoration:underline}
+.btn-text-link{background:none;border:none;padding:0;font:inherit;cursor:pointer}
+.btn-text-link:focus-visible{outline:2px solid var(--primary);border-radius:4px}
+.btn-primary{height:46px;border:0;border-radius:var(--radius);background:var(--primary);color:#fff;font-weight:600;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-primary[disabled]{opacity:.75;cursor:progress}
+.spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite;display:none}
+.loading .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
+.btn-google{height:46px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
+.btn-google:hover{background:rgba(100,116,139,.07)}
+.btn-google svg{width:18px;height:18px}
+.switch{text-align:center;font-size:14px;color:var(--muted)}
+
+/* ===== Multi-Step Wizard Daftar ===== */
+.hidden{display:none!important}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:22px;position:relative;list-style:none;padding:0}
+.step-item{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;gap:6px}
+.step-item:not(:last-child)::after{content:"";position:absolute;top:14px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:var(--border);transition:background .25s ease}
+.step-item.done:not(:last-child)::after{background:var(--primary)}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;display:grid;place-items:center;position:relative;z-index:1;transition:background .2s,border-color .2s,color .2s,box-shadow .2s}
+.step-dot svg{width:14px;height:14px;display:none}
+.step-item.active .step-dot{border-color:var(--primary);background:var(--primary);color:#fff;box-shadow:0 0 0 4px var(--ring)}
+.step-item.done .step-dot{border-color:var(--primary);background:var(--primary);color:#fff}
+.step-item.done .step-dot .step-num{display:none}
+.step-item.done .step-dot svg{display:block}
+.step-label{font-size:12px;font-weight:500;color:var(--faint);line-height:1.25;transition:color .2s}
+.step-item.active .step-label{color:var(--text);font-weight:700}
+.step-item.done .step-label{color:var(--primary);font-weight:600}
+
+.wiz-step{display:none;flex-direction:column;gap:16px}
+.wiz-step.active{display:flex;animation:stepIn .25s ease}
+@keyframes stepIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.role-card{position:relative;display:flex;flex-direction:column;gap:4px;padding:14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.role-card:hover{border-color:var(--border-strong)}
+.role-card input{position:absolute;opacity:0;pointer-events:none}
+.role-card:focus-within{box-shadow:0 0 0 4px var(--ring)}
+.role-card.selected{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 7%,var(--surface))}
+.role-card .role-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.role-card .role-icon{width:34px;height:34px;border-radius:8px;background:color-mix(in srgb,var(--primary) 11%,transparent);color:var(--primary);display:grid;place-items:center}
+.role-card .role-icon svg{width:18px;height:18px}
+.role-card .role-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-strong);display:grid;place-items:center;transition:border-color .15s}
+.role-card.selected .role-radio{border-color:var(--primary)}
+.role-card.selected .role-radio::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--primary)}
+.role-card .role-title{margin-top:6px;font-size:14px;font-weight:700;color:var(--text)}
+.role-card .role-desc{font-size:12px;color:var(--muted);line-height:1.35}
+
+.seg-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px;border:1px solid var(--border);border-radius:var(--radius);background:color-mix(in srgb,var(--border) 28%,var(--surface))}
+.seg-opt{position:relative;display:flex;align-items:center;justify-content:center;height:36px;border-radius:7px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,box-shadow .15s}
+.seg-opt input{position:absolute;opacity:0;pointer-events:none}
+.seg-opt:focus-within{box-shadow:0 0 0 3px var(--ring)}
+.seg-opt.selected{background:var(--surface);color:var(--primary);box-shadow:0 1px 3px rgba(15,23,42,.1)}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wiz-nav{display:flex;gap:10px;margin-top:4px}
+.wiz-nav .btn-primary{flex:1}
+.btn-secondary{height:46px;padding:0 18px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);color:var(--text);font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,border-color .15s}
+.btn-secondary:hover{background:rgba(100,116,139,.08)}
+
+.summary-box{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.summary-group{padding:12px 14px}
+.summary-group+.summary-group{border-top:1px solid var(--border)}
+.summary-title{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.summary-list{display:flex;flex-direction:column;gap:6px}
+.summary-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-size:13.5px}
+.summary-key{color:var(--muted);flex:none}
+.summary-val{color:var(--text);font-weight:600;text-align:right;word-break:break-word}
+
+/* ===== Success State Lupa Kata Sandi ===== */
+.success-card{margin-top:24px;padding:22px 20px;border:1px solid var(--border);border-radius:var(--radius);background:color-mix(in srgb,var(--primary) 5%,var(--surface));display:flex;flex-direction:column;gap:14px;animation:stepIn .25s ease}
+.success-icon{width:44px;height:44px;border-radius:50%;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary);display:grid;place-items:center}
+.success-icon svg{width:22px;height:22px}
+.success-title{font-size:17px;font-weight:700;color:var(--text)}
+.success-desc{font-size:14px;color:var(--muted);line-height:1.55}
+.success-desc strong{color:var(--text);word-break:break-word}
+.success-actions{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+
+@media (max-width:480px){
+  .role-grid,.field-row{grid-template-columns:1fr}
+  .step-label{font-size:11px}
+}
+footer{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--muted)}
+footer nav{display:flex;gap:18px}
+footer a{color:inherit;text-decoration:none}
+footer a:hover{color:var(--text);text-decoration:underline}
+
+/* ===== Mobile: Page transition panel navy dari bawah ke atas (0.8s) ===== */
+@keyframes mobileCurtain{
+  0%{transform:translateY(100%)}
+  45%,55%{transform:translateY(0)}
+  100%{transform:translateY(-100%)}
+}
+@media (max-width:900px){
+  .page{grid-template-columns:1fr}
+  .col{grid-area:1/1;padding:84px 20px 20px}
+  .page[data-view="masuk"] .col-daftar,
+  .page[data-view="masuk"] .col-lupa,
+  .page[data-view="daftar"] .col-masuk,
+  .page[data-view="daftar"] .col-lupa,
+  .page[data-view="lupa"] .col-masuk,
+  .page[data-view="lupa"] .col-daftar{display:none}
+  .hdr{padding:20px}
+  .panel,
+  .page[data-view="daftar"] .panel,
+  .page[data-view="lupa"] .panel{
+    position:fixed;inset:0;width:100%;height:100%;z-index:20;
+    padding:0;pointer-events:none;
+    transform:translateY(100%);
+    transition:none;
+  }
+  .panel .copy{display:none}
+  .panel.curtain-run{
+    animation:mobileCurtain var(--dur) var(--ease) forwards;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  :root{--dur:.01s}
+  .col{transition-duration:.01s!important}
+  *{animation-duration:.01s!important}
+}

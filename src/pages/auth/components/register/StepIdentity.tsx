@@ -6,7 +6,14 @@ import {
   Ship,
   User,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Role } from "./types";
+import {
+  staggerContainerVariants,
+  cardItemVariants,
+  roleCardHoverVariants,
+  buttonTapVariants,
+} from "../../../../utils/motionVariants";
 
 interface StepIdentityProps {
   role: Role;
@@ -51,9 +58,17 @@ export function StepIdentity({
         <label className={labelCls}>
           Daftar Sebagai <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-2.5"
+        >
+          <motion.button
             type="button"
+            variants={cardItemVariants}
+            whileHover={roleCardHoverVariants}
+            whileTap={buttonTapVariants}
             onClick={() => setRole("owner")}
             className={`flex items-center justify-between h-12 px-3.5 rounded-xl border-2 cursor-pointer transition-all text-left ${
               role === "owner"
@@ -83,10 +98,13 @@ export function StepIdentity({
                 aria-hidden="true"
               />
             )}
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             type="button"
+            variants={cardItemVariants}
+            whileHover={roleCardHoverVariants}
+            whileTap={buttonTapVariants}
             onClick={() => setRole("captain")}
             className={`flex items-center justify-between h-12 px-3.5 rounded-xl border-2 cursor-pointer transition-all text-left ${
               role === "captain"
@@ -116,8 +134,8 @@ export function StepIdentity({
                 aria-hidden="true"
               />
             )}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
 
       {/* 2. Formulir Data Diri & Entitas */}
@@ -126,7 +144,12 @@ export function StepIdentity({
         {role === "owner" && (
           <div>
             <span className={labelCls}>Tipe Kepemilikan</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <motion.div
+              variants={staggerContainerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-2.5"
+            >
               {[
                 {
                   key: "company",
@@ -141,9 +164,12 @@ export function StepIdentity({
               ].map((t) => {
                 const isSelected = ownerType === t.key;
                 return (
-                  <button
+                  <motion.button
                     key={t.key}
                     type="button"
+                    variants={cardItemVariants}
+                    whileHover={roleCardHoverVariants}
+                    whileTap={buttonTapVariants}
                     onClick={() =>
                       setOwnerType(t.key as "individual" | "company")
                     }
@@ -179,10 +205,10 @@ export function StepIdentity({
                         aria-hidden="true"
                       />
                     )}
-                  </button>
+                  </motion.button>
                 );
               })}
-            </div>
+            </motion.div>
           </div>
         )}
 

@@ -1,5 +1,5 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 import { ToastProvider } from "./components/toast";
 import {
@@ -7,6 +7,7 @@ import {
   ProtectedRoute,
   BackButtonGuard,
 } from "./components/auth";
+import { initLenis, lenisScrollTo } from "./utils/lenis";
 
 // Lazy-loaded auth pages
 const OnboardingPage = lazy(() =>
@@ -14,18 +15,8 @@ const OnboardingPage = lazy(() =>
     default: m.OnboardingPage,
   })),
 );
-const LoginPage = lazy(() =>
-  import("./pages/auth/LoginPage").then((m) => ({ default: m.LoginPage })),
-);
-const RegisterPage = lazy(() =>
-  import("./pages/auth/RegisterPage").then((m) => ({
-    default: m.RegisterPage,
-  })),
-);
-const ResetPasswordPage = lazy(() =>
-  import("./pages/auth/ResetPasswordPage").then((m) => ({
-    default: m.ResetPasswordPage,
-  })),
+const AuthPage = lazy(() =>
+  import("./pages/auth/AuthPage").then((m) => ({ default: m.AuthPage })),
 );
 
 // Lazy-loaded Staff pages
@@ -187,11 +178,34 @@ function PageLoader() {
   );
 }
 
+function LenisScrollManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    let cleanupFn: (() => void) | undefined;
+    initLenis().then((cleanup) => {
+      cleanupFn = cleanup;
+    });
+
+    return () => {
+      cleanupFn?.();
+    };
+  }, []);
+
+  // Saat route berpindah (misal Login ke Register), scroll ke atas secara smooth pakai Lenis
+  useEffect(() => {
+    lenisScrollTo(0, { duration: 0.8 });
+  }, [location.pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
+          <LenisScrollManager />
           <BackButtonGuard />
           <Suspense fallback={<PageLoader />}>
             <Routes>
@@ -208,29 +222,16 @@ export default function App() {
               {/* Standalone auth & public landing pages */}
               <Route path="/onboard" element={<OnboardingPage />} />
               <Route
-                path="/login"
                 element={
                   <PublicRoute>
-                    <LoginPage />
+                    <AuthPage />
                   </PublicRoute>
                 }
-              />
-              <Route
-                path="/register"
-                element={
-                  <PublicRoute>
-                    <RegisterPage />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/reset-password"
-                element={
-                  <PublicRoute>
-                    <ResetPasswordPage />
-                  </PublicRoute>
-                }
-              />
+              >
+                <Route path="/login" element={null} />
+                <Route path="/register" element={null} />
+                <Route path="/reset-password" element={null} />
+              </Route>
 
               {/* Protected: Staff (Staf Lapangan Operasional) */}
               <Route

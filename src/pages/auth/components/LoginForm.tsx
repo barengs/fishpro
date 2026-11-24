@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 import { loginSchema } from "../../../utils/schemas";
+import { buttonTapVariants } from "../../../utils/motionVariants";
 
 interface LoginFormProps {
   demoCredentials?: { username: string; password: string } | null;
@@ -263,16 +265,17 @@ export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
       </div>
 
       {/* Submit Button */}
-      <button
+      <motion.button
         type="submit"
         disabled={loading}
-        className="w-full py-2.5 px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-[13.5px] font-semibold shadow-subtle transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.99] mt-1"
+        whileTap={buttonTapVariants}
+        className="w-full py-2.5 px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-[13.5px] font-semibold shadow-subtle transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed select-none mt-1"
       >
         {loading && (
           <Loader2 size={16} className="animate-spin" aria-hidden="true" />
         )}
         <span>{loading ? "Memproses masuk..." : "Masuk"}</span>
-      </button>
+      </motion.button>
     </form>
   );
 }

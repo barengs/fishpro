@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { StepIdentity } from "./register/StepIdentity";
@@ -5,6 +6,11 @@ import { StepAccount } from "./register/StepAccount";
 import { StepOperational } from "./register/StepOperational";
 import { StepReview } from "./register/StepReview";
 import { useRegisterWizard } from "../hooks/useRegisterWizard";
+import {
+  buttonTapVariants,
+  wizardStepVariants,
+} from "../../../utils/motionVariants";
+import { lenisScrollTo } from "../../../utils/lenis";
 
 const steps = [
   { num: 1, title: "Identitas" },
@@ -55,8 +61,18 @@ export function RegisterStepWizard() {
     handleSubmit,
   } = useRegisterWizard();
 
+  const prevStepRef = useRef(currentStep);
+  const direction = currentStep >= prevStepRef.current ? 1 : -1;
+
+  useEffect(() => {
+    if (prevStepRef.current !== currentStep) {
+      prevStepRef.current = currentStep;
+      lenisScrollTo("#register-wizard-container");
+    }
+  }, [currentStep]);
+
   return (
-    <div className="max-w-full w-full">
+    <div id="register-wizard-container" className="max-w-full w-full">
       {/* 1. Circle Stepper with Text Underneath and Connecting Line */}
       <div
         className="relative mb-5 sm:mb-7 pt-1"
@@ -75,10 +91,12 @@ export function RegisterStepWizard() {
               >
                 {/* Connecting track between steps */}
                 {!isLast && (
-                  <div className="absolute top-4 sm:top-4.5 -translate-y-1/2 left-1/2 w-full h-0.5 bg-fco-border dark:bg-fco-border-dark z-0">
-                    <div
-                      className="h-full bg-fco-blue transition-all duration-300"
-                      style={{ width: currentStep > s.num ? "100%" : "0%" }}
+                  <div className="absolute top-4 sm:top-4.5 -translate-y-1/2 left-1/2 w-full h-0.5 bg-fco-border dark:bg-fco-border-dark z-0 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-fco-blue"
+                      initial={false}
+                      animate={{ width: currentStep > s.num ? "100%" : "0%" }}
+                      transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
                     />
                   </div>
                 )}
@@ -134,16 +152,18 @@ export function RegisterStepWizard() {
         )}
 
         {/* Dynamic Form Step */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={role + currentStep}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full"
-          >
-            {currentStep === 1 && (
+        <div className="overflow-hidden">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={role + currentStep}
+              custom={direction}
+              variants={wizardStepVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="w-full"
+            >
+              {currentStep === 1 && (
               <StepIdentity
                 role={role}
                 setRole={setRole}
@@ -206,38 +226,42 @@ export function RegisterStepWizard() {
                 setAgreeTerms={setAgreeTerms}
               />
             )}
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         {/* 3. Streamlined Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3 mt-6 sm:mt-7 pt-4 sm:pt-6 border-t border-fco-border-subtle">
           {currentStep > 1 && (
-            <button
+            <motion.button
               type="button"
               onClick={handlePrev}
               disabled={isLoading}
-              className="h-10 sm:h-11 px-3.5 sm:px-5 rounded-xl text-xs sm:text-sm border border-fco-border surface-card hover:surface-page text-strong font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5 sm:gap-2 shrink-0"
+              whileTap={buttonTapVariants}
+              className="h-10 sm:h-11 px-3.5 sm:px-5 rounded-xl text-xs sm:text-sm border border-fco-border surface-card hover:surface-page text-strong font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5 sm:gap-2 shrink-0 select-none"
             >
               <span>Sebelumnya</span>
-            </button>
+            </motion.button>
           )}
 
           <div className="flex-1" />
 
           {currentStep < 4 ? (
-            <button
+            <motion.button
               type="button"
               onClick={handleNext}
-              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs inline-flex items-center justify-center shrink-0"
+              whileTap={buttonTapVariants}
+              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-fco-blue hover:bg-fco-blue-hover text-white font-semibold cursor-pointer transition-colors shadow-xs inline-flex items-center justify-center shrink-0 select-none"
             >
               <span>Lanjut</span>
-            </button>
+            </motion.button>
           ) : (
-            <button
+            <motion.button
               type="button"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+              whileTap={buttonTapVariants}
+              className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl text-xs sm:text-sm border-none bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shrink-0 select-none"
             >
               {isLoading ? (
                 <>
@@ -257,7 +281,7 @@ export function RegisterStepWizard() {
                   <span className="sm:hidden">Daftar</span>
                 </>
               )}
-            </button>
+            </motion.button>
           )}
         </div>
       </div>
