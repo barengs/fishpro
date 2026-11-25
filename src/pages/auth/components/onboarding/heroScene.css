@@ -255,7 +255,8 @@
 
 .hero-cta {
   display: flex;
-  gap: 12px;
+  gap: 16px;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -269,6 +270,25 @@
 
 .hero-cta .onboarding-btn.pri {
   border-color: var(--brand);
+}
+
+.hero-link-btn {
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.hero-link-btn:hover {
+  opacity: 0.85;
+  color: #dbeafe;
 }
 
 /* Hero Scene SVG */
@@ -765,12 +785,17 @@
   .hero-cta {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
   }
   .hero-cta .onboarding-btn {
     height: 44px;
     width: 100%;
     font-size: 14px;
+  }
+  .hero-link-btn {
+    text-align: center;
+    font-size: 14px;
+    padding: 6px 0;
   }
 
   .hero-scene {

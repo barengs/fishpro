@@ -52,7 +52,7 @@ export function HeroSection() {
           </button>
           <button
             type="button"
-            className="onboarding-btn"
+            className="hero-link-btn"
             onClick={() => navigateWithTransition("/login")}
           >
             Sudah punya akun? Masuk ke portal
@@ -131,11 +131,27 @@ export function HeroSection() {
         <rect x="842" y="178" width="96" height="18" rx="3" fill="#2c3f6e" />
         <rect x="884" y="126" width="12" height="54" fill="#3a4f7f" />
 
-        <g fill="#8fb0e8">
-          <ellipse cx="862" cy="168" rx="16" ry="6" />
-          <ellipse cx="890" cy="165" rx="17" ry="6" />
-          <ellipse cx="916" cy="168" rx="15" ry="6" />
-          <path d="M876 168l-8-5v10zM906 165l-8-5v10zM930 168l-7-5v10z" />
+        {/* Ikan di atas timbangan */}
+        <defs>
+          <g id="dock-fish">
+            {/* Ekor */}
+            <path d="M-13 0 L-21 -5.5 L-18 0 L-21 5.5 Z" fill="#7ba5e8" />
+            {/* Badan ikan */}
+            <path d="M-14 0 Q-7 -7 6 -5 Q15 -3 18 0 Q15 3 6 5 Q-7 7 -14 0 Z" fill="#9ec3ff" />
+            {/* Sirip atas */}
+            <path d="M-2 -5 Q2 -9 6 -5 Z" fill="#6997e3" />
+            {/* Insang / Lengkung detail */}
+            <path d="M8 -2 Q6 0 8 2" stroke="#4f78c7" strokeWidth="0.9" fill="none" />
+            {/* Mata ikan */}
+            <circle cx="12" cy="-1.5" r="1.3" fill="#0a1535" />
+            <circle cx="12.3" cy="-1.8" r="0.5" fill="#ffffff" />
+          </g>
+        </defs>
+
+        <g>
+          <use href="#dock-fish" x="864" y="169" transform="rotate(-6 864 169) scale(1.05)" />
+          <use href="#dock-fish" x="890" y="164" transform="rotate(4 890 164) scale(1.15)" />
+          <use href="#dock-fish" x="918" y="168" transform="rotate(-3 918 168) scale(1.08)" />
         </g>
 
         <rect x="842" y="90" width="96" height="38" rx="7" fill="#0a1535" stroke="#2563eb" strokeWidth="2" />
