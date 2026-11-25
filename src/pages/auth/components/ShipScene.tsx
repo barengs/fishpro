@@ -18,7 +18,7 @@ export function ShipScene({ className = "" }: ShipSceneProps) {
       viewBox="0 0 600 800"
       preserveAspectRatio="xMidYMax slice"
       role="img"
-      aria-label="Kapal nelayan berlayar di laut saat senja"
+      aria-label="Kapal nelayan berlayar di atas ombak"
     >
       <defs>
         <linearGradient id={skyId} x1="0" y1="0" x2="0" y2="1">
@@ -42,65 +42,21 @@ export function ShipScene({ className = "" }: ShipSceneProps) {
         </linearGradient>
       </defs>
 
-      <rect x="-300" y="0" width="1200" height="540" fill={`url(#${skyId})`} />
-      <rect x="-300" y="515" width="1200" height="400" fill={`url(#${seaId})`} />
-
-      <g fill="#fff">
-        <circle className="st" cx="60" cy="300" r="1.4" />
-        <circle className="st" cx="150" cy="340" r="1" style={{ animationDelay: "0.8s" }} />
-        <circle className="st" cx="520" cy="290" r="1.4" style={{ animationDelay: "1.5s" }} />
-        <circle className="st" cx="440" cy="350" r="1" style={{ animationDelay: "2s" }} />
-        <circle className="st" cx="300" cy="320" r="1.2" style={{ animationDelay: "1s" }} />
-        <circle className="st" cx="570" cy="380" r="1" style={{ animationDelay: "0.4s" }} />
-      </g>
-
-      <g className="cl" fill="#f3b27e" opacity="0.35">
-        <ellipse cx="120" cy="420" rx="70" ry="9" />
-        <ellipse cx="160" cy="412" rx="42" ry="8" />
-        <ellipse cx="420" cy="440" rx="80" ry="8" />
-        <ellipse cx="460" cy="432" rx="44" ry="7" />
-      </g>
-
-      <circle cx="470" cy="520" r="110" fill={`url(#${haloId})`} />
-      <circle cx="470" cy="520" r="42" fill={`url(#${sunId})`} />
-      <path d="M-60 524 Q-20 488 30 498 Q62 474 104 494 Q134 488 176 524 Z" fill="#1a2f66" />
-
-      <g transform="translate(0 270)">
-        <g className="bird" style={{ animationDelay: "-8s" }}>
-          <path
-            d="M0 0 q7 -8 14 0 q7 -8 14 0"
-            fill="none"
-            stroke="#dfe7fa"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-        </g>
-      </g>
-
-      <g transform="translate(0 300)">
-        <g className="bird" style={{ animationDelay: "-14s", animationDuration: "38s" }}>
-          <path
-            d="M0 0 q5 -6 10 0 q5 -6 10 0"
-            fill="none"
-            stroke="#dfe7fa"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </g>
-      </g>
+      {/* Latar belakang solid navy sesuai tema panel */}
+      <rect x="-300" y="0" width="1200" height="900" fill="#0e1f4d" />
 
       <g className="w1">
         <path
           d="M0 524 q50 -5 100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 V900 H0 Z"
-          fill="#2c5199"
-          opacity="0.8"
+          fill="#1b3a78"
+          opacity="0.9"
         />
       </g>
 
       <g className="w2">
         <path
           d="M0 536 q50 -7 100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 V900 H0 Z"
-          fill="#1f4283"
+          fill="#17316b"
         />
       </g>
 
@@ -168,21 +124,14 @@ export function ShipScene({ className = "" }: ShipSceneProps) {
       <g className="w3">
         <path
           d="M0 549 q50 -8 100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 V900 H0 Z"
-          fill="#143272"
+          fill="#112c62"
         />
-      </g>
-
-      <g fill="#ffd08a">
-        <rect className="sh" x="440" y="534" width="60" height="3" rx="1.5" />
-        <rect className="sh" x="446" y="548" width="48" height="3" rx="1.5" style={{ animationDelay: "0.6s" }} />
-        <rect className="sh" x="452" y="564" width="36" height="3" rx="1.5" style={{ animationDelay: "1.2s" }} />
-        <rect className="sh" x="458" y="582" width="24" height="3" rx="1.5" style={{ animationDelay: "1.8s" }} />
       </g>
 
       <g className="w4">
         <path
           d="M0 610 q50 -11 100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 t100 0 V900 H0 Z"
-          fill="#0b2150"
+          fill="#0a1d48"
         />
       </g>
     </svg>

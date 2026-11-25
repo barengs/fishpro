@@ -19,9 +19,6 @@ export function AuthPanelSection({ currentView, onNavigateTo }: AuthPanelSection
         <p className="sub">
           Catat hasil tangkapan di pelabuhan, pantau status izin kapal, dan siapkan laporan tanpa rekap manual.
         </p>
-        <button className="btn-ghost" type="button" onClick={() => onNavigateTo("/register")}>
-          Daftar akun
-        </button>
       </div>
 
       <div className={`copy ${currentView === "daftar" ? "" : "off"}`} id="copy-daftar">

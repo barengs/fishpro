@@ -5,6 +5,7 @@
   height: 100%;
   z-index: 1;
   pointer-events: none;
+  background-color: #0e1f4d;
 }
 
 .smoke,

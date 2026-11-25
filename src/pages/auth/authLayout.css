@@ -28,7 +28,7 @@ button,input,select{font:inherit;color:inherit}
 .panel{
   position:absolute;z-index:3;top:0;bottom:0;left:0;width:50%;
   transform:translateX(100%);transition:transform var(--dur) var(--ease);
-  background-color:#0e1f4d;color:#fff;
+  background-color:#0e1f4d !important;background-image:none !important;color:#fff;
   overflow:hidden;
   display:flex;flex-direction:column;justify-content:flex-start;
   padding:72px clamp(28px,4.5vw,64px) 48px;
