@@ -1,3 +1,5 @@
+import { ShipScene } from "../ShipScene";
+
 interface AuthPanelSectionProps {
   currentView: "masuk" | "daftar" | "lupa";
   onNavigateTo: (path: string) => void;
@@ -10,6 +12,8 @@ export function AuthPanelSection({ currentView, onNavigateTo }: AuthPanelSection
       id="panel"
       aria-label="Tentang FishPro"
     >
+      <ShipScene />
+
       <div className={`copy ${currentView === "masuk" ? "" : "off"}`} id="copy-masuk">
         <p className="quote">Data timbangan, armada, dan izin laut dalam satu tempat.</p>
         <p className="sub">

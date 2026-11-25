@@ -1,0 +1,199 @@
+.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.smoke,
+.radar,
+.bird path,
+.fm,
+.sh {
+  transform-box: fill-box;
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-200px);
+  }
+}
+
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0) rotate(-1.3deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.3deg);
+  }
+}
+
+@keyframes puff {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-26px, -52px) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes flag {
+  0%, 100% {
+    transform: skewY(-7deg);
+  }
+  50% {
+    transform: skewY(7deg);
+  }
+}
+
+@keyframes spin {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fly {
+  from {
+    transform: translateX(-80px);
+  }
+  to {
+    transform: translateX(720px);
+  }
+}
+
+@keyframes flap {
+  50% {
+    transform: scaleY(-0.5);
+  }
+}
+
+@keyframes tw {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes cloud {
+  to {
+    transform: translateX(140px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shim {
+  0%, 100% {
+    transform: scaleX(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleX(0.7);
+    opacity: 0.3;
+  }
+}
+
+@keyframes foam {
+  0%, 100% {
+    transform: scaleX(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleX(1.2);
+    opacity: 0.9;
+  }
+}
+
+.w1 {
+  animation: drift 22s linear infinite;
+}
+
+.w2 {
+  animation: drift 14s linear infinite;
+}
+
+.w3 {
+  animation: drift 9s linear infinite;
+}
+
+.w4 {
+  animation: drift 6s linear infinite;
+}
+
+.ship {
+  transform-box: view-box;
+  transform-origin: 310px 546px;
+  animation: bob 5.5s ease-in-out infinite;
+}
+
+.smoke {
+  animation: puff 4s ease-out infinite;
+  transform-origin: center;
+}
+
+.flag {
+  transform-box: view-box;
+  transform-origin: 335px 387px;
+  animation: flag 1.6s ease-in-out infinite;
+}
+
+.radar {
+  transform-origin: center;
+  animation: spin 3s ease-in-out infinite;
+}
+
+.bird {
+  animation: fly 30s linear infinite;
+}
+
+.bird path {
+  animation: flap 0.9s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.st {
+  animation: tw 3s ease-in-out infinite;
+}
+
+.cl {
+  animation: cloud 60s ease-in-out infinite alternate;
+}
+
+.lamp {
+  animation: glow 2.4s ease-in-out infinite;
+}
+
+.sh {
+  animation: shim 3.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.fm {
+  animation: foam 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene * {
+    animation: none !important;
+  }
+}

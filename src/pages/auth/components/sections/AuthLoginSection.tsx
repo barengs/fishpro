@@ -114,7 +114,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
             Masuk ke FishPro
           </h1>
           <p className="lead">
-            Kelola operasional armada kapal, penimbangan ikan, dan perizinan laut.
+            Selamat datang kembali! Silakan masuk ke akun Anda.
           </p>
 
           <form id="form-masuk" onSubmit={handleLoginSubmit} noValidate>
