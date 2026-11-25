@@ -170,7 +170,13 @@ const adminSearchItems: QuickSearchItem[] = [
 ];
 
 export function AdminLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("admin_sidebar_open");
+      if (saved !== null) return saved === "true";
+    }
+    return true;
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024,
@@ -182,10 +188,33 @@ export function AdminLayout() {
   const userInfo = getUserDisplayInfo();
 
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setIsDesktop(desktop);
+      if (desktop) {
+        setMobileOpen(false);
+      }
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const toggleSidebar = () => {
+    if (isDesktop) {
+      setSidebarOpen((prev) => {
+        const next = !prev;
+        localStorage.setItem("admin_sidebar_open", String(next));
+        return next;
+      });
+    } else {
+      setMobileOpen((prev) => !prev);
+    }
+  };
+
+  const closeDesktopSidebar = () => {
+    setSidebarOpen(false);
+    localStorage.setItem("admin_sidebar_open", "false");
+  };
 
   if (!authService.isAuthenticated()) {
     return <Navigate to="/login" replace />;
