@@ -18,7 +18,6 @@ export function usePageTransition() {
 export function PageTransitionProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [animating, setAnimating] = useState(false);
-  const [direction, setDirection] = useState<"up" | "right">("up");
 
   const navigateWithTransition = useCallback(
     (to: string) => {
@@ -31,9 +30,6 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
         return;
       }
 
-      // Deteksi tipe transisi: jika desktop ke auth / ke onboard, atau di mobile curtain
-      const isMobile = window.innerWidth <= 900;
-      setDirection(isMobile ? "up" : "right");
       setAnimating(true);
 
       // Pada separuh durasi transisi (0.4s), ganti rute & scroll ke atas
@@ -42,7 +38,7 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
         window.scrollTo(0, 0);
       }, 400);
 
-      // Selesai transisi setelah 0.8s (durasi sinkron dengan var(--dur) .8s cubic-bezier(.65,0,.25,1))
+      // Selesai transisi setelah 0.8s (durasi sinkron dengan keyframe mobileCurtain 0.8s)
       setTimeout(() => {
         setAnimating(false);
       }, 800);
@@ -55,10 +51,10 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
       value={{ navigateWithTransition, isTransitioning: animating }}
     >
       {children}
-      {/* Global Page Transition Curtain Overlay */}
+      {/* Global Page Transition Curtain Overlay: Navy curtain dari bawah ke atas 0.8s */}
       <div
-        className={`fixed inset-0 z-50 pointer-events-none transition-curtain ${
-          animating ? `active anim-${direction}` : ""
+        className={`fixed inset-0 pointer-events-none transition-curtain ${
+          animating ? "active" : ""
         }`}
         aria-hidden="true"
       />
