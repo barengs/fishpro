@@ -102,10 +102,6 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
     }
   };
 
-  const handleGoogleLogin = () => {
-    toast.warning("Fitur login Google SSO sedang dalam tahap integrasi.");
-  };
-
   return (
     <section className="col col-masuk" id="col-masuk" aria-labelledby="h-masuk">
       <div className="center">
@@ -275,32 +271,6 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
             <button className={`btn-primary ${loginLoading ? "busy" : ""}`} type="submit" disabled={loginLoading}>
               <span className="spinner" aria-hidden="true" />
               <span className="label">{loginLoading ? "Memproses masuk..." : "Masuk"}</span>
-            </button>
-
-            <div className="divider" role="separator">
-              atau masuk dengan
-            </div>
-
-            <button className="btn-google" type="button" onClick={handleGoogleLogin}>
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <path
-                  fill="#FFC107"
-                  d="M43.6 20H24v8.5h11.3C33.6 33.7 29.3 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 .1 8.2 3.1l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.4-4z"
-                />
-                <path
-                  fill="#FF3D00"
-                  d="M6.3 14.7l6.6 4.8C14.7 15.1 19 11 24 11c3.1 0 6 1.1 8.2 3.1l6.4-6.4C34.6 4.1 29.6 2 24 2 16.5 2 9.9 7.3 6.3 14.7z"
-                />
-                <path
-                  fill="#4CAF50"
-                  d="M24 46c5.2 0 10-1.8 13.6-5l-6.3-5.2C29.3 37.3 26.8 38 24 38c-5.3 0-9.6-3.3-11.3-8l-6.6 5.1C9.7 41.5 16.3 46 24 46z"
-                />
-                <path
-                  fill="#1976D2"
-                  d="M43.6 20H24v8.5h11.3c-.9 2.6-2.5 4.8-4.6 6.3l6.3 5.2C40.6 36.5 44 30.7 44 24c0-1.3-.2-2.7-.4-4z"
-                />
-              </svg>
-              <span>Masuk dengan Google</span>
             </button>
 
             <p className="switch">
