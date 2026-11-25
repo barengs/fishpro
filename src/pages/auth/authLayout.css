@@ -90,7 +90,9 @@ form{margin-top:28px;display:flex;flex-direction:column;gap:18px}
 .control .toggle:hover{color:var(--text)}
 .control .toggle svg{width:18px;height:18px}
 .hint{margin-top:6px;font-size:13px;color:var(--muted)}
-.field.invalid input,.field.invalid select{border-color:var(--danger)}
+.field-error-text{margin-top:6px;font-size:13px;color:var(--danger);font-weight:500;display:flex;align-items:center;gap:5px}
+.field-error-text svg{width:14px;height:14px;flex:none}
+.field.invalid input,.field.invalid select{border-color:var(--danger);background-color:rgba(239,68,68,0.03)}
 .field.invalid input:focus,.field.invalid select:focus{box-shadow:0 0 0 4px rgba(198,40,40,.2)}
 .caps{display:none;margin-top:6px;font-size:13px;color:var(--muted);align-items:center;gap:6px}
 .caps.on{display:flex}
@@ -202,9 +204,10 @@ form{margin-top:28px;display:flex;flex-direction:column;gap:18px}
 .seg button:focus-visible{outline:2px solid var(--primary, #2563eb);outline-offset:2px}
 
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.wiz-nav{display:flex;gap:10px;margin-top:4px}
-.wiz-nav .btn-primary{flex:1}
-.btn-secondary{height:46px;padding:0 18px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);color:var(--text);font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,border-color .15s}
+.wiz-nav{display:grid;grid-template-columns:1fr;gap:12px;margin-top:6px}
+.wiz-nav.has-back{grid-template-columns:1fr 1fr}
+.wiz-nav .btn-primary{width:100%;flex:unset}
+.btn-secondary{height:46px;width:100%;padding:0 18px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);color:var(--text);font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,border-color .15s}
 .btn-secondary:hover{background:rgba(100,116,139,.08)}
 
 .summary-box{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden}

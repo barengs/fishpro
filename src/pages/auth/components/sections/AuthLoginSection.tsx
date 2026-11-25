@@ -19,7 +19,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
   const [showLoginPass, setShowLoginPass] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [capsLockActive, setCapsLockActive] = useState(false);
 
   // Update loginUser if externalLoginUser changes
@@ -31,13 +31,36 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
 
   const redirectTarget = searchParams.get("redirect");
 
+  const clearFieldError = (field: string) => {
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
   const checkCapsLock = (e: React.KeyboardEvent) => {
     setCapsLockActive(e.getModifierState("CapsLock"));
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError(null);
+    setFieldErrors({});
+
+    const errors: Record<string, string> = {};
+    if (!loginUser.trim()) {
+      errors.loginUser = "Nama pengguna atau nomor registrasi wajib diisi.";
+    }
+    if (!loginPass) {
+      errors.loginPass = "Kata sandi wajib diisi.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
 
     const parsed = loginSchema.safeParse({
       username: loginUser,
@@ -45,9 +68,14 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
     });
 
     if (!parsed.success) {
-      const msg = parsed.error.issues[0]?.message || "Input tidak valid.";
-      setLoginError(msg);
-      toast.warning(msg);
+      const issues = parsed.error.issues;
+      const zErrors: Record<string, string> = {};
+      issues.forEach((issue) => {
+        const path = issue.path[0];
+        if (path === "username") zErrors.loginUser = issue.message;
+        if (path === "password") zErrors.loginPass = issue.message;
+      });
+      setFieldErrors(zErrors);
       return;
     }
 
@@ -66,7 +94,8 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
         err instanceof Error
           ? err.message
           : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
-      setLoginError(message);
+      // Tampilkan error login umum di bawah kolom kata sandi
+      setFieldErrors({ loginPass: message });
       toast.error(message);
     } finally {
       setLoginLoading(false);
@@ -89,25 +118,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
           </p>
 
           <form id="form-masuk" onSubmit={handleLoginSubmit} noValidate>
-            {loginError && (
-              <div className="alert show" role="alert" aria-live="polite">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 8v4M12 16h.01" />
-                </svg>
-                <span>{loginError}</span>
-              </div>
-            )}
-
-            <div className={`field ${loginError ? "invalid" : ""}`}>
+            <div className={`field ${fieldErrors.loginUser ? "invalid" : ""}`}>
               <label htmlFor="m-user">Nama pengguna atau nomor registrasi</label>
               <div className="control">
                 <svg
@@ -129,21 +140,27 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
                   value={loginUser}
                   onChange={(e) => {
                     setLoginUser(e.target.value);
-                    setLoginError(null);
+                    clearFieldError("loginUser");
                   }}
                   autoComplete="username"
                   autoCapitalize="none"
                   spellCheck="false"
                   placeholder="REG-0412 atau admin_kkp"
-                  aria-describedby="m-user-hint"
                 />
               </div>
-              <p className="hint" id="m-user-hint">
-                Contoh: REG-0412 atau admin_kkp
-              </p>
+              {fieldErrors.loginUser && (
+                <p className="field-error-text">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{fieldErrors.loginUser}</span>
+                </p>
+              )}
             </div>
 
-            <div className="field">
+            <div className={`field ${fieldErrors.loginPass ? "invalid" : ""}`}>
               <label htmlFor="m-pass">Kata sandi</label>
               <div className="control">
                 <svg
@@ -165,7 +182,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
                   value={loginPass}
                   onChange={(e) => {
                     setLoginPass(e.target.value);
-                    setLoginError(null);
+                    clearFieldError("loginPass");
                   }}
                   onKeyUp={checkCapsLock}
                   onKeyDown={checkCapsLock}
@@ -210,6 +227,16 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
                   )}
                 </button>
               </div>
+              {fieldErrors.loginPass && (
+                <p className="field-error-text">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{fieldErrors.loginPass}</span>
+                </p>
+              )}
               <p className={`caps ${capsLockActive ? "show" : ""}`} id="m-caps" aria-live="polite">
                 <svg
                   viewBox="0 0 24 24"

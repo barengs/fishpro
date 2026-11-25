@@ -36,87 +36,105 @@ export function AuthRegisterWizardSection({
   const [licenseNumber, setLicenseNumber] = useState("");
 
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [registerLoading, setRegisterLoading] = useState(false);
 
+  const clearFieldError = (fieldName: string) => {
+    if (fieldErrors[fieldName]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[fieldName];
+        return next;
+      });
+    }
+  };
+
+  // Password strength calculation
+  const passHasMinLength = regPassword.length >= 8;
+  const passHasLetter = /[a-zA-Z]/.test(regPassword);
+  const passHasNumber = /[0-9]/.test(regPassword);
+  const passHasSpecial = /[^a-zA-Z0-9]/.test(regPassword);
+
+  const getPasswordStrength = () => {
+    if (!regPassword) return { score: 0, label: "", colorClass: "", textClass: "" };
+    let score = 0;
+    if (passHasMinLength) score += 1;
+    if (passHasLetter) score += 1;
+    if (passHasNumber) score += 1;
+    if (passHasSpecial) score += 1;
+
+    if (score <= 1) return { score: 1, label: "Sangat Lemah", colorClass: "bg-red-500", textClass: "text-red-500" };
+    if (score === 2) return { score: 2, label: "Cukup", colorClass: "bg-amber-500", textClass: "text-amber-500" };
+    if (score === 3) return { score: 3, label: "Kuat", colorClass: "bg-blue-600", textClass: "text-blue-600" };
+    return { score: 4, label: "Sangat Kuat", colorClass: "bg-emerald-600", textClass: "text-emerald-600" };
+  };
+
+  const passStrength = getPasswordStrength();
+  const passwordsMatch = regPasswordConfirm.length > 0 && regPassword === regPasswordConfirm;
+  const passwordsMismatch = regPasswordConfirm.length > 0 && regPassword !== regPasswordConfirm;
+
   const validateRegisterStep = (step: number): boolean => {
-    setRegisterError(null);
+    const errors: Record<string, string> = {};
+
     if (step === 1) {
       if (!regFullName.trim()) {
-        setRegisterError("Isi nama lengkap Anda.");
-        return false;
+        errors.regFullName = "Isi nama lengkap Anda.";
       }
       if (role === "owner" && ownerType === "badan-usaha" && !regCompanyName.trim()) {
-        setRegisterError("Isi nama badan usaha atau perusahaan Anda.");
-        return false;
+        errors.regCompanyName = "Isi nama badan usaha atau perusahaan Anda.";
       }
-      return true;
-    }
-    if (step === 2) {
+    } else if (step === 2) {
       if (!regUsername.trim()) {
-        setRegisterError("Isi nama pengguna (username).");
-        return false;
+        errors.regUsername = "Isi nama pengguna (username).";
+      } else if (/\s/.test(regUsername)) {
+        errors.regUsername = "Nama pengguna tidak boleh mengandung spasi.";
       }
-      if (/\s/.test(regUsername)) {
-        setRegisterError("Nama pengguna tidak boleh mengandung spasi.");
-        return false;
-      }
+
       if (!/^\S+@\S+\.\S+$/.test(regEmail.trim())) {
-        setRegisterError("Masukkan alamat email yang valid (contoh: nama@contoh.com).");
-        return false;
+        errors.regEmail = "Masukkan alamat email yang valid (contoh: nama@contoh.com).";
       }
+
       if (!/^[0-9+\-\s]{8,16}$/.test(regPhone.trim())) {
-        setRegisterError("Masukkan nomor telepon yang valid (contoh: 081234567890).");
-        return false;
+        errors.regPhone = "Masukkan nomor telepon yang valid (contoh: 081234567890).";
       }
+
       if (regPassword.length < 8) {
-        setRegisterError("Kata sandi minimal 8 karakter.");
-        return false;
+        errors.regPassword = "Kata sandi minimal 8 karakter.";
       }
+
       if (regPasswordConfirm !== regPassword) {
-        setRegisterError("Konfirmasi kata sandi tidak sama. Ketik ulang di kolom konfirmasi.");
-        return false;
+        errors.regPasswordConfirm = "Konfirmasi kata sandi tidak sama.";
       }
-      return true;
-    }
-    if (step === 3) {
+    } else if (step === 3) {
       if (role === "owner") {
         if (!shipName.trim()) {
-          setRegisterError("Isi nama kapal Anda.");
-          return false;
+          errors.shipName = "Isi nama kapal Anda.";
         }
         if (!shipReg.trim()) {
-          setRegisterError("Isi nomor registrasi kapal.");
-          return false;
+          errors.shipReg = "Isi nomor registrasi kapal.";
         }
         if (!homePort.trim()) {
-          setRegisterError("Isi pelabuhan pangkalan kapal.");
-          return false;
+          errors.homePort = "Isi pelabuhan pangkalan kapal.";
         }
         if (!wpp) {
-          setRegisterError("Pilih wilayah tangkap (WPPNRI).");
-          return false;
+          errors.wpp = "Pilih wilayah tangkap (WPPNRI).";
         }
       } else {
         if (experienceYears === "" || Number(experienceYears) < 0) {
-          setRegisterError("Isi pengalaman berlayar dalam tahun (minimal 0).");
-          return false;
+          errors.experienceYears = "Isi pengalaman berlayar dalam tahun.";
         }
         if (!licenseNumber.trim()) {
-          setRegisterError("Isi nomor lisensi atau buku pelaut Anda.");
-          return false;
+          errors.licenseNumber = "Isi nomor lisensi atau buku pelaut Anda.";
         }
       }
-      return true;
-    }
-    if (step === 4) {
+    } else if (step === 4) {
       if (!agreeTerms) {
-        setRegisterError("Centang persetujuan syarat & ketentuan untuk melanjutkan.");
-        return false;
+        errors.agreeTerms = "Centang persetujuan syarat & ketentuan untuk melanjutkan.";
       }
-      return true;
     }
-    return true;
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
@@ -148,7 +166,6 @@ export function AuthRegisterWizardSection({
       onNavigateTo("/login");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Pendaftaran gagal. Silakan periksa data Anda.";
-      setRegisterError(msg);
       toast.error(msg);
     } finally {
       setRegisterLoading(false);
@@ -207,24 +224,6 @@ export function AuthRegisterWizardSection({
           </ol>
 
           <form id="form-daftar" onSubmit={handleRegisterSubmit} noValidate>
-            {registerError && (
-              <div className="alert show" role="alert" aria-live="polite">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 8v4M12 16h.01" />
-                </svg>
-                <span>{registerError}</span>
-              </div>
-            )}
-
             {/* STEP 1: IDENTITAS */}
             <div className={`wiz-step ${wizStep === 1 ? "active" : ""}`} data-wiz="1">
               <div className="field">
@@ -291,7 +290,7 @@ export function AuthRegisterWizardSection({
                     role="radiogroup"
                     aria-labelledby="l-own"
                     id="seg"
-                    className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#f1f4f9] dark:bg-[#0d1630] border border-[#dbe1ea] dark:border-[#26324f] box-border w-full"
+                    className="seg"
                   >
                     <button
                       type="button"
@@ -299,11 +298,6 @@ export function AuthRegisterWizardSection({
                       aria-checked={ownerType === "perorangan"}
                       data-v="person"
                       onClick={() => setOwnerType("perorangan")}
-                      className={`h-10 border-0 rounded-lg text-sm font-semibold transition-all duration-150 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
-                        ownerType === "perorangan"
-                          ? "bg-white dark:bg-[#101a35] text-blue-600 dark:text-blue-500 shadow-[0_1px_2px_rgba(15,23,42,0.14),0_0_0_1px_rgba(37,99,235,0.22)]"
-                          : "bg-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                      }`}
                     >
                       Perorangan
                     </button>
@@ -313,11 +307,6 @@ export function AuthRegisterWizardSection({
                       aria-checked={ownerType === "badan-usaha"}
                       data-v="company"
                       onClick={() => setOwnerType("badan-usaha")}
-                      className={`h-10 border-0 rounded-lg text-sm font-semibold transition-all duration-150 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
-                        ownerType === "badan-usaha"
-                          ? "bg-white dark:bg-[#101a35] text-blue-600 dark:text-blue-500 shadow-[0_1px_2px_rgba(15,23,42,0.14),0_0_0_1px_rgba(37,99,235,0.22)]"
-                          : "bg-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                      }`}
                     >
                       Badan usaha (PT / CV)
                     </button>
@@ -325,7 +314,7 @@ export function AuthRegisterWizardSection({
                 </div>
               )}
 
-              <div className="field">
+              <div className={`field ${fieldErrors.regFullName ? "invalid" : ""}`}>
                 <label htmlFor="d-nama">Nama lengkap</label>
                 <div className="control">
                   <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -338,16 +327,26 @@ export function AuthRegisterWizardSection({
                     value={regFullName}
                     onChange={(e) => {
                       setRegFullName(e.target.value);
-                      setRegisterError(null);
+                      clearFieldError("regFullName");
                     }}
                     autoComplete="name"
                     placeholder="Contoh: Budi Santoso"
                   />
                 </div>
+                {fieldErrors.regFullName && (
+                  <p className="field-error-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{fieldErrors.regFullName}</span>
+                  </p>
+                )}
               </div>
 
               {role === "owner" && ownerType === "badan-usaha" && (
-                <div className="field" id="wrap-perusahaan">
+                <div className={`field ${fieldErrors.regCompanyName ? "invalid" : ""}`} id="wrap-perusahaan">
                   <label htmlFor="d-perusahaan">Nama perusahaan</label>
                   <div className="control">
                     <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -359,18 +358,28 @@ export function AuthRegisterWizardSection({
                       value={regCompanyName}
                       onChange={(e) => {
                         setRegCompanyName(e.target.value);
-                        setRegisterError(null);
+                        clearFieldError("regCompanyName");
                       }}
                       placeholder="Contoh: PT Samudera Bahari Nusantara"
                     />
                   </div>
+                  {fieldErrors.regCompanyName && (
+                    <p className="field-error-text">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <span>{fieldErrors.regCompanyName}</span>
+                    </p>
+                  )}
                 </div>
               )}
             </div>
 
             {/* STEP 2: AKUN */}
             <div className={`wiz-step ${wizStep === 2 ? "active" : ""}`} data-wiz="2">
-              <div className="field">
+              <div className={`field ${fieldErrors.regUsername ? "invalid" : ""}`}>
                 <label htmlFor="d-user">Nama pengguna (Username)</label>
                 <div className="control">
                   <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -383,7 +392,7 @@ export function AuthRegisterWizardSection({
                     value={regUsername}
                     onChange={(e) => {
                       setRegUsername(e.target.value);
-                      setRegisterError(null);
+                      clearFieldError("regUsername");
                     }}
                     autoComplete="username"
                     autoCapitalize="none"
@@ -391,10 +400,20 @@ export function AuthRegisterWizardSection({
                     placeholder="Contoh: budi_samudera"
                   />
                 </div>
+                {fieldErrors.regUsername && (
+                  <p className="field-error-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{fieldErrors.regUsername}</span>
+                  </p>
+                )}
               </div>
 
               <div className="field-row">
-                <div className="field">
+                <div className={`field ${fieldErrors.regEmail ? "invalid" : ""}`}>
                   <label htmlFor="d-email">Email</label>
                   <div className="control">
                     <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -407,15 +426,25 @@ export function AuthRegisterWizardSection({
                       value={regEmail}
                       onChange={(e) => {
                         setRegEmail(e.target.value);
-                        setRegisterError(null);
+                        clearFieldError("regEmail");
                       }}
                       autoComplete="email"
                       placeholder="nama@contoh.com"
                     />
                   </div>
+                  {fieldErrors.regEmail && (
+                    <p className="field-error-text">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <span>{fieldErrors.regEmail}</span>
+                    </p>
+                  )}
                 </div>
 
-                <div className="field">
+                <div className={`field ${fieldErrors.regPhone ? "invalid" : ""}`}>
                   <label htmlFor="d-telp">Nomor telepon</label>
                   <div className="control">
                     <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -427,16 +456,26 @@ export function AuthRegisterWizardSection({
                       value={regPhone}
                       onChange={(e) => {
                         setRegPhone(e.target.value);
-                        setRegisterError(null);
+                        clearFieldError("regPhone");
                       }}
                       autoComplete="tel"
                       placeholder="081234567890"
                     />
                   </div>
+                  {fieldErrors.regPhone && (
+                    <p className="field-error-text">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <span>{fieldErrors.regPhone}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className="field">
+              <div className={`field ${fieldErrors.regPassword ? "invalid" : ""}`}>
                 <label htmlFor="d-pass">Kata sandi</label>
                 <div className="control">
                   <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -449,10 +488,10 @@ export function AuthRegisterWizardSection({
                     value={regPassword}
                     onChange={(e) => {
                       setRegPassword(e.target.value);
-                      setRegisterError(null);
+                      clearFieldError("regPassword");
                     }}
                     autoComplete="new-password"
-                    placeholder="Minimal 8 karakter"
+                    placeholder="Buat kata sandi"
                   />
                   <button
                     className="toggle"
@@ -475,9 +514,59 @@ export function AuthRegisterWizardSection({
                     )}
                   </button>
                 </div>
+
+                {fieldErrors.regPassword && (
+                  <p className="field-error-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{fieldErrors.regPassword}</span>
+                  </p>
+                )}
+
+                {/* 4 Bar Segment Minimalis Sesuai Desain */}
+                <div
+                  className="grid grid-cols-4 gap-2"
+                  style={{ marginTop: "12px", marginBottom: "8px" }}
+                >
+                  <div
+                    className={`h-[3px] rounded-full transition-all duration-200 ${
+                      regPassword && passStrength.score >= 1
+                        ? passStrength.colorClass
+                        : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                    }`}
+                  />
+                  <div
+                    className={`h-[3px] rounded-full transition-all duration-200 ${
+                      regPassword && passStrength.score >= 2
+                        ? passStrength.colorClass
+                        : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                    }`}
+                  />
+                  <div
+                    className={`h-[3px] rounded-full transition-all duration-200 ${
+                      regPassword && passStrength.score >= 3
+                        ? passStrength.colorClass
+                        : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                    }`}
+                  />
+                  <div
+                    className={`h-[3px] rounded-full transition-all duration-200 ${
+                      regPassword && passStrength.score >= 4
+                        ? passStrength.colorClass
+                        : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                    }`}
+                  />
+                </div>
+
+                <p className="hint" style={{ marginTop: "0px", fontSize: "13px", color: "var(--muted)" }}>
+                  Gunakan min. 8 karakter dengan huruf, angka, dan simbol.
+                </p>
               </div>
 
-              <div className="field">
+              <div className={`field ${fieldErrors.regPasswordConfirm ? "invalid" : ""}`}>
                 <label htmlFor="d-pass2">Ulangi kata sandi</label>
                 <div className="control">
                   <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -490,7 +579,7 @@ export function AuthRegisterWizardSection({
                     value={regPasswordConfirm}
                     onChange={(e) => {
                       setRegPasswordConfirm(e.target.value);
-                      setRegisterError(null);
+                      clearFieldError("regPasswordConfirm");
                     }}
                     autoComplete="new-password"
                     placeholder="Ketik ulang kata sandi"
@@ -516,6 +605,37 @@ export function AuthRegisterWizardSection({
                     )}
                   </button>
                 </div>
+
+                {fieldErrors.regPasswordConfirm && (
+                  <p className="field-error-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{fieldErrors.regPasswordConfirm}</span>
+                  </p>
+                )}
+
+                {/* Password Match Status */}
+                {passwordsMatch && (
+                  <p className="mt-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    Kata sandi cocok
+                  </p>
+                )}
+                {passwordsMismatch && (
+                  <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400 font-medium flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    Kata sandi belum cocok
+                  </p>
+                )}
               </div>
             </div>
 
@@ -524,7 +644,7 @@ export function AuthRegisterWizardSection({
               {role === "owner" ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div className="field-row">
-                    <div className="field">
+                    <div className={`field ${fieldErrors.shipName ? "invalid" : ""}`}>
                       <label htmlFor="d-kapal">Nama kapal</label>
                       <div className="control">
                         <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -537,14 +657,24 @@ export function AuthRegisterWizardSection({
                           value={shipName}
                           onChange={(e) => {
                             setShipName(e.target.value);
-                            setRegisterError(null);
+                            clearFieldError("shipName");
                           }}
                           placeholder="Contoh: KM Bahari 01"
                         />
                       </div>
+                      {fieldErrors.shipName && (
+                        <p className="field-error-text">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                          </svg>
+                          <span>{fieldErrors.shipName}</span>
+                        </p>
+                      )}
                     </div>
 
-                    <div className="field">
+                    <div className={`field ${fieldErrors.shipReg ? "invalid" : ""}`}>
                       <label htmlFor="d-reg-kapal">Nomor registrasi kapal</label>
                       <div className="control">
                         <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -557,15 +687,25 @@ export function AuthRegisterWizardSection({
                           value={shipReg}
                           onChange={(e) => {
                             setShipReg(e.target.value);
-                            setRegisterError(null);
+                            clearFieldError("shipReg");
                           }}
                           placeholder="Contoh: REG-99421-ID"
                         />
                       </div>
+                      {fieldErrors.shipReg && (
+                        <p className="field-error-text">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                          </svg>
+                          <span>{fieldErrors.shipReg}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
 
-                  <div className="field">
+                  <div className={`field ${fieldErrors.homePort ? "invalid" : ""}`}>
                     <label htmlFor="d-pelabuhan">Pelabuhan pangkalan</label>
                     <div className="control">
                       <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -578,14 +718,24 @@ export function AuthRegisterWizardSection({
                         value={homePort}
                         onChange={(e) => {
                           setHomePort(e.target.value);
-                          setRegisterError(null);
+                          clearFieldError("homePort");
                         }}
                         placeholder="Contoh: Pelabuhan Muara Baru, Jakarta"
                       />
                     </div>
+                    {fieldErrors.homePort && (
+                      <p className="field-error-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span>{fieldErrors.homePort}</span>
+                      </p>
+                    )}
                   </div>
 
-                  <div className="field">
+                  <div className={`field ${fieldErrors.wpp ? "invalid" : ""}`}>
                     <label htmlFor="d-wpp">Wilayah Pengelolaan Perikanan (WPPNRI)</label>
                     <div className="control">
                       <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -598,7 +748,7 @@ export function AuthRegisterWizardSection({
                         value={wpp}
                         onChange={(e) => {
                           setWpp(e.target.value);
-                          setRegisterError(null);
+                          clearFieldError("wpp");
                         }}
                       >
                         <option value="WPPNRI 571">WPPNRI 571 - Selat Malaka &amp; Laut Andaman</option>
@@ -617,11 +767,21 @@ export function AuthRegisterWizardSection({
                         <path d="m6 9 6 6 6-6" />
                       </svg>
                     </div>
+                    {fieldErrors.wpp && (
+                      <p className="field-error-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span>{fieldErrors.wpp}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div className="field">
+                  <div className={`field ${fieldErrors.experienceYears ? "invalid" : ""}`}>
                     <label htmlFor="d-pengalaman">Pengalaman berlayar (tahun)</label>
                     <div className="control">
                       <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -637,14 +797,24 @@ export function AuthRegisterWizardSection({
                         value={experienceYears}
                         onChange={(e) => {
                           setExperienceYears(e.target.value);
-                          setRegisterError(null);
+                          clearFieldError("experienceYears");
                         }}
                         placeholder="Contoh: 5"
                       />
                     </div>
+                    {fieldErrors.experienceYears && (
+                      <p className="field-error-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span>{fieldErrors.experienceYears}</span>
+                      </p>
+                    )}
                   </div>
 
-                  <div className="field">
+                  <div className={`field ${fieldErrors.licenseNumber ? "invalid" : ""}`}>
                     <label htmlFor="d-lisensi">Nomor lisensi pelaut / buku pelaut</label>
                     <div className="control">
                       <svg className="lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -657,11 +827,21 @@ export function AuthRegisterWizardSection({
                         value={licenseNumber}
                         onChange={(e) => {
                           setLicenseNumber(e.target.value);
-                          setRegisterError(null);
+                          clearFieldError("licenseNumber");
                         }}
                         placeholder="Contoh: 62-XXXXX-BST"
                       />
                     </div>
+                    {fieldErrors.licenseNumber && (
+                      <p className="field-error-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span>{fieldErrors.licenseNumber}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -755,7 +935,7 @@ export function AuthRegisterWizardSection({
                   checked={agreeTerms}
                   onChange={(e) => {
                     setAgreeTerms(e.target.checked);
-                    setRegisterError(null);
+                    clearFieldError("agreeTerms");
                   }}
                 />
                 <span>
@@ -763,10 +943,21 @@ export function AuthRegisterWizardSection({
                   <a className="link" href="#privasi" onClick={(e) => e.preventDefault()}>Kebijakan Privasi</a> FishPro.
                 </span>
               </label>
+
+              {fieldErrors.agreeTerms && (
+                <p className="field-error-text" style={{ marginTop: "8px" }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{fieldErrors.agreeTerms}</span>
+                </p>
+              )}
             </div>
 
             {/* Navigasi Wizard */}
-            <div className="wiz-nav">
+            <div className={`wiz-nav ${wizStep > 1 ? "has-back" : ""}`}>
               {wizStep > 1 && (
                 <button
                   className="btn-secondary"
@@ -774,7 +965,19 @@ export function AuthRegisterWizardSection({
                   onClick={() => setWizStep(wizStep - 1)}
                   disabled={registerLoading}
                 >
-                  Kembali
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                  <span>Kembali</span>
                 </button>
               )}
               {wizStep < 4 ? (
@@ -785,7 +988,19 @@ export function AuthRegisterWizardSection({
                     if (validateRegisterStep(wizStep)) setWizStep(wizStep + 1);
                   }}
                 >
-                  Lanjut
+                  <span>Lanjut</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
                 </button>
               ) : (
                 <button

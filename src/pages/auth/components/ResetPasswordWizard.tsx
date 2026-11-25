@@ -31,6 +31,25 @@ export function ResetPasswordWizard({
     goToLogin,
   } = useResetPassword(step, setStep);
 
+  // Perhitungan kekuatan kata sandi
+  const getPasswordStrength = (pass: string) => {
+    if (!pass) return { score: 0, colorClass: "" };
+    let score = 0;
+    if (pass.length >= 8) score += 1;
+    if (/[a-zA-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^a-zA-Z0-9]/.test(pass)) score += 1;
+
+    if (score <= 1) return { score: 1, colorClass: "bg-red-500" };
+    if (score === 2) return { score: 2, colorClass: "bg-amber-500" };
+    if (score === 3) return { score: 3, colorClass: "bg-blue-600" };
+    return { score: 4, colorClass: "bg-emerald-600" };
+  };
+
+  const passStrength = getPasswordStrength(newPassword);
+  const passwordsMatch = confirmPassword.length > 0 && newPassword === confirmPassword;
+  const passwordsMismatch = confirmPassword.length > 0 && newPassword !== confirmPassword;
+
   return (
     <div>
       {/* Header card: judul & deskripsi singkat */}
@@ -202,10 +221,49 @@ export function ResetPasswordWizard({
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 8 karakter"
+                placeholder="Buat kata sandi baru"
                 className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft disabled:opacity-60"
               />
             </div>
+
+            {/* 4 Bar Segment Minimalis Sesuai Desain */}
+            <div
+              className="grid grid-cols-4 gap-2"
+              style={{ marginTop: "12px", marginBottom: "8px" }}
+            >
+              <div
+                className={`h-[3px] rounded-full transition-all duration-200 ${
+                  newPassword && passStrength.score >= 1
+                    ? passStrength.colorClass
+                    : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                }`}
+              />
+              <div
+                className={`h-[3px] rounded-full transition-all duration-200 ${
+                  newPassword && passStrength.score >= 2
+                    ? passStrength.colorClass
+                    : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                }`}
+              />
+              <div
+                className={`h-[3px] rounded-full transition-all duration-200 ${
+                  newPassword && passStrength.score >= 3
+                    ? passStrength.colorClass
+                    : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                }`}
+              />
+              <div
+                className={`h-[3px] rounded-full transition-all duration-200 ${
+                  newPassword && passStrength.score >= 4
+                    ? passStrength.colorClass
+                    : "bg-[#e2e8f0] dark:bg-[#1e293b]"
+                }`}
+              />
+            </div>
+
+            <p style={{ margin: "0 0 16px 0", fontSize: "13px", color: "var(--muted, #64748b)" }}>
+              Gunakan min. 8 karakter dengan huruf, angka, dan simbol.
+            </p>
           </div>
           <div>
             <label
@@ -239,6 +297,20 @@ export function ResetPasswordWizard({
                 className="w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl pl-11 pr-4 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft disabled:opacity-60"
               />
             </div>
+
+            {/* Password Match Status */}
+            {passwordsMatch && (
+              <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
+                <Check size={14} className="shrink-0" />
+                Kata sandi cocok
+              </p>
+            )}
+            {passwordsMismatch && (
+              <p className="mt-2 text-xs text-rose-500 dark:text-rose-400 font-medium flex items-center gap-1.5">
+                <AlertCircle size={14} className="shrink-0" />
+                Kata sandi belum cocok
+              </p>
+            )}
           </div>
           <button
             type="submit"

@@ -17,7 +17,7 @@ export function AuthResetPasswordSection({ onNavigateTo }: AuthResetPasswordSect
     e.preventDefault();
     setLupaError(null);
     if (!lupaInput.trim()) {
-      setLupaError("Masukkan email atau nama pengguna yang terdaftar.");
+      setLupaError("Masukkan email, nama pengguna, atau nomor registrasi yang terdaftar.");
       return;
     }
 
@@ -43,31 +43,13 @@ export function AuthResetPasswordSection({ onNavigateTo }: AuthResetPasswordSect
             Atur ulang kata sandi
           </h1>
           <p className="lead">
-            Masukkan email atau nama pengguna yang terdaftar. Kami akan mengirimkan tautan pemulihan ke email Anda.
+            Masukkan email, nama pengguna, atau nomor registrasi yang terdaftar. Kami akan mengirimkan tautan pemulihan ke email Anda.
           </p>
 
           {!lupaSent ? (
             <form id="form-lupa" onSubmit={handleLupaSubmit} noValidate>
-              {lupaError && (
-                <div className="alert show" role="alert" aria-live="polite">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 8v4M12 16h.01" />
-                  </svg>
-                  <span>{lupaError}</span>
-                </div>
-              )}
-
               <div className={`field ${lupaError ? "invalid" : ""}`}>
-                <label htmlFor="l-email">Email atau nama pengguna</label>
+                <label htmlFor="l-email">Email, nama pengguna, atau nomor registrasi</label>
                 <div className="control">
                   <svg
                     className="lead-icon"
@@ -96,6 +78,16 @@ export function AuthResetPasswordSection({ onNavigateTo }: AuthResetPasswordSect
                     placeholder="nama@contoh.com atau REG-0412"
                   />
                 </div>
+                {lupaError && (
+                  <p className="field-error-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{lupaError}</span>
+                  </p>
+                )}
               </div>
 
               <button className={`btn-primary ${lupaLoading ? "busy" : ""}`} type="submit" disabled={lupaLoading}>
