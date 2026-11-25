@@ -1,110 +1,160 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { usePageTransition } from "../../../../components/PageTransitionContext";
 
 export function FaqSection() {
+  const { navigateWithTransition } = usePageTransition();
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const toggleFaq = (index: number) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
+
   return (
-    <section className="s" id="tanya">
-      <div className="wrap grid md:grid-cols-[1fr_1.6fr] gap-12">
+    <section className="onboarding-section" id="tanya">
+      <div className="onboarding-wrap faqs-layout">
         <div>
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
-            Pertanyaan yang sering muncul
-          </h2>
-          <p className="mt-3 t2">
+          <h2 className="rv">Pertanyaan yang sering muncul</h2>
+          <p className="lead rv" style={{ "--d": "0.08s" } as React.CSSProperties}>
             Seputar cara kerja timbangan, kuota kapal, dan pencatatan tangkapan.
           </p>
         </div>
-        <div className="border-t bd">
-          <details className="border-b bd py-5" open>
-            <summary className="flex justify-between gap-4 font-medium">
+        <div id="faq">
+          <div className={`faq-item rv ${openIndex === 0 ? "open" : ""}`}>
+            <button
+              type="button"
+              className="faq-btn"
+              aria-expanded={openIndex === 0}
+              onClick={() => toggleFaq(0)}
+            >
               Bagaimana alur penimbangan ikan di pelabuhan?
               <svg
-                className="chev shrink-0 mt-1 transition-transform"
-                width="16"
-                height="16"
+                className="faq-chevron"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.6"
-                aria-hidden="true"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M6 9l6 6 6-6" />
               </svg>
-            </summary>
-            <p className="mt-3 t2 leading-relaxed">
-              Ikan ditimbang di timbangan dermaga yang terhubung ke sistem.
-              Berat ikan otomatis terbaca, tagihan PNBP langsung terhitung, dan
-              sisa kuota kapal terbarui tanpa formulir kertas.
-            </p>
-          </details>
+            </button>
+            <div className="ans-grid">
+              <div className="ans-inner">
+                <p>
+                  Ikan ditimbang di timbangan dermaga yang terhubung ke sistem. Berat ikan otomatis terbaca,
+                  tagihan PNBP langsung terhitung, dan sisa kuota kapal terbarui tanpa formulir kertas.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <details className="border-b bd py-5">
-            <summary className="flex justify-between gap-4 font-medium">
+          <div className={`faq-item rv ${openIndex === 1 ? "open" : ""}`}>
+            <button
+              type="button"
+              className="faq-btn"
+              aria-expanded={openIndex === 1}
+              onClick={() => toggleFaq(1)}
+            >
               Apakah angka hasil timbangan bisa diubah setelah disimpan?
               <svg
-                className="chev shrink-0 mt-1 transition-transform"
-                width="16"
-                height="16"
+                className="faq-chevron"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.6"
-                aria-hidden="true"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M6 9l6 6 6-6" />
               </svg>
-            </summary>
-            <p className="mt-3 t2 leading-relaxed">
-              Tidak. Tiap catatan disegel dengan blockchain dan terkait dengan
-              data sebelumnya, sehingga tidak bisa diedit atau dihapus
-              diam-diam.
-            </p>
-          </details>
+            </button>
+            <div className="ans-grid">
+              <div className="ans-inner">
+                <p>
+                  Tidak. Setiap catatan disegel dengan blockchain sehingga tidak bisa diubah atau dihapus
+                  diam-diam. Kalau ada koreksi, perubahannya tercatat sebagai entri baru lengkap dengan waktu dan
+                  petugasnya.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <details className="border-b bd py-5">
-            <summary className="flex justify-between gap-4 font-medium">
+          <div className={`faq-item rv ${openIndex === 2 ? "open" : ""}`}>
+            <button
+              type="button"
+              className="faq-btn"
+              aria-expanded={openIndex === 2}
+              onClick={() => toggleFaq(2)}
+            >
               Bagaimana cara sistem memperkirakan kuota tangkapan?
               <svg
-                className="chev shrink-0 mt-1 transition-transform"
-                width="16"
-                height="16"
+                className="faq-chevron"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.6"
-                aria-hidden="true"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M6 9l6 6 6-6" />
               </svg>
-            </summary>
-            <p className="mt-3 t2 leading-relaxed">
-              Perkiraan dihitung dari tren tangkapan bulan-bulan sebelumnya.
-            </p>
-          </details>
+            </button>
+            <div className="ans-grid">
+              <div className="ans-inner">
+                <p>
+                  Kuota kapal dikurangi otomatis dari berat ikan yang ditimbang di dermaga. Sisa kuota bisa
+                  dilihat nahkoda, pemilik, dan pengawas setiap kali ada timbangan baru.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <details className="border-b bd py-5">
-            <summary className="flex justify-between gap-4 font-medium">
+          <div className={`faq-item rv ${openIndex === 3 ? "open" : ""}`}>
+            <button
+              type="button"
+              className="faq-btn"
+              aria-expanded={openIndex === 3}
+              onClick={() => toggleFaq(3)}
+            >
               Bagaimana cara mendaftar ke sistem?
               <svg
-                className="chev shrink-0 mt-1 transition-transform"
-                width="16"
-                height="16"
+                className="faq-chevron"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.6"
-                aria-hidden="true"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M6 9l6 6 6-6" />
               </svg>
-            </summary>
-            <p className="mt-3 t2 leading-relaxed">
-              Pilih Daftar, lalu pilih peran Anda: nahkoda, pemilik kapal, atau
-              pengawas. Belum punya akun?{" "}
-              <Link to="/register" className="lnk">
-                Daftar di sini
-              </Link>
-              .
-            </p>
-          </details>
+            </button>
+            <div className="ans-grid">
+              <div className="ans-inner">
+                <p>
+                  Pilih Daftar akun, isi nomor registrasi kapal atau data petugas, lalu tunggu verifikasi dari
+                  dinas setempat. Setelah disetujui, Anda bisa masuk ke portal. Belum punya akun?{" "}
+                  <button
+                    type="button"
+                    className="role-link"
+                    onClick={() => navigateWithTransition("/register")}
+                  >
+                    Daftar di sini
+                  </button>
+                  .
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

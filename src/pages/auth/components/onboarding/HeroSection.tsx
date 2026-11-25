@@ -1,524 +1,237 @@
-import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { buttonTapVariants } from "../../../../utils/motionVariants";
+import { useEffect, useRef, useState } from "react";
 import { usePageTransition } from "../../../../components/PageTransitionContext";
-import "./heroScene.css";
+
+function buildWaveD(y: number, a: number) {
+  let s = `M0 ${y} q50 ${-a} 100 0`;
+  for (let i = 1; i < 14; i++) {
+    s += " t100 0";
+  }
+  return `${s} V600 H0 Z`;
+}
 
 export function HeroSection() {
-    const { navigateWithTransition } = usePageTransition();
-    const heroRef = useRef<HTMLDivElement>(null);
-    const stageRef = useRef<HTMLDivElement>(null);
-    const layerRefs = useRef<(SVGSVGElement | null)[]>([]);
+  const { navigateWithTransition } = usePageTransition();
+  const [kgText, setKgText] = useState("38,2 kg");
+  const animRef = useRef<number | null>(null);
 
-    useEffect(() => {
-        const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (rm) return;
+  useEffect(() => {
+    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (rm) return;
 
-        const hero = heroRef.current;
-        const stage = stageRef.current;
-        if (!hero || !stage) return;
+    let t0: number | null = null;
+    const tick = (ts: number) => {
+      if (!t0) t0 = ts;
+      const t = (ts - t0) % 6500;
+      const v = t < 2600 ? 38.2 * (1 - Math.pow(1 - t / 2600, 3)) : 38.2;
+      setKgText(v.toFixed(1).replace(".", ",") + " kg");
+      animRef.current = requestAnimationFrame(tick);
+    };
 
-        const fine = window.matchMedia("(pointer:fine)").matches;
-        let tx = 0,
-            ty = 0,
-            cx = 0,
-            cy = 0,
-            sp = 0,
-            csp = 0,
-            vis = true,
-            raf = 0,
-            top = 0,
-            h = 1,
-            vw = 1,
-            mob = false;
+    animRef.current = requestAnimationFrame(tick);
 
-        const clamp = (v: number) => Math.max(0, Math.min(1, v));
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, []);
 
-        const measure = () => {
-            const r = hero.getBoundingClientRect();
-            top = r.top + window.scrollY;
-            h = r.height || 1;
-            vw = window.innerWidth;
-            mob = vw < 768;
-            scrollUpdate();
-        };
-
-        const render = () => {
-            const k = mob ? 0.5 : 1;
-            stage.style.transform = `rotateY(${(cx * 4).toFixed(2)}deg) rotateX(${(-cy * 4).toFixed(2)}deg)`;
-
-            const depths = [0.2, 0.4, 0.6, 0.8, 1.0];
-            layerRefs.current.forEach((el, index) => {
-                if (!el) return;
-                const d = depths[index] ?? 1;
-                let x = cx * 20 * d;
-                let y = cy * 10 * d;
-                const z = (d - 1) * 60;
-
-                if (index === 2) {
-                    // Kapal mendekati dermaga, maks 120px
-                    x += csp * 120 * k;
-                }
-                if (index === 3) {
-                    // Ombak depan naik sedikit
-                    y -= csp * 14 * k;
-                }
-
-                el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z}px)`;
-            });
-        };
-
-        const loop = () => {
-            cx += (tx - cx) * 0.08;
-            cy += (ty - cy) * 0.08;
-            csp += (sp - csp) * 0.1;
-            render();
-            raf =
-                vis && (Math.abs(tx - cx) > 0.001 || Math.abs(ty - cy) > 0.001 || Math.abs(sp - csp) > 0.001)
-                    ? requestAnimationFrame(loop)
-                    : 0;
-        };
-
-        const kick = () => {
-            if (!raf && vis) raf = requestAnimationFrame(loop);
-        };
-
-        let tick = false;
-        const scrollUpdate = () => {
-            sp = clamp((window.scrollY - top) / h);
-            kick();
-        };
-
-        const handleScroll = () => {
-            if (tick) return;
-            tick = true;
-            requestAnimationFrame(() => {
-                tick = false;
-                scrollUpdate();
-            });
-        };
-
-        const handlePointerMove = (e: PointerEvent) => {
-            if (mob) return;
-            tx = (e.clientX / vw) * 2 - 1;
-            ty = ((e.clientY - (top - window.scrollY)) / h) * 2 - 1;
-            kick();
-        };
-
-        const handlePointerLeave = () => {
-            tx = ty = 0;
-            kick();
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        window.addEventListener("resize", measure);
-
-        if (fine) {
-            hero.addEventListener("pointermove", handlePointerMove, {
-                passive: true,
-            });
-            hero.addEventListener("pointerleave", handlePointerLeave);
-        }
-
-        const observer = new IntersectionObserver(([e]) => {
-            vis = e.isIntersecting;
-            hero.classList.toggle("paused", !vis);
-            if (vis) kick();
-        });
-        observer.observe(hero);
-
-        measure();
-        render();
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-            window.removeEventListener("resize", measure);
-            if (fine) {
-                hero.removeEventListener("pointermove", handlePointerMove);
-                hero.removeEventListener("pointerleave", handlePointerLeave);
-            }
-            observer.disconnect();
-            if (raf) cancelAnimationFrame(raf);
-        };
-    }, []);
-
-    return (
-        <div className="hero-bg">
-            <div className="hero mv" id="hero" ref={heroRef}>
-                {/* Animated Background Scene with 5 Layers */}
-                <div className="scene">
-                    <div className="stage" id="stage" ref={stageRef}>
-                        {/* 1. Langit: 0.2x */}
-                        <svg
-                            ref={el => {
-                                layerRefs.current[0] = el;
-                            }}
-                            className="layer"
-                            data-d="0.2"
-                            viewBox="0 0 1200 620"
-                            width="1200"
-                            height="620"
-                            preserveAspectRatio="xMidYMax slice"
-                            aria-hidden="true"
-                        >
-                            <rect width="1200" height="620" fill="#CFDCEA" />
-                            <rect y="200" width="1200" height="240" fill="#DCE5EF" />
-                            <rect y="340" width="1200" height="110" fill="#E8EEF5" />
-                            <g className="cl" fill="#F1F5F9">
-                                <rect x="140" y="110" width="200" height="14" rx="7" />
-                                <rect x="190" y="92" width="120" height="14" rx="7" />
-                                <rect x="820" y="70" width="240" height="14" rx="7" />
-                                <rect x="880" y="52" width="130" height="14" rx="7" />
-                                <rect x="520" y="190" width="150" height="12" rx="6" />
-                                <rect x="980" y="250" width="180" height="12" rx="6" />
-                                <rect x="60" y="270" width="150" height="12" rx="6" />
-                            </g>
-                            <g fill="none" stroke="#5B7BA3" strokeWidth="2" strokeLinecap="round">
-                                <g className="drift" style={{ animationDuration: "36s", animationDelay: "-6s" }}>
-                                    <g transform="translate(0,170)">
-                                        <path className="flap" d="M0 0q7-8 14 0q7-8 14 0" />
-                                    </g>
-                                </g>
-                                <g className="drift" style={{ animationDuration: "48s", animationDelay: "-30s" }}>
-                                    <g transform="translate(0,230)">
-                                        <path
-                                            className="flap"
-                                            d="M0 0q7-8 14 0q7-8 14 0"
-                                            style={{ animationDelay: "-0.2s" }}
-                                        />
-                                    </g>
-                                </g>
-                                <g className="drift" style={{ animationDuration: "42s", animationDelay: "-18s" }}>
-                                    <g transform="translate(0,205)">
-                                        <path
-                                            className="flap"
-                                            d="M0 0q5-6 10 0q5-6 10 0"
-                                            style={{ animationDelay: "-0.35s" }}
-                                        />
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-
-                        {/* 2. Ombak belakang: 0.4x */}
-                        <svg
-                            ref={el => {
-                                layerRefs.current[1] = el;
-                            }}
-                            className="layer"
-                            data-d="0.4"
-                            viewBox="0 0 1200 620"
-                            width="1200"
-                            height="620"
-                            preserveAspectRatio="xMidYMax slice"
-                            aria-hidden="true"
-                        >
-                            <g className="hero-svg-content">
-                                <path
-                                    className="wv"
-                                    style={
-                                        {
-                                            "--w": "300px",
-                                            animationDuration: "26s",
-                                        } as React.CSSProperties
-                                    }
-                                    d="M-300 340q150 -14 300 0t300 0t300 0t300 0t300 0t300 0t300 0t300 0t300 0t300 0t300 0t300 0V620H-300z"
-                                    fill="#8AA3C0"
-                                />
-                                <g transform="translate(90,452)">
-                                    <g
-                                        className="sail"
-                                        style={
-                                            {
-                                                "--w": "180px",
-                                                animationDuration: "50s",
-                                            } as React.CSSProperties
-                                        }
-                                    >
-                                        <path d="M0 0h34l-6 9H6z" fill="#0F3562" opacity=".75" />
-                                        <path d="M17-24V-2L31-2z" fill="#F8FAFC" />
-                                    </g>
-                                </g>
-                                <g transform="translate(610,462)">
-                                    <g
-                                        className="sail"
-                                        style={
-                                            {
-                                                "--w": "60px",
-                                                animationDuration: "34s",
-                                            } as React.CSSProperties
-                                        }
-                                    >
-                                        <path d="M0 0h30l-5 8H5z" fill="#0F3562" opacity=".75" />
-                                        <path d="M15-20V-2L27-2z" fill="#F8FAFC" />
-                                    </g>
-                                </g>
-                                <path
-                                    className="wv"
-                                    style={
-                                        {
-                                            "--w": "400px",
-                                            animationDuration: "30s",
-                                        } as React.CSSProperties
-                                    }
-                                    d="M-400 388q200 -14 400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0t400 0V620H-400z"
-                                    fill="#6B88AB"
-                                />
-                                <g transform="translate(60,402)">
-                                    <g className="jump">
-                                        <ellipse rx="9" ry="4" fill="#0F3562" />
-                                        <path d="M8 0l9-5v10z" fill="#0F3562" />
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-
-                        {/* 3. Kapal: 0.6x */}
-                        <svg
-                            ref={el => {
-                                layerRefs.current[2] = el;
-                            }}
-                            className="layer"
-                            data-d="0.6"
-                            data-ship
-                            viewBox="0 0 1200 620"
-                            width="1200"
-                            height="620"
-                            preserveAspectRatio="xMidYMax slice"
-                            role="img"
-                            aria-label="Kapal penangkap ikan sandar mendekati dermaga"
-                        >
-                            <g className="hero-svg-content">
-                                <g className="bob">
-                                    <rect x="324" y="285" width="6" height="112" fill="#0F3562" />
-                                    <path d="M330 300L268 388" stroke="#0F3562" strokeWidth="3" fill="none" />
-                                    <path d="M330 300L400 336" stroke="#0F3562" strokeWidth="2" fill="none" />
-                                    <rect x="394" y="328" width="106" height="8" fill="#0F3562" />
-                                    <rect x="400" y="336" width="94" height="60" fill="#F8FAFC" />
-                                    <rect x="412" y="350" width="22" height="18" fill="#0F3562" />
-                                    <rect x="450" y="350" width="22" height="18" fill="#0F3562" />
-                                    <path d="M250 395h310l-35 52H285z" fill="#0F3562" />
-                                    <path d="M257 410h296" stroke="#F8FAFC" strokeWidth="4" />
-                                </g>
-                            </g>
-                        </svg>
-
-                        {/* 4. Ombak depan: 0.8x */}
-                        <svg
-                            ref={el => {
-                                layerRefs.current[3] = el;
-                            }}
-                            className="layer"
-                            data-d="0.8"
-                            data-wave
-                            viewBox="0 0 1200 620"
-                            width="1200"
-                            height="620"
-                            preserveAspectRatio="xMidYMax slice"
-                            aria-hidden="true"
-                        >
-                            <g className="hero-svg-content">
-                                <g
-                                    className="wv"
-                                    style={
-                                        {
-                                            "--w": "240px",
-                                            animationDuration: "10s",
-                                        } as React.CSSProperties
-                                    }
-                                >
-                                    <path
-                                        d="M-240 455q120 -16 240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0V620H-240z"
-                                        fill="#0F3562"
-                                    />
-                                    <path
-                                        d="M-240 455q120 -16 240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0t240 0"
-                                        fill="none"
-                                        stroke="#9FB4CC"
-                                        strokeWidth="2"
-                                        opacity=".6"
-                                    />
-                                </g>
-                                <g transform="translate(130,458)">
-                                    <g className="bobb">
-                                        <circle r="8" fill="#F8FAFC" />
-                                        <path d="M-8 0h16" stroke="#0F3562" strokeWidth="3" />
-                                    </g>
-                                </g>
-                                <g transform="translate(650,462)">
-                                    <g className="bobb" style={{ animationDelay: "-1.2s" }}>
-                                        <circle r="7" fill="#F8FAFC" />
-                                        <path d="M-7 0h14" stroke="#0F3562" strokeWidth="3" />
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-
-                        {/* 5. Dermaga + staf + timbangan IoT: 1.0x */}
-                        <svg
-                            ref={el => {
-                                layerRefs.current[4] = el;
-                            }}
-                            className="layer"
-                            data-d="1"
-                            viewBox="0 0 1200 620"
-                            width="1200"
-                            height="620"
-                            preserveAspectRatio="xMidYMax slice"
-                            role="img"
-                            aria-label="Staf dermaga menimbang ikan hasil tangkapan nelayan dengan timbangan digital IoT"
-                        >
-                            <g className="hero-svg-content">
-                                <g fill="#1E3A5F">
-                                    <rect x="720" y="411" width="14" height="110" />
-                                    <rect x="830" y="411" width="14" height="110" />
-                                    <rect x="940" y="411" width="14" height="110" />
-                                    <rect x="1050" y="411" width="14" height="110" />
-                                    <rect x="1160" y="411" width="14" height="110" />
-                                </g>
-                                <rect x="700" y="395" width="520" height="16" fill="#CBD5E1" />
-                                <path d="M700 403h520" stroke="#94A3B8" />
-                                <rect x="770" y="375" width="120" height="20" rx="3" fill="#475569" />
-                                <rect x="770" y="371" width="120" height="6" rx="2" fill="#94A3B8" />
-                                <rect x="879" y="332" width="8" height="44" fill="#475569" />
-                                <rect x="852" y="302" width="64" height="38" rx="4" fill="#0F172A" />
-                                <text
-                                    x="884"
-                                    y="326"
-                                    textAnchor="middle"
-                                    fontFamily="monospace"
-                                    fontSize="14"
-                                    fill="#F8FAFC"
-                                >
-                                    38,2 kg
-                                </text>
-                                <g fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
-                                    <path className="pulse" d="M872 292q12-10 24 0" />
-                                    <path
-                                        className="pulse"
-                                        style={{ animationDelay: "0.3s" }}
-                                        d="M866 285q18-16 36 0"
-                                    />
-                                </g>
-                                <circle cx="884" cy="297" r="2" fill="#2563EB" />
-                                <defs>
-                                    <g id="fishg">
-                                        <path d="M-14 0L-25-7V7Z" fill="#7F9CBB" />
-                                        <ellipse rx="16" ry="6.5" fill="#B7C9DB" />
-                                        <path d="M-16-1Q-4-7.5 12-4Q-2-2 -16-1Z" fill="#5B7BA3" />
-                                        <path d="M-2-6Q3-12 7-6Z" fill="#7F9CBB" />
-                                        <path d="M-3-4Q0 0 -3 4" stroke="#5B7BA3" strokeWidth="1" fill="none" />
-                                        <path d="M4 2Q7 3 9 1" stroke="#7F9CBB" strokeWidth="1" fill="none" />
-                                        <circle cx="9" cy="-1.5" r="1.5" fill="#0F172A" />
-                                    </g>
-                                </defs>
-                                <rect x="788" y="349" width="84" height="24" rx="3" fill="#5B7BA3" />
-                                <use href="#fishg" transform="translate(806,343) rotate(-4) scale(1.1)" />
-                                <use href="#fishg" transform="translate(834,341) rotate(3) scale(1.1)" />
-                                <use href="#fishg" transform="translate(857,345) rotate(-2) scale(1)" />
-
-                                {/* Nelayan: lengan mengayun menata ikan */}
-                                <circle cx="745" cy="338" r="10" fill="#C98F6E" />
-                                <path d="M734 336q11-14 22 0z" fill="#1E3A5F" />
-                                <rect x="733" y="349" width="24" height="34" rx="6" fill="#6B88AB" />
-                                <rect x="735" y="383" width="8" height="12" fill="#1E3A5F" />
-                                <rect x="747" y="383" width="8" height="12" fill="#1E3A5F" />
-                                <path
-                                    className="swing"
-                                    d="M754 358l32 10"
-                                    stroke="#6B88AB"
-                                    strokeWidth="6"
-                                    strokeLinecap="round"
-                                    fill="none"
-                                />
-
-                                {/* Staf: mengetuk tablet, mengangguk */}
-                                <g className="nod">
-                                    <circle cx="960" cy="336" r="10" fill="#D9A98A" />
-                                    <path d="M950 333q10-12 20 0z" fill="#0F3562" />
-                                </g>
-                                <rect x="948" y="347" width="24" height="36" rx="6" fill="#0F3562" />
-                                <rect x="954" y="347" width="12" height="36" fill="#F8FAFC" opacity=".85" />
-                                <rect x="950" y="383" width="8" height="12" fill="#334155" />
-                                <rect x="962" y="383" width="8" height="12" fill="#334155" />
-                                <g className="tap">
-                                    <path d="M948 358l-22 6" stroke="#0F3562" strokeWidth="6" strokeLinecap="round" />
-                                    <rect
-                                        x="908"
-                                        y="356"
-                                        width="22"
-                                        height="16"
-                                        rx="2"
-                                        fill="#F8FAFC"
-                                        stroke="#0F3562"
-                                        strokeWidth="2"
-                                        transform="rotate(-8 919 364)"
-                                    />
-                                </g>
-
-                                {/* Nelayan kedua: berjalan membawa peti ikan */}
-                                <g className="walk">
-                                    <circle cx="1040" cy="336" r="10" fill="#C98F6E" />
-                                    <path d="M1030 334q10-12 20 0z" fill="#334155" />
-                                    <rect x="1028" y="347" width="24" height="36" rx="6" fill="#5B7BA3" />
-                                    <rect className="leg" x="1030" y="383" width="8" height="12" fill="#1E3A5F" />
-                                    <rect className="leg r" x="1042" y="383" width="8" height="12" fill="#1E3A5F" />
-                                    <path d="M1030 358l-14 6" stroke="#5B7BA3" strokeWidth="6" strokeLinecap="round" />
-                                    <rect
-                                        x="990"
-                                        y="352"
-                                        width="30"
-                                        height="20"
-                                        rx="3"
-                                        fill="#5B7BA3"
-                                        stroke="#0F3562"
-                                        strokeWidth="1.5"
-                                    />
-                                    <ellipse cx="1005" cy="352" rx="11" ry="4" fill="#E2E8F0" />
-                                </g>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-
-                {/* Hero copy: exactly as in sample HTML, with fluid responsive typography */}
-                <motion.div
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-                    className="hero-copy text-center px-4 sm:px-6 pt-10 sm:pt-14 md:pt-16"
-                >
-                    <h1 className="mx-auto max-w-3xl text-2xl sm:text-4xl md:text-6xl font-semibold tracking-tight leading-[1.12] text-[#0f172a] dark:text-[#f8fafc]">
-                        Catat hasil tangkapan langsung dari dermaga
-                    </h1>
-                    <p className="mx-auto mt-3 sm:mt-5 max-w-xl text-sm sm:text-base md:text-lg text-[#334155] dark:text-[#cbd5e1] leading-relaxed">
-                        Ikan ditimbang di dermaga, angkanya langsung masuk ke sistem. Sisa kuota kapal dan tarif PNBP
-                        dihitung otomatis, tanpa catat manual.
-                    </p>
-                    <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-                        <motion.div whileTap={buttonTapVariants} className="w-full sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={() => navigateWithTransition("/register")}
-                                className="btn no-underline w-full sm:w-auto text-center inline-block cursor-pointer font-inherit border-0"
-                                style={{ background: "#0f3562" }}
-                            >
-                                Daftar akun
-                            </button>
-                        </motion.div>
-                        <motion.div whileTap={buttonTapVariants} className="w-full sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={() => navigateWithTransition("/login")}
-                                className="lnk text-sm text-center py-1 inline-block cursor-pointer bg-transparent border-0 font-inherit"
-                                style={{ color: "#0f3562" }}
-                            >
-                                Sudah punya akun? Masuk ke portal
-                            </button>
-                        </motion.div>
-                    </div>
-                </motion.div>
-            </div>
+  return (
+    <div className="hero" id="top">
+      <div className="onboarding-wrap">
+        <h1 className="rv in">Catat hasil tangkapan langsung dari dermaga</h1>
+        <p className="hero-desc rv in" style={{ "--d": "0.1s" } as React.CSSProperties}>
+          Ikan ditimbang di dermaga, angkanya langsung masuk ke sistem. Sisa kuota kapal dan tarif PNBP
+          dihitung otomatis, tanpa catat manual.
+        </p>
+        <div className="hero-cta rv in" style={{ "--d": "0.2s" } as React.CSSProperties}>
+          <button
+            type="button"
+            className="onboarding-btn pri"
+            onClick={() => navigateWithTransition("/register")}
+          >
+            Daftar akun
+          </button>
+          <button
+            type="button"
+            className="onboarding-btn"
+            onClick={() => navigateWithTransition("/login")}
+          >
+            Sudah punya akun? Masuk ke portal
+          </button>
         </div>
-    );
+      </div>
+
+      <svg
+        className="hero-scene"
+        viewBox="0 0 1200 420"
+        preserveAspectRatio="xMidYMax slice"
+        role="img"
+        aria-label="Kapal nelayan bersandar di dekat dermaga tempat ikan ditimbang"
+      >
+        <defs>
+          <g id="hero-dock-person">
+            <rect x="-9" y="-28" width="7" height="28" fill="#0a1535" />
+            <rect x="2" y="-28" width="7" height="28" fill="#0a1535" />
+            <rect x="-13" y="-72" width="26" height="46" rx="9" fill="currentColor" />
+            <circle cy="-84" r="11" fill="#d99b7a" />
+            <path d="M-12 -86a12 12 0 0 1 24 0z" fill="#e8eefc" />
+          </g>
+        </defs>
+
+        <g className="w1">
+          <path d={buildWaveD(236, 5)} fill="#1b3a78" opacity="0.9" />
+        </g>
+        <g className="w2">
+          <path d={buildWaveD(248, 7)} fill="#17316b" />
+        </g>
+
+        {/* Dermaga */}
+        <rect x="700" y="196" width="520" height="10" fill="#2f4f98" />
+        <rect x="700" y="196" width="520" height="3" fill="#5b86d6" />
+        <g fill="#0a1a44">
+          <rect x="740" y="206" width="16" height="200" />
+          <rect x="880" y="206" width="16" height="200" />
+          <rect x="1020" y="206" width="16" height="200" />
+          <rect x="1160" y="206" width="16" height="200" />
+        </g>
+
+        <use href="#hero-dock-person" x="800" y="196" style={{ color: "#4f78c7" }} />
+        <use href="#hero-dock-person" x="990" y="196" style={{ color: "#e8eefc" }} />
+        <use href="#hero-dock-person" x="1100" y="196" style={{ color: "#3b5fa8" }} />
+
+        <line
+          className="arm"
+          x1="808"
+          y1="134"
+          x2="846"
+          y2="152"
+          stroke="#4f78c7"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        <line
+          x1="982"
+          y1="134"
+          x2="960"
+          y2="150"
+          stroke="#e8eefc"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        <rect
+          className="tab"
+          x="944"
+          y="142"
+          width="22"
+          height="15"
+          rx="2"
+          fill="#9ec3ff"
+          transform="rotate(-18 955 150)"
+        />
+        <rect x="1086" y="148" width="28" height="18" rx="3" fill="#2563eb" />
+        <rect x="842" y="178" width="96" height="18" rx="3" fill="#2c3f6e" />
+        <rect x="884" y="126" width="12" height="54" fill="#3a4f7f" />
+
+        <g fill="#8fb0e8">
+          <ellipse cx="862" cy="168" rx="16" ry="6" />
+          <ellipse cx="890" cy="165" rx="17" ry="6" />
+          <ellipse cx="916" cy="168" rx="15" ry="6" />
+          <path d="M876 168l-8-5v10zM906 165l-8-5v10zM930 168l-7-5v10z" />
+        </g>
+
+        <rect x="842" y="90" width="96" height="38" rx="7" fill="#0a1535" stroke="#2563eb" strokeWidth="2" />
+        <text
+          id="kg"
+          x="890"
+          y="116"
+          textAnchor="middle"
+          fontFamily="ui-monospace,Menlo,monospace"
+          fontSize="17"
+          fontWeight="700"
+          fill="#e8f0ff"
+        >
+          {kgText}
+        </text>
+
+        <g className="wf" fill="none" stroke="#7db0ff" strokeWidth="2.5" strokeLinecap="round">
+          <path d="M878 76a16 16 0 0 1 24 0" style={{ animationDelay: ".4s" }} />
+          <path d="M870 68a28 28 0 0 1 40 0" style={{ animationDelay: ".8s" }} />
+          <path d="M862 60a40 40 0 0 1 56 0" style={{ animationDelay: "1.2s" }} />
+        </g>
+        <circle cx="890" cy="82" r="2.5" fill="#7db0ff" />
+
+        {/* Kapal Nelayan */}
+        <g transform="translate(120 -284)">
+          <g className="ship">
+            <line x1="335" y1="496" x2="335" y2="380" stroke="#222a44" strokeWidth="4" strokeLinecap="round" />
+            <path className="flag" d="M335 381q13-5 27 2L335 393z" fill="#e5483b" />
+            <circle className="lamp" cx="335" cy="398" r="11" fill="#ffd78a" />
+            <circle cx="335" cy="398" r="3" fill="#ffe7b0" />
+            <g stroke="#a9b9d8" strokeWidth="0.9" opacity="0.8">
+              <line x1="335" y1="384" x2="262" y2="428" />
+              <line x1="335" y1="384" x2="424" y2="478" />
+            </g>
+            <line x1="335" y1="436" x2="412" y2="478" stroke="#222a44" strokeWidth="3" strokeLinecap="round" />
+            <path d="M345 497Q352 474 372 478Q392 474 399 497z" fill="#35557f" />
+            <g stroke="#6f93c4" strokeWidth="0.8" fill="none">
+              <path d="M356 496Q362 484 368 496M370 496Q376 482 382 496M384 496Q388 486 394 496M350 488H396" />
+            </g>
+            <rect x="312" y="484" width="14" height="12" rx="1" fill="#e0a93e" />
+            <rect x="327" y="486" width="14" height="10" rx="1" fill="#c98f2c" />
+            <rect x="296" y="448" width="15" height="48" fill="#243764" />
+            <rect x="296" y="456" width="15" height="7" fill="#e5483b" />
+            <circle className="smoke" cx="303" cy="446" r="6" fill="#cfd8ea" />
+            <circle className="smoke" cx="303" cy="446" r="6" fill="#cfd8ea" style={{ animationDelay: "1.3s" }} />
+            <circle className="smoke" cx="303" cy="446" r="6" fill="#cfd8ea" style={{ animationDelay: "2.6s" }} />
+            <rect x="230" y="454" width="64" height="42" fill="#f1f4fa" />
+            <rect x="240" y="430" width="48" height="25" fill="#f1f4fa" />
+            <rect x="235" y="425" width="58" height="6" rx="1" fill="#243764" />
+            <g fill="#8fc0ff">
+              <rect x="245" y="436" width="10" height="9" />
+              <rect x="259" y="436" width="10" height="9" />
+              <rect x="273" y="436" width="10" height="9" />
+              <rect x="238" y="466" width="14" height="10" />
+              <rect x="258" y="466" width="14" height="10" />
+            </g>
+            <rect x="278" y="474" width="10" height="22" fill="#243764" />
+            <circle cx="248" cy="487" r="5" fill="none" stroke="#e5483b" strokeWidth="3" />
+            <line x1="264" y1="425" x2="264" y2="402" stroke="#222a44" strokeWidth="2" />
+            <rect className="radar" x="252" y="398" width="24" height="4" rx="2" fill="#222a44" />
+            <path d="M200 496H388Q408 494 424 478L406 524Q398 546 372 546H236Q214 546 208 522z" fill="#d23a30" />
+            <path d="M207 524L407 524Q398 546 372 546H236Q214 546 208 524z" fill="#161c33" />
+            <rect x="200" y="493" width="190" height="5" fill="#eef2fa" />
+            <g fill="#ffd78a">
+              <circle cx="232" cy="509" r="4" />
+              <circle cx="250" cy="509" r="4" />
+              <circle cx="268" cy="509" r="4" />
+            </g>
+            <text
+              x="340"
+              y="515"
+              textAnchor="middle"
+              fontFamily="Inter,sans-serif"
+              fontSize="10"
+              fontWeight="700"
+              fill="#fff"
+              letterSpacing="1"
+            >
+              FISHPRO-01
+            </text>
+          </g>
+        </g>
+
+        <ellipse className="fm" cx="334" cy="262" rx="22" ry="3" fill="#e8f0ff" />
+        <ellipse className="fm" cx="535" cy="261" rx="16" ry="2.5" fill="#e8f0ff" style={{ animationDelay: "0.7s" }} />
+
+        <g className="w3">
+          <path d={buildWaveD(260, 8)} fill="#112c62" />
+        </g>
+        <g className="w4">
+          <path d={buildWaveD(300, 11)} fill="#0a1d48" />
+        </g>
+        <g className="w5">
+          <path className="bgw" d={buildWaveD(372, 9)} />
+        </g>
+      </svg>
+    </div>
+  );
 }

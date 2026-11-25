@@ -223,7 +223,8 @@ export function AdminLayout() {
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                title="Tutup Sidebar"
+                title="Sembunyikan Sidebar"
+                aria-label="Sembunyikan Sidebar"
                 className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
               >
                 <X size={14} />
@@ -320,7 +321,7 @@ export function AdminLayout() {
         {/* Top Header Bar */}
         <header className="h-16 px-4 sm:px-6 bg-white dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-slate-800 sticky top-0 z-30 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 max-w-md">
-            {/* Hamburger / Close Toggle Button */}
+            {/* Hamburger / Toggle Button */}
             <button
               type="button"
               onClick={() => {
@@ -335,11 +336,7 @@ export function AdminLayout() {
               aria-expanded={isOpen}
               className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
             >
-              {isOpen ? (
-                <X size={15} aria-hidden="true" />
-              ) : (
-                <Menu size={15} aria-hidden="true" />
-              )}
+              <Menu size={16} aria-hidden="true" />
             </button>
 
             {/* Quick Search Menu */}

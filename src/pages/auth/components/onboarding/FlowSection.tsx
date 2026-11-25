@@ -1,131 +1,71 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function FlowSection() {
-  const flowRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const shipRef = useRef<SVGSVGElement>(null);
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (rm) return;
-
-    const flow = flowRef.current;
-    const track = trackRef.current;
-    const ship = shipRef.current;
-    if (!flow || !track || !ship) return;
-
-    const clamp = (v: number) => Math.max(0, Math.min(1, v));
-
-    let ftop = 0;
-    let fh = 1;
-    let fw = 1;
-
-    const measure = () => {
-      const f = flow.getBoundingClientRect();
-      ftop = f.top + window.scrollY;
-      fh = f.height || 1;
-      fw = Math.max(0, track.clientWidth - 44);
-      updateShip();
-    };
-
-    const updateShip = () => {
-      const vh = window.innerHeight;
-      const fp = clamp((window.scrollY + vh * 0.75 - ftop) / (fh + vh * 0.3));
-      ship.style.transform = `translate3d(${(fp * fw).toFixed(1)}px,0,0)`;
-    };
-
-    let tick = false;
     const handleScroll = () => {
-      if (tick) return;
-      tick = true;
-      requestAnimationFrame(() => {
-        tick = false;
-        updateShip();
-      });
+      const st = stepsRef.current;
+      if (!st) return;
+      const b = st.getBoundingClientRect();
+      const p = Math.max(0, Math.min(1, (window.innerHeight * 0.8 - b.top) / (b.height * 1.1)));
+      setProgress(p);
+      st.style.setProperty("--p", p.toFixed(3));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", measure);
-
-    measure();
+    window.addEventListener("resize", handleScroll);
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", handleScroll);
     };
   }, []);
 
   return (
-    <section className="s" id="alur">
-      <div className="wrap">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight max-w-2xl">
-          Dari timbangan sampai terverifikasi, tiga langkah
-        </h2>
-        <p className="mt-4 max-w-xl t2">
-          Setiap kali ikan ditimbang, datanya langsung disegel di sistem. Berat
-          ikan, kapal pembongkar, dan tagihan PNBP terkunci permanen.
+    <section className="onboarding-section" id="alur">
+      <div className="onboarding-wrap">
+        <h2 className="rv">Dari timbangan sampai terverifikasi, tiga langkah</h2>
+        <p className="lead rv" style={{ "--d": "0.08s" } as React.CSSProperties}>
+          Setiap kali ikan ditimbang, datanya langsung disegel di sistem. Berat ikan, kapal pembongkar,
+          dan tagihan PNBP terkunci permanen.
         </p>
-        <div className="mt-14" ref={flowRef} id="flow">
-          <div className="relative h-8 mb-6" ref={trackRef} id="flowtrack">
-            <div className="absolute left-0 right-0 top-1/2 border-t bd"></div>
-            <svg
-              ref={shipRef}
-              id="flowship"
-              className="absolute left-0 top-0 mv"
-              width="44"
-              height="26"
-              viewBox="0 0 44 26"
-              role="img"
-              aria-label="Kapal kecil bergerak dari langkah 1 ke langkah 3"
-              style={{
-                willChange: "transform",
-                background: "var(--bg, #f8fafc)",
-              }}
-            >
-              <path d="M3 14h38l-5 8H8z" fill="var(--pr, #0f3562)" />
-              <rect
-                x="18"
-                y="6"
-                width="12"
-                height="8"
-                fill="var(--pr, #0f3562)"
-              />
-              <rect
-                x="14"
-                y="2"
-                width="2"
-                height="12"
-                fill="var(--pr, #0f3562)"
-              />
+
+        <div className="steps" id="steps" ref={stepsRef}>
+          <div className="steps-line">
+            <svg className="steps-boat" width="28" height="18" viewBox="0 0 28 18">
+              <path d="M2 11h24l-4 6H6z" fill="#2563eb" />
+              <rect x="9" y="5" width="9" height="6" fill="#2563eb" />
+              <line x1="21" y1="1" x2="21" y2="11" stroke="#2563eb" strokeWidth="1.5" />
             </svg>
           </div>
-          <ol className="grid md:grid-cols-3 gap-10 md:gap-14">
-            <li>
-              <p className="text-sm ac font-medium">1</p>
-              <h3 className="mt-1 text-xl font-medium">Timbang di dermaga</h3>
-              <p className="mt-2 t2 leading-relaxed">
-                Ikan ditimbang di timbangan dermaga. Angkanya masuk ke sistem
-                otomatis dari sensor, tanpa dicatat manual.
+          <div className="steps-cols">
+            <div className={`rv ${progress >= 0.04 ? "on" : ""}`}>
+              <div className="steps-num">1</div>
+              <h3>Timbang di dermaga</h3>
+              <p>
+                Ikan ditimbang di timbangan dermaga. Angkanya masuk ke sistem otomatis dari sensor, tanpa
+                dicatat manual.
               </p>
-            </li>
-            <li>
-              <p className="text-sm ac font-medium">2</p>
-              <h3 className="mt-1 text-xl font-medium">Tercatat dan terhitung</h3>
-              <p className="mt-2 t2 leading-relaxed">
-                Sisa kuota kapal diperbarui. Tarif PNBP dihitung dari berat ikan
-                dan ukuran GT kapal.
+            </div>
+            <div className={`rv ${progress >= 1 / 3 + 0.04 ? "on" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
+              <div className="steps-num">2</div>
+              <h3>Tercatat dan terhitung</h3>
+              <p>
+                Sisa kuota kapal diperbarui. Tarif PNBP dihitung dari berat ikan dan ukuran GT kapal.
               </p>
-            </li>
-            <li>
-              <p className="text-sm ac font-medium">3</p>
-              <h3 className="mt-1 text-xl font-medium">Terkunci dan bisa dicek</h3>
-              <p className="mt-2 t2 leading-relaxed">
-                Catatan disegel dengan blockchain sehingga tidak bisa diubah
-                atau dihapus diam-diam. Petugas dinas dan pemilik kapal bisa
-                memeriksanya.
+            </div>
+            <div className={`rv ${progress >= 2 / 3 + 0.04 ? "on" : ""}`} style={{ "--d": "0.2s" } as React.CSSProperties}>
+              <div className="steps-num">3</div>
+              <h3>Terkunci dan bisa dicek</h3>
+              <p>
+                Catatan disegel dengan blockchain sehingga tidak bisa diubah atau dihapus diam-diam. Petugas
+                dinas dan pemilik kapal bisa memeriksanya.
               </p>
-            </li>
-          </ol>
+            </div>
+          </div>
         </div>
       </div>
     </section>

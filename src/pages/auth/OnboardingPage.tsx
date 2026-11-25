@@ -9,11 +9,55 @@ import "./components/onboarding/heroScene.css";
 
 export function OnboardingPage() {
   useEffect(() => {
-    document.title = "FISHPRO – Catat hasil tangkapan langsung dari dermaga";
+    document.title = "FishPro – Catat hasil tangkapan langsung dari dermaga";
+
+    const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isReducedMotion) {
+      document.querySelectorAll(".rv").forEach((e) => e.classList.add("in"));
+      return;
+    }
+
+    // Jalankan pengecekan IntersectionObserver
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: "0px 0px 50px 0px" }
+    );
+
+    const elements = document.querySelectorAll(".rv");
+    elements.forEach((el) => observer.observe(el));
+
+    // Fallback: jika ada elemen yang sudah berada di viewport atau belum tertrigger setelah scroll
+    const checkVisibility = () => {
+      const vh = window.innerHeight;
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < vh + 50 && rect.bottom > 0) {
+          el.classList.add("in");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", checkVisibility, { passive: true });
+    checkVisibility();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", checkVisibility);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-[#2563eb] selection:text-white" style={{ background: "var(--bg, #f8fafc)", color: "var(--tx, #0f172a)" }}>
+    <div
+      className="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-[#2563eb] selection:text-white"
+      style={{ background: "var(--bg)", color: "var(--fg)" }}
+    >
       <OnboardingHeader />
       <main className="flex-1">
         <HeroSection />
