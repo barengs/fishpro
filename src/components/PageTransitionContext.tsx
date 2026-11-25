@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Preload chunk AuthPage agar tidak ada delay network/parsing saat tirai naik
+const preloadAuth = () => {
+  import("../pages/auth/AuthPage").catch(() => {});
+};
 
 interface TransitionContextType {
   navigateWithTransition: (to: string) => void;
@@ -19,8 +24,22 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
   const navigate = useNavigate();
   const [animating, setAnimating] = useState(false);
 
+  // Preload halaman login/register setelah browser idle
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("requestIdleCallback" in window) {
+        (window as Window & { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(preloadAuth);
+      } else {
+        setTimeout(preloadAuth, 1200);
+      }
+    }
+  }, []);
+
   const navigateWithTransition = useCallback(
     (to: string) => {
+      // Pastikan chunk target sudah di-preload
+      preloadAuth();
+
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
@@ -32,16 +51,16 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
 
       setAnimating(true);
 
-      // Pada separuh durasi transisi (0.4s), ganti rute & scroll ke atas
+      // Pada puncak tirai menutupi layar (280ms), pindah rute secara instan
       setTimeout(() => {
         navigate(to);
-        window.scrollTo(0, 0);
-      }, 400);
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }, 280);
 
-      // Selesai transisi setelah 0.8s (durasi sinkron dengan keyframe mobileCurtain 0.8s)
+      // Tirai turun dan selesai dalam 600ms
       setTimeout(() => {
         setAnimating(false);
-      }, 800);
+      }, 620);
     },
     [navigate]
   );
@@ -51,7 +70,7 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
       value={{ navigateWithTransition, isTransitioning: animating }}
     >
       {children}
-      {/* Global Page Transition Curtain Overlay: Navy curtain dari bawah ke atas 0.8s */}
+      {/* Global Page Transition Curtain Overlay: GPU-accelerated navy curtain */}
       <div
         className={`fixed inset-0 pointer-events-none transition-curtain ${
           animating ? "active" : ""
