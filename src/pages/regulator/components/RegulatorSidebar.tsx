@@ -167,20 +167,43 @@ export const SidebarBody = RegulatorSidebarNav;
 export const RegulatorSidebar = RegulatorSidebarNav;
 
 export function RegulatorLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("fco-regulator-sidebar-open");
+      if (saved !== null) return saved === "true";
+    }
+    return true;
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.innerWidth >= 1024,
+    () => typeof window !== "undefined" && window.innerWidth >= 768,
   );
   const navigate = useNavigate();
   const toast = useToast();
   const userInfo = getUserDisplayInfo();
 
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleToggleSidebar = () => {
+    if (isDesktop) {
+      setSidebarOpen((prev) => {
+        const next = !prev;
+        localStorage.setItem("fco-regulator-sidebar-open", String(next));
+        return next;
+      });
+    } else {
+      setMobileOpen((prev) => !prev);
+    }
+  };
+
+  const handleCloseDesktopSidebar = () => {
+    setSidebarOpen(false);
+    localStorage.setItem("fco-regulator-sidebar-open", "false");
+  };
 
   if (!authService.isAuthenticated()) {
     return <Navigate to="/login" replace />;
@@ -207,7 +230,7 @@ export function RegulatorLayout() {
       {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Regulator"
-        className={`hidden lg:flex flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden ${
+        className={`hidden md:flex flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden ${
           sidebarOpen ? "w-[240px] border-r border-[#E5E7EB] dark:border-slate-800" : "w-0 border-r-0"
         }`}
       >
@@ -219,7 +242,7 @@ export function RegulatorLayout() {
               </Link>
               <button
                 type="button"
-                onClick={() => setSidebarOpen(false)}
+                onClick={handleCloseDesktopSidebar}
                 title="Tutup Sidebar"
                 className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
               >
@@ -253,7 +276,7 @@ export function RegulatorLayout() {
 
       {/* 2. Mobile Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ease-in-out ${
           mobileOpen
             ? "opacity-100 pointer-events-auto visible"
             : "opacity-0 pointer-events-none invisible"
@@ -309,20 +332,14 @@ export function RegulatorLayout() {
       {/* 3. Main View Area */}
       <div
         className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out ${
-          sidebarOpen ? "lg:pl-[240px]" : "lg:pl-0"
+          sidebarOpen ? "md:pl-[240px]" : "md:pl-0"
         }`}
       >
         <header className="h-16 px-4 sm:px-6 bg-white dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-slate-800 sticky top-0 z-30 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 max-w-md">
             <button
               type="button"
-              onClick={() => {
-                if (isDesktop) {
-                  setSidebarOpen((prev) => !prev);
-                } else {
-                  setMobileOpen((prev) => !prev);
-                }
-              }}
+              onClick={handleToggleSidebar}
               title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-expanded={isOpen}

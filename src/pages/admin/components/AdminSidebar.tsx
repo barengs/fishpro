@@ -170,50 +170,25 @@ const adminSearchItems: QuickSearchItem[] = [
 ];
 
 export function AdminLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("admin_sidebar_open");
-      if (saved !== null) return saved === "true";
-    }
-    return true;
-  });
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.innerWidth >= 1024,
-  );
   const navigate = useNavigate();
   const toast = useToast();
 
   const isSuperAdmin = authService.isSuperAdmin();
   const userInfo = getUserDisplayInfo();
 
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setIsDesktop(desktop);
-      if (desktop) {
-        setMobileOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const toggleSidebar = () => {
-    if (isDesktop) {
-      setSidebarOpen((prev) => {
-        const next = !prev;
-        localStorage.setItem("admin_sidebar_open", String(next));
-        return next;
-      });
+  const handleToggleSidebar = () => {
+    // Di desktop/tablet toggle sidebarOpen, di mobile toggle mobileOpen
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      setSidebarOpen((prev) => !prev);
     } else {
       setMobileOpen((prev) => !prev);
     }
   };
 
-  const closeDesktopSidebar = () => {
+  const handleCloseDesktopSidebar = () => {
     setSidebarOpen(false);
-    localStorage.setItem("admin_sidebar_open", "false");
   };
 
   if (!authService.isAuthenticated()) {
@@ -225,8 +200,6 @@ export function AdminLayout() {
     return <Navigate to="/staff" replace />;
   }
 
-  const isOpen = isDesktop ? sidebarOpen : mobileOpen;
-
   const handleLogout = async () => {
     await authService.logout();
     toast.success("Anda telah berhasil keluar dari akun.");
@@ -234,13 +207,16 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] dark:bg-[#0b1220] text-ink dark:text-white flex">
+    <div className="min-h-screen bg-[#F8F9FB] dark:bg-[#0b1220] text-ink dark:text-white flex flex-row">
       {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Admin"
-        className={`hidden lg:flex flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden ${
-          sidebarOpen ? "w-[240px] border-r border-[#E5E7EB] dark:border-slate-800" : "w-0 border-r-0"
-        }`}
+        style={{
+          width: sidebarOpen ? "240px" : "0px",
+          minWidth: sidebarOpen ? "240px" : "0px",
+          display: sidebarOpen ? "flex" : "none",
+        }}
+        className="flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden border-r border-[#E5E7EB] dark:border-slate-800"
       >
         <div className="w-[240px] flex flex-col h-full shrink-0 overflow-hidden justify-between">
           <div className="flex flex-col min-h-0 overflow-hidden">
@@ -251,7 +227,7 @@ export function AdminLayout() {
               </Link>
               <button
                 type="button"
-                onClick={() => setSidebarOpen(false)}
+                onClick={handleCloseDesktopSidebar}
                 title="Sembunyikan Sidebar"
                 aria-label="Sembunyikan Sidebar"
                 className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
@@ -290,7 +266,7 @@ export function AdminLayout() {
 
       {/* 2. Mobile Drawer Overlay with Smooth CSS Transitions */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ease-in-out ${
           mobileOpen
             ? "opacity-100 pointer-events-auto visible"
             : "opacity-0 pointer-events-none invisible"
@@ -343,9 +319,10 @@ export function AdminLayout() {
 
       {/* 3. Main View Area (Offset right of sidebar) */}
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out ${
-          sidebarOpen ? "lg:pl-[240px]" : "lg:pl-0"
-        }`}
+        style={{
+          paddingLeft: sidebarOpen ? "240px" : "0px",
+        }}
+        className="flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out"
       >
         {/* Top Header Bar */}
         <header className="h-16 px-4 sm:px-6 bg-white dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-slate-800 sticky top-0 z-30 flex items-center justify-between gap-3">
@@ -353,16 +330,10 @@ export function AdminLayout() {
             {/* Hamburger / Toggle Button */}
             <button
               type="button"
-              onClick={() => {
-                if (isDesktop) {
-                  setSidebarOpen((prev) => !prev);
-                } else {
-                  setMobileOpen((prev) => !prev);
-                }
-              }}
-              title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-              aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-              aria-expanded={isOpen}
+              onClick={handleToggleSidebar}
+              title={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-label={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-expanded={sidebarOpen}
               className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
             >
               <Menu size={16} aria-hidden="true" />
