@@ -132,7 +132,7 @@ export function CaptainDashboard() {
                   </h2>
                 </div>
                 <StatusChip
-                  label="Tersegel Resmi"
+                  label="Terverifikasi"
                   bg="#ECFDF5"
                   color="#059669"
                   icon={
