@@ -97,18 +97,18 @@ function AreaForm({
         placeholder="Cakupan selat, teluk, atau zona penangkapan ikan..."
       />
 
-      <div className="flex gap-3 mt-2">
+      <div className="flex gap-3 mt-2 pt-4 border-t border-[#e8ebf0] dark:border-[#1f2a42]">
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 h-12 rounded-xl border border-fco-border bg-transparent hover:surface-page text-sm font-semibold cursor-pointer transition-colors"
+          className="flex-1 h-[44px] rounded-[10px] border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] text-sm font-semibold cursor-pointer transition-colors"
         >
           Batal
         </button>
         <button
           type="submit"
           disabled={submitting}
-          className="flex-1 h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-fco-md font-semibold cursor-pointer transition-colors disabled:opacity-60"
+          className="flex-1 h-[44px] rounded-[10px] border-0 bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#5b94ff] dark:hover:bg-[#78a7ff] text-white text-sm font-semibold cursor-pointer transition-colors disabled:opacity-60"
         >
           {submitting
             ? "Menyimpan..."

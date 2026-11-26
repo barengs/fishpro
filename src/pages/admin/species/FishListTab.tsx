@@ -218,7 +218,7 @@ export function FishListTab() {
       <CsvImportModal
         open={isImportModalOpen}
         title="Impor Ikan dari CSV"
-        subtitle="Kirim data CSV teks sesuai header: nama_jenis,nama_ikan,berat_kg,catatan"
+        subtitle="Kirim data CSV teks sesuai header: nama_jenis, nama_ikan, berat_kg, catatan"
         headerFormat="nama_jenis,nama_ikan,berat_kg,catatan"
         placeholderText={
           "nama_jenis,nama_ikan,berat_kg,catatan\nTongkol,Tongkol Super,1.5,Kualitas ekspor"

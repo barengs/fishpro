@@ -223,7 +223,7 @@ export function SpeciesListTab() {
       <CsvImportModal
         open={isImportModalOpen}
         title="Impor Spesies Ikan dari CSV"
-        subtitle="Format header CSV: name,scientific_name,description"
+        subtitle="Format header CSV: name, scientific_name, description"
         headerFormat="name,scientific_name,description"
         placeholderText={
           "name,scientific_name,description\nTongkol Krai,Auxis thazard,Ikan pelagis kecil perairan tropis\nCakalang,Katsuwonus pelamis,Tuna pelagis perairan terbuka"

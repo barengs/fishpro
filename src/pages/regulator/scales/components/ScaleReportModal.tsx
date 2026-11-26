@@ -70,12 +70,12 @@ export function ScaleReportModal({
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-4xl max-h-[92vh] surface-card border border-fco-border-subtle rounded-xs shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-4xl max-h-[92vh] bg-white dark:bg-[#0f1729] border border-[#e8ebf0] dark:border-[#1f2a42] rounded-[18px] shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Action Header (Non-printable) */}
-        <div className="flex items-center justify-between p-4 border-b border-fco-border-subtle bg-slate-50 dark:bg-slate-900/40 print:hidden">
+        <div className="flex items-center justify-between p-4 sm:px-6 border-b border-[#e8ebf0] dark:border-[#1f2a42] bg-[#f7f8fa]/70 dark:bg-[#0a101d]/40 print:hidden">
           <div className="flex items-center gap-2">
-            <Scale size={18} className="text-fco-blue" />
-            <h3 className="m-0 text-sm font-bold text-strong">
+            <Scale size={18} className="text-[#2563eb] dark:text-[#5b94ff]" />
+            <h3 className="m-0 text-sm font-bold text-[#0f172a] dark:text-[#e8edf7]">
               Laporan Rekapitulasi Timbangan Pelabuhan
             </h3>
           </div>
@@ -84,7 +84,7 @@ export function ScaleReportModal({
               type="button"
               onClick={onDownloadCsv}
               disabled={downloadingCsv}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xs border border-fco-border-subtle surface-card hover:surface-inset text-xs font-semibold text-strong cursor-pointer transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[9px] border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-xs font-semibold text-[#0f172a] dark:text-[#e8edf7] cursor-pointer transition-colors disabled:opacity-50"
             >
               <FileSpreadsheet size={14} className="text-emerald-600" />
               <span>{downloadingCsv ? "Mengunduh..." : "Ekspor CSV"}</span>
@@ -92,7 +92,7 @@ export function ScaleReportModal({
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xs border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-xs font-bold cursor-pointer transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[9px] border-0 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold cursor-pointer transition-colors"
             >
               <Printer size={14} />
               <span>Cetak / PDF</span>
@@ -100,7 +100,7 @@ export function ScaleReportModal({
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-xs text-soft hover:text-strong hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent transition-colors ml-1"
+              className="w-8 h-8 flex items-center justify-center rounded-[9px] text-[#64718a] hover:text-[#0f172a] dark:text-[#98a6c0] dark:hover:text-[#e8edf7] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] cursor-pointer border-0 bg-transparent transition-colors ml-1"
             >
               <X size={18} />
             </button>

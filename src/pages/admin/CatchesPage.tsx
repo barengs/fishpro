@@ -342,7 +342,7 @@ export function CatchesPage() {
           <CsvImportModal
               open={isImportModalOpen}
               title="Impor Laporan Tangkapan dari CSV"
-              subtitle="Format header CSV: ship_registration,ship_name,owner_name,captain_name,captain_license,quota_amount,catch_date,catch_type,location_latitude,location_longitude,description,fish_species_name,quantity,unit,value,notes,wpp_name"
+              subtitle="Format header CSV: ship_registration, ship_name, owner_name, captain_name, captain_license, quota_amount, catch_date, catch_type, location_latitude, location_longitude, description, fish_species_name, quantity, unit, value, notes, wpp_name"
               headerFormat="ship_registration,ship_name,owner_name,captain_name,captain_license,quota_amount,catch_date,catch_type,location_latitude,location_longitude,description,fish_species_name,quantity,unit,value,notes,wpp_name"
               placeholderText="Tempel atau unggah isi file CSV riwayat tangkapan di sini..."
               onClose={closeImportModal}

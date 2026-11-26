@@ -202,7 +202,7 @@ export function AreasPage() {
       <CsvImportModal
         open={isImportModalOpen}
         title="Impor Wilayah (WPP) dari CSV"
-        subtitle="Kirim data CSV teks sesuai format resmi: nama,code,deskripsi"
+        subtitle="Kirim data CSV teks sesuai format resmi: nama, code, deskripsi"
         headerFormat="nama,code,deskripsi"
         placeholderText={
           "nama,code,deskripsi\nSelat Malaka,WPP 571,Wilayah barat Sumatera\nLaut Jawa,WPP 712,Perairan dangkal produktif"

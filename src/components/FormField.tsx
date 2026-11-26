@@ -29,12 +29,12 @@ export function FormField({
       {label ? (
         <label
           htmlFor={htmlFor}
-          className="block text-sm font-semibold text-strong mb-1.5"
+          className="block text-[13px] font-semibold text-[#0f172a] dark:text-[#e8edf7] mb-1.5"
         >
           {label}
           {required && (
             <span
-              className="text-red-500 ml-1 font-bold"
+              className="text-[#e11d48] ml-1 font-bold"
               aria-label="wajib diisi"
               title="Wajib diisi"
             >
@@ -42,21 +42,29 @@ export function FormField({
             </span>
           )}
           {isOptional && (
-            <span className="text-soft font-normal text-xs ml-1">
+            <span className="text-[#64718a] dark:text-[#98a6c0] font-normal text-xs ml-1">
               (opsional)
             </span>
           )}
         </label>
       ) : null}
       {children}
-      {hint && <span className="text-xs text-soft mt-1 block">{hint}</span>}
-      {error && <span className="text-xs text-rose-500 mt-1 block">{error}</span>}
+      {hint && (
+        <span className="text-xs text-[#64718a] dark:text-[#98a6c0] mt-1.5 block leading-relaxed">
+          {hint}
+        </span>
+      )}
+      {error && (
+        <span className="text-xs text-[#e11d48] mt-1.5 block font-medium">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
 
 export const inputCls =
-  "w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft";
+  "w-full h-[44px] border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] rounded-[10px] px-3.5 text-sm text-[#0f172a] dark:text-[#e8edf7] placeholder:text-[#94a0b8] dark:placeholder:text-[#6b7a96] focus:outline-none focus:border-[#2563eb] dark:focus:border-[#5b94ff] focus:ring-2 focus:ring-[#2563eb]/15 transition-colors disabled:opacity-60 disabled:cursor-not-allowed";
 
 interface SegmentedControlProps<T extends string> {
   label: string;

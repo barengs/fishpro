@@ -72,7 +72,7 @@ export function StepCatchLocation({
           type="button"
           onClick={onGetLocation}
           disabled={isLocating}
-          className="w-full h-11 px-4 rounded-xs border border-blue-200 dark:border-blue-900 bg-blue-50/80 dark:bg-blue-950/40 hover:bg-blue-100/90 dark:hover:bg-blue-900/50 text-fco-blue dark:text-blue-300 font-bold text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-[0.99] disabled:opacity-60"
+          className="w-full h-[44px] px-4 rounded-[10px] border border-blue-200 dark:border-blue-900 bg-[#eef3ff] dark:bg-[#14264d] hover:bg-blue-100/90 dark:hover:bg-blue-900/50 text-[#2563eb] dark:text-[#5b94ff] font-semibold text-xs sm:text-sm flex items-center justify-center transition-colors cursor-pointer active:scale-[0.99] disabled:opacity-60"
         >
           <span>
             {isLocating
