@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { PageHeader } from "../../components/PageHeader";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
@@ -86,6 +87,17 @@ export function AreasPage() {
     },
   ];
 
+  const handleSelectWppFromMap = useCallback(
+    (wppCode: string) => {
+      if (!wppCode) {
+        setSearch("");
+        return;
+      }
+      setSearch((prev) => (prev.trim() === wppCode ? "" : wppCode));
+    },
+    [setSearch],
+  );
+
   return (
     <div>
       <PageHeader
@@ -98,9 +110,7 @@ export function AreasPage() {
         <WppMapViewer
           role="admin"
           selectedWpp={search}
-          onSelectWpp={(wppCode) => {
-            setSearch((prev) => (prev === wppCode ? "" : wppCode));
-          }}
+          onSelectWpp={handleSelectWppFromMap}
         />
       </div>
 
