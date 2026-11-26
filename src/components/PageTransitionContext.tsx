@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Preload chunk AuthPage agar tidak ada delay network/parsing saat tirai naik
@@ -23,17 +23,6 @@ export function usePageTransition() {
 export function PageTransitionProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [animating, setAnimating] = useState(false);
-
-  // Preload halaman login/register setelah browser idle
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if ("requestIdleCallback" in window) {
-        (window as Window & { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(preloadAuth);
-      } else {
-        setTimeout(preloadAuth, 1200);
-      }
-    }
-  }, []);
 
   const navigateWithTransition = useCallback(
     (to: string) => {

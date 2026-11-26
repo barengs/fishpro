@@ -54,7 +54,7 @@ export function AuthPage() {
   }, [currentView]);
 
   return (
-    <div
+    <main
       className="auth-layout page"
       id="page"
       data-view={currentView}
@@ -83,6 +83,6 @@ export function AuthPage() {
         currentView={currentView}
         onNavigateTo={navigateToView}
       />
-    </div>
+    </main>
   );
 }

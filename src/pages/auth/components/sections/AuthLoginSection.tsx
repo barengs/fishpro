@@ -5,20 +5,6 @@ import { loginSchema } from "../../../../utils/schemas";
 import { resolveSafeRedirect } from "../../../../utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-// Preload layout & dashboard chunk agar saat response login selesai, perpindahan halaman instan tanpa jeda download bundle
-const prefetchDashboards = () => {
-  import("../../../admin/components/AdminSidebar").catch(() => {});
-  import("../../../admin/AdminDashboard").catch(() => {});
-  import("../../../owner/components/OwnerSidebar").catch(() => {});
-  import("../../../owner/OwnerDashboard").catch(() => {});
-  import("../../../regulator/components/RegulatorSidebar").catch(() => {});
-  import("../../../regulator/RegulatorDashboard").catch(() => {});
-  import("../../../staff/components/StaffSidebar").catch(() => {});
-  import("../../../staff/StaffDashboard").catch(() => {});
-  import("../../../captain/components/CaptainSidebar").catch(() => {});
-  import("../../../captain/CaptainDashboard").catch(() => {});
-};
-
 interface AuthLoginSectionProps {
   onNavigateTo: (path: string) => void;
   externalLoginUser?: string;
@@ -36,17 +22,6 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
   const [loginLoading, setLoginLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [capsLockActive, setCapsLockActive] = useState(false);
-
-  // Prefetch chunk dashboard saat halaman login dimuat
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if ("requestIdleCallback" in window) {
-        (window as Window & { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(prefetchDashboards);
-      } else {
-        setTimeout(prefetchDashboards, 400);
-      }
-    }
-  }, []);
 
   // Update loginUser if externalLoginUser changes
   useEffect(() => {
