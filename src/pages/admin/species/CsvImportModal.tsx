@@ -27,11 +27,28 @@ export function CsvImportModal({
   const [clearExisting, setClearExisting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const MAX_CSV_SIZE_BYTES = 10 * 1024 * 1024;
+  const ALLOWED_CSV_TYPES = new Set([
+    "",
+    "text/csv",
+    "application/csv",
+    "application/vnd.ms-excel",
+    "text/plain",
+  ]);
+
   const handleFileProcess = (file: File) => {
-    if (!file.name.endsWith(".csv") && file.type !== "text/csv") {
-      alert("Harap pilih file berformat .csv");
+    setFileError(null);
+    const hasCsvExt = file.name.toLowerCase().endsWith(".csv");
+    const hasAllowedMime = ALLOWED_CSV_TYPES.has(file.type);
+    if (!hasCsvExt || !hasAllowedMime) {
+      setFileError("File harus berformat .csv yang valid.");
+      return;
+    }
+    if (file.size > MAX_CSV_SIZE_BYTES) {
+      setFileError("Ukuran file maksimal 10 MB.");
       return;
     }
     setSelectedFileName(file.name);
@@ -40,7 +57,10 @@ export function CsvImportModal({
       const content = e.target?.result as string;
       if (content) setCsvText(content);
     };
-    reader.readAsText(file);
+    reader.onerror = () => {
+      setFileError("File CSV tidak dapat dibaca.");
+    };
+    reader.readAsText(file, "UTF-8");
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +78,7 @@ export function CsvImportModal({
   const handleClearFile = () => {
     setSelectedFileName(null);
     setCsvText("");
+    setFileError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -163,6 +184,11 @@ export function CsvImportModal({
                 <X size={16} aria-hidden="true" />
               </button>
             </div>
+          )}
+          {fileError && (
+            <p className="mt-2 text-xs font-medium text-[#e11d48]">
+              {fileError}
+            </p>
           )}
         </div>
 

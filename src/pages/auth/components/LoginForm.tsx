@@ -5,6 +5,7 @@ import { AlertCircle, Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 import { loginSchema } from "../../../utils/schemas";
+import { resolveSafeRedirect } from "../../../utils";
 import { buttonTapVariants } from "../../../utils/motionVariants";
 
 interface LoginFormProps {
@@ -72,10 +73,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
 
       // Navigate directly to resolved role dashboard or return URL with replace: true to clean history stack
       const targetDashboard = authService.getDashboardUrl();
-      const safeRedirect =
-        redirectTarget && redirectTarget.startsWith("/")
-          ? redirectTarget
-          : targetDashboard;
+      const safeRedirect = resolveSafeRedirect(redirectTarget, targetDashboard);
       navigate(safeRedirect, { replace: true });
     } catch (err: unknown) {
       const message =

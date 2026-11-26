@@ -17,6 +17,7 @@ import {
   formatThousandInput,
   unformatThousandInput,
   escapeHtml,
+  resolveSafeRedirect,
 } from "./formatters.ts";
 import { loginSchema, catchStep1Schema } from "./schemas.ts";
 import type { FishCatch } from "../services/catches/types.ts";
@@ -127,4 +128,25 @@ const invalidLat = catchStep1Schema.safeParse({
 });
 assertEqual(invalidLat.success, false, "Latitude > 90 fails");
 
-console.log("All 12 unit assertions passed.");
+assertEqual(
+  resolveSafeRedirect("/admin/ships?page=2", "/dashboard"),
+  "/admin/ships?page=2",
+  "Internal redirect passes",
+);
+assertEqual(
+  resolveSafeRedirect("//example.com/phish", "/dashboard"),
+  "/dashboard",
+  "Protocol-relative redirect rejected",
+);
+assertEqual(
+  resolveSafeRedirect("/\\example.com", "/dashboard"),
+  "/dashboard",
+  "Backslash redirect rejected",
+);
+assertEqual(
+  resolveSafeRedirect("https://example.com", "/dashboard"),
+  "/dashboard",
+  "External redirect rejected",
+);
+
+console.log("All 16 unit assertions passed.");

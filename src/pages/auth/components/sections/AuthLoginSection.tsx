@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "../../../../components/toast";
 import { authService } from "../../../../services/auth";
 import { loginSchema } from "../../../../utils/schemas";
+import { resolveSafeRedirect } from "../../../../utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Preload layout & dashboard chunk agar saat response login selesai, perpindahan halaman instan tanpa jeda download bundle
@@ -109,10 +110,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
       const data = await authService.login(parsed.data);
       toast.success(`Berhasil masuk. Halo, ${data.username}!`);
       const targetDashboard = authService.getDashboardUrl();
-      const safeRedirect =
-        redirectTarget && redirectTarget.startsWith("/")
-          ? redirectTarget
-          : targetDashboard;
+      const safeRedirect = resolveSafeRedirect(redirectTarget, targetDashboard);
       navigate(safeRedirect, { replace: true });
     } catch (err: unknown) {
       const message =

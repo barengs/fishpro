@@ -207,3 +207,17 @@ export function calculateCursorPosition(
   }
   return newFormatted.length;
 }
+
+/**
+ * Memastikan target redirect setelah login hanya berupa path internal aplikasi
+ * (menolak URL eksternal, protocol-relative `//`, dan backslash `/\`).
+ */
+export function resolveSafeRedirect(
+  redirectTarget: string | null | undefined,
+  fallback: string,
+): string {
+  if (redirectTarget && /^\/(?!\/|\\)/.test(redirectTarget)) {
+    return redirectTarget;
+  }
+  return fallback;
+}
