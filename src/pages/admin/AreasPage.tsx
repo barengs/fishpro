@@ -171,7 +171,7 @@ export function AreasPage() {
         rows={rows}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada wilayah penangkapan terdaftar di server."
+        emptyText="Belum ada wilayah penangkapan (WPP) yang terdaftar."
         onRowClick={(r) => setSelectedDetailArea(r)}
       />
 

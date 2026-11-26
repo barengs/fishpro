@@ -77,7 +77,7 @@ export function StepCatchLocation({
           <span>
             {isLocating
               ? `Mendeteksi lokasi${dots}`
-              : "Ambil Lokasi Otomatis (GPS & Jaringan)"}
+              : "Deteksi Lokasi Saat Ini (GPS)"}
           </span>
         </button>
 
@@ -157,7 +157,7 @@ export function StepCatchLocation({
       <FormField
         label="Catatan lokasi"
         htmlFor="cr-desc"
-        hint="Terisi otomatis saat GPS aktif, atau ketik nama lokasi/perairan manual."
+        hint="Terisi langsung saat GPS aktif, atau ketik nama perairannya sendiri."
       >
         <div className="relative">
           <input

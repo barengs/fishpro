@@ -269,10 +269,10 @@ export function ScaleReportModal({
           <div className="pt-8 border-t border-slate-200 dark:border-slate-800 print:border-black flex justify-between items-end text-xs font-sans">
             <div className="text-2xs text-slate-400 print:text-black">
               <p className="m-0 font-mono">
-                Dicetak otomatis via Sistem Antigravity Smart Scale IoT
+                Dicetak melalui FishPro Smart Scale IoT
               </p>
               <p className="m-0 font-mono">
-                SHA-256 Verified Ledger • Dokumen Sah Pelabuhan Perikanan
+                Terverifikasi SHA-256 · Dokumen Sah Pelabuhan Perikanan
               </p>
             </div>
             <div className="text-center w-56">

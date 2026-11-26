@@ -150,7 +150,7 @@ export function ShipsPage() {
         rows={rows}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data kapal terdaftar di server."
+        emptyText="Belum ada kapal yang terdaftar."
         onRowClick={openDetail}
       />
 
@@ -217,7 +217,7 @@ export function ShipsPage() {
         open={isDeleteOpen}
         title="Hapus Kapal Nasional"
         itemName={deleteTarget?.name}
-        message="Apakah Anda yakin ingin menghapus kapal ini dari sistem KKP? Data operasional kapal akan dihapus permanen."
+        message="Yakin ingin menghapus kapal ini? Data operasional kapal yang sudah dihapus tidak bisa dikembalikan."
         loading={deleting}
         onClose={cancelDelete}
         onConfirm={handleConfirmDelete}

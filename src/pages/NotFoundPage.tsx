@@ -54,8 +54,7 @@ export function NotFoundPage() {
             Halaman Tidak Ditemukan
           </h1>
           <p className="m-0 text-sm text-soft leading-relaxed max-w-sm mb-8">
-            Tautan yang Anda tuju mungkin salah ketik, telah dipindahkan, atau
-            tidak lagi tersedia pada sistem FishPro.
+            Alamat halaman mungkin salah ketik, sudah dipindahkan, atau memang tidak tersedia di FishPro.
           </p>
 
           {/* Action Buttons */}
@@ -66,7 +65,7 @@ export function NotFoundPage() {
               className="w-full sm:w-auto h-11 px-5 rounded-xl border border-slate-200/80 dark:border-fco-border-dark surface-card hover:surface-page text-xs font-semibold text-strong cursor-pointer transition-colors flex items-center justify-center gap-2 shadow-2xs"
             >
               <ArrowLeft size={16} aria-hidden="true" />
-              <span>Sebelumnya</span>
+              <span>Kembali</span>
             </button>
 
             <Link
@@ -82,7 +81,7 @@ export function NotFoundPage() {
 
       {/* Footer Info */}
       <footer className="py-4 text-center text-2xs text-soft border-t border-fco-border-subtle">
-        Sistem Manajemen Perikanan Terpadu · Kementerian Kelautan dan Perikanan
+        Portal Pelaporan Tangkapan &amp; PNBP Perikanan · Kementerian Kelautan dan Perikanan
       </footer>
     </div>
   );

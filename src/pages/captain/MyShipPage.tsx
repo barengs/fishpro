@@ -135,7 +135,7 @@ export function MyShipPage() {
     <div className="max-w-220 mx-auto">
       <PageHeader
         title="Kapal Saya"
-        desc="Informasi kapal dan kuota resmi yang Anda nahkodai terintegrasi API backend."
+        desc="Spesifikasi kapal beserta sisa kuota tahunan yang sedang Anda nahkodai."
       />
 
       <section className="surface-card border rounded-xl p-8 shadow-xs">

@@ -150,7 +150,7 @@ export function IotDevicesPage() {
     <div>
       <PageToolbar
         title="Timbangan Digital Pelabuhan"
-        desc="Daftar unit timbangan dermaga yang terhubung ke sistem untuk pencatatan otomatis hasil tangkapan."
+        desc="Daftar timbangan dermaga yang terhubung ke FishPro untuk merekam bobot tangkapan."
         searchPlaceholder="Cari ID perangkat / pelabuhan..."
         searchValue={search}
         onSearchChange={setSearch}
@@ -173,7 +173,7 @@ export function IotDevicesPage() {
         rows={filteredDevices}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada perangkat timbangan pintar IoT yang terdaftar di sistem."
+        emptyText="Belum ada timbangan digital IoT yang terdaftar."
         onRowClick={openDetail}
       />
 

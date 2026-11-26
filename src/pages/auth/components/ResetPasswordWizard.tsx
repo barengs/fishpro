@@ -69,7 +69,7 @@ export function ResetPasswordWizard({
             </>
           )}
           {step === 3 && "Pilih kata sandi baru minimal 8 karakter."}
-          {step === 4 && "Silakan masuk kembali dengan kata sandi baru."}
+          {step === 4 && "Kata sandi baru siap dipakai. Masuk kembali ke akun Anda."}
         </p>
       </div>
 
@@ -98,8 +98,8 @@ export function ResetPasswordWizard({
               Email atau nomor registrasi
               <span
                 className="text-red-500 ml-1 font-bold"
-                aria-label="mandatory"
-                title="Mandatory"
+                aria-label="wajib diisi"
+                title="Wajib diisi"
               >
                 *
               </span>
@@ -201,8 +201,8 @@ export function ResetPasswordWizard({
               Kata sandi baru
               <span
                 className="text-red-500 ml-1 font-bold"
-                aria-label="mandatory"
-                title="Mandatory"
+                aria-label="wajib diisi"
+                title="Wajib diisi"
               >
                 *
               </span>
@@ -273,8 +273,8 @@ export function ResetPasswordWizard({
               Konfirmasi sandi baru
               <span
                 className="text-red-500 ml-1 font-bold"
-                aria-label="mandatory"
-                title="Mandatory"
+                aria-label="wajib diisi"
+                title="Wajib diisi"
               >
                 *
               </span>

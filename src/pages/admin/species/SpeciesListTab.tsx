@@ -142,7 +142,7 @@ export function SpeciesListTab() {
         rows={speciesList}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data spesies ikan terdaftar di server."
+        emptyText="Belum ada data spesies ikan."
         onRowClick={openDetail}
       />
 

@@ -27,10 +27,10 @@ export function FlowSection() {
   return (
     <section className="onboarding-section" id="alur">
       <div className="onboarding-wrap">
-        <h2 className="rv">Dari timbangan sampai terverifikasi, tiga langkah</h2>
+        <h2 className="rv">Tiga tahap dari dermaga hingga tercatat resmi</h2>
         <p className="lead rv" style={{ "--d": "0.08s" } as React.CSSProperties}>
-          Setiap kali ikan ditimbang, datanya langsung disegel di sistem. Berat ikan, kapal pembongkar,
-          dan tagihan PNBP terkunci permanen.
+          Setiap kali ikan ditimbang, hasilnya langsung tersimpan utuh di FishPro. Bobot tangkapan,
+          identitas kapal, dan nominal PNBP terdata rapi tanpa risiko selisih.
         </p>
 
         <div className="steps" id="steps" ref={stepsRef}>
@@ -44,25 +44,26 @@ export function FlowSection() {
           <div className="steps-cols">
             <div className={`rv ${progress >= 0.04 ? "on" : ""}`}>
               <div className="steps-num">1</div>
-              <h3>Timbang di dermaga</h3>
+              <h3>Timbang saat bongkar muat</h3>
               <p>
-                Ikan ditimbang di timbangan dermaga. Angkanya masuk ke sistem otomatis dari sensor, tanpa
-                dicatat manual.
+                Hasil tangkapan ditimbang di pelabuhan memakai perangkat digital yang langsung mengirim
+                angka berat ke sistem tanpa perlu tulis ulang.
               </p>
             </div>
             <div className={`rv ${progress >= 1 / 3 + 0.04 ? "on" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
               <div className="steps-num">2</div>
-              <h3>Tercatat dan terhitung</h3>
+              <h3>Kuota dan PNBP ikut terhitung</h3>
               <p>
-                Sisa kuota kapal diperbarui. Tarif PNBP dihitung dari berat ikan dan ukuran GT kapal.
+                Sisa kuota kapal langsung diperbarui, sementara tarif PNBP dihitung dari bobot ikan dan
+                ukuran GT kapal.
               </p>
             </div>
             <div className={`rv ${progress >= 2 / 3 + 0.04 ? "on" : ""}`} style={{ "--d": "0.2s" } as React.CSSProperties}>
               <div className="steps-num">3</div>
-              <h3>Terkunci dan bisa dicek</h3>
+              <h3>Terjaga dan mudah diperiksa</h3>
               <p>
-                Catatan disegel dengan blockchain sehingga tidak bisa diubah atau dihapus diam-diam. Petugas
-                dinas dan pemilik kapal bisa memeriksanya.
+                Riwayat pencatatan dilindungi blockchain sehingga tidak bisa diubah sepihak, dan dapat
+                dicek kapan saja oleh pengawas maupun pemilik kapal.
               </p>
             </div>
           </div>

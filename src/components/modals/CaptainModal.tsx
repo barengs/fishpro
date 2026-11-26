@@ -116,7 +116,7 @@ function CaptainForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {!fixedOwnerId ? (
           <SelectField
-            label="Pemilik kapal (Owner)"
+            label="Pemilik kapal"
             id="c-owner"
             required
             searchable
@@ -221,7 +221,7 @@ function CaptainForm({
       {submitting && (
         <div className="flex items-center justify-center gap-2 text-sm text-fco-blue pt-1">
           <Loader2 size={16} className="animate-spin" aria-hidden="true" />
-          <span>Menghubungi server backend...</span>
+          <span>Menyimpan data nahkoda...</span>
         </div>
       )}
 

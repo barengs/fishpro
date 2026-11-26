@@ -99,8 +99,7 @@ export function StepOperational({
             </span>
           </label>
           <p className="m-0 text-xs text-soft mt-0.5">
-            Pilih nomor registrasi kapal, nama kapal dan pelabuhan pangkalan
-            akan terisi otomatis.
+            Pilih nomor registrasi kapal; nama kapal dan pelabuhan pangkalan akan langsung terisi.
           </p>
         </div>
 
@@ -175,7 +174,7 @@ export function StepOperational({
                 type="text"
                 value={shipName}
                 onChange={(e) => setShipName(e.target.value)}
-                placeholder="Terisi otomatis atau ketik nama kapal"
+                placeholder="Terisi langsung atau ketik nama kapal"
                 className={inputCls}
               />
             </div>
@@ -200,7 +199,7 @@ export function StepOperational({
               type="text"
               value={homePort}
               onChange={(e) => setHomePort(e.target.value)}
-              placeholder="Terisi otomatis atau ketik pelabuhan"
+              placeholder="Terisi langsung atau ketik pelabuhan"
               className={inputCls}
             />
           </div>

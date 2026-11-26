@@ -181,7 +181,7 @@ export function CaptainDashboard() {
                 </div>
               ) : (
                 <div className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-800 text-center text-xs text-subtext dark:text-slate-400 my-2">
-                  Belum ada riwayat penimbangan di dermaga. Data akan otomatis tercatat saat kapal membongkar muatan.
+                  Belum ada catatan penimbangan di dermaga. Data akan langsung masuk saat kapal selesai bongkar muatan.
                 </div>
               )}
             </div>

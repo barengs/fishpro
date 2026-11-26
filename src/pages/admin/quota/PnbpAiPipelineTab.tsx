@@ -53,7 +53,7 @@ export function PnbpAiPipelineTab() {
     <div className="flex flex-col gap-5">
       <PageToolbar
         title="Prediksi PNBP AI (4 Model Analisis)"
-        desc="Pipeline machine learning multi-metode (Linear Regression, Neural Network MLP, NSGA-III, ARIMA)."
+        desc="Simulasi proyeksi PNBP dengan 4 metode analisis (Regresi Linear, Neural Network MLP, NSGA-III, dan ARIMA)."
         addLabel={predicting ? "Sedang Menghitung..." : "Jalankan Prediksi AI"}
         onAdd={handleRunPrediction}
       />

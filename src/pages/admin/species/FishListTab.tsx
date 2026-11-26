@@ -170,7 +170,7 @@ export function FishListTab() {
         rows={fishList}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data sampel ikan individu."
+        emptyText="Belum ada catatan sampel ikan."
         onRowClick={openDetail}
       />
 

@@ -122,8 +122,7 @@ export function WppPotentialCard({
               </span>
             </div>
             <p className="m-0 text-[12px] text-subtext dark:text-slate-400 mt-0.5">
-              Analisis kepadatan biomassa musiman dan rekomendasi kuota perairan
-              terbesar untuk kapal Anda.
+              Pemetaan zona tangkap paling produktif beserta musim puncaknya dari data lapangan.
             </p>
           </div>
         </div>
@@ -196,7 +195,7 @@ export function WppPotentialCard({
         </div>
       ) : (
         <div className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-800 text-xs text-subtext dark:text-slate-400">
-          Belum ada akumulasi data tangkapan di database untuk memunculkan rekomendasi zona unggulan.
+          Belum ada data tangkapan yang cukup untuk menampilkan rekomendasi zona potensial.
         </div>
       )}
 
@@ -342,8 +341,7 @@ export function WppPotentialCard({
                 <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/50 text-[11px] text-amber-800 dark:text-amber-300">
                   <ShieldAlert size={14} className="shrink-0" />
                   <span>
-                    Permohonan akan diverifikasi oleh regulator pelabuhan sesuai
-                    kuota daya dukung WPP tujuan.
+                    Pengajuan ini akan diperiksa oleh pengawas pelabuhan sesuai sisa kuota di WPP tujuan.
                   </span>
                 </div>
 

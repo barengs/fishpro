@@ -16,7 +16,7 @@ export interface ConfirmDeleteModalProps {
 export function ConfirmDeleteModal({
   open,
   title = "Konfirmasi Hapus",
-  message = "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.",
+  message = "Yakin ingin menghapus data ini? Data yang sudah terhapus tidak bisa dikembalikan.",
   itemName,
   confirmLabel = "Hapus",
   cancelLabel = "Batal",

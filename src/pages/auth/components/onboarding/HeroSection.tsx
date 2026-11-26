@@ -37,10 +37,10 @@ export function HeroSection() {
   return (
     <div className="hero" id="top">
       <div className="onboarding-wrap">
-        <h1 className="rv in">Catat hasil tangkapan langsung dari dermaga</h1>
+        <h1 className="rv in">Laporkan hasil tangkapan langsung dari dermaga</h1>
         <p className="hero-desc rv in" style={{ "--d": "0.1s" } as React.CSSProperties}>
-          Ikan ditimbang di dermaga, angkanya langsung masuk ke sistem. Sisa kuota kapal dan tarif PNBP
-          dihitung otomatis, tanpa catat manual.
+          Begitu ikan ditimbang saat bongkar muat, datanya langsung terekam ke sistem. Sisa kuota kapal
+          dan tarif PNBP terhitung seketika tanpa rekap kertas.
         </p>
         <div className="hero-cta rv in" style={{ "--d": "0.2s" } as React.CSSProperties}>
           <button
@@ -55,7 +55,7 @@ export function HeroSection() {
             className="hero-link-btn"
             onClick={() => navigateWithTransition("/login")}
           >
-            Sudah punya akun? Masuk ke portal
+            Sudah punya akun? Masuk
           </button>
         </div>
       </div>

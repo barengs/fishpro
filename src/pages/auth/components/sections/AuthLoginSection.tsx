@@ -76,10 +76,10 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
 
     const errors: Record<string, string> = {};
     if (!loginUser.trim()) {
-      errors.loginUser = "Nama pengguna atau nomor registrasi wajib diisi.";
+      errors.loginUser = "Isi nama pengguna atau nomor registrasi.";
     }
     if (!loginPass) {
-      errors.loginPass = "Kata sandi wajib diisi.";
+      errors.loginPass = "Isi kata sandi akun Anda.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -107,7 +107,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
     setLoginLoading(true);
     try {
       const data = await authService.login(parsed.data);
-      toast.success(`Login berhasil. Selamat datang kembali, ${data.username}!`);
+      toast.success(`Berhasil masuk. Halo, ${data.username}!`);
       const targetDashboard = authService.getDashboardUrl();
       const safeRedirect =
         redirectTarget && redirectTarget.startsWith("/")
@@ -118,7 +118,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
       const message =
         err instanceof Error
           ? err.message
-          : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
+          : "Gagal masuk. Periksa lagi nama pengguna dan kata sandi Anda.";
       // Tampilkan error login umum di bawah kolom kata sandi
       setFieldErrors({ loginPass: message });
       toast.error(message);
@@ -135,7 +135,7 @@ export function AuthLoginSection({ onNavigateTo, externalLoginUser }: AuthLoginS
             Masuk ke FishPro
           </h1>
           <p className="lead">
-            Selamat datang kembali! Silakan masuk ke akun Anda.
+            Masukkan detail akun Anda untuk melanjutkan.
           </p>
 
           <form id="form-masuk" onSubmit={handleLoginSubmit} noValidate>

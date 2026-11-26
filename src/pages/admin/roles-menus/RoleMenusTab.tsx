@@ -206,7 +206,7 @@ export function RoleMenusTab() {
         rows={roleMenus}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada hubungan peran-menu yang ditetapkan."
+        emptyText="Belum ada hak akses menu yang diatur."
       />
 
       <AssignRoleMenuModal

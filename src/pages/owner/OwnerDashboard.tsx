@@ -131,7 +131,7 @@ export function OwnerDashboard() {
           Armada Anda
         </h1>
         <p className="text-[13px] text-subtext dark:text-slate-400 mt-1">
-          Pantau kapal, nahkoda, kuota, dan PNBP armada secara terpadu.
+          Pantau armada kapal, nahkoda, sisa kuota, dan tagihan PNBP dalam satu layar.
         </p>
       </div>
 

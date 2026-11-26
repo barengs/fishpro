@@ -51,7 +51,7 @@ export function StepShipIdentity({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {owners.length > 0 && !fixedOwnerId ? (
           <SelectField
-            label="Pemilik (Owner)"
+            label="Pemilik Kapal"
             id="wz-owner"
             searchable
             searchPlaceholder="Cari nama pemilik..."
@@ -66,7 +66,7 @@ export function StepShipIdentity({
             ]}
           />
         ) : (
-          <FormField label="Pemilik (Owner)" htmlFor="wz-owner">
+          <FormField label="Pemilik Kapal" htmlFor="wz-owner">
             <input
               id="wz-owner"
               value={form.owner || ""}
@@ -80,7 +80,7 @@ export function StepShipIdentity({
 
         {captains.length > 0 ? (
           <SelectField
-            label="Nahkoda (Captain)"
+            label="Nahkoda"
             id="wz-captain"
             searchable
             searchPlaceholder="Cari nama atau nomor lisensi..."
@@ -95,7 +95,7 @@ export function StepShipIdentity({
             ]}
           />
         ) : (
-          <FormField label="Nahkoda (Captain)" htmlFor="wz-captain">
+          <FormField label="Nahkoda" htmlFor="wz-captain">
             <input
               id="wz-captain"
               value={form.captain || ""}

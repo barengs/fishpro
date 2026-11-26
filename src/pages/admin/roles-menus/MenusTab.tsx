@@ -188,7 +188,7 @@ export function MenusTab() {
         rows={menus}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data menu terdaftar di server."
+        emptyText="Belum ada menu yang terdaftar."
       />
 
       <MenuModal

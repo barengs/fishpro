@@ -9,7 +9,7 @@ import "./components/onboarding/heroScene.css";
 
 export function OnboardingPage() {
   useEffect(() => {
-    document.title = "FishPro – Catat hasil tangkapan langsung dari dermaga";
+    document.title = "FishPro – Pelaporan Tangkapan & Kuota Kapal dari Dermaga";
 
     const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isReducedMotion) {

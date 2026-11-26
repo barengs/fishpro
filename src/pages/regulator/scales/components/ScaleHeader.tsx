@@ -29,8 +29,8 @@ export function ScaleHeader({
           </h1>
         </div>
         <p className="m-0 text-sm text-soft">
-          Penerimaan bobot otomatis dari sensor timbangan dermaga pelabuhan dan
-          pencatatan resmi ke blockchain.
+          Data berat masuk langsung dari sensor timbangan dermaga dan tercatat
+          ke rantai blok resmi.
         </p>
       </div>
 

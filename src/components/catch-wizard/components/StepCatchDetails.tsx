@@ -140,15 +140,14 @@ export function StepCatchDetails({
 
           {pendingReadings.length === 0 ? (
             <p className="m-0 text-2xs text-amber-600 dark:text-amber-400">
-              Belum ada data penimbangan baru dari sensor dermaga. Silakan
-              beralih ke <strong>Input Manual</strong> atau tunggu penimbangan
-              berlangsung.
+              Belum ada antrean bobot dari timbangan dermaga. Pindah ke{" "}
+              <strong>Input Manual</strong> atau tunggu hasil timbang masuk.
             </p>
           ) : (
             <div className="flex items-center gap-1.5 text-2xs text-emerald-600 dark:text-emerald-400 font-semibold">
               <CheckCircle2 size={13} />
               <span>
-                Bobot dikunci langsung dari hardware sensor dermaga terdaftar
+                Angka berat diambil langsung dari sensor timbangan dermaga
               </span>
             </div>
           )}
@@ -215,7 +214,7 @@ export function StepCatchDetails({
         id="cr-v"
         type="number"
         step="0.01"
-        hint="Opsional — PNBP dihitung otomatis."
+        hint="Opsional — tarif PNBP tetap terhitung dari berat tangkapan."
         value={form.value}
         onChange={(e) => setForm({ ...form, value: e.target.value })}
         placeholder="0"

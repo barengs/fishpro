@@ -62,7 +62,7 @@ export function StepShipReview({
       ),
     },
     {
-      label: "Pemilik Kapal (Owner)",
+      label: "Pemilik Kapal",
       icon: Building2,
       value: (
         <span className="text-strong font-medium" title={selectedOwnerName}>
@@ -71,7 +71,7 @@ export function StepShipReview({
       ),
     },
     {
-      label: "Nahkoda (Captain)",
+      label: "Nahkoda",
       icon: Anchor,
       value: (
         <span className="text-strong font-medium" title={selectedCaptainName}>
@@ -130,10 +130,10 @@ export function StepShipReview({
     <div className="flex flex-col gap-3">
       <div>
         <h3 className="m-0 mb-1 text-lg font-extrabold text-strong">
-          Cek ringkasan kapal
+          Ringkasan data kapal
         </h3>
         <p className="m-0 text-sm text-soft">
-          Pastikan spesifikasi teknis dan legalitas kapal sudah sesuai sebelum disimpan.
+          Periksa kembali spesifikasi teknis dan legalitas kapal sebelum disimpan.
         </p>
       </div>
 

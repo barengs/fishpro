@@ -162,7 +162,7 @@ export async function resolveDeviceLocation(): Promise<ResolvedLocation> {
           .catch(() =>
             reject(
               new Error(
-                "Waktu pembacaan lokasi habis. Masukkan koordinat secara manual.",
+                "Waktu pencarian lokasi habis. Isi koordinatnya secara langsung.",
               ),
             ),
           );
@@ -202,7 +202,7 @@ export async function resolveDeviceLocation(): Promise<ResolvedLocation> {
             .catch(() =>
               reject(
                 new Error(
-                  "Tidak dapat mendeteksi lokasi. Masukkan koordinat secara manual.",
+                  "Lokasi tidak dapat dideteksi. Isi koordinatnya secara langsung.",
                 ),
               ),
             );
