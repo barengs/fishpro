@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Coins, Cpu, Fish, Link2, Ship } from "lucide-react";
+import { Coins, Cpu, Fish, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { PnbpChart } from "./components/PnbpChart";
 import { RecentCatchesCard } from "./components/RecentCatchesCard";
 import { CriticalQuotaTable } from "./components/CriticalQuotaTable";
 import { WppBarChart } from "./components/WppBarChart";
 import { catchesService, type FishCatch } from "../../services/catches";
-import {
-  blockchainService,
-  type BlockchainStatus,
-} from "../../services/blockchain";
 import { iotService } from "../../services/iot";
 import { shipsService } from "../../services/ships";
 import { dashboardService } from "../../services/dashboard";
@@ -64,7 +59,6 @@ export function SuperAdminDashboard() {
   >([]);
   const [wppPotential, setWppPotential] = useState<WppPotentialItem[]>([]);
   const [recentCatches, setRecentCatches] = useState<FishCatch[]>([]);
-  const [chainStatus, setChainStatus] = useState<BlockchainStatus | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -78,14 +72,12 @@ export function SuperAdminDashboard() {
           catches,
           iotDevices,
           pendingReadings,
-          blockchainRes,
         ] = await Promise.all([
           dashboardService.getAdminDashboard().catch(() => null),
           dashboardService.getWppPotentialForecast().catch(() => null),
           catchesService.getAll().catch(() => [] as FishCatch[]),
           iotService.getDevices().catch(() => []),
           iotService.getReadings(undefined, "pending").catch(() => []),
-          blockchainService.getStatus().catch(() => null),
         ]);
 
         if (ignore) return;
@@ -148,7 +140,6 @@ export function SuperAdminDashboard() {
         setCriticalShips(dashOk ? dashData!.critical_quota_ships || [] : []);
         setWppPotential(potentialRes?.rankings || []);
         setRecentCatches(sortedCatches.slice(0, 4));
-        setChainStatus(blockchainRes);
       } catch {
         // Keeps safe default state
       } finally {
@@ -169,45 +160,20 @@ export function SuperAdminDashboard() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header Tata Kelola */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2 text-[13px] font-medium text-subtext dark:text-[#98a6c0] mb-1.5">
-            <span>Tata Kelola</span>
-            <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-ink dark:text-[#e8edf7] font-semibold">
-              Ringkasan Sistem Nasional
-            </span>
-          </div>
-          <h1 className="m-0 text-[26px] sm:text-[30px] font-extrabold tracking-tight text-ink dark:text-[#e8edf7] leading-tight">
-            Tata Kelola &amp; Regulasi Sistem
-          </h1>
-          <p className="m-0 text-[13px] text-subtext dark:text-[#98a6c0] mt-1.5 max-w-2xl">
-            Pemantauan armada nasional, realisasi tangkapan, penerimaan PNBP, dan telemetri timbangan pelabuhan.
-          </p>
+      <div>
+        <div className="flex items-center gap-2 text-[13px] font-medium text-subtext dark:text-[#98a6c0] mb-1.5">
+          <span>Tata Kelola</span>
+          <span className="text-slate-300 dark:text-slate-600">/</span>
+          <span className="text-ink dark:text-[#e8edf7] font-semibold">
+            Ringkasan Sistem Nasional
+          </span>
         </div>
-
-        {chainStatus && (
-          <Link
-            to="/admin/blockchain"
-            className="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full bg-white dark:bg-[#0f1729] border border-[#e6e9ef] dark:border-[#1f2a42] text-[12px] font-semibold text-ink dark:text-[#e8edf7] no-underline hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] transition-colors shrink-0 shadow-subtle"
-          >
-            <Link2
-              size={13}
-              className="text-brand-600 dark:text-brand-400"
-              aria-hidden="true"
-            />
-            <span
-              className={`w-2 h-2 rounded-full ${
-                chainStatus.valid ? "bg-emerald-500" : "bg-amber-500"
-              }`}
-            />
-            <span>
-              Rantai blok:{" "}
-              {chainStatus.valid ? "Terverifikasi" : "Perlu audit"} (
-              {formatNumber(chainStatus.block_count)})
-            </span>
-          </Link>
-        )}
+        <h1 className="m-0 text-[26px] sm:text-[30px] font-extrabold tracking-tight text-ink dark:text-[#e8edf7] leading-tight">
+          Tata Kelola &amp; Regulasi Sistem
+        </h1>
+        <p className="m-0 text-[13px] text-subtext dark:text-[#98a6c0] mt-1.5 max-w-2xl">
+          Pemantauan armada nasional, realisasi tangkapan, penerimaan PNBP, dan telemetri timbangan pelabuhan.
+        </p>
       </div>
 
       {/* 4 Cards Tata Kelola — Selaras dengan /api/dashboard/admin/ */}
