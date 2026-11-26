@@ -115,14 +115,14 @@ export function IotDevicesPage() {
         r.is_active ? (
           <StatusChip
             label="Aktif"
-            icon={<Wifi size={13} className="text-emerald-500" />}
+            fixedWidth
+            icon={<Wifi size={13} className="shrink-0" strokeWidth={2.4} />}
           />
         ) : (
           <StatusChip
             label="Nonaktif"
-            bg="#EEF1F6"
-            color="#4A5872"
-            icon={<WifiOff size={13} className="text-slate-400" />}
+            fixedWidth
+            icon={<WifiOff size={13} className="shrink-0" strokeWidth={2.4} />}
           />
         ),
     },
@@ -149,8 +149,8 @@ export function IotDevicesPage() {
   return (
     <div>
       <PageToolbar
-        title="Perangkat Timbangan Pintar IoT"
-        desc="Kelola daftar perangkat keras timbangan digital pelabuhan resmi yang terhubung ke jaringan FCO."
+        title="Timbangan Digital Pelabuhan"
+        desc="Daftar unit timbangan dermaga yang terhubung ke sistem untuk pencatatan otomatis hasil tangkapan."
         searchPlaceholder="Cari ID perangkat / pelabuhan..."
         searchValue={search}
         onSearchChange={setSearch}
@@ -182,31 +182,7 @@ export function IotDevicesPage() {
         open={isDetailOpen}
         title={selectedDevice?.name || "Detail Perangkat Timbangan"}
         subtitle="Spesifikasi perangkat keras IoT dan kredensial koneksi sensor dermaga."
-        badge={
-          selectedDevice ? (
-            <StatusChip
-              label={selectedDevice.is_active ? "Perangkat Aktif" : "Nonaktif"}
-              bg={selectedDevice.is_active ? undefined : "#EEF1F6"}
-              color={selectedDevice.is_active ? undefined : "#4A5872"}
-            />
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedDevice && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedDevice;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "ID Perangkat (Device ID)",

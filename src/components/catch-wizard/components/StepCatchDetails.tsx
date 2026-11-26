@@ -67,7 +67,7 @@ export function StepCatchDetails({
         <label className="block text-xs font-bold text-soft uppercase tracking-wider">
           Metode Pengukuran Berat
         </label>
-        <div className="grid grid-cols-2 gap-2 p-1 rounded-xs surface-inset border border-fco-border-subtle">
+        <div className="grid grid-cols-2 gap-1.5 p-1 rounded-[10px] bg-[#f7f8fa] dark:bg-[#0a101d] border border-[#e8ebf0] dark:border-[#1f2a42]">
           <button
             type="button"
             onClick={() => {
@@ -82,16 +82,16 @@ export function StepCatchDetails({
                 unit: defaultReading?.unit || prev.unit,
               }));
             }}
-            className={`h-9 px-3 rounded-xs text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none ${
+            className={`h-9 px-3 rounded-[8px] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer border-0 ${
               isIotMode
-                ? "bg-fco-blue text-white shadow-xs font-bold"
-                : "bg-transparent text-soft hover:text-strong"
+                ? "bg-[#2563eb] text-white font-semibold"
+                : "bg-transparent text-[#64718a] dark:text-[#98a6c0] hover:text-[#0f172a] dark:hover:text-[#e8edf7]"
             }`}
           >
             <Cpu size={14} />
             <span>Timbangan Pintar IoT</span>
             {pendingReadings.length > 0 && (
-              <span className="px-1.5 py-0.2 rounded-xs bg-emerald-500 text-white text-2xs font-mono font-bold">
+              <span className="px-1.5 py-0.2 rounded-[6px] bg-emerald-500 text-white text-2xs font-mono font-bold">
                 {pendingReadings.length}
               </span>
             )}
@@ -106,10 +106,10 @@ export function StepCatchDetails({
                 scale_reading_id: "",
               }));
             }}
-            className={`h-9 px-3 rounded-xs text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none ${
+            className={`h-9 px-3 rounded-[8px] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer border-0 ${
               !isIotMode
-                ? "bg-fco-blue text-white shadow-xs font-bold"
-                : "bg-transparent text-soft hover:text-strong"
+                ? "bg-[#2563eb] text-white font-semibold"
+                : "bg-transparent text-[#64718a] dark:text-[#98a6c0] hover:text-[#0f172a] dark:hover:text-[#e8edf7]"
             }`}
           >
             <Pencil size={14} />
@@ -120,7 +120,7 @@ export function StepCatchDetails({
 
       {/* 2. IoT Device Selector (Only in IoT Mode) */}
       {isIotMode && (
-        <div className="p-3.5 rounded-xs surface-inset border border-fco-border-subtle space-y-2">
+        <div className="p-3.5 rounded-[12px] bg-[#f7f8fa]/70 dark:bg-[#0a101d]/40 border border-[#e8ebf0] dark:border-[#1f2a42] space-y-2">
           <SelectField
             label="Pilih Sesi Timbangan Dermaga Aktif"
             id="cr-scale-reading"

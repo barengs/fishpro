@@ -51,15 +51,15 @@ export function ScaleHeader({
         </div>
 
         <span
-          className={`inline-flex items-center gap-1.5 h-11 px-3.5 rounded-xs text-xs font-semibold border ${
+          className={`inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl text-xs font-bold shadow-2xs ${
             sseConnected
-              ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
-              : "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
+              ? "bg-emerald-600 text-white"
+              : "bg-amber-500 text-white"
           }`}
         >
           <span
             className={`w-2 h-2 rounded-full ${
-              sseConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+              sseConnected ? "bg-white animate-pulse" : "bg-white/80"
             }`}
           />
           <span>{sseConnected ? "Live Aktif" : "Menghubungkan"}</span>
@@ -69,7 +69,7 @@ export function ScaleHeader({
           type="button"
           onClick={onRefresh}
           title="Segarkan Pembacaan"
-          className="w-11 h-11 rounded-xs border border-fco-border-subtle surface-card hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer transition-colors shrink-0"
+          className="w-10 h-10 rounded-xl border border-line bg-white hover:bg-gray-50 dark:bg-card-dark text-soft hover:text-strong flex items-center justify-center cursor-pointer transition-colors shadow-2xs shrink-0"
         >
           <RefreshCw size={15} aria-hidden="true" />
         </button>

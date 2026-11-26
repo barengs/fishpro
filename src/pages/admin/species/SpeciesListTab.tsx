@@ -101,11 +101,11 @@ export function SpeciesListTab() {
             <a
               href={fishSpeciesService.getTemplateUrl()}
               download
-              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
+              className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors no-underline whitespace-nowrap"
             >
               <Download
-                size={14}
-                className="text-fco-blue"
+                size={16}
+                className="text-[#2563eb] dark:text-[#5b94ff]"
                 aria-hidden="true"
               />
               <span>Unduh Template CSV</span>
@@ -113,10 +113,10 @@ export function SpeciesListTab() {
             <button
               type="button"
               onClick={openImportModal}
-              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+              className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors cursor-pointer whitespace-nowrap"
             >
               <FileUp
-                size={14}
+                size={16}
                 className="text-emerald-600 dark:text-emerald-400"
                 aria-hidden="true"
               />
@@ -150,29 +150,7 @@ export function SpeciesListTab() {
         open={isDetailOpen}
         title={selectedSpecies?.name || "Detail Spesies Ikan"}
         subtitle="Informasi taksonomi biologis dan klasifikasi resmi spesies perikanan."
-        badge={
-          selectedSpecies?.scientific_name ? (
-            <span className="font-mono italic text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              {selectedSpecies.scientific_name}
-            </span>
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedSpecies && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedSpecies;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Umum Ikan",
@@ -245,7 +223,7 @@ export function SpeciesListTab() {
       <CsvImportModal
         open={isImportModalOpen}
         title="Impor Spesies Ikan dari CSV"
-        subtitle="Format header CSV: name,scientific_name,description"
+        subtitle="Format header CSV: name, scientific_name, description"
         headerFormat="name,scientific_name,description"
         placeholderText={
           "name,scientific_name,description\nTongkol Krai,Auxis thazard,Ikan pelagis kecil perairan tropis\nCakalang,Katsuwonus pelamis,Tuna pelagis perairan terbuka"

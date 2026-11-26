@@ -1,130 +1,213 @@
 import { useEffect, useState } from "react";
-import { ProgressBar } from "../../../components/ProgressBar";
+import { Link } from "react-router-dom";
 import { Skeleton } from "../../../components/ui/Skeleton";
+import type {
+  AdminDashboardData,
+  WppPotentialItem,
+} from "../../../services/dashboard/types";
 import { regionsService, type FishingArea } from "../../../services/regions";
 import { catchesService } from "../../../services/catches";
 import { formatWeight } from "../../../utils";
-import { BarChart3 } from "lucide-react";
 
 interface WppItem {
+  code: string;
   label: string;
+  subtitle?: string;
   value: string;
   width: string;
 }
 
-export function WppBarChart() {
-  const [items, setItems] = useState<WppItem[]>([]);
-  const [loading, setLoading] = useState(true);
+interface WppBarChartProps {
+  distribution?: AdminDashboardData["wpp_distribution"];
+  potential?: WppPotentialItem[];
+  loading?: boolean;
+}
+
+export function WppBarChart({
+  distribution,
+  potential,
+  loading: externalLoading = false,
+}: WppBarChartProps) {
+  const [fetchedItems, setFetchedItems] = useState<WppItem[]>([]);
+  const [internalLoading, setInternalLoading] = useState(
+    distribution === undefined,
+  );
+
+  const hasExternalDistribution = distribution !== undefined;
 
   useEffect(() => {
+    if (hasExternalDistribution) return;
+
+    let ignore = false;
     async function loadWppStats() {
-      setLoading(true);
       try {
         const [areas, catches] = await Promise.all([
           regionsService.getAll().catch(() => [] as FishingArea[]),
           catchesService.getAll().catch(() => []),
         ]);
+        if (ignore) return;
 
-        if (areas.length > 0) {
-          const counts: Record<string, number> = {};
-          for (const a of areas) {
-            counts[a.code] = 0;
-          }
-
-          // Count catch details in each area
-          for (const c of catches) {
-            for (const d of c.catch_details || []) {
-              const code = d.wpp_name || "WPP 573";
-              counts[code] =
-                (counts[code] || 0) + (parseFloat(String(d.quantity)) || 0);
-            }
-          }
-
-          const list: { label: string; qty: number }[] = areas
-            .slice(0, 5)
-            .map((a) => {
-              const raw = counts[a.code] || 0;
-              return {
-                label: `${a.code}`,
-                qty: Math.round(raw),
-              };
-            });
-
-          const maxVal = Math.max(...list.map((x) => x.qty), 1);
-          const formatted = list.map((x) => ({
-            label: x.label,
-            value: formatWeight(x.qty),
-            width:
-              maxVal > 0 && x.qty > 0
-                ? `${Math.round((x.qty / maxVal) * 90 + 10)}%`
-                : "0%",
-          }));
-
-          setItems(formatted);
-        } else {
-          setItems([]);
+        const counts: Record<string, { qty: number; trips: number }> = {};
+        for (const a of areas) {
+          const code = String(a.code).replace(/WPP[-\s]*/i, "");
+          counts[code] = { qty: 0, trips: 0 };
         }
+
+        for (const c of catches) {
+          for (const d of c.catch_details || []) {
+            const code = String(d.wpp_name || "573").replace(/WPP[-\s]*/i, "");
+            if (!counts[code]) counts[code] = { qty: 0, trips: 0 };
+            counts[code].qty += parseFloat(String(d.quantity)) || 0;
+            counts[code].trips += 1;
+          }
+        }
+
+        const activeCodes = Object.keys(counts)
+          .filter((c) => counts[c].qty > 0)
+          .sort((a, b) => counts[b].qty - counts[a].qty)
+          .slice(0, 5);
+
+        const maxVal = Math.max(
+          ...activeCodes.map((c) => counts[c]?.qty || 0),
+          1,
+        );
+
+        const formatted: WppItem[] = activeCodes.map((code) => {
+          const entry = counts[code];
+          return {
+            code,
+            label: `WPP ${code}`,
+            subtitle: `${entry.trips} pencatatan`,
+            value: formatWeight(entry.qty),
+            width: `${Math.round((entry.qty / maxVal) * 100)}%`,
+          };
+        });
+
+        setFetchedItems(formatted);
       } catch {
-        setItems([]);
+        if (!ignore) setFetchedItems([]);
       } finally {
-        setLoading(false);
+        if (!ignore) setInternalLoading(false);
       }
     }
 
     loadWppStats();
-  }, []);
+    return () => {
+      ignore = true;
+    };
+  }, [hasExternalDistribution]);
+
+  const potentialByCode = new Map<string, WppPotentialItem>();
+  for (const item of potential || []) {
+    const clean = String(item.wpp_code)
+      .toUpperCase()
+      .replace(/WPP|NRI|-|\s+/g, "")
+      .trim();
+    potentialByCode.set(clean, item);
+  }
+
+  const externalItems: WppItem[] = hasExternalDistribution
+    ? (() => {
+        const sorted = [...distribution]
+          .filter((d) => d.total_volume_kg > 0)
+          .sort((a, b) => b.total_volume_kg - a.total_volume_kg)
+          .slice(0, 5);
+        const maxVal = Math.max(
+          ...sorted.map((d) => d.total_volume_kg),
+          1,
+        );
+        return sorted.map((d) => {
+          const cleanCode = String(d.wpp_code)
+            .toUpperCase()
+            .replace(/WPP|NRI|-|\s+/g, "")
+            .trim();
+          const pot = potentialByCode.get(cleanCode);
+          const subParts: string[] = [];
+          if (pot?.dominant_species && pot.dominant_species !== "Belum ada laporan") {
+            subParts.push(pot.dominant_species);
+          }
+          if (pot?.peak_months && pot.peak_months !== "Belum ada riwayat") {
+            subParts.push(`Puncak ${pot.peak_months}`);
+          } else if (d.transaction_count > 0) {
+            subParts.push(`${d.transaction_count} pencatatan`);
+          }
+
+          return {
+            code: cleanCode,
+            label: `WPP ${cleanCode}`,
+            subtitle: subParts.join(" · ") || d.wpp_name,
+            value: formatWeight(d.total_volume_kg),
+            width: `${Math.round((d.total_volume_kg / maxVal) * 100)}%`,
+          };
+        });
+      })()
+    : [];
+
+  const items = hasExternalDistribution ? externalItems : fetchedItems;
+  const isLoading = hasExternalDistribution ? externalLoading : internalLoading;
 
   return (
-    <section className="surface-card border border-slate-200/80 dark:border-fco-border-dark rounded-2xl shadow-2xs overflow-hidden">
-      {/* Modern Card Header */}
-      <div className="px-5 py-4 border-b border-slate-100 dark:border-fco-border-dark flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-fco-blue dark:text-blue-400 flex items-center justify-center shrink-0">
-            <BarChart3
-              size={16}
-              strokeWidth={2.2}
-              aria-hidden="true"
-            />
-          </div>
-          <h2 className="m-0 text-sm font-semibold text-strong">
-            Tangkapan per Wilayah (WPP)
+    <section className="bg-white dark:bg-[#0f1729] border border-[#e6e9ef] dark:border-[#1f2a42] rounded-2xl shadow-subtle overflow-hidden flex flex-col justify-between h-full">
+      <div>
+        <div className="p-5 sm:p-6 pb-2">
+          <h2 className="text-[16px] font-bold text-ink dark:text-[#e8edf7] m-0 tracking-tight">
+            Tangkapan per wilayah (WPP)
           </h2>
+          <p className="text-[13px] text-subtext dark:text-[#98a6c0] m-0 mt-0.5">
+            Zona aktif &amp; komoditas dominan
+          </p>
         </div>
-        <span className="text-2xs font-semibold text-soft uppercase tracking-wider">
-          Distribusi Zona
-        </span>
-      </div>
 
-      <div className="p-5 sm:p-6">
-        {loading ? (
-          <div className="flex flex-col gap-4 py-1">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={`skel-wpp-${i}`} className="space-y-2">
-                <div className="flex justify-between">
-                  <Skeleton className="h-4 w-28 rounded" />
-                  <Skeleton className="h-4 w-16 rounded" />
-                </div>
-                <Skeleton className="h-2 w-full rounded-full" />
-              </div>
-            ))}
+        {isLoading ? (
+          <div className="px-5 sm:px-6 py-4 space-y-3">
+            <Skeleton className="h-9 w-full rounded" />
+            <Skeleton className="h-9 w-full rounded" />
           </div>
         ) : items.length === 0 ? (
-          <div className="py-8 text-center text-sm text-soft">
-            Belum ada data wilayah tangkapan tercatat.
+          <div className="text-[13px] text-[#94a0b8] px-5 sm:px-6 py-10 text-center">
+            Belum ada data tangkapan tercatat di wilayah WPP.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            {items.map((w) => (
-              <div key={w.label}>
-                <div className="flex justify-between mb-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold text-strong">{w.label}</span>
-                  <span className="text-soft tabular-nums">{w.value}</span>
+          <div className="px-5 sm:px-6 py-2 space-y-4">
+            {items.map((item) => (
+              <div key={item.code} className="space-y-1.5">
+                <div className="flex justify-between items-baseline gap-3 text-[13px]">
+                  <div className="min-w-0">
+                    <b className="font-semibold text-ink dark:text-[#e8edf7]">
+                      {item.label}
+                    </b>
+                    {item.subtitle && (
+                      <span className="ml-2 text-[12px] text-subtext dark:text-[#98a6c0] truncate">
+                        {item.subtitle}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-ink dark:text-[#e8edf7] tabular-nums font-semibold shrink-0">
+                    {item.value}
+                  </span>
                 </div>
-                <ProgressBar width={w.width} height={8} />
+                <div className="h-1.5 rounded-full bg-[#f1f4f9] dark:bg-[#141d33] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#0d9488] transition-all duration-700 ease-out"
+                    style={{ width: item.width }}
+                  />
+                </div>
               </div>
             ))}
           </div>
         )}
+      </div>
+
+      <div className="p-4 sm:px-6 border-t border-[#e6e9ef] dark:border-[#1f2a42] mt-auto">
+        <Link
+          to="/admin/areas"
+          className="inline-flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-semibold text-[13px] no-underline group hover:underline"
+        >
+          <span>Buka peta wilayah tangkapan (WPP)</span>
+          <span className="transition-transform duration-200 group-hover:translate-x-1">
+            →
+          </span>
+        </Link>
       </div>
     </section>
   );

@@ -1,12 +1,14 @@
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, MoreHorizontal } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type KpiColor =
   | "blue"
+  | "teal"
+  | "navy"
+  | "purple"
   | "emerald"
   | "amber"
-  | "purple"
   | "cyan"
   | "rose";
 
@@ -25,231 +27,188 @@ interface KpiCardProps {
   linkText?: string;
 }
 
-const colorMap: Record<
-  KpiColor,
-  {
-    cardBg: string;
-    footerBorder: string;
-  }
-> = {
+// Background colors matching sample CSS:
+// 1. #2563eb (Royal Blue)
+// 2. #0f766e (Deep Teal)
+// 3. #0e1f4d (Deep Navy)
+// 4. #6d28d9 (Vibrant Purple)
+const colorMap: Record<KpiColor, { bg: string; shadow: string; spark: string }> = {
   blue: {
-    cardBg:
-      "bg-gradient-to-br from-[#1a56db] via-[#1d4ed8] to-[#1e3a8a] text-white shadow-md shadow-blue-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #2563eb",
+    shadow: "0 14px 28px -18px #2563eb",
+    spark: "#ffffff",
   },
-  amber: {
-    cardBg:
-      "bg-gradient-to-br from-[#d97706] via-[#b45309] to-[#78350f] text-white shadow-md shadow-amber-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
+  teal: {
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #0f766e",
+    shadow: "0 14px 28px -18px #0f766e",
+    spark: "#ffffff",
   },
-  emerald: {
-    cardBg:
-      "bg-gradient-to-br from-[#059669] via-[#047857] to-[#064e3b] text-white shadow-md shadow-emerald-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
-  },
-  rose: {
-    cardBg:
-      "bg-gradient-to-br from-[#e11d48] via-[#be123c] to-[#881337] text-white shadow-md shadow-rose-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
+  navy: {
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #0e1f4d",
+    shadow: "0 14px 28px -18px #0e1f4d",
+    spark: "#ffffff",
   },
   purple: {
-    cardBg:
-      "bg-gradient-to-br from-[#7c3aed] via-[#6d28d9] to-[#4c1d95] text-white shadow-md shadow-purple-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #6d28d9",
+    shadow: "0 14px 28px -18px #6d28d9",
+    spark: "#ffffff",
+  },
+  emerald: {
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #0f766e",
+    shadow: "0 14px 28px -18px #0f766e",
+    spark: "#ffffff",
+  },
+  rose: {
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #0f766e",
+    shadow: "0 14px 28px -18px #0f766e",
+    spark: "#ffffff",
+  },
+  amber: {
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #b45309",
+    shadow: "0 14px 28px -18px #b45309",
+    spark: "#ffffff",
   },
   cyan: {
-    cardBg:
-      "bg-gradient-to-br from-[#0891b2] via-[#0e7490] to-[#164e63] text-white shadow-md shadow-cyan-900/15",
-    footerBorder: "border-white/20 text-white/90 hover:text-white",
+    bg: "radial-gradient(160px 110px at 100% 0, rgba(255,255,255,0.22), transparent), #0e7490",
+    shadow: "0 14px 28px -18px #0e7490",
+    spark: "#ffffff",
   },
 };
 
-function renderSparklineSvg(data?: number[], trendUp = true) {
-  const width = 72;
-  const height = 30;
-  const padY = 5;
-  const padX = 2;
+const DEFAULT_SPARKLINE_PATH =
+  "M2 24 C20 22 28 8 46 12 S76 26 96 15 S140 3 178 6";
 
-  if (!data || data.length < 2) {
-    return trendUp ? (
-      <>
-        <path
-          d="M 2 23 C 18 25, 32 12, 48 16 C 58 19, 62 8, 70 7"
-          stroke="rgba(255, 255, 255, 0.85)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <circle
-          cx="70"
-          cy="7"
-          r="3"
-          fill="#ffffff"
-          stroke="rgba(255, 255, 255, 0.4)"
-          strokeWidth="1.5"
-        />
-      </>
-    ) : (
-      <>
-        <path
-          d="M 2 7 C 18 8, 32 20, 48 16 C 58 13, 62 24, 70 25"
-          stroke="rgba(255, 255, 255, 0.85)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <circle
-          cx="70"
-          cy="25"
-          r="3"
-          fill="#ffffff"
-          stroke="rgba(255, 255, 255, 0.4)"
-          strokeWidth="1.5"
-        />
-      </>
-    );
-  }
-
-  // ponytail: smooth cubic bezier interpolation from raw numbers; upgrade to chart.js micro-canvas when multi-metric overlay requested
+function buildSparklinePath(data?: number[]): string {
+  if (!data || data.length < 2) return DEFAULT_SPARKLINE_PATH;
   const min = Math.min(...data);
   const max = Math.max(...data);
-  const range = max - min || 1;
-  const stepX = (width - padX * 2) / (data.length - 1);
-  const plotH = height - padY * 2;
+  const range = max - min;
 
-  const points = data.map((val, idx) => ({
-    x: Number((padX + idx * stepX).toFixed(1)),
-    y: Number((height - padY - ((val - min) / range) * plotH).toFixed(1)),
-  }));
+  const pts = data.map((v, idx) => {
+    const x = 2 + (idx / (data.length - 1)) * 176;
+    const y = range === 0 ? 15 : 25 - ((v - min) / range) * 20;
+    return { x, y };
+  });
 
-  let pathD = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i];
-    const p1 = points[i + 1];
-    const cx = ((p0.x + p1.x) / 2).toFixed(1);
-    pathD += ` C ${cx} ${p0.y}, ${cx} ${p1.y}, ${p1.x} ${p1.y}`;
+  let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i - 1, 0)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(i + 2, pts.length - 1)];
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
   }
-
-  const lastPoint = points[points.length - 1];
-
-  return (
-    <>
-      <path
-        d={pathD}
-        stroke="rgba(255, 255, 255, 0.9)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle
-        cx={lastPoint.x}
-        cy={lastPoint.y}
-        r="3"
-        fill="#ffffff"
-        stroke="rgba(255, 255, 255, 0.4)"
-        strokeWidth="1.5"
-      />
-    </>
-  );
+  return d;
 }
 
 export function KpiCard({
   label,
   value = "0",
   delta,
-  note,
-  trendUp = true,
   showSparkline = false,
   sparklineData,
   color = "blue",
   Icon,
   loading = false,
   href,
-  linkText = "Lihat Detail",
+  linkText = "Buka detail",
 }: KpiCardProps) {
-  const styles = colorMap[color] || colorMap.blue;
+  const theme = colorMap[color] || colorMap.blue;
+  const sparklinePath = showSparkline ? buildSparklinePath(sparklineData) : "";
 
   const cardContent = (
     <>
-      <div>
-        {/* Header: Icon + Title + More Action */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2.5 min-w-0">
-            {Icon && (
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-white/20 backdrop-blur-xs text-white shadow-2xs">
-                <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
-              </div>
-            )}
-            <span className="text-xs sm:text-sm font-bold text-white leading-tight line-clamp-2">
-              {label}
-            </span>
-          </div>
-          <div className="text-white/60 group-hover:text-white transition-colors shrink-0">
-            <MoreHorizontal size={16} aria-hidden="true" />
-          </div>
+      {/* Icon Badge Top-Right */}
+      {Icon && (
+        <span
+          className="absolute right-[18px] top-[18px] w-[42px] h-[42px] rounded-full bg-white/18 flex items-center justify-center text-white shrink-0 pointer-events-none"
+          aria-hidden="true"
+        >
+          <Icon size={20} strokeWidth={1.9} />
+        </span>
+      )}
+
+      {/* Label */}
+      <span className="text-[14px] font-medium text-white/85 pr-14 leading-tight">
+        {label}
+      </span>
+
+      {/* Main Value */}
+      {loading ? (
+        <div className="py-2 animate-pulse">
+          <div className="h-9 bg-white/20 rounded-lg w-28" />
         </div>
+      ) : (
+        <strong className="text-[34px] font-bold tracking-tight text-white my-2.5 leading-tight tabular-nums block">
+          {value}
+        </strong>
+      )}
 
-        {/* Main Value */}
-        {loading ? (
-          <div className="py-2 animate-pulse">
-            <div className="h-8 bg-white/25 rounded-md w-28" />
-          </div>
-        ) : (
-          <div className="text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white truncate my-1">
-            {value}
-          </div>
-        )}
-      </div>
+      {/* Subtitle / Delta Description */}
+      {delta && (
+        <em className="not-italic text-[13px] text-white/75 font-normal block mb-4">
+          {delta}
+        </em>
+      )}
 
-      {/* Bottom Area: Trend/Delta & Sparkline */}
-      <div className="mt-3">
-        <div className="flex items-end justify-between gap-1.5">
-          <div className="min-w-0 flex-1">
-            {delta && !loading && (
-              <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
-                <span className="truncate">{delta}</span>
-              </div>
-            )}
-            {note && !loading && (
-              <div className="text-2xs text-white/75 truncate mt-0.5">{note}</div>
-            )}
-          </div>
-          {!loading && showSparkline && (
-            <div className="shrink-0 pl-1">
-              <svg
-                className="w-16 h-8 shrink-0 overflow-visible"
-                viewBox="0 0 76 32"
-                fill="none"
-                aria-hidden="true"
-              >
-                {renderSparklineSvg(sparklineData, trendUp)}
-              </svg>
-            </div>
-          )}
-        </div>
-
-        {/* Footer Link if href is passed */}
-        {href && linkText && (
-          <div className={`mt-3 pt-2.5 border-t ${styles.footerBorder} flex items-center justify-between text-xs font-semibold transition-colors`}>
-            <span>{linkText}</span>
-            <ArrowRight
-              size={13}
-              className="transition-transform group-hover:translate-x-1"
-              aria-hidden="true"
+      {/* Sparkline curve matching sample HTML */}
+      {showSparkline && (
+        <div className="w-full aspect-[6/1] mb-4 overflow-visible">
+          <svg className="w-full h-full overflow-visible" viewBox="0 0 180 30" aria-hidden="true">
+            <path
+              pathLength="1"
+              d={sparklinePath}
+              fill="none"
+              stroke={theme.spark}
+              strokeWidth="2"
+              strokeLinecap="round"
             />
-          </div>
-        )}
-      </div>
+          </svg>
+        </div>
+      )}
+
+      {/* Footer Link matching sample HTML: .lk */}
+      {href && (
+        <span className="mt-auto inline-flex items-center gap-1.5 text-white font-semibold text-[13px] transition-all">
+          <span>{linkText}</span>
+          <ArrowRight
+            size={14}
+            className="transition-transform duration-200 group-hover:translate-x-1"
+            aria-hidden="true"
+          />
+        </span>
+      )}
     </>
   );
 
-  const containerClasses = `${styles.cardBg} rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all duration-200 flex flex-col justify-between group min-h-38 border-0`;
+  const containerStyle = {
+    background: theme.bg,
+    boxShadow: theme.shadow,
+    border: "1px solid rgba(255, 255, 255, 0.14)",
+  };
+
+  const containerClasses =
+    "relative rounded-[20px] p-[22px_24px] text-white flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 group min-h-[160px]";
 
   if (href) {
     return (
-      <Link to={href} className={`${containerClasses} no-underline`}>
+      <Link
+        to={href}
+        style={containerStyle}
+        className={`${containerClasses} no-underline`}
+      >
         {cardContent}
       </Link>
     );
   }
 
-  return <div className={containerClasses}>{cardContent}</div>;
+  return (
+    <div style={containerStyle} className={containerClasses}>
+      {cardContent}
+    </div>
+  );
 }

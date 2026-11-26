@@ -21,10 +21,10 @@ export function ToggleSwitch({
 }: ToggleSwitchProps) {
   return (
     <div
-      className={`flex items-center justify-between p-3.5 rounded-xl border transition-all surface-card ${
+      className={`flex items-center justify-between p-3.5 rounded-[12px] border transition-colors ${
         checked
-          ? "border-emerald-500/40 bg-emerald-50/20 dark:bg-emerald-950/15"
-          : "border-fco-border-subtle"
+          ? "border-emerald-500/40 bg-emerald-50/40 dark:bg-emerald-950/20"
+          : "border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729]"
       } ${className}`}
     >
       <div className="flex-1 pr-3 min-w-0">

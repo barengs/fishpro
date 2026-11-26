@@ -5,6 +5,11 @@ import type {
   RegisterPayload,
   RegisterResponse,
   StoredUser,
+  RefreshTokenResponse,
+  PasswordResetRequestResponse,
+  PasswordResetVerifyResponse,
+  PasswordResetConfirmPayload,
+  PasswordResetConfirmResponse,
 } from "./types";
 
 export const authService = {
@@ -15,27 +20,30 @@ export const authService = {
     });
 
     if (data.token) {
-      const usernameLower = (data.username || "").toLowerCase();
       const rawUserAs = (data.user_as || "").toLowerCase();
       const rolesList = (data.roles || []).map((r) => r.toLowerCase());
 
       let detectedRole = data.user_as || "owner";
       if (
+        rawUserAs === "superadmin" ||
+        rawUserAs === "super_admin" ||
+        rolesList.includes("superadmin") ||
+        rolesList.includes("super_admin")
+      ) {
+        detectedRole = "superadmin";
+      } else if (
         rawUserAs === "admin" ||
-        rolesList.includes("admin") ||
-        usernameLower.startsWith("admin")
+        rolesList.includes("admin")
       ) {
         detectedRole = "admin";
       } else if (
         rawUserAs === "regulator" ||
-        rolesList.includes("regulator") ||
-        usernameLower.includes("regulator")
+        rolesList.includes("regulator")
       ) {
         detectedRole = "regulator";
       } else if (
         rawUserAs === "captain" ||
-        rolesList.includes("captain") ||
-        usernameLower.includes("captain")
+        rolesList.includes("captain")
       ) {
         detectedRole = "captain";
       } else if (rawUserAs === "owner" || rolesList.includes("owner")) {
@@ -56,6 +64,7 @@ export const authService = {
           role: detectedRole,
           roles: data.roles || [detectedRole],
           profile: data.profile,
+          menus: data.menus || [],
         }),
       );
     }
@@ -91,6 +100,68 @@ export const authService = {
     return data;
   },
 
+  async refreshToken(): Promise<RefreshTokenResponse | null> {
+    const refreshToken = localStorage.getItem("refresh_token");
+    if (!refreshToken) return null;
+
+    try {
+      const data = await apiClient<RefreshTokenResponse>(
+        API_ENDPOINTS.AUTH.REFRESH,
+        {
+          method: "POST",
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        },
+      );
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("auth_token", data.token);
+      }
+      if (data.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token);
+      }
+      return data;
+    } catch {
+      return null;
+    }
+  },
+
+  async requestPasswordReset(
+    identifier: string,
+  ): Promise<PasswordResetRequestResponse> {
+    return apiClient<PasswordResetRequestResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_REQUEST,
+      {
+        method: "POST",
+        body: JSON.stringify({ identifier }),
+      },
+    );
+  },
+
+  async verifyPasswordResetOtp(
+    identifier: string,
+    otp: string,
+  ): Promise<PasswordResetVerifyResponse> {
+    return apiClient<PasswordResetVerifyResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_VERIFY,
+      {
+        method: "POST",
+        body: JSON.stringify({ identifier, otp }),
+      },
+    );
+  },
+
+  async confirmPasswordReset(
+    payload: PasswordResetConfirmPayload,
+  ): Promise<PasswordResetConfirmResponse> {
+    return apiClient<PasswordResetConfirmResponse>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD_CONFIRM,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
   async logout(): Promise<void> {
     try {
       await apiClient(API_ENDPOINTS.AUTH.LOGOUT, {
@@ -117,8 +188,16 @@ export const authService = {
     const rawRole = (user?.role || storedUserAs || "").toLowerCase();
     const rolesList = (user?.roles || []).map((r) => r.toLowerCase());
 
-    if (rawRole === "admin" || rolesList.includes("admin")) {
-      return "admin";
+    const isAdmin =
+      rawRole === "admin" ||
+      rawRole === "superadmin" ||
+      rawRole === "super_admin" ||
+      rolesList.includes("admin") ||
+      rolesList.includes("superadmin") ||
+      rolesList.includes("super_admin");
+
+    if (isAdmin) {
+      return this.isSuperAdmin() ? "superadmin" : "admin";
     }
     if (rawRole === "regulator" || rolesList.includes("regulator")) {
       return "regulator";
@@ -130,6 +209,23 @@ export const authService = {
       return "owner";
     }
     return storedUserAs || null;
+  },
+
+  isSuperAdmin(): boolean {
+    const user = this.getStoredUser();
+    if (!user) return false;
+
+    const rawRole = (user.role || "").toLowerCase();
+    const rolesList = (user.roles || []).map((r) => r.toLowerCase());
+    const isSuperuser = Boolean(user.is_superuser);
+
+    return (
+      rawRole === "superadmin" ||
+      rawRole === "super_admin" ||
+      rolesList.includes("superadmin") ||
+      rolesList.includes("super_admin") ||
+      isSuperuser
+    );
   },
 
   getStoredUser(): StoredUser | null {
@@ -145,6 +241,22 @@ export const authService = {
     return Boolean(this.getToken());
   },
 
+  getUserMenus(): import("./types").UserPermittedMenu[] {
+    return this.getStoredUser()?.menus || [];
+  },
+
+  hasMenuPermission(urlPath: string): boolean {
+    if (this.isSuperAdmin()) return true;
+    const menus = this.getUserMenus();
+    if (!menus || menus.length === 0) return true;
+    return menus.some((m) => {
+      if (m.can_view === false) return false;
+      const cleanMenuUrl = (m.url || "").replace(/\/+$/, "");
+      const cleanPath = urlPath.replace(/\/+$/, "");
+      return cleanPath === cleanMenuUrl || cleanPath.startsWith(cleanMenuUrl + "/");
+    });
+  },
+
   getDashboardUrl(): string {
     return getRoleDashboardPath(this.getUserRole());
   },
@@ -152,8 +264,10 @@ export const authService = {
 
 export function getRoleDashboardPath(role?: string | null): string {
   switch (role) {
-    case "admin":
+    case "superadmin":
       return "/admin";
+    case "admin":
+      return "/staff";
     case "regulator":
       return "/regulator";
     case "captain":

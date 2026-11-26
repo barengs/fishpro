@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { PageHeader } from "../../components/PageHeader";
 import { PageToolbar } from "../../components/PageToolbar";
 import { DataTable, type Column } from "../../components/DataTable";
@@ -86,6 +87,17 @@ export function AreasPage() {
     },
   ];
 
+  const handleSelectWppFromMap = useCallback(
+    (wppCode: string) => {
+      if (!wppCode) {
+        setSearch("");
+        return;
+      }
+      setSearch((prev) => (prev.trim() === wppCode ? "" : wppCode));
+    },
+    [setSearch],
+  );
+
   return (
     <div>
       <PageHeader
@@ -98,9 +110,7 @@ export function AreasPage() {
         <WppMapViewer
           role="admin"
           selectedWpp={search}
-          onSelectWpp={(wppCode) => {
-            setSearch((prev) => (prev === wppCode ? "" : wppCode));
-          }}
+          onSelectWpp={handleSelectWppFromMap}
         />
       </div>
 
@@ -132,10 +142,10 @@ export function AreasPage() {
             <button
               type="button"
               onClick={openImportModal}
-              className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+              className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors cursor-pointer whitespace-nowrap"
             >
               <FileUp
-                size={14}
+                size={16}
                 className="text-emerald-600 dark:text-emerald-400"
                 aria-hidden="true"
               />
@@ -168,29 +178,7 @@ export function AreasPage() {
       <DetailModal
         open={Boolean(selectedDetailArea)}
         title={selectedDetailArea?.nama || "Detail Wilayah"}
-        badge={
-          selectedDetailArea ? (
-            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              Kode: {selectedDetailArea.code}
-            </span>
-          ) : undefined
-        }
         onClose={() => setSelectedDetailArea(null)}
-        actions={
-          selectedDetailArea && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedDetailArea;
-                setSelectedDetailArea(null);
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Wilayah",
@@ -224,7 +212,7 @@ export function AreasPage() {
       <CsvImportModal
         open={isImportModalOpen}
         title="Impor Wilayah (WPP) dari CSV"
-        subtitle="Kirim data CSV teks sesuai format resmi: nama,code,deskripsi"
+        subtitle="Kirim data CSV teks sesuai format resmi: nama, code, deskripsi"
         headerFormat="nama,code,deskripsi"
         placeholderText={
           "nama,code,deskripsi\nSelat Malaka,WPP 571,Wilayah barat Sumatera\nLaut Jawa,WPP 712,Perairan dangkal produktif"

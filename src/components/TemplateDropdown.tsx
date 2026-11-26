@@ -66,13 +66,13 @@ export function TemplateDropdown({
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="inline-flex items-center gap-2 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer shadow-2xs"
+        className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors cursor-pointer whitespace-nowrap"
       >
-        <Download size={15} className="text-fco-blue" aria-hidden="true" />
+        <Download size={14} className="text-brand-600 dark:text-brand-400" aria-hidden="true" />
         <span>{label}</span>
         <ChevronDown
           size={14}
-          className={`text-soft transition-transform duration-200 ${
+          className={`text-subtext dark:text-slate-400 transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
           aria-hidden="true"

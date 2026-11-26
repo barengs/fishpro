@@ -91,6 +91,7 @@ export interface AdminUser {
   email?: string;
   first_name?: string;
   last_name?: string;
+  role?: string;
   is_active: boolean;
   date_joined?: string;
   admin_profile?: AdminUserProfile | null;

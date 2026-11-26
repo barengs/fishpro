@@ -1,19 +1,38 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, User } from "lucide-react";
 import { authService } from "../../../services/auth";
 import { useToast } from "../../../components/toast";
 import { loginSchema } from "../../../utils/schemas";
+import { buttonTapVariants } from "../../../utils/motionVariants";
 
-export function LoginForm() {
+interface LoginFormProps {
+  demoCredentials?: { username: string; password: string } | null;
+}
+
+export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [searchParams] = useSearchParams();
+  const isSessionExpired = searchParams.get("expired") === "1";
+  const redirectTarget = searchParams.get("redirect");
   const navigate = useNavigate();
   const toast = useToast();
+
+  useEffect(() => {
+    if (demoCredentials) {
+      setIdentifier(demoCredentials.username);
+      setPassword(demoCredentials.password);
+      setFieldErrors({});
+      setErrorMsg(null);
+    }
+  }, [demoCredentials]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,16 +72,20 @@ export function LoginForm() {
         `Login berhasil. Selamat datang kembali, ${data.username}!`,
       );
 
-      // Navigate directly to resolved role dashboard with replace: true to clean history stack
+      // Navigate directly to resolved role dashboard or return URL with replace: true to clean history stack
       const targetDashboard = authService.getDashboardUrl();
-      navigate(targetDashboard, { replace: true });
+      const safeRedirect =
+        redirectTarget && redirectTarget.startsWith("/")
+          ? redirectTarget
+          : targetDashboard;
+      navigate(safeRedirect, { replace: true });
     } catch (err: unknown) {
       const message =
         err instanceof Error
           ? err.message
           : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
       setErrorMsg(message);
-      setFieldErrors({ username: "Kredensial tidak valid", password: " " });
+      setFieldErrors({ username: "Nama pengguna atau kata sandi tidak cocok", password: " " });
       setTimeout(
         () => document.getElementById("login-identifier")?.focus(),
         50,
@@ -75,22 +98,38 @@ export function LoginForm() {
 
   const getFieldCls = (fieldName: string) => {
     const hasError = Boolean(fieldErrors[fieldName]);
-    return `w-full h-11 border-2 rounded-xl text-sm field-input transition-all surface-card text-strong placeholder:text-soft ${
+    return `w-full h-11 rounded-lg border text-[13.5px] transition-all bg-white dark:bg-slate-900 text-ink dark:text-white placeholder:text-subtext shadow-subtle ${
       hasError
         ? "has-error border-red-500 dark:border-red-500 bg-red-50/40 dark:bg-red-950/20 text-red-950 dark:text-red-100"
-        : "border-fco-border dark:border-fco-border-dark focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15"
+        : "border-line dark:border-slate-700 focus:outline-hidden focus:border-brand-600 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900/40"
     }`;
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {isSessionExpired && !errorMsg && (
+        <div
+          role="status"
+          className="flex items-center gap-2.5 p-3 px-3.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs font-semibold border border-amber-200 dark:border-amber-500/20"
+        >
+          <AlertCircle
+            size={15}
+            className="shrink-0 text-amber-600 dark:text-amber-400"
+            aria-hidden="true"
+          />
+          <span>
+            Sesi Anda telah berakhir demi keamanan. Silakan masuk kembali.
+          </span>
+        </div>
+      )}
+
       {errorMsg && Object.keys(fieldErrors).length === 0 && (
         <div
           role="alert"
-          className="flex items-center gap-2.5 p-3 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-semibold border border-red-200 dark:border-red-500/20"
+          className="flex items-center gap-2.5 p-3 px-3.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold border border-red-200 dark:border-red-500/20"
         >
           <AlertCircle
-            size={16}
+            size={15}
             className="shrink-0 text-red-600 dark:text-red-400"
             aria-hidden="true"
           />
@@ -98,26 +137,20 @@ export function LoginForm() {
         </div>
       )}
 
+      {/* Field Username */}
       <div>
         <label
           htmlFor="login-identifier"
-          className="block text-sm font-semibold text-strong mb-2"
+          className="block text-[12.5px] font-medium text-inkSoft dark:text-slate-300 mb-1.5"
         >
           Nama pengguna atau nomor registrasi
-          <span
-            className="text-red-500 ml-1 font-bold"
-            aria-label="wajib diisi"
-            title="Wajib diisi"
-          >
-            *
-          </span>
         </label>
         <div className="relative">
           <User
-            size={18}
+            size={16}
             className={`${
-              fieldErrors.username ? "text-red-500" : "text-fco-placeholder"
-            } absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
+              fieldErrors.username ? "text-red-500" : "text-subtext"
+            } absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
             aria-hidden="true"
           />
           <input
@@ -139,45 +172,31 @@ export function LoginForm() {
             }}
             placeholder="REG-0412 atau admin_kkp"
             disabled={loading}
-            className={`${getFieldCls("username")} pl-11 pr-4`}
+            className={`${getFieldCls("username")} pl-10 pr-3.5`}
           />
         </div>
         {fieldErrors.username && fieldErrors.username.trim() && (
-          <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1.5 flex items-center gap-1.5 animate-in fade-in duration-150">
+          <span className="text-[11.5px] font-medium text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
             <AlertCircle size={13} className="shrink-0" aria-hidden="true" />
             <span>{fieldErrors.username}</span>
           </span>
         )}
       </div>
 
+      {/* Field Password */}
       <div>
-        <div className="flex justify-between items-center mb-2">
-          <label
-            htmlFor="login-password"
-            className="text-sm font-semibold text-strong"
-          >
-            Kata sandi
-            <span
-              className="text-red-500 ml-1 font-bold"
-              aria-label="wajib diisi"
-              title="Wajib diisi"
-            >
-              *
-            </span>
-          </label>
-          <Link
-            to="/reset-password"
-            className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
-          >
-            Lupa kata sandi?
-          </Link>
-        </div>
+        <label
+          htmlFor="login-password"
+          className="block text-[12.5px] font-medium text-inkSoft dark:text-slate-300 mb-1.5"
+        >
+          Kata sandi
+        </label>
         <div className="relative">
           <Lock
-            size={18}
+            size={16}
             className={`${
-              fieldErrors.password ? "text-red-500" : "text-fco-placeholder"
-            } absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
+              fieldErrors.password ? "text-red-500" : "text-subtext"
+            } absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors`}
             aria-hidden="true"
           />
           <input
@@ -197,42 +216,66 @@ export function LoginForm() {
               });
               setErrorMsg(null);
             }}
-            placeholder="Masukkan kata sandi"
+            placeholder="Masukkan kata sandi akun"
             disabled={loading}
-            className={`${getFieldCls("password")} pl-11 pr-12`}
+            className={`${getFieldCls("password")} pl-10 pr-10`}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Sembunyikan sandi" : "Tampilkan sandi"}
             disabled={loading}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-fco-placeholder hover:text-strong hover:surface-page border-none bg-transparent cursor-pointer transition-colors"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-md text-subtext hover:text-ink dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 border-none bg-transparent flex items-center justify-center cursor-pointer transition-colors"
           >
             {showPassword ? (
-              <EyeOff size={18} aria-hidden="true" />
+              <EyeOff size={16} aria-hidden="true" />
             ) : (
-              <Eye size={18} aria-hidden="true" />
+              <Eye size={16} aria-hidden="true" />
             )}
           </button>
         </div>
         {fieldErrors.password && fieldErrors.password.trim() && (
-          <span className="text-xs font-semibold text-red-600 dark:text-red-400 mt-1.5 flex items-center gap-1.5 animate-in fade-in duration-150">
+          <span className="text-[11.5px] font-medium text-red-600 dark:text-red-400 mt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
             <AlertCircle size={13} className="shrink-0" aria-hidden="true" />
             <span>{fieldErrors.password}</span>
           </span>
         )}
       </div>
 
-      <button
+      {/* Remember Me & Forgot Password Row */}
+      <div className="flex items-center justify-between gap-2 pt-0.5">
+        <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+          <input
+            id="rememberMe"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded border-gray-300 dark:border-slate-700 accent-brand-600 cursor-pointer"
+          />
+          <span className="text-[12.5px] font-medium text-inkSoft dark:text-slate-300">
+            Ingat saya selama 30 hari
+          </span>
+        </label>
+        <Link
+          to="/reset-password"
+          className="text-[12.5px] font-semibold text-brand-600 hover:text-brand-700 dark:text-blue-400 no-underline transition-colors"
+        >
+          Lupa kata sandi?
+        </Link>
+      </div>
+
+      {/* Submit Button */}
+      <motion.button
         type="submit"
         disabled={loading}
-        className="h-12 rounded-xl border-none bg-fco-blue hover:bg-fco-blue-hover text-white text-sm sm:text-fco-md font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        whileTap={buttonTapVariants}
+        className="w-full py-2.5 px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-[13.5px] font-semibold shadow-subtle transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed select-none mt-1"
       >
         {loading && (
-          <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+          <Loader2 size={16} className="animate-spin" aria-hidden="true" />
         )}
-        <span>{loading ? "Memproses..." : "Masuk"}</span>
-      </button>
+        <span>{loading ? "Memproses masuk..." : "Masuk"}</span>
+      </motion.button>
     </form>
   );
 }

@@ -4,6 +4,7 @@ export interface UserDisplayInfo {
   name: string;
   initials: string;
   roleLabel: string;
+  rawRole: string;
   username: string;
 }
 
@@ -15,6 +16,7 @@ export function getUserDisplayInfo(): UserDisplayInfo {
       name: "Tamu",
       initials: "TM",
       roleLabel: "Belum Masuk",
+      rawRole: "guest",
       username: "guest",
     };
   }
@@ -33,32 +35,35 @@ export function getUserDisplayInfo(): UserDisplayInfo {
   }
 
   // Format human-friendly role label
-  let roleLabel = "Pengguna FCO";
+  let roleLabel = "Pengguna FISHPRO";
   const rawRole = (user.role || "").toLowerCase();
   const rawRoles = (user.roles || []).map((r) => r.toLowerCase());
-  const usernameLower = (user.username || "").toLowerCase();
+
+  const isSuperAdmin = authService.isSuperAdmin();
 
   const isRegulator =
     rawRole === "regulator" ||
-    rawRoles.includes("regulator") ||
-    usernameLower.includes("regulator");
+    rawRoles.includes("regulator");
 
   const isAdmin =
-    rawRole === "admin" ||
-    rawRoles.includes("admin") ||
-    usernameLower.startsWith("admin");
+    !isSuperAdmin &&
+    (rawRole === "admin" ||
+      rawRoles.includes("admin"));
 
   const isCaptain =
     rawRole === "captain" ||
-    rawRoles.includes("captain") ||
-    usernameLower.includes("captain");
+    rawRoles.includes("captain");
 
   const isOwner = rawRole === "owner" || rawRoles.includes("owner");
 
-  if (isAdmin) {
+  if (isSuperAdmin) {
+    roleLabel = profile?.position
+      ? `Super Admin · ${profile.position}`
+      : "Super Admin (IT Governance)";
+  } else if (isAdmin) {
     roleLabel = profile?.department
-      ? `Admin · ${profile.department}`
-      : "Admin KKP";
+      ? `Staf · ${profile.department}`
+      : "Staf (Operasional Lapangan)";
   } else if (isRegulator) {
     roleLabel = profile?.department
       ? `Pengawas · ${profile.department}`
@@ -74,10 +79,21 @@ export function getUserDisplayInfo(): UserDisplayInfo {
         : "Pemilik Kapal";
   }
 
+  const rawRoleKey = isSuperAdmin
+    ? "superadmin"
+    : isRegulator
+      ? "regulator"
+      : isCaptain
+        ? "captain"
+        : isOwner
+          ? "owner"
+          : "admin";
+
   return {
     name: fullName,
     initials,
     roleLabel,
+    rawRole: rawRoleKey,
     username: user.username,
   };
 }

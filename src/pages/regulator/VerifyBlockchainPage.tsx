@@ -125,8 +125,8 @@ export function VerifyBlockchainPage() {
   return (
     <div>
       <PageHeader
-        title="Audit & Verifikasi Transaksi Blockchain"
-        desc="Verifikasi audit integritas transaksi penangkapan ikan yang disegel ke buku besar kriptografis KKP."
+        title="Verifikasi Segel Tangkapan"
+        desc="Pemeriksaan keabsahan catatan timbangan dan laporan tangkapan pelabuhan yang terkunci dalam rantai blok resmi."
         actions={
           statusValid !== null ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">

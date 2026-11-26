@@ -176,7 +176,7 @@ export function BlockchainPage() {
       {/* 1. Header */}
       <PageHeader
         title="Buku Besar Blockchain"
-        desc="Pencatatan riwayat penangkapan ikan terdesentralisasi dengan enkripsi SHA-256 yang aman dan transparan."
+        desc="Riwayat pencatatan hasil tangkapan yang terkunci permanen menggunakan segel kriptografi agar bebas manipulasi."
         actions={
           statusValid !== null ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">

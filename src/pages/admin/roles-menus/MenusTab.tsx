@@ -140,9 +140,9 @@ export function MenusTab() {
       hideOnMobile: true,
       render: (r) =>
         r.is_active ? (
-          <StatusChip label="Aktif" />
+          <StatusChip label="Aktif" fixedWidth />
         ) : (
-          <StatusChip label="Nonaktif" bg="#EEF1F6" color="#4A5872" />
+          <StatusChip label="Nonaktif" fixedWidth />
         ),
     },
     {

@@ -51,61 +51,61 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
   }, [currentOwnerKey, propsShips]);
 
   return (
-    <div className="flex flex-col gap-2.5">
-      <div className="flex items-center justify-between">
-        <h2 className="m-0 text-base font-bold text-strong">
+    <div className="rounded-2xl border border-[#E5E7EB] dark:border-slate-800 bg-white dark:bg-[#111827] shadow-subtle overflow-hidden">
+      <div className="p-4 sm:p-5 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
+        <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
           Armada kapal ({ships.length})
         </h2>
         <Link
           to="/owner/captains"
-          className="text-sm font-semibold text-fco-blue hover:text-fco-blue-hover no-underline"
+          className="text-[12.5px] font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline"
         >
           Kelola nahkoda
         </Link>
       </div>
 
-      <div className="border border-fco-border-subtle surface-card rounded-xs overflow-hidden shadow-2xs">
-        <div className="overflow-x-auto">
-          <div className="min-w-135">
-            <div className="flex items-center py-3 px-3 text-xs font-bold text-white bg-fco-blue gap-2">
-              <div className="w-8 shrink-0 text-center">No</div>
-              <div className="basis-3/10">Kapal</div>
-              <div className="basis-2/10">Nahkoda</div>
-              <div className="basis-3/10">Sisa kuota</div>
-              <div className="basis-2/10 text-right">Status</div>
-            </div>
+      <div className="overflow-x-auto">
+        <div className="min-w-135">
+          <div className="flex items-center py-3 px-4 text-[11px] font-semibold uppercase tracking-wider text-subtext dark:text-slate-400 bg-[#F9FAFB] dark:bg-slate-800/60 border-b border-[#E5E7EB] dark:border-slate-700 gap-2">
+            <div className="w-8 shrink-0 text-center">No</div>
+            <div className="basis-3/10">Kapal</div>
+            <div className="basis-2/10">Nahkoda</div>
+            <div className="basis-3/10">Sisa kuota</div>
+            <div className="basis-2/10 text-right">Status</div>
+          </div>
 
-            {loading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={`skel-fleet-${i}`}
-                  className="flex items-center py-3 px-3 border-t border-fco-border-subtle text-sm gap-2 bg-white dark:bg-fco-card-dark"
-                >
-                  <div className="w-8 shrink-0 flex justify-center">
-                    <Skeleton className="h-4 w-5 rounded-xs" />
-                  </div>
-                  <div className="basis-3/10 space-y-1.5 pr-2">
-                    <Skeleton className="h-4 w-3/4 rounded-xs" />
-                    <Skeleton className="h-3 w-1/2 rounded-xs opacity-60" />
-                  </div>
-                  <div className="basis-2/10 pr-2">
-                    <Skeleton className="h-4 w-2/3 rounded-xs" />
-                  </div>
-                  <div className="basis-3/10 space-y-1.5 pr-2">
-                    <Skeleton className="h-3 w-1/3 rounded-xs" />
-                    <Skeleton className="h-2 w-full rounded-xs" />
-                  </div>
-                  <div className="basis-2/10 flex justify-end">
-                    <Skeleton className="h-5 w-16 rounded-xs" />
-                  </div>
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={`skel-fleet-${i}`}
+                className="flex items-center py-3.5 px-4 border-t border-[#E5E7EB] dark:border-slate-800 text-sm gap-2 bg-white dark:bg-[#111827]"
+              >
+                <div className="w-8 shrink-0 flex justify-center">
+                  <Skeleton className="h-4 w-5 rounded-md" />
                 </div>
-              ))
-            ) : ships.length === 0 ? (
-              <div className="py-8 text-center text-sm text-soft">
-                Belum ada kapal dalam armada Anda.
+                <div className="basis-3/10 space-y-1.5 pr-2">
+                  <Skeleton className="h-4 w-3/4 rounded-md" />
+                  <Skeleton className="h-3 w-1/2 rounded-md opacity-60" />
+                </div>
+                <div className="basis-2/10 pr-2">
+                  <Skeleton className="h-4 w-2/3 rounded-md" />
+                </div>
+                <div className="basis-3/10 space-y-1.5 pr-2">
+                  <Skeleton className="h-3 w-1/3 rounded-md" />
+                  <Skeleton className="h-2 w-full rounded-md" />
+                </div>
+                <div className="basis-2/10 flex justify-end">
+                  <Skeleton className="h-5 w-16 rounded-md" />
+                </div>
               </div>
-            ) : (
-              ships.map((s, i) => {
+            ))
+          ) : ships.length === 0 ? (
+            <div className="py-8 text-center text-sm text-subtext dark:text-slate-400">
+              Belum ada kapal dalam armada Anda.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#E5E7EB] dark:divide-slate-800">
+              {ships.map((s, i) => {
                 const quota = s.current_year_quota;
                 const hasQuota = Boolean(
                   quota && typeof quota.quota_percentage === "number",
@@ -150,29 +150,29 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                 return (
                   <div
                     key={s.id || s.registration_number}
-                    className="flex items-center py-4 px-3 border-t border-fco-border-subtle gap-2"
+                    className="flex items-center py-3.5 px-4 gap-2 hover:bg-[#F9FAFB] dark:hover:bg-slate-800/40 transition-colors"
                   >
-                    <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-soft">
+                    <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-subtext dark:text-slate-400">
                       {i + 1}
                     </div>
                     <div className="basis-3/10">
-                      <div className="text-sm font-semibold text-strong">
+                      <div className="text-sm font-semibold text-ink dark:text-white">
                         {s.name}
                       </div>
-                      <div className="text-xs text-soft tabular-nums">
+                      <div className="text-xs text-subtext dark:text-slate-400 tabular-nums">
                         {s.registration_number}
                       </div>
                     </div>
-                    <div className="basis-2/10 text-sm text-strong">
+                    <div className="basis-2/10 text-sm text-ink dark:text-slate-200">
                       {s.captain_name || (
-                        <span className="text-soft">Belum ditunjuk</span>
+                        <span className="text-subtext dark:text-slate-500">Belum ditunjuk</span>
                       )}
                     </div>
                     <div className="basis-3/10 pr-6">
                       {hasQuota ? (
                         <ProgressBar width={width} showText />
                       ) : (
-                        <span className="text-xs text-soft italic">
+                        <span className="text-xs text-subtext dark:text-slate-500 italic">
                           Belum ada alokasi
                         </span>
                       )}
@@ -186,9 +186,9 @@ export function FleetTable({ ships: propsShips }: FleetTableProps) {
                     </div>
                   </div>
                 );
-              })
-            )}
-          </div>
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

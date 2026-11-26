@@ -11,8 +11,11 @@ import {
   LayoutDashboard,
   Link2,
   MapPin,
+  Scale,
   Ship,
+  Users,
 } from "lucide-react";
+import { authService } from "../../../services/auth";
 
 interface AdminSidebarNavProps {
   onNavigate?: () => void;
@@ -28,6 +31,7 @@ interface NavItem {
 
 interface NavGroup {
   title: string;
+  superAdminOnly?: boolean;
   items: NavItem[];
 }
 
@@ -45,7 +49,7 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Armada",
+    title: "Pelayanan Armada",
     items: [
       {
         label: "Kapal",
@@ -68,8 +72,14 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Operasional",
+    title: "Operasional & Penimbangan",
     items: [
+      {
+        label: "Timbangan IoT",
+        to: "/admin/scales",
+        Icon: Scale,
+        prefetch: () => import("../../regulator/IotScalesPage"),
+      },
       {
         label: "Laporan Tangkapan",
         to: "/admin/catches",
@@ -91,7 +101,8 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Kepatuhan & Sistem",
+    title: "Tata Kelola Sistem",
+    superAdminOnly: true,
     items: [
       {
         label: "Kuota & PNBP",
@@ -112,6 +123,12 @@ const navGroups: NavGroup[] = [
         prefetch: () => import("../IotDevicesPage"),
       },
       {
+        label: "Manajemen Pengguna",
+        to: "/admin/users",
+        Icon: Users,
+        prefetch: () => import("../UsersPage"),
+      },
+      {
         label: "Peran & Hak Akses",
         to: "/admin/roles",
         Icon: KeyRound,
@@ -122,18 +139,28 @@ const navGroups: NavGroup[] = [
 ];
 
 export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
-  // ponytail: static nav groups array; upgrade to dynamic permission-filtered tree when role-menus API supports hierarchical nesting
+  const isSuperAdmin = authService.isSuperAdmin();
+  const visibleGroups = navGroups
+    .filter((group) => !group.superAdminOnly || isSuperAdmin)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        authService.hasMenuPermission(item.to),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
+
   return (
     <nav
-      className="flex flex-col gap-4 py-1 pb-4 w-full min-w-0 overflow-hidden"
+      className="flex flex-col gap-3 py-1 pb-4 w-full min-w-0 overflow-hidden"
       aria-label="Navigasi Admin"
     >
-      {navGroups.map((group) => (
-        <div key={group.title} className="flex flex-col gap-1">
-          <div className="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
+      {visibleGroups.map((group) => (
+        <div key={group.title} className="flex flex-col gap-0.5">
+          <p className="px-2.5 mb-1.5 mt-2 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-faint dark:text-slate-400">
             {group.title}
-          </div>
-          <div className="flex flex-col gap-1">
+          </p>
+          <div className="flex flex-col gap-0.5">
             {group.items.map((item) => (
               <NavLink
                 key={item.to}
@@ -142,23 +169,23 @@ export function AdminSidebarNav({ onNavigate }: AdminSidebarNavProps) {
                 onClick={onNavigate}
                 onMouseEnter={item.prefetch}
                 className={({ isActive }) =>
-                  `w-full min-w-0 max-w-full box-border flex items-center gap-3 h-10 px-3.5 rounded-xl text-sm transition-all duration-150 no-underline cursor-pointer group ${
+                  `w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13.5px] transition-colors cursor-pointer no-underline ${
                     isActive
-                      ? "bg-white dark:bg-slate-800 text-fco-blue dark:text-blue-400 font-semibold shadow-xs border border-blue-100/80 dark:border-blue-950"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/40 font-medium border border-transparent"
+                      ? "bg-[#F3F4F6] dark:bg-slate-800 text-ink dark:text-white font-semibold"
+                      : "text-inkSoft dark:text-slate-300 hover:bg-[#F3F4F6]/70 dark:hover:bg-slate-800/60 font-medium"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
                     <item.Icon
-                      size={18}
+                      size={17}
                       className={`shrink-0 transition-colors ${
                         isActive
-                          ? "text-fco-blue dark:text-blue-400"
-                          : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
+                          ? "text-ink dark:text-white"
+                          : "text-charcoal dark:text-slate-400"
                       }`}
-                      strokeWidth={1.8}
+                      strokeWidth={isActive ? 2.2 : 1.75}
                       aria-hidden="true"
                     />
                     <span className="truncate">{item.label}</span>

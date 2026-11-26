@@ -1,11 +1,14 @@
+import React from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
 interface FormFieldProps {
-  label: string;
-  htmlFor: string;
+  label?: string;
+  htmlFor?: string;
   hint?: string;
   required?: boolean;
   optional?: boolean;
+  error?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
@@ -15,21 +18,23 @@ export function FormField({
   hint,
   required,
   optional,
+  error,
+  className = "",
   children,
 }: FormFieldProps) {
   const isOptional = Boolean(optional);
 
   return (
-    <div>
+    <div className={className}>
       {label ? (
         <label
           htmlFor={htmlFor}
-          className="block text-sm font-semibold text-strong mb-1.5"
+          className="block text-[13px] font-semibold text-[#0f172a] dark:text-[#e8edf7] mb-1.5"
         >
           {label}
           {required && (
             <span
-              className="text-red-500 ml-1 font-bold"
+              className="text-[#e11d48] ml-1 font-bold"
               aria-label="wajib diisi"
               title="Wajib diisi"
             >
@@ -37,20 +42,29 @@ export function FormField({
             </span>
           )}
           {isOptional && (
-            <span className="text-soft font-normal text-xs ml-1">
+            <span className="text-[#64718a] dark:text-[#98a6c0] font-normal text-xs ml-1">
               (opsional)
             </span>
           )}
         </label>
       ) : null}
       {children}
-      {hint && <span className="text-xs text-soft mt-1 block">{hint}</span>}
+      {hint && (
+        <span className="text-xs text-[#64718a] dark:text-[#98a6c0] mt-1.5 block leading-relaxed">
+          {hint}
+        </span>
+      )}
+      {error && (
+        <span className="text-xs text-[#e11d48] mt-1.5 block font-medium">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
 
 export const inputCls =
-  "w-full h-11 border-2 border-fco-border dark:border-fco-border-dark rounded-xl px-3.5 text-sm field-input focus:outline-hidden focus:border-fco-blue focus:ring-2 focus:ring-fco-blue/15 transition-all surface-card text-strong placeholder:text-soft";
+  "w-full h-[44px] border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] rounded-[10px] px-3.5 text-sm text-[#0f172a] dark:text-[#e8edf7] placeholder:text-[#94a0b8] dark:placeholder:text-[#6b7a96] focus:outline-none focus:border-[#2563eb] dark:focus:border-[#5b94ff] focus:ring-2 focus:ring-[#2563eb]/15 transition-colors disabled:opacity-60 disabled:cursor-not-allowed";
 
 interface SegmentedControlProps<T extends string> {
   label: string;
@@ -130,40 +144,40 @@ export function CrudActions({
 }) {
   return (
     <div
-      className="flex items-center gap-1.5 justify-end shrink-0"
+      className="flex items-center gap-2 justify-end shrink-0"
       onClick={(e) => e.stopPropagation()}
     >
       {onDetail && (
         <button
           type="button"
           onClick={onDetail}
-          title="Lihat Detail"
-          aria-label="Lihat Detail"
-          className="w-8 h-8 rounded-lg border border-blue-200 dark:border-blue-700/60 bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-300 hover:bg-fco-blue hover:text-white hover:border-fco-blue dark:hover:bg-fco-blue dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          title="Lihat"
+          aria-label="Lihat"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#2563eb] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Eye size={15} strokeWidth={2.2} aria-hidden="true" />
+          <Eye size={16} strokeWidth={2} aria-hidden="true" />
         </button>
       )}
       {onEdit && (
         <button
           type="button"
           onClick={onEdit}
-          title="Ubah Data"
-          aria-label="Ubah Data"
-          className="w-8 h-8 rounded-lg border border-amber-200 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 hover:bg-amber-500 hover:text-white hover:border-amber-500 dark:hover:bg-amber-500 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          title="Ubah"
+          aria-label="Ubah"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#f59e0b] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Pencil size={14} strokeWidth={2.2} aria-hidden="true" />
+          <Pencil size={15} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
       {onDelete && (
         <button
           type="button"
           onClick={onDelete}
-          title="Hapus Data"
-          aria-label="Hapus Data"
-          className="w-8 h-8 rounded-lg border border-rose-200 dark:border-rose-700/60 bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white hover:border-rose-600 dark:hover:bg-rose-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90 active:translate-y-0.5 shadow-2xs hover:shadow-xs"
+          title="Hapus"
+          aria-label="Hapus"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#e11d48] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Trash2 size={14} strokeWidth={2.2} aria-hidden="true" />
+          <Trash2 size={15} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
     </div>

@@ -125,8 +125,8 @@ export function QuickSearchMenu({
       {/* Input Field */}
       <div className="relative flex items-center">
         <Search
-          size={16}
-          className="text-soft absolute left-3 pointer-events-none"
+          size={15}
+          className="text-subtext dark:text-slate-400 absolute left-3 pointer-events-none"
           aria-hidden="true"
         />
         <input
@@ -144,7 +144,7 @@ export function QuickSearchMenu({
           aria-expanded={open}
           aria-autocomplete="list"
           aria-controls="quick-search-dropdown"
-          className="w-full h-9 pl-9 pr-8 rounded-lg border border-fco-border-subtle surface-inset text-xs sm:text-sm field-input focus:outline-hidden focus:border-fco-blue transition-colors"
+          className="w-full h-8.5 pl-9 pr-14 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-slate-800/80 border border-[#E5E7EB] dark:border-slate-700 text-[13px] font-medium text-ink dark:text-white placeholder:text-faint focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900/40 transition-all"
         />
         {query ? (
           <button
@@ -154,14 +154,14 @@ export function QuickSearchMenu({
               inputRef.current?.focus();
             }}
             aria-label="Hapus pencarian"
-            className="absolute right-2 p-1 text-soft hover:text-strong border-none bg-transparent cursor-pointer"
+            className="absolute right-2 p-1 text-subtext hover:text-ink dark:hover:text-white border-none bg-transparent cursor-pointer"
           >
             <X size={14} aria-hidden="true" />
           </button>
         ) : (
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 absolute right-2 px-1.5 py-0.5 text-2xs font-mono font-medium text-soft surface-card border border-fco-border-subtle rounded">
-            Ctrl+K
-          </kbd>
+          <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10.5px] font-medium text-subtext bg-white dark:bg-slate-700 border border-[#E5E7EB] dark:border-slate-600 rounded absolute right-2 pointer-events-none">
+            ⌘ + K
+          </span>
         )}
       </div>
 
@@ -170,11 +170,11 @@ export function QuickSearchMenu({
         <div
           id="quick-search-dropdown"
           role="listbox"
-          className="absolute left-0 right-0 top-full mt-1.5 surface-card border dark:border-fco-border-dark rounded-xl shadow-2xl p-1.5 z-50 max-h-72 overflow-y-auto animate-in fade-in zoom-in-95 duration-100"
+          className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-700 rounded-xl shadow-popover p-1.5 z-50 max-h-72 overflow-y-auto animate-in fade-in zoom-in-95 duration-100"
         >
-          <div className="px-2.5 py-1 text-2xs font-bold text-soft uppercase tracking-wider flex items-center justify-between border-b border-fco-border-subtle mb-1">
+          <div className="px-2.5 py-1 text-[10.5px] font-semibold text-faint uppercase tracking-wider flex items-center justify-between border-b border-[#E5E7EB] dark:border-slate-800 mb-1">
             <span>Menu</span>
-            <span className="text-soft font-normal normal-case">
+            <span className="text-subtext font-normal normal-case">
               {filteredItems.length} ditemukan
             </span>
           </div>

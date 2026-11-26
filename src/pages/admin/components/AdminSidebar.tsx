@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   Anchor,
@@ -12,6 +12,7 @@ import {
   Link2,
   MapPin,
   Menu,
+  Scale,
   Ship,
   X,
 } from "lucide-react";
@@ -19,6 +20,7 @@ import { Logo } from "../../../components/Logo";
 import { UserProfileBadge } from "../../../components/UserProfileBadge";
 import { ThemeToggle } from "../../../components/ThemeToggle";
 import { FullscreenToggle } from "../../../components/FullscreenToggle";
+import { RoleBadge } from "../../../components/RoleBadge";
 import {
   QuickSearchMenu,
   type QuickSearchItem,
@@ -60,6 +62,22 @@ const adminSearchItems: QuickSearchItem[] = [
     category: "Armada",
     icon: Anchor,
     keywords: ["nahkoda", "captain", "lisensi", "sikpi", "pelaut", "kapten"],
+  },
+  {
+    label: "Timbangan IoT (Live)",
+    to: "/admin/scales",
+    category: "Operasional Lapangan",
+    icon: Scale,
+    keywords: [
+      "timbangan",
+      "iot",
+      "timbang",
+      "scale",
+      "live",
+      "bobot",
+      "dermaga",
+      "pelabuhan",
+    ],
   },
   {
     label: "Laporan Tangkapan",
@@ -154,76 +172,96 @@ const adminSearchItems: QuickSearchItem[] = [
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.innerWidth >= 1024,
-  );
   const navigate = useNavigate();
   const toast = useToast();
+
+  const isSuperAdmin = authService.isSuperAdmin();
   const userInfo = getUserDisplayInfo();
 
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const handleToggleSidebar = () => {
+    // Di desktop/tablet toggle sidebarOpen, di mobile toggle mobileOpen
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      setSidebarOpen((prev) => !prev);
+    } else {
+      setMobileOpen((prev) => !prev);
+    }
+  };
+
+  const handleCloseDesktopSidebar = () => {
+    setSidebarOpen(false);
+  };
 
   if (!authService.isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
 
-  const userRole = authService.getUserRole();
-  if (userRole && userRole !== "admin") {
-    return <Navigate to={authService.getDashboardUrl()} replace />;
+  // Pure role-based guard: if staff visits /admin, direct to /staff
+  if (!isSuperAdmin) {
+    return <Navigate to="/staff" replace />;
   }
-
-  const isOpen = isDesktop ? sidebarOpen : mobileOpen;
 
   const handleLogout = async () => {
     await authService.logout();
-    toast.success("Logout berhasil. Sesi telah diakhiri.");
+    toast.success("Anda telah berhasil keluar dari akun.");
     navigate("/login", { replace: true });
   };
 
   return (
-    <div className="min-h-screen surface-page text-strong flex">
-      {/* 1. Desktop Left Sidebar (LemonLead Style: Clean Light / Dark Surface) */}
+    <div className="min-h-screen bg-[#F6F7F9] dark:bg-[#0A101D] text-ink dark:text-[#E8EDF7] flex flex-row">
+      {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Admin"
-        className={`hidden lg:flex flex-col bg-[#fafbfc] dark:bg-[#121820] text-strong fixed top-0 bottom-0 left-0 z-30 shadow-2xs transition-all duration-300 ease-in-out overflow-hidden ${
-          sidebarOpen ? "w-64 border-r border-slate-200/80 dark:border-fco-border-dark" : "w-0 border-r-0"
-        }`}
+        style={{
+          width: sidebarOpen ? "240px" : "0px",
+          minWidth: sidebarOpen ? "240px" : "0px",
+          display: sidebarOpen ? "flex" : "none",
+        }}
+        className="flex-col bg-white dark:bg-[#111827] text-ink dark:text-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 overflow-hidden border-r border-[#E5E7EB] dark:border-slate-800"
       >
-        <div className="w-64 flex flex-col h-full shrink-0 overflow-hidden">
-          {/* Brand Header */}
-          <div className="h-16 px-5 border-b border-slate-200/80 dark:border-fco-border-dark flex items-center shrink-0">
-            <Link to="/admin" className="no-underline">
-              <Logo variant="light" size={28} />
-            </Link>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav />
-          </div>
-
-          {/* Bottom-left: Clean System Status Indicator */}
-          <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                Sistem KKP
-              </span>
+        <div className="w-[240px] flex flex-col h-full shrink-0 overflow-hidden justify-between">
+          <div className="flex flex-col min-h-0 overflow-hidden">
+            {/* Brand Header */}
+            <div className="h-16 px-4 border-b border-[#E5E7EB]/80 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <Link to="/admin" className="no-underline flex items-center gap-2">
+                <Logo variant="light" size={26} />
+              </Link>
+              <button
+                type="button"
+                onClick={handleCloseDesktopSidebar}
+                title="Sembunyikan Sidebar"
+                aria-label="Sembunyikan Sidebar"
+                className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
+              >
+                <X size={14} />
+              </button>
             </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
-            </span>
+
+            {/* Navigation Links */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+              <AdminSidebarNav />
+            </div>
+          </div>
+
+          {/* Bottom status */}
+          <div className="p-3 border-t border-[#E5E7EB]/80 dark:border-slate-800 space-y-2 shrink-0">
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700">
+              <div className="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                ADM
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-medium text-subtext leading-none">Akses</p>
+                <p className="text-[12px] font-semibold text-ink dark:text-white truncate mt-0.5">
+                  {isSuperAdmin ? "Super Admin" : "Admin"}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </aside>
 
       {/* 2. Mobile Drawer Overlay with Smooth CSS Transitions */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ease-in-out ${
           mobileOpen
             ? "opacity-100 pointer-events-auto visible"
             : "opacity-0 pointer-events-none invisible"
@@ -232,7 +270,7 @@ export function AdminLayout() {
       >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+          className="absolute inset-0 bg-[#09090B]/25 backdrop-blur-[1px] cursor-pointer"
           onClick={() => setMobileOpen(false)}
         />
 
@@ -240,102 +278,86 @@ export function AdminLayout() {
         <div
           role="dialog"
           aria-label="Menu navigasi mobile"
-          className={`relative w-64 max-w-[80vw] h-full bg-[#fafbfc] dark:bg-[#121820] border-r border-slate-200/80 dark:border-fco-border-dark text-strong flex flex-col shadow-2xl z-10 transition-transform duration-300 ease-in-out overflow-hidden ${
+          className={`relative w-[240px] max-w-[80vw] h-full bg-white dark:bg-[#111827] border-r border-[#E5E7EB] dark:border-slate-800 text-ink dark:text-white flex flex-col shadow-popover z-10 transition-transform duration-300 ease-in-out overflow-hidden justify-between ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="h-16 px-4 border-b border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between shrink-0">
-            <Link to="/admin" className="no-underline">
-              <Logo variant="light" size={28} />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-soft hover:text-strong border-none cursor-pointer transition-colors"
-            >
-              <X size={18} aria-hidden="true" />
-            </button>
+          <div className="flex flex-col min-h-0 overflow-hidden">
+            <div className="h-16 px-4 border-b border-[#E5E7EB]/80 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <Link to="/admin" className="no-underline">
+                <Logo variant="light" size={26} />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-charcoal hover:text-ink border-none cursor-pointer transition-colors"
+              >
+                <X size={15} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
+              <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 min-h-0">
-            <AdminSidebarNav onNavigate={() => setMobileOpen(false)} />
-          </div>
-
-          <div className="p-3 px-4 border-t border-slate-200/80 dark:border-fco-border-dark flex items-center justify-between bg-slate-50/80 dark:bg-[#0f151c] text-xs text-soft shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-strong text-2xs uppercase tracking-wider">
-                Sistem KKP
+          <div className="p-3 border-t border-[#E5E7EB]/80 dark:border-slate-800 shrink-0">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700 text-xs">
+              <RoleBadge role="superadmin" size="sm" />
+              <span className="text-[10px] font-mono text-subtext">
+                Tata Kelola
               </span>
             </div>
-            <span className="text-2xs font-mono text-soft px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-              v1.0.0
-            </span>
           </div>
         </div>
       </div>
 
       {/* 3. Main View Area (Offset right of sidebar) */}
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:pl-64" : "lg:pl-0"
-        }`}
+        style={{
+          paddingLeft: sidebarOpen ? "240px" : "0px",
+        }}
+        className="flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out"
       >
         {/* Top Header Bar */}
-        <header className="h-16 px-4 sm:px-7 surface-card border-b border-fco-border-subtle sticky top-0 z-20 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            {/* Hamburger / Close Toggle Button */}
+        <header className="h-16 px-4 sm:px-6 bg-white/85 dark:bg-[#0f1729]/85 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1f2a42] sticky top-0 z-30 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-1 max-w-md">
+            {/* Hamburger / Toggle Button */}
             <button
               type="button"
-              onClick={() => {
-                if (isDesktop) {
-                  setSidebarOpen((prev) => !prev);
-                } else {
-                  setMobileOpen((prev) => !prev);
-                }
-              }}
-              title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-              aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-              aria-expanded={isOpen}
-              className="w-9 h-9 rounded-lg surface-inset hover:surface-page text-soft hover:text-strong flex items-center justify-center cursor-pointer border border-fco-border-subtle transition-all duration-200 shrink-0"
+              onClick={handleToggleSidebar}
+              title={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-label={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+              aria-expanded={sidebarOpen}
+              className="w-9 h-9 rounded-xl border-0 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
             >
-              {isOpen ? (
-                <X
-                  size={18}
-                  className="animate-in fade-in zoom-in-75 duration-150 text-strong"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Menu
-                  size={18}
-                  className="animate-in fade-in zoom-in-75 duration-150"
-                  aria-hidden="true"
-                />
-              )}
+              <Menu size={18} aria-hidden="true" />
             </button>
 
             {/* Quick Search Menu */}
             <QuickSearchMenu
               items={adminSearchItems}
-              placeholder="Cari menu... (Ctrl+K)"
+              placeholder="Cari kapal, nahkoda, atau blok..."
             />
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <FullscreenToggle compact />
             <ThemeToggle compact />
+            <div className="h-5 w-px bg-[#E5E7EB] dark:bg-slate-700 mx-1 hidden sm:block" />
             <UserProfileBadge
               initials={userInfo.initials}
               name={userInfo.name}
               role={userInfo.roleLabel}
+              rawRole={userInfo.rawRole}
               onLogout={handleLogout}
             />
           </div>
         </header>
 
         {/* Content Body */}
-        <main className="flex-1 min-w-0 p-4 sm:p-7 lg:p-8">
+        <main className="flex-1 min-w-0 p-4 sm:p-6 max-w-[1440px] w-full mx-auto space-y-5">
           <Outlet />
         </main>
       </div>

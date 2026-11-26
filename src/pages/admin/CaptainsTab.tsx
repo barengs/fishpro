@@ -8,7 +8,7 @@ import { CaptainModal } from "../../components/modals/CaptainModal";
 import type { Captain } from "../../services/captains";
 import { useCaptainsManager } from "./hooks/useCaptainsManager";
 
-export function CaptainsTab() {
+export function CaptainsTab({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const {
     rows,
     ownersList,
@@ -102,6 +102,12 @@ export function CaptainsTab() {
   return (
     <div>
       <PageToolbar
+        title={hideHeader ? undefined : "Daftar Nahkoda"}
+        desc={
+          hideHeader
+            ? undefined
+            : "Data nahkoda resmi, surat izin kecakapan, dan penugasan armada."
+        }
         searchPlaceholder="Cari nahkoda / lisensi..."
         searchValue={search}
         onSearchChange={setSearch}
@@ -133,29 +139,7 @@ export function CaptainsTab() {
         open={isDetailOpen}
         title={selectedCaptain?.full_name || "Detail Nahkoda"}
         subtitle="Profil nahkoda kapal, nomor lisensi resmi, dan penugasan armada."
-        badge={
-          selectedCaptain ? (
-            <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-xs bg-blue-500/10 text-fco-blue">
-              Lisensi: {selectedCaptain.license_number}
-            </span>
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedCaptain && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedCaptain;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nama Lengkap",

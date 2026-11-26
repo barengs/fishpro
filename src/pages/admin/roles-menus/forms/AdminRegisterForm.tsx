@@ -91,17 +91,26 @@ export function AdminRegisterForm({
             placeholder="Contoh: 08123456789"
           />
           <TextField
-            label="Departemen / Direktorat"
+            label="Jabatan / Posisi Tugas"
+            id="ad-pos"
+            optional
+            disabled={disabled}
+            value={form.position || ""}
+            onChange={(e) => onChange({ ...form, position: e.target.value })}
+            placeholder="Contoh: Staf Lapangan & Timbangan IoT"
+          />
+          <TextField
+            label="Departemen / Pelabuhan"
             id="ad-dept"
             optional
             disabled={disabled}
             value={form.department || ""}
             onChange={(e) => onChange({ ...form, department: e.target.value })}
-            placeholder="Ditjen Perikanan Tangkap"
+            placeholder="Contoh: Pelabuhan Perikanan Samudera"
           />
-          <div className="sm:col-span-2">
+          <div>
             <SelectField
-              label="Penugasan Peran Khusus"
+              label="Peran Akses Sistem"
               id="ad-role"
               optional
               searchable
@@ -115,8 +124,16 @@ export function AdminRegisterForm({
                 })
               }
               options={[
-                { value: "", label: "— Default Administrator —" },
-                ...roles.map((r) => ({ value: r.id, label: r.name })),
+                { value: "", label: "— Default: Staf (Operasional) —" },
+                ...roles.map((r) => ({
+                  value: r.id,
+                  label:
+                    r.name.toLowerCase() === "admin"
+                      ? "Staf (Operasional Lapangan & Timbangan)"
+                      : r.name.toLowerCase() === "superadmin"
+                        ? "Super Admin (Tata Kelola Penuh)"
+                        : r.name,
+                })),
               ]}
             />
           </div>

@@ -46,7 +46,7 @@ export function ShipsPage() {
       render: (r) => (
         <div>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-sm font-semibold">{r.name}</span>
+            <strong className="block font-semibold text-[15px] text-[#0f172a] dark:text-[#e8edf7]">{r.name}</strong>
             <span className="sm:hidden">
               <StatusChip
                 label={r.active ? "Aktif" : "Nonaktif"}
@@ -55,10 +55,10 @@ export function ShipsPage() {
               />
             </span>
           </div>
-          <div className="text-xs text-soft tabular-nums">
+          <small className="block text-[13px] text-[#64718a] dark:text-[#98a6c0] tabular-nums mt-0.5">
             {r.registration_number}
             {r.home_port && ` · ${r.home_port}`}
-          </div>
+          </small>
         </div>
       ),
     },
@@ -102,9 +102,9 @@ export function ShipsPage() {
       hideOnMobile: true,
       render: (r) =>
         r.active ? (
-          <StatusChip label="Aktif" />
+          <StatusChip label="Aktif" fixedWidth />
         ) : (
-          <StatusChip label="Nonaktif" bg="#EEF1F6" color="#4A5872" />
+          <StatusChip label="Nonaktif" fixedWidth />
         ),
     },
     {
@@ -125,8 +125,8 @@ export function ShipsPage() {
   return (
     <div>
       <PageToolbar
-        title="Kapal Nasional"
-        desc="Daftar seluruh kapal penangkap ikan terdaftar di sistem KKP (nama, registrasi, GT, pemilik, nahkoda)."
+        title="Data Kapal Perikanan"
+        desc="Daftar seluruh kapal penangkap ikan yang terdaftar resmi beserta spesifikasi teknis, pemilik, dan nahkodanya."
         searchPlaceholder="Cari nama / nomor registrasi..."
         searchValue={search}
         onSearchChange={setSearch}
@@ -158,31 +158,7 @@ export function ShipsPage() {
         open={isDetailOpen}
         title={selectedShip?.name || "Detail Kapal"}
         subtitle="Spesifikasi teknis, identitas registrasi, dan penugasan kapal."
-        badge={
-          selectedShip ? (
-            <StatusChip
-              label={selectedShip.active ? "Aktif Beroperasi" : "Nonaktif"}
-              bg={selectedShip.active ? undefined : "#EEF1F6"}
-              color={selectedShip.active ? undefined : "#4A5872"}
-            />
-          ) : undefined
-        }
         onClose={closeDetail}
-        actions={
-          selectedShip && (
-            <button
-              type="button"
-              onClick={() => {
-                const target = selectedShip;
-                closeDetail();
-                handleOpenEdit(target);
-              }}
-              className="h-9 px-3.5 rounded-xs border border-fco-border-subtle surface-inset hover:surface-page text-xs font-semibold text-fco-blue cursor-pointer transition-colors"
-            >
-              Ubah Data
-            </button>
-          )
-        }
         fields={[
           {
             label: "Nomor Registrasi",

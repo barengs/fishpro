@@ -7,6 +7,8 @@ export const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "https://api.fishpro.id"
 ).replace(/\/+$/, "");
 
+export const WS_BASE_URL = API_BASE_URL.replace(/^http/, "ws");
+
 export const API_ENDPOINTS = {
   // 1. Authentication
   AUTH: {
@@ -14,6 +16,19 @@ export const API_ENDPOINTS = {
     REFRESH: `${API_BASE_URL}/api/auth/refresh/`,
     REGISTER: `${API_BASE_URL}/api/auth/register/`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout/`,
+    RESET_PASSWORD_REQUEST: `${API_BASE_URL}/api/auth/reset-password/request/`,
+    RESET_PASSWORD_VERIFY: `${API_BASE_URL}/api/auth/reset-password/verify/`,
+    RESET_PASSWORD_CONFIRM: `${API_BASE_URL}/api/auth/reset-password/confirm/`,
+    RESET_PASSWORD_DIRECT: `${API_BASE_URL}/api/auth/reset-password/`,
+  },
+
+  // Role-Based Dashboards
+  DASHBOARD: {
+    ADMIN: `${API_BASE_URL}/api/dashboard/admin/`,
+    REGULATOR: `${API_BASE_URL}/api/dashboard/regulator/`,
+    OWNER: `${API_BASE_URL}/api/dashboard/owner/`,
+    CAPTAIN: `${API_BASE_URL}/api/dashboard/captain/`,
+    WPP_POTENTIAL: `${API_BASE_URL}/api/dashboard/wpp-potential/`,
   },
 
   // 2. Owners & Captains
@@ -77,8 +92,10 @@ export const API_ENDPOINTS = {
     DEVICES: `${API_BASE_URL}/api/iot/devices/`,
     RECEIVE_WEIGHT: `${API_BASE_URL}/api/iot/receive-weight/`,
     STREAM: `${API_BASE_URL}/api/iot/stream/`,
+    WS_STREAM: `${WS_BASE_URL}/ws/scales/`,
     LATEST: `${API_BASE_URL}/api/iot/latest/`,
     READINGS: `${API_BASE_URL}/api/iot/readings/`,
+    EXPORT_CSV: `${API_BASE_URL}/api/iot/readings/export-csv/`,
     SAVE_CATCH: `${API_BASE_URL}/api/iot/save-catch/`,
   },
 

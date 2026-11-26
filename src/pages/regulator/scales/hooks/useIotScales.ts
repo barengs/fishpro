@@ -117,44 +117,13 @@ export function useIotScales() {
   }, []);
 
   // Setup Smart Polling: menggantikan SSE gantung yang mengunci Gunicorn worker
+  // Real-time WebSocket connection via Django Channels with Polling fallback
   useEffect(() => {
     if (!selectedDeviceId) return;
     let ignore = false;
+    let ws: WebSocket | null = null;
     let pollTimer: ReturnType<typeof setTimeout> | null = null;
-
-    async function pollLatestWeight() {
-      // Lewati polling jika tab browser tidak aktif / disembunyikan
-      if (typeof document !== "undefined" && document.hidden) {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 5000);
-        }
-        return;
-      }
-
-      try {
-        const latest = await iotService.getLatestReading(
-          selectedDeviceId,
-          "pending",
-        );
-        if (!ignore) {
-          setLatestReading((prev) => {
-            // Hanya set state baru jika id atau bobot berbeda
-            if (!prev && !latest) return null;
-            if (prev?.id === latest?.id && prev?.weight === latest?.weight) {
-              return prev;
-            }
-            return latest;
-          });
-          setSseConnected(true);
-        }
-      } catch {
-        if (!ignore) setSseConnected(false);
-      } finally {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 2500);
-        }
-      }
-    }
+    let wsActive = false;
 
     async function initialLoad() {
       try {
@@ -165,22 +134,117 @@ export function useIotScales() {
         if (!ignore) {
           setLatestReading(latest);
           setReadings(list);
-          setSseConnected(true);
         }
       } catch {
         // Ignored
-      } finally {
-        if (!ignore) {
-          pollTimer = setTimeout(pollLatestWeight, 2500);
-        }
       }
     }
 
     initialLoad();
 
+    // 1. Try WebSocket connection via Django Channels
+    try {
+      const wsUrl = iotService.getWebSocketUrl(selectedDeviceId);
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        if (!ignore) {
+          wsActive = true;
+          setSseConnected(true);
+        }
+      };
+
+      ws.onmessage = (event) => {
+        if (ignore) return;
+        try {
+          const data = JSON.parse(event.data);
+          if (data.weight !== undefined || data.event === "weight_update") {
+            const newReading: ScaleReading = {
+              id: data.reading_id || String(Date.now()),
+              device_id: data.device_id || selectedDeviceId,
+              weight: Number(data.weight),
+              unit: data.unit || "kg",
+              status: data.status || "pending",
+              created_at: data.created_at || new Date().toISOString(),
+              scale_name: data.scale_name,
+              port_name: data.port_name,
+              is_stable: data.is_stable ?? true,
+              session_id: data.session_id,
+              anomaly_warning: data.anomaly_warning,
+            };
+            setLatestReading(newReading);
+            if (data.anomaly_warning) {
+              toast.warning(data.anomaly_warning);
+            }
+            setReadings((prev) => {
+              if (prev.some((r) => r.id === newReading.id)) return prev;
+              return [newReading, ...prev.slice(0, 19)];
+            });
+            setSseConnected(true);
+          }
+        } catch {
+          // JSON parse ignored
+        }
+      };
+
+      ws.onerror = () => {
+        wsActive = false;
+        if (!ignore) startPollingFallback();
+      };
+
+      ws.onclose = () => {
+        wsActive = false;
+        if (!ignore) startPollingFallback();
+      };
+    } catch {
+      startPollingFallback();
+    }
+
+    // 2. Polling fallback if WebSocket drops or is unavailable
+    function startPollingFallback() {
+      if (pollTimer || wsActive) return;
+
+      async function poll() {
+        if (typeof document !== "undefined" && document.hidden) {
+          if (!ignore) pollTimer = setTimeout(poll, 5000);
+          return;
+        }
+
+        try {
+          const latest = await iotService.getLatestReading(
+            selectedDeviceId,
+            "pending",
+          );
+          if (!ignore) {
+            setLatestReading((prev) => {
+              if (!prev && !latest) return null;
+              if (prev?.id === latest?.id && prev?.weight === latest?.weight) {
+                return prev;
+              }
+              return latest;
+            });
+            setSseConnected(true);
+          }
+        } catch {
+          if (!ignore) setSseConnected(false);
+        } finally {
+          if (!ignore && !wsActive) {
+            pollTimer = setTimeout(poll, 2500);
+          }
+        }
+      }
+
+      pollTimer = setTimeout(poll, 1500);
+    }
+
     return () => {
       ignore = true;
-      if (pollTimer) clearTimeout(pollTimer);
+      if (ws) {
+        ws.close();
+      }
+      if (pollTimer) {
+        clearTimeout(pollTimer);
+      }
       setSseConnected(false);
     };
   }, [selectedDeviceId]);
@@ -199,6 +263,27 @@ export function useIotScales() {
     if (!selectedSpeciesId) {
       setErrorMsg("Pilih jenis ikan yang sedang ditimbang.");
       return;
+    }
+
+    // Client-side Quota Threshold Pre-check
+    const selectedShip = ships.find(
+      (s) => s.registration_number === selectedShipReg,
+    );
+    const measuredWeight = Number(latestReading.weight) || 0;
+    if (selectedShip?.current_year_quota) {
+      const rem = Number(selectedShip.current_year_quota.remaining_quota);
+      if (rem <= 0) {
+        const msg = `Kuota tangkapan kapal '${selectedShip.name}' tahun ${selectedShip.current_year_quota.year} telah habis (0 kg tersisa).`;
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
+      if (measuredWeight > rem) {
+        const msg = `Sisa kuota kapal '${selectedShip.name}' (${rem.toLocaleString("id-ID")} kg) tidak mencukupi untuk bobot hasil timbang (${measuredWeight.toLocaleString("id-ID")} kg).`;
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
     }
 
     setSaving(true);
@@ -220,8 +305,19 @@ export function useIotScales() {
       toast.success(
         `Tangkapan ${res.weight} kg untuk kapal ${res.ship_name} berhasil disimpan dan tersegel di blockchain!`,
       );
+      if (res.quota_warning) {
+        toast.warning(res.quota_warning);
+      }
       setLatestReading(null);
       fetchReadings(selectedDeviceId);
+
+      // Refresh ship quota data
+      try {
+        const updatedShips = await shipsService.getAll();
+        setShips(Array.isArray(updatedShips) ? updatedShips : []);
+      } catch {
+        // Ignored
+      }
     } catch (err: unknown) {
       const msg =
         err instanceof Error

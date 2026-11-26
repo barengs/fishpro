@@ -1,12 +1,14 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 import { ToastProvider } from "./components/toast";
+import { PageTransitionProvider } from "./components/PageTransitionContext";
 import {
   PublicRoute,
   ProtectedRoute,
   BackButtonGuard,
 } from "./components/auth";
+import { initLenis, lenisScrollTo } from "./utils/lenis";
 
 // Lazy-loaded auth pages
 const OnboardingPage = lazy(() =>
@@ -14,17 +16,19 @@ const OnboardingPage = lazy(() =>
     default: m.OnboardingPage,
   })),
 );
-const LoginPage = lazy(() =>
-  import("./pages/auth/LoginPage").then((m) => ({ default: m.LoginPage })),
+const AuthPage = lazy(() =>
+  import("./pages/auth/AuthPage").then((m) => ({ default: m.AuthPage })),
 );
-const RegisterPage = lazy(() =>
-  import("./pages/auth/RegisterPage").then((m) => ({
-    default: m.RegisterPage,
+
+// Lazy-loaded Staff pages
+const StaffLayout = lazy(() =>
+  import("./pages/staff/components/StaffSidebar").then((m) => ({
+    default: m.StaffLayout,
   })),
 );
-const ResetPasswordPage = lazy(() =>
-  import("./pages/auth/ResetPasswordPage").then((m) => ({
-    default: m.ResetPasswordPage,
+const StaffDashboard = lazy(() =>
+  import("./pages/staff/StaffDashboard").then((m) => ({
+    default: m.StaffDashboard,
   })),
 );
 
@@ -160,6 +164,7 @@ const MyShipPage = lazy(() =>
     default: m.MyShipPage,
   })),
 );
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function PageLoader() {
   return (
@@ -174,14 +179,38 @@ function PageLoader() {
   );
 }
 
+function LenisScrollManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    let cleanupFn: (() => void) | undefined;
+    initLenis().then((cleanup) => {
+      cleanupFn = cleanup;
+    });
+
+    return () => {
+      cleanupFn?.();
+    };
+  }, []);
+
+  // Saat route berpindah (misal Login ke Register), scroll ke atas secara smooth pakai Lenis
+  useEffect(() => {
+    lenisScrollTo(0, { duration: 0.8 });
+  }, [location.pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
-          <BackButtonGuard />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+          <PageTransitionProvider>
+            <LenisScrollManager />
+            <BackButtonGuard />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
               {/* Root redirect */}
               <Route
                 path="/"
@@ -195,58 +224,100 @@ export default function App() {
               {/* Standalone auth & public landing pages */}
               <Route path="/onboard" element={<OnboardingPage />} />
               <Route
-                path="/login"
                 element={
                   <PublicRoute>
-                    <LoginPage />
+                    <AuthPage />
                   </PublicRoute>
                 }
-              />
-              <Route
-                path="/register"
-                element={
-                  <PublicRoute>
-                    <RegisterPage />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/reset-password"
-                element={
-                  <PublicRoute>
-                    <ResetPasswordPage />
-                  </PublicRoute>
-                }
-              />
+              >
+                <Route path="/login" element={null} />
+                <Route path="/register" element={null} />
+                <Route path="/reset-password" element={null} />
+              </Route>
 
-              {/* Protected: Admin */}
+              {/* Protected: Staff (Staf Lapangan Operasional) */}
+              <Route
+                path="/staff"
+                element={
+                  <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+                    <StaffLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<StaffDashboard />} />
+                <Route path="scales" element={<IotScalesPage />} />
+                <Route path="catches" element={<CatchesPage />} />
+                <Route path="ships" element={<ShipsPage />} />
+                <Route path="owners" element={<OwnersTab />} />
+                <Route path="captains" element={<CaptainsTab />} />
+                <Route path="species" element={<SpeciesPage />} />
+                <Route path="areas" element={<AreasPage />} />
+              </Route>
+
+              {/* Protected: Super Admin (Tata Kelola Sistem) */}
               <Route
                 path="/admin"
                 element={
-                  <ProtectedRoute allowedRoles={["admin"]}>
+                  <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
                     <AdminLayout />
                   </ProtectedRoute>
                 }
               >
                 <Route index element={<AdminDashboard />} />
+                <Route path="scales" element={<IotScalesPage />} />
                 <Route path="ships" element={<ShipsPage />} />
-                <Route path="users" element={<UsersPage />} />
+                <Route
+                  path="users"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <UsersPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="owners" element={<OwnersTab />} />
                 <Route path="captains" element={<CaptainsTab />} />
                 <Route path="catches" element={<CatchesPage />} />
                 <Route path="species" element={<SpeciesPage />} />
                 <Route path="areas" element={<AreasPage />} />
-                <Route path="quota" element={<QuotaPnbpPage />} />
-                <Route path="blockchain" element={<BlockchainPage />} />
-                <Route path="iot-devices" element={<IotDevicesPage />} />
-                <Route path="roles" element={<RolesMenusPage />} />
+                <Route
+                  path="quota"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <QuotaPnbpPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="blockchain"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <BlockchainPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="iot-devices"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <IotDevicesPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="roles"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <RolesMenusPage />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
 
               {/* Protected: Regulator */}
               <Route
                 path="/regulator"
                 element={
-                  <ProtectedRoute allowedRoles={["regulator", "admin"]}>
+                  <ProtectedRoute allowedRoles={["regulator", "admin", "superadmin"]}>
                     <RegulatorLayout />
                   </ProtectedRoute>
                 }
@@ -266,7 +337,7 @@ export default function App() {
               <Route
                 path="/owner"
                 element={
-                  <ProtectedRoute allowedRoles={["owner", "admin"]}>
+                  <ProtectedRoute allowedRoles={["owner", "admin", "superadmin"]}>
                     <OwnerLayout />
                   </ProtectedRoute>
                 }
@@ -280,7 +351,7 @@ export default function App() {
               <Route
                 path="/captain"
                 element={
-                  <ProtectedRoute allowedRoles={["captain", "admin"]}>
+                  <ProtectedRoute allowedRoles={["captain", "admin", "superadmin"]}>
                     <CaptainLayout />
                   </ProtectedRoute>
                 }
@@ -290,17 +361,11 @@ export default function App() {
                 <Route path="ship" element={<MyShipPage />} />
               </Route>
 
-              {/* Catch-all */}
-              <Route
-                path="*"
-                element={
-                  <PublicRoute>
-                    <Navigate to="/onboard" replace />
-                  </PublicRoute>
-                }
-              />
+              {/* Catch-all 404 */}
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
+          </PageTransitionProvider>
         </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>

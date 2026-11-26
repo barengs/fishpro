@@ -9,6 +9,7 @@ import { DetailModal } from "../../../components/DetailModal";
 import { useDetailModal } from "../../../components/useDetailModal";
 import { PageToolbar } from "../../../components/PageToolbar";
 import { AlertBanner, TextField, TextareaField } from "../../../components/ui";
+import { RoleBadge } from "../../../components/RoleBadge";
 import { roleSchema } from "../../../utils/schemas";
 import {
   rolesService,
@@ -120,14 +121,17 @@ export function RolesTab() {
     {
       key: "name",
       header: "Nama Peran",
-      flex: 2,
+      flex: 1.5,
+      minWidth: 140,
       render: (r) => (
         <div>
-          <span className="text-sm font-bold text-strong">{r.name}</span>
+          <span className="text-sm font-bold text-strong tracking-tight">{r.name}</span>
           <div className="sm:hidden text-2xs text-soft mt-0.5 line-clamp-1">
-            {r.name.toLowerCase() === "admin"
+            {r.name.toLowerCase() === "superadmin"
               ? "Super Administrator"
-              : r.description || "Akses terbatas"}
+              : r.name.toLowerCase() === "admin"
+                ? "Staf Lapangan"
+                : r.description || "Akses terbatas"}
           </div>
         </div>
       ),
@@ -136,6 +140,7 @@ export function RolesTab() {
       key: "desc",
       header: "Deskripsi",
       flex: 3,
+      minWidth: 200,
       hideOnMobile: true,
       render: (r) => (
         <span className="text-sm text-soft line-clamp-1">
@@ -146,27 +151,27 @@ export function RolesTab() {
     {
       key: "perms",
       header: "Tingkat Akses",
-      flex: 2,
+      flex: 1.8,
+      minWidth: 170,
+      align: "center",
       hideOnMobile: true,
       render: (r) => {
-        const isAdmin = r.name.toLowerCase() === "admin";
-        return (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${
-              isAdmin
-                ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
-                : "bg-blue-500/10 text-fco-blue dark:text-blue-400"
-            }`}
-          >
-            {isAdmin ? "Akses Penuh (Super Admin)" : "Akses Menu Terbatas"}
-          </span>
-        );
+        const norm = r.name.toLowerCase();
+        const roleLabels: Record<string, string> = {
+          superadmin: "Akses Penuh",
+          admin: "Staf Lapangan",
+          regulator: "Pengawasan",
+          owner: "Pemilik",
+          captain: "Nahkoda",
+        };
+        const customLabel = roleLabels[norm] ?? "Terbatas";
+
+        return <RoleBadge role={r.name} label={customLabel} size="md" variant="solid" fixedWidth />;
       },
     },
     {
       key: "aksi",
       header: "Aksi",
-      flex: 1,
       align: "right",
       render: (r) => (
         <CrudActions
@@ -230,17 +235,19 @@ export function RolesTab() {
         subtitle="Definisi master peran, deskripsi wewenang, dan tingkat aksesnya."
         badge={
           selectedRole ? (
-            <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-xs font-semibold ${
-                selectedRole.name.toLowerCase() === "admin"
-                  ? "bg-purple-500/10 text-purple-700 dark:text-purple-300"
-                  : "bg-blue-500/10 text-fco-blue dark:text-blue-400"
-              }`}
-            >
-              {selectedRole.name.toLowerCase() === "admin"
-                ? "Akses Penuh (Super Admin)"
-                : "Akses Menu Terbatas"}
-            </span>
+            (() => {
+              const norm = selectedRole.name.toLowerCase();
+              const roleLabels: Record<string, string> = {
+                superadmin: "Akses Penuh",
+                admin: "Staf Lapangan",
+                regulator: "Pengawasan",
+                owner: "Pemilik Kapal",
+                captain: "Nahkoda",
+              };
+              const customLabel = roleLabels[norm] ?? "Terbatas";
+
+              return <RoleBadge role={selectedRole.name} label={customLabel} variant="solid" fixedWidth />;
+            })()
           ) : undefined
         }
         onClose={closeDetail}

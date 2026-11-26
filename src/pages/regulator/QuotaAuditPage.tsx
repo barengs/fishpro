@@ -169,8 +169,8 @@ export function QuotaAuditPage() {
   return (
     <div>
       <PageToolbar
-        title="Audit Kepatuhan Kuota"
-        desc="Verifikasi batas kuota penangkapan tahunan seluruh armada kapal nasional dan pantau tingkat kepatuhan kuota."
+        title="Pemantauan Kuota Kapal"
+        desc="Pantau realisasi tangkapan dan sisa kuota armada kapal untuk memastikan tidak ada pelanggaran batas penangkapan."
         searchPlaceholder="Cari kapal / nomor registrasi..."
         searchValue={search}
         onSearchChange={setSearch}

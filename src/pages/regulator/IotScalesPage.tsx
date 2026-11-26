@@ -123,6 +123,7 @@ export function IotScalesPage() {
       <ScaleReadingsTable
         readings={readings}
         loading={loading}
+        selectedDeviceId={selectedDeviceId}
         onRefresh={() => fetchReadings(selectedDeviceId)}
       />
     </div>

@@ -24,10 +24,10 @@ export interface ScaleReading {
   port_name?: string;
   weight: number | string;
   unit: string;
-  tare?: number | string;
   is_stable: boolean;
   status: "pending" | "saved" | "discarded";
   session_id?: string;
+  anomaly_warning?: string | null;
   fish_catch?: number | null;
   catch_detail?: number | null;
   operator_notes?: string | null;
@@ -59,6 +59,8 @@ export interface SaveScaleCatchResponse {
   pnkp?: number | null;
   pnbp?: number | null;
   remaining_quota?: number | null;
+  quota_percentage?: number | null;
+  quota_warning?: string | null;
   reading_id: string;
   blockchain_status: string;
 }
@@ -67,6 +69,8 @@ export interface SendIoTWeightPayload {
   device_id: string;
   weight: number;
   unit?: string;
+  is_stable?: boolean;
+  session_id?: string;
   api_key?: string;
 }
 
@@ -78,5 +82,7 @@ export interface SendIoTWeightResponse {
   weight: number;
   unit: string;
   is_stable: boolean;
+  session_id?: string;
+  anomaly_warning?: string | null;
   created_at: string;
 }
