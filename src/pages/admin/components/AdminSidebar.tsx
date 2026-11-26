@@ -244,21 +244,16 @@ export function AdminLayout() {
 
           {/* Bottom status */}
           <div className="p-3 border-t border-[#E5E7EB]/80 dark:border-slate-800 space-y-2 shrink-0">
-            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
-                  ADM
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-medium text-subtext leading-none">Akses</p>
-                  <p className="text-[12px] font-semibold text-ink dark:text-white truncate mt-0.5">
-                    {isSuperAdmin ? "Super Admin" : "Admin"}
-                  </p>
-                </div>
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-[#F9FAFB] dark:bg-slate-800/60 border border-[#E5E7EB] dark:border-slate-700">
+              <div className="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                ADM
               </div>
-              <span className="px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wide rounded-md bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-300">
-                {isSuperAdmin ? "Kelola" : "Operasi"}
-              </span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-medium text-subtext leading-none">Akses</p>
+                <p className="text-[12px] font-semibold text-ink dark:text-white truncate mt-0.5">
+                  {isSuperAdmin ? "Super Admin" : "Admin"}
+                </p>
+              </div>
             </div>
           </div>
         </div>
