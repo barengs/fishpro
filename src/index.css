@@ -185,6 +185,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Disable CSS transitions momentarily while View Transitions API captures/animates theme swap */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
 /* Circular Reveal Theme Transition (View Transitions API) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
