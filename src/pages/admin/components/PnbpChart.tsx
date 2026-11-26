@@ -227,6 +227,7 @@ export function PnbpChart({
   const deltaPct = prevVal > 0 ? ((currentVal - prevVal) / prevVal) * 100 : 0;
 
   const yTicks = [0, maxVal * 0.45, maxVal * 0.9];
+  const labelStep = Math.max(1, Math.ceil((coords.length * 44) / plotWidth));
 
   return (
     <section className="bg-white dark:bg-[#0f1729] border border-[#E5E7EB] dark:border-[#1f2a42] rounded-2xl shadow-subtle overflow-hidden h-full flex flex-col justify-between">
@@ -416,33 +417,45 @@ export function PnbpChart({
               </g>
             )}
 
-            {/* Month labels and pill background for active month */}
-            {currentHover && (
-              <rect
-                x={currentHover.x - 22}
-                y={svgHeight - padBottom + 6}
-                width={44}
-                height={22}
-                rx={11}
-                className="fill-[#0f172a] dark:fill-[#e8edf7]"
-              />
-            )}
+            {/* Month labels (thinned automatically to avoid overlap) */}
+            {coords.map((p, idx) => {
+              if (idx === activeHoverIndex) return null;
+              if (idx % labelStep !== 0) return null;
+              if (currentHover && Math.abs(p.x - currentHover.x) < 38) return null;
+              return (
+                <text
+                  key={p.fullLabel + idx}
+                  x={p.x}
+                  y={svgHeight - padBottom + 21}
+                  textAnchor="middle"
+                  className="text-[11px] font-sans fill-[#94a0b8] transition-all"
+                >
+                  {p.label}
+                </text>
+              );
+            })}
 
-            {coords.map((p, idx) => (
-              <text
-                key={p.fullLabel + idx}
-                x={p.x}
-                y={svgHeight - padBottom + 21}
-                textAnchor="middle"
-                className={`text-[11px] font-sans transition-all ${
-                  idx === activeHoverIndex
-                    ? "fill-[#ffffff] dark:fill-[#0a101d] font-bold"
-                    : "fill-[#94a0b8]"
-                }`}
-              >
-                {p.label}
-              </text>
-            ))}
+            {/* Pill background and active month label rendered on top */}
+            {currentHover && (
+              <g>
+                <rect
+                  x={currentHover.x - 22}
+                  y={svgHeight - padBottom + 6}
+                  width={44}
+                  height={22}
+                  rx={11}
+                  className="fill-[#0f172a] dark:fill-[#e8edf7]"
+                />
+                <text
+                  x={currentHover.x}
+                  y={svgHeight - padBottom + 21}
+                  textAnchor="middle"
+                  className="text-[11px] font-sans fill-[#ffffff] dark:fill-[#0a101d] font-bold transition-all"
+                >
+                  {currentHover.label}
+                </text>
+              </g>
+            )}
           </svg>
 
           {/* Floating Tooltip */}
