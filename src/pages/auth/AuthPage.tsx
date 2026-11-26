@@ -55,7 +55,7 @@ export function AuthPage() {
 
   return (
     <div
-      className="page"
+      className="auth-layout page"
       id="page"
       data-view={currentView}
       data-right={lastRightView}

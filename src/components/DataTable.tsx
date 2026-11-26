@@ -101,16 +101,17 @@ export function DataTable<T>({
   const currentStartIndex = pagination
     ? (safePage - 1) * effectivePageSize + 1
     : startIndex;
+
   return (
-    <div className="bg-white dark:bg-[#111827] rounded-2xl border border-[#E5E7EB] dark:border-slate-800 shadow-subtle overflow-hidden">
+    <section className="bg-white dark:bg-[#0f1729] border border-[#e8ebf0] dark:border-[#1f2a42] rounded-[16px] overflow-hidden">
       <div className="overflow-x-auto">
         <div className="min-w-full">
           {/* Table Column Headers */}
-          <div className="flex items-center py-3 px-3 sm:px-4 text-xs font-bold text-white gap-2.5 sm:gap-3 bg-brand-600 dark:bg-blue-600">
+          <div className="flex items-center py-3.5 px-4 sm:px-6 text-[13px] font-semibold text-white gap-3 bg-[#2563eb] dark:bg-[#2563eb]">
             {showRowNumber && (
               <div
-                style={{ flex: "0 0 38px" }}
-                className="shrink-0 text-center text-xs font-bold text-white/90"
+                style={{ flex: "0 0 50px" }}
+                className="shrink-0 text-center font-semibold text-white"
               >
                 <span>{rowNumberHeader}</span>
               </div>
@@ -130,13 +131,13 @@ export function DataTable<T>({
                   key={c.key}
                   style={
                     isAction
-                      ? { flex: "0 0 120px", minWidth: 120 }
+                      ? { flex: "0 0 140px", minWidth: 140 }
                       : {
                           flex: c.flex ?? 1,
                           minWidth: c.minWidth ?? undefined,
                         }
                   }
-                  className={`${isAction ? "shrink-0" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
+                  className={`${isAction ? "shrink-0 justify-self-end" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
                     isRight
                       ? "text-right"
                       : isCentered
@@ -156,11 +157,11 @@ export function DataTable<T>({
             Array.from({ length: skeletonCount }).map((_, rIdx) => (
               <div
                 key={`skel-${rIdx}`}
-                className="flex items-center gap-2.5 sm:gap-3 py-3.5 px-3 sm:px-4 border-t border-[#E5E7EB] dark:border-slate-800"
+                className="flex items-center gap-3 py-4 px-4 sm:px-6 border-t border-[#e8ebf0] dark:border-[#1f2a42]"
               >
                 {showRowNumber && (
                   <div
-                    style={{ flex: "0 0 38px" }}
+                    style={{ flex: "0 0 50px" }}
                     className="shrink-0 flex justify-center"
                   >
                     <Skeleton className="h-4 w-5 rounded-md" />
@@ -169,7 +170,7 @@ export function DataTable<T>({
                 {columns.map((c, cIdx) => {
                   const isAction = c.key === "aksi";
                   const isCentered = !isAction && c.align === "center";
-                  const isRight = !isAction && c.align === "right";
+                  const isRight = isAction || c.align === "right";
 
                   const hideCls = c.hideOnMobile
                     ? isAction || isCentered || isRight
@@ -188,24 +189,25 @@ export function DataTable<T>({
                       key={c.key}
                       style={
                         isAction
-                          ? { flex: "0 0 120px", minWidth: 120 }
+                          ? { flex: "0 0 140px", minWidth: 140 }
                           : {
                               flex: c.flex ?? 1,
                               minWidth: c.minWidth ?? undefined,
                             }
                       }
-                      className={`${isAction ? "shrink-0 justify-end flex items-center" : "min-w-0 overflow-hidden"} ${hideCls} ${
+                      className={`${isAction ? "shrink-0 justify-end flex items-center" : "min-w-0 overflow-hidden"} ${hideCls} px-1.5 ${
                         isRight
-                          ? "justify-end flex items-center"
+                          ? "justify-end text-right flex items-center"
                           : isCentered
-                            ? "justify-center flex items-center"
+                            ? "justify-center text-center flex items-center"
                             : ""
                       } ${c.className || ""}`}
                     >
                       {isAction ? (
-                        <div className="flex gap-1.5 justify-end">
-                          <Skeleton className="w-7 h-7 rounded-lg" />
-                          <Skeleton className="w-7 h-7 rounded-lg" />
+                        <div className="flex gap-2 justify-end">
+                          <Skeleton className="w-[36px] h-[36px] rounded-[9px]" />
+                          <Skeleton className="w-[36px] h-[36px] rounded-[9px]" />
+                          <Skeleton className="w-[36px] h-[36px] rounded-[9px]" />
                         </div>
                       ) : isCentered ? (
                         <Skeleton className="h-5 w-16 rounded-md" />
@@ -227,7 +229,7 @@ export function DataTable<T>({
               </div>
             ))
           ) : rows.length === 0 ? (
-            <div className="py-12 text-center text-sm text-subtext dark:text-slate-400 bg-white dark:bg-[#111827]">
+            <div className="py-12 text-center text-sm text-[#64718a] dark:text-[#98a6c0] bg-white dark:bg-[#0f1729]">
               {emptyText}
             </div>
           ) : (
@@ -235,16 +237,18 @@ export function DataTable<T>({
               <div
                 key={rowKey(row)}
                 onClick={() => onRowClick?.(row)}
-                className={`flex items-center gap-2.5 sm:gap-3 py-3.5 px-3 sm:px-4 border-t border-[#E5E7EB] dark:border-slate-800 transition-colors bg-white dark:bg-[#111827] text-ink dark:text-slate-200 ${
-                  onRowClick
-                    ? "cursor-pointer hover:bg-gray-50/80 dark:hover:bg-slate-800/40"
-                    : "hover:bg-gray-50/50 dark:hover:bg-slate-800/30"
+                className={`flex items-center gap-3 py-4 px-4 sm:px-6 ${
+                  index === 0
+                    ? "border-t-0"
+                    : "border-t border-[#e8ebf0] dark:border-[#1f2a42]"
+                } transition-colors bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] ${
+                  onRowClick ? "cursor-pointer" : ""
                 }`}
               >
                 {showRowNumber && (
                   <div
-                    style={{ flex: "0 0 38px" }}
-                    className="shrink-0 text-center text-xs font-semibold tabular-nums text-subtext dark:text-slate-400"
+                    style={{ flex: "0 0 50px" }}
+                    className="shrink-0 text-center text-sm font-medium tabular-nums text-[#64718a] dark:text-[#98a6c0]"
                   >
                     {currentStartIndex + index}
                   </div>
@@ -252,7 +256,7 @@ export function DataTable<T>({
                 {columns.map((c) => {
                   const isAction = c.key === "aksi";
                   const isCentered = !isAction && c.align === "center";
-                  const isRight = !isAction && c.align === "right";
+                  const isRight = isAction || c.align === "right";
 
                   const hideCls = c.hideOnMobile
                     ? isAction || isCentered || isRight
@@ -271,7 +275,7 @@ export function DataTable<T>({
                       key={c.key}
                       style={
                         isAction
-                          ? { flex: "0 0 120px", minWidth: 120 }
+                          ? { flex: "0 0 140px", minWidth: 140 }
                           : {
                               flex: c.flex ?? 1,
                               minWidth: c.minWidth ?? undefined,
@@ -297,18 +301,18 @@ export function DataTable<T>({
 
       {/* Pagination Footer */}
       {pagination && rows.length > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-[#E5E7EB] dark:border-slate-800 bg-white dark:bg-[#111827] text-xs text-subtext dark:text-slate-400">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-3.5 border-t border-[#e8ebf0] dark:border-[#1f2a42] bg-white dark:bg-[#0f1729] text-[13px] text-[#64718a] dark:text-[#98a6c0]">
           <div className="tabular-nums">
             Menampilkan{" "}
-            <strong className="text-ink dark:text-white font-semibold">
+            <strong className="text-[#0f172a] dark:text-[#e8edf7] font-semibold">
               {(safePage - 1) * effectivePageSize + 1}
             </strong>{" "}
             -{" "}
-            <strong className="text-ink dark:text-white font-semibold">
+            <strong className="text-[#0f172a] dark:text-[#e8edf7] font-semibold">
               {Math.min(safePage * effectivePageSize, rows.length)}
             </strong>{" "}
             dari{" "}
-            <strong className="text-ink dark:text-white font-semibold">{rows.length}</strong>{" "}
+            <strong className="text-[#0f172a] dark:text-[#e8edf7] font-semibold">{rows.length}</strong>{" "}
             data
           </div>
 
@@ -319,7 +323,7 @@ export function DataTable<T>({
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={safePage <= 1}
                 aria-label="Halaman sebelumnya"
-                className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-charcoal dark:text-slate-200 flex items-center justify-center transition-colors shadow-subtle cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                className="w-8 h-8 rounded-lg border border-[#e8ebf0] dark:border-[#1f2a42] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#64718a] dark:text-[#98a6c0] flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
                 <ChevronLeft size={14} aria-hidden="true" />
               </button>
@@ -329,7 +333,7 @@ export function DataTable<T>({
                   return (
                     <span
                       key={`dots-${idx}`}
-                      className="w-7 h-8 flex items-center justify-center text-xs font-bold text-subtext dark:text-slate-400 select-none tracking-widest"
+                      className="w-7 h-8 flex items-center justify-center text-xs font-bold text-[#64718a] dark:text-[#98a6c0] select-none tracking-widest"
                     >
                       ...
                     </span>
@@ -344,8 +348,8 @@ export function DataTable<T>({
                     onClick={() => setCurrentPage(item)}
                     className={`w-8 h-8 rounded-lg text-xs font-semibold tabular-nums transition-colors cursor-pointer border ${
                       isCurrent
-                        ? "bg-brand-600 text-white border-brand-600 shadow-subtle font-bold"
-                        : "border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-charcoal dark:text-slate-200"
+                        ? "bg-[#2563eb] text-white border-[#2563eb] font-bold"
+                        : "border-[#e8ebf0] dark:border-[#1f2a42] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7]"
                     }`}
                   >
                     {item}
@@ -360,7 +364,7 @@ export function DataTable<T>({
                 }
                 disabled={safePage >= totalPages}
                 aria-label="Halaman berikutnya"
-                className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-charcoal dark:text-slate-200 flex items-center justify-center transition-colors shadow-subtle cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                className="w-8 h-8 rounded-lg border border-[#e8ebf0] dark:border-[#1f2a42] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#64718a] dark:text-[#98a6c0] flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
                 <ChevronRight size={14} aria-hidden="true" />
               </button>
@@ -368,6 +372,6 @@ export function DataTable<T>({
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

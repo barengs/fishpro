@@ -80,8 +80,8 @@ export function UsersPage() {
       </div>
 
       {tab === "staff" && <AdminUsersTab />}
-      {tab === "owners" && <OwnersTab />}
-      {tab === "captains" && <CaptainsTab />}
+      {tab === "owners" && <OwnersTab hideHeader />}
+      {tab === "captains" && <CaptainsTab hideHeader />}
     </div>
   );
 }

@@ -118,7 +118,7 @@ export function UserProfileBadge({
               role="menuitem"
               disabled={isLoggingOut}
               onClick={handleLogoutClick}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-none bg-transparent cursor-pointer transition-colors"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-none bg-transparent cursor-pointer transition-colors"
             >
               {isLoggingOut ? (
                 <Loader2
@@ -130,11 +130,11 @@ export function UserProfileBadge({
                 <LogOut
                   size={15}
                   className="text-rose-600 dark:text-rose-400"
-                  strokeWidth={1.75}
+                  strokeWidth={1.8}
                   aria-hidden="true"
                 />
               )}
-              <span>{isLoggingOut ? "Keluar..." : "Keluar dari Akun"}</span>
+              <span className="font-semibold">{isLoggingOut ? "Keluar..." : "Keluar dari Akun"}</span>
             </button>
           )}
         </div>

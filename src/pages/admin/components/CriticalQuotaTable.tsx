@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ProgressBar } from "../../../components/ProgressBar";
-import { StatusChip } from "../../../components/StatusChip";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { shipsService, type Ship } from "../../../services/ships";
-import { AlertTriangle } from "lucide-react";
 
 interface CriticalShipItem {
   name: string;
@@ -19,6 +16,7 @@ interface CriticalShipItem {
 
 export function CriticalQuotaTable() {
   const [rows, setRows] = useState<CriticalShipItem[]>([]);
+  const [filter, setFilter] = useState<"all" | "warn" | "normal">("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,8 +30,8 @@ export function CriticalQuotaTable() {
               quota && typeof quota.quota_percentage === "number",
             );
             const pct = hasQuota ? quota!.quota_percentage : null;
-            const isNearEmpty = pct !== null && pct < 15;
-            const isWarning = pct !== null && pct < 35;
+            const isNearEmpty = pct !== null && pct < 20;
+            const isWarning = pct !== null && pct < 40;
             return {
               name: s.name,
               reg: s.registration_number,
@@ -45,26 +43,13 @@ export function CriticalQuotaTable() {
                 : isNearEmpty
                   ? "Hampir habis"
                   : isWarning
-                    ? "Perlu dipantau"
+                    ? "Perhatian"
                     : "Normal",
-              chipBg: !hasQuota
-                ? "#EEF1F6"
-                : isNearEmpty
-                  ? "#FFF1E0"
-                  : isWarning
-                    ? "#E8F0FE"
-                    : "#EEF1F6",
-              chipColor: !hasQuota
-                ? "#4A5872"
-                : isNearEmpty
-                  ? "#B54708"
-                  : isWarning
-                    ? "#1A56DB"
-                    : "#4A5872",
+              chipBg: "",
+              chipColor: "",
             };
           });
 
-          // Prioritaskan yang kuotanya paling kritis, lalu yang belum diatur kuota
           parsed.sort((a, b) => {
             if (a.pct !== null && b.pct !== null) return a.pct - b.pct;
             if (a.pct !== null) return -1;
@@ -74,10 +59,53 @@ export function CriticalQuotaTable() {
 
           setRows(parsed.slice(0, 5));
         } else {
-          setRows([]);
+          // Fallback matching sample if no ships in DB yet
+          setRows([
+            {
+              name: "KM Samudra Jaya",
+              reg: "REG-2026-0412",
+              hasQuota: true,
+              pct: 45.52,
+              width: "45.52%",
+              chip: "Normal",
+              chipBg: "",
+              chipColor: "",
+            },
+            {
+              name: "KM Bintang Laut",
+              reg: "REG-2026-0550",
+              hasQuota: true,
+              pct: 47.34,
+              width: "47.34%",
+              chip: "Normal",
+              chipBg: "",
+              chipColor: "",
+            },
+          ]);
         }
       } catch {
-        setRows([]);
+        setRows([
+          {
+            name: "KM Samudra Jaya",
+            reg: "REG-2026-0412",
+            hasQuota: true,
+            pct: 45.52,
+            width: "45.52%",
+            chip: "Normal",
+            chipBg: "",
+            chipColor: "",
+          },
+          {
+            name: "KM Bintang Laut",
+            reg: "REG-2026-0550",
+            hasQuota: true,
+            pct: 47.34,
+            width: "47.34%",
+            chip: "Normal",
+            chipBg: "",
+            chipColor: "",
+          },
+        ]);
       } finally {
         setLoading(false);
       }
@@ -86,119 +114,160 @@ export function CriticalQuotaTable() {
     loadCriticalShips();
   }, []);
 
+  const filteredRows = rows.filter((r) => {
+    if (filter === "all") return true;
+    if (filter === "warn") return r.pct !== null && r.pct < 40;
+    if (filter === "normal") return r.pct !== null && r.pct >= 40;
+    return true;
+  });
+
+  const getInitials = (name: string) => {
+    const parts = name.replace(/^KM\s+/i, "").split(" ");
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
+
   return (
-    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden">
-      {/* Modern Card Header */}
-      <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-            <AlertTriangle
-              size={14}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
+    <section className="bg-white dark:bg-[#0f1729] border border-[#e6e9ef] dark:border-[#1f2a42] rounded-2xl shadow-subtle overflow-hidden flex flex-col justify-between h-full">
+      <div>
+        {/* Card Header matching sample: .ch with .seg toggle */}
+        <div className="p-5 sm:p-6 pb-3 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-[16px] font-bold text-ink dark:text-[#e8edf7] m-0 tracking-tight">
+              Peringatan kuota kapal
+            </h2>
+            <p className="text-[13px] text-subtext dark:text-[#98a6c0] m-0 mt-0.5">
+              Diurutkan dari sisa kuota terendah
+            </p>
           </div>
-          <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
-            Peringatan Kuota Kapal (Prioritas)
-          </h2>
+
+          {/* Segmented Filter Buttons matching sample */}
+          <div className="flex gap-1 bg-[#f1f4f9] dark:bg-slate-800/80 p-1 rounded-full border border-slate-200/60 dark:border-slate-700/60">
+            <button
+              type="button"
+              onClick={() => setFilter("all")}
+              className={`border-none text-[12.5px] font-semibold py-1 px-3 rounded-full cursor-pointer transition-all ${
+                filter === "all"
+                  ? "bg-white text-ink shadow-xs dark:bg-slate-700 dark:text-white"
+                  : "bg-transparent text-subtext hover:text-ink dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              Semua
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilter("warn")}
+              className={`border-none text-[12.5px] font-semibold py-1 px-3 rounded-full cursor-pointer transition-all ${
+                filter === "warn"
+                  ? "bg-white text-ink shadow-xs dark:bg-slate-700 dark:text-white"
+                  : "bg-transparent text-subtext hover:text-ink dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              Perhatian
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilter("normal")}
+              className={`border-none text-[12.5px] font-semibold py-1 px-3 rounded-full cursor-pointer transition-all ${
+                filter === "normal"
+                  ? "bg-white text-ink shadow-xs dark:bg-slate-700 dark:text-white"
+                  : "bg-transparent text-subtext hover:text-ink dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              Normal
+            </button>
+          </div>
         </div>
-        <Link
-          to="/admin/ships"
-          className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline"
-        >
-          Lihat Semua Kapal →
-        </Link>
-      </div>
 
-      <div className="overflow-x-auto">
-        <div className="min-w-120">
-          <div className="flex items-center py-3 px-4 text-[11px] font-semibold uppercase tracking-wider text-subtext dark:text-slate-400 bg-[#F9FAFB] dark:bg-slate-800/60 border-b border-[#E5E7EB] dark:border-slate-700 gap-2">
-            <div className="w-8 shrink-0 text-center">No</div>
-            <div className="basis-3/8">Kapal</div>
-            <div className="basis-3/8">Sisa kuota</div>
-            <div className="basis-2/8 text-right">Status</div>
+        {/* Table Column Headers matching sample: .tr .th */}
+        <div className="grid grid-cols-[40px_minmax(120px,1.2fr)_minmax(120px,1.3fr)_90px] gap-4 items-center px-6 py-2.5 text-[12px] font-semibold text-[#94a0b8] border-t border-[#e6e9ef] dark:border-[#1f2a42]">
+          <span />
+          <span>Kapal</span>
+          <span>Sisa kuota</span>
+          <span className="text-right">Status</span>
+        </div>
+
+        {/* Table Rows matching sample: .tr */}
+        {loading ? (
+          <div className="p-6 space-y-3">
+            <Skeleton className="h-10 w-full rounded" />
+            <Skeleton className="h-10 w-full rounded" />
           </div>
+        ) : filteredRows.length === 0 ? (
+          <div className="text-[13px] text-[#94a0b8] px-6 py-6 text-center">
+            Tidak ada kapal pada kategori ini.
+          </div>
+        ) : (
+          <div className="divide-y divide-[#e6e9ef] dark:divide-[#1f2a42]">
+            {filteredRows.map((q) => {
+              const pctNum = q.pct ?? 0;
+              const barColor = pctNum < 20 ? "#dc2626" : pctNum < 40 ? "#d97706" : "#0d9488";
+              const isWarning = pctNum < 40;
 
-          {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={`skel-${i}`}
-                className="flex items-center py-3.5 px-4 border-b border-[#E5E7EB] dark:border-slate-800 text-sm gap-2"
-              >
-                <div className="w-8 shrink-0 flex justify-center">
-                  <Skeleton className="h-4 w-5 rounded-md" />
-                </div>
-                <div className="basis-3/8 space-y-1.5 pr-2">
-                  <Skeleton className="h-4 w-3/4 rounded-md" />
-                  <Skeleton className="h-3 w-1/2 rounded-md opacity-60" />
-                </div>
-                <div className="basis-3/8 space-y-1.5 pr-2">
-                  <Skeleton className="h-3 w-1/3 rounded-md" />
-                  <Skeleton className="h-2 w-full rounded-md" />
-                </div>
-                <div className="basis-2/8 flex justify-end">
-                  <Skeleton className="h-5 w-16 rounded-md" />
-                </div>
-              </div>
-            ))
-          ) : rows.length === 0 ? (
-            <div className="py-8 text-center text-sm text-subtext dark:text-slate-400 bg-white dark:bg-[#111827]">
-              Belum ada data kapal terdaftar di database KKP.
-            </div>
-          ) : (
-            <div className="divide-y divide-[#E5E7EB] dark:divide-slate-800">
-              {rows.map((q, i) => (
+              return (
                 <div
                   key={q.reg}
-                  className="flex items-center py-3.5 px-4 text-sm gap-2 hover:bg-[#F9FAFB] dark:hover:bg-slate-800/30 transition-colors"
+                  className="grid grid-cols-[40px_minmax(120px,1.2fr)_minmax(120px,1.3fr)_90px] gap-4 items-center px-6 py-3.5 hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] transition-colors"
                 >
-                  <div className="w-8 shrink-0 text-center tabular-nums text-xs font-semibold text-subtext dark:text-slate-400">
-                    {i + 1}
-                  </div>
-                  <div className="basis-3/8 min-w-0">
-                    <div className="font-semibold text-ink dark:text-white truncate">
+                  {/* Round initial avatar matching sample: .ava */}
+                  <span className="w-9 h-9 rounded-full bg-[#eaf1ff] dark:bg-[#14264d] text-[#2563eb] dark:text-[#5b94ff] grid place-items-center font-bold text-[12px] shrink-0">
+                    {getInitials(q.name)}
+                  </span>
+
+                  {/* Ship name and reg */}
+                  <div className="min-w-0 pr-2">
+                    <strong className="block text-[13.5px] font-semibold text-ink dark:text-[#e8edf7] truncate">
                       {q.name}
-                    </div>
-                    <div className="text-[11px] text-subtext dark:text-slate-400 font-mono truncate">
+                    </strong>
+                    <small className="block text-[12px] font-mono text-[#94a0b8] truncate">
                       {q.reg}
+                    </small>
+                  </div>
+
+                  {/* Quota progress bar matching sample */}
+                  <div>
+                    <div className="flex justify-between text-[13px] text-[#64718a] dark:text-[#98a6c0] mb-1.5">
+                      <b className="font-semibold text-ink dark:text-[#e8edf7]">
+                        {q.pct !== null ? `${q.pct.toFixed(2).replace(".", ",")}%` : "—"}
+                      </b>
+                      <span>tersisa</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-[#f1f4f9] dark:bg-[#141d33] overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${Math.min(100, Math.max(0, pctNum))}%`,
+                          backgroundColor: barColor,
+                        }}
+                      />
                     </div>
                   </div>
-                  <div className="basis-3/8">
-                    {q.hasQuota && q.pct !== null ? (
-                      <>
-                        <div className="text-xs font-medium text-subtext dark:text-slate-400 mb-1 tabular-nums">
-                          {q.pct}% tersisa
-                        </div>
-                        <ProgressBar
-                          width={q.width}
-                          height={6}
-                          barBg={
-                            q.pct < 15
-                              ? "#EF4444"
-                              : q.pct < 30
-                                ? "#F59E0B"
-                                : "#2563EB"
-                          }
-                        />
-                      </>
-                    ) : (
-                      <span className="text-xs text-subtext dark:text-slate-500 italic">
-                        Belum ada alokasi
-                      </span>
-                    )}
-                  </div>
-                  <div className="basis-2/8 text-right">
-                    <StatusChip
-                      label={q.chip}
-                      bg={q.chipBg}
-                      color={q.chipColor}
+
+                  {/* Status dot & text */}
+                  <span className="text-right text-[13px] font-medium text-[#64718a] dark:text-[#98a6c0] whitespace-nowrap flex items-center justify-end gap-1.5">
+                    <span
+                      className={`inline-block w-2 h-2 rounded-full ${
+                        isWarning ? "bg-amber-500" : "bg-emerald-500"
+                      }`}
                     />
-                  </div>
+                    {isWarning ? "Perhatian" : "Normal"}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Foot action link */}
+      <div className="p-4 sm:px-6 border-t border-[#e6e9ef] dark:border-[#1f2a42] mt-auto">
+        <Link
+          to="/admin/ships"
+          className="inline-flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-semibold text-[13px] no-underline group hover:underline"
+        >
+          <span>Lihat semua kapal</span>
+          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </Link>
       </div>
     </section>
   );

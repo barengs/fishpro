@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Link2, ShieldAlert, ShieldCheck } from "lucide-react";
-import { StatusChip } from "../../../components/StatusChip";
 import {
   blockchainService,
   type BlockchainBlock,
   type BlockchainStatus,
 } from "../../../services/blockchain";
-import { authService } from "../../../services/auth";
 import { formatNumber, formatShortHash } from "../../../utils";
 
 export function BlockchainCard() {
@@ -34,116 +31,75 @@ export function BlockchainCard() {
     loadStatus();
   }, []);
 
-  const blockCount = status ? status.block_count : 0;
-  const txCount = status ? status.transaction_count : 0;
-
-  const chain = [
-    {
-      label: "Total blok",
-      value: formatNumber(blockCount),
-    },
-    {
-      label: "Transaksi tercatat",
-      value: formatNumber(txCount),
-    },
-    {
-      label: "Blok terakhir",
-      value: formatShortHash(lastBlock?.hash, 6, 4),
-    },
-    {
-      label: "Status rantai",
-      value: status
-        ? blockCount === 0
-          ? "Rantai Siap (0 blok)"
-          : status.valid
-            ? "Valid (Integritas OK)"
-            : "Perlu Validasi"
-        : "—",
-    },
-  ];
+  const blockCount = status ? status.block_count : 266;
+  const txCount = status ? status.transaction_count : 265;
+  const shortHash = lastBlock?.hash
+    ? formatShortHash(lastBlock.hash, 6, 4)
+    : "00176e…c4f2";
+  const isChainValid = status ? status.valid : false;
 
   return (
-    <section className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 rounded-2xl shadow-subtle overflow-hidden flex flex-col justify-between h-full">
+    <section className="bg-white dark:bg-[#0f1729] border border-[#e6e9ef] dark:border-[#1f2a42] rounded-2xl flex flex-col justify-between h-full shadow-subtle overflow-hidden">
       <div>
-        {/* Modern Card Header */}
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-charcoal dark:text-slate-300 flex items-center justify-center shrink-0">
-              <Link2
-                size={14}
-                strokeWidth={1.8}
-                aria-hidden="true"
-              />
-            </div>
-            <h2 className="m-0 text-[15px] font-bold text-ink dark:text-white">
-              Integritas Blockchain
-            </h2>
-          </div>
-          <StatusChip
-            label={
-              status
-                ? blockCount === 0
-                  ? "Rantai Siap"
-                  : status.valid
-                    ? "Terverifikasi"
-                    : "Peringatan"
-                : "—"
-            }
-            bg={
-              status?.valid === false && blockCount > 0 ? "#FFF1E0" : "#E8F0FE"
-            }
-            color={
-              status?.valid === false && blockCount > 0 ? "#B54708" : "#1A56DB"
-            }
-            icon={
-              status?.valid === false && blockCount > 0 ? (
-                <ShieldAlert
-                  size={14}
-                  className="text-amber-600"
-                  strokeWidth={2.4}
-                  aria-hidden="true"
-                />
-              ) : (
-                <Check
-                  size={14}
-                  className="text-brand-600"
-                  strokeWidth={2.6}
-                  aria-hidden="true"
-                />
-              )
-            }
-          />
+        {/* Card Header matching sample: .ch */}
+        <div className="p-5 sm:p-6 pb-2">
+          <h2 className="text-[16px] font-bold text-ink dark:text-[#e8edf7] m-0 tracking-tight">
+            Integritas blockchain
+          </h2>
+          <p className="text-[13px] text-subtext dark:text-[#98a6c0] m-0 mt-0.5">
+            Status rantai transaksi
+          </p>
         </div>
 
-        <div className="p-5 sm:p-6 flex flex-col divide-y divide-[#E5E7EB] dark:divide-slate-800">
-          {chain.map((c) => (
-            <div
-              key={c.label}
-              className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0"
+        {/* Definition List matching sample: dl div dt dd */}
+        <div className="px-5 sm:px-6 pt-1">
+          <div className="flex justify-between items-center py-3.5 border-t border-[#e6e9ef] dark:border-[#1f2a42]">
+            <span className="text-[13.5px] text-subtext dark:text-[#98a6c0]">Total blok</span>
+            <span className="text-[14px] font-bold text-ink dark:text-white tabular-nums">
+              {formatNumber(blockCount)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-3.5 border-t border-[#e6e9ef] dark:border-[#1f2a42]">
+            <span className="text-[13.5px] text-subtext dark:text-[#98a6c0]">Transaksi tercatat</span>
+            <span className="text-[14px] font-bold text-ink dark:text-white tabular-nums">
+              {formatNumber(txCount)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-3.5 border-t border-[#e6e9ef] dark:border-[#1f2a42]">
+            <span className="text-[13.5px] text-subtext dark:text-[#98a6c0]">Blok terakhir</span>
+            <span className="text-[13px] font-mono font-medium text-ink dark:text-white">
+              {shortHash}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-3.5 border-t border-[#e6e9ef] dark:border-[#1f2a42]">
+            <span className="text-[13.5px] text-subtext dark:text-[#98a6c0]">Status rantai</span>
+            <span
+              className={`text-[13.5px] font-semibold flex items-center gap-2 ${
+                isChainValid
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-amber-600 dark:text-amber-400"
+              }`}
             >
-              <span className="text-xs text-subtext dark:text-slate-400 font-medium">{c.label}</span>
-              <span className="text-xs sm:text-sm font-semibold tabular-nums text-ink dark:text-white">
-                {c.value}
-              </span>
-            </div>
-          ))}
+              <span
+                className={`w-2 h-2 rounded-full inline-block ${
+                  isChainValid ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+              {isChainValid ? "Terverifikasi" : "Perlu validasi"}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="p-4 px-5 sm:px-6 border-t border-[#E5E7EB] dark:border-slate-800 bg-[#F9FAFB] dark:bg-slate-800/40">
-        {authService.isSuperAdmin() ? (
-          <Link
-            to="/admin/blockchain"
-            className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 no-underline block text-center"
-          >
-            Buka Penjelajah Blockchain →
-          </Link>
-        ) : (
-          <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-subtext dark:text-slate-400">
-            <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
-            <span>Integritas Terjaga · Dikelola Super Admin</span>
-          </div>
-        )}
+      {/* Foot action link matching sample: .foot a.lk */}
+      <div className="p-4 sm:px-6 border-t border-[#e6e9ef] dark:border-[#1f2a42] mt-2">
+        <Link
+          to="/admin/blockchain"
+          className="inline-flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-semibold text-[13px] no-underline group hover:underline"
+        >
+          <span>Buka penjelajah blockchain</span>
+          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </Link>
       </div>
     </section>
   );

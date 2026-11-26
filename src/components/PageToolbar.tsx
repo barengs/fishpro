@@ -42,16 +42,20 @@ export function PageToolbar({
   return (
     <div className="mb-6">
       {hasHeader && (
-        <div className="mb-5">
-          <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
+        <div>
+          <h1 className="m-0 text-[28px] leading-[1.2] tracking-[-0.02em] font-extrabold text-[#0f172a] dark:text-[#e8edf7]">
             {title}
           </h1>
-          {desc && <p className="m-0 text-[13px] text-subtext dark:text-slate-400 mt-1">{desc}</p>}
+          {desc && (
+            <p className="m-0 mt-1.5 text-sm text-[#64718a] dark:text-[#98a6c0]">
+              {desc}
+            </p>
+          )}
         </div>
       )}
 
       {tabs && tabs.length > 1 && (
-        <div className="border-b border-[#E5E7EB] dark:border-slate-800 mb-5">
+        <div className="border-b border-[#e8ebf0] dark:border-[#1f2a42] my-5">
           <nav className="-mb-px flex gap-6 overflow-x-auto" role="tablist">
             {tabs.map((t) => {
               const active = activeTab === t.key;
@@ -62,10 +66,10 @@ export function PageToolbar({
                   role="tab"
                   aria-selected={active}
                   onClick={() => onTabChange?.(t.key)}
-                  className={`inline-flex items-center gap-2 py-2.5 px-1 border-b-2 font-semibold text-[13px] transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
+                  className={`inline-flex items-center gap-2 py-3 px-1 border-b-2 font-semibold text-sm transition-all cursor-pointer bg-transparent border-t-0 border-x-0 ${
                     active
-                      ? "border-b-brand-600 text-brand-600 dark:text-brand-400"
-                      : "border-b-transparent text-subtext dark:text-slate-400 hover:text-ink dark:hover:text-white hover:border-b-line"
+                      ? "border-b-[#2563eb] text-[#2563eb] dark:border-b-[#5b94ff] dark:text-[#5b94ff]"
+                      : "border-b-transparent text-[#64718a] dark:text-[#98a6c0] hover:text-[#0f172a] dark:hover:text-[#e8edf7] hover:border-b-[#e8ebf0]"
                   }`}
                 >
                   <span className="whitespace-nowrap">{t.label}</span>
@@ -77,12 +81,16 @@ export function PageToolbar({
       )}
 
       {(hasSearch || hasActions) && (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div
+          className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${
+            hasHeader || (tabs && tabs.length > 1) ? "mt-8" : "mt-0"
+          } mb-6`}
+        >
           {hasSearch ? (
-            <div className="relative w-full sm:w-72 md:w-80">
+            <div className="relative w-full sm:w-[380px]">
               <Search
-                size={15}
-                className="text-subtext dark:text-slate-400 absolute left-3 top-2.5 pointer-events-none"
+                size={17}
+                className="text-[#94a0b8] dark:text-[#6b7a96] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
                 strokeWidth={1.8}
                 aria-hidden="true"
               />
@@ -91,7 +99,7 @@ export function PageToolbar({
                 value={searchValue ?? ""}
                 onChange={(e) => onSearchChange?.(e.target.value)}
                 placeholder={searchPlaceholder ?? "Cari data..."}
-                className="w-full h-9 border border-[#E5E7EB] dark:border-slate-700 bg-[#F9FAFB] dark:bg-slate-800/80 rounded-lg pl-9 pr-3.5 text-[13px] font-medium text-ink dark:text-white placeholder:text-subtext dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-all shadow-subtle"
+                className="w-full h-[46px] border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] rounded-[12px] pl-[42px] pr-3.5 text-sm font-medium text-[#0f172a] dark:text-[#e8edf7] placeholder:text-[#94a0b8] dark:placeholder:text-[#6b7a96] focus:outline-none focus:border-[#2563eb] dark:focus:border-[#5b94ff] transition-colors"
               />
             </div>
           ) : (
@@ -99,16 +107,16 @@ export function PageToolbar({
           )}
 
           {hasActions && (
-            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap justify-start sm:justify-end">
+            <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-start sm:justify-end">
               {extraActions}
               {children}
               {onAdd && addLabel && (
                 <button
                   type="button"
                   onClick={onAdd}
-                  className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-transparent bg-brand-600 hover:bg-brand-700 text-white text-[13px] font-semibold cursor-pointer transition-colors shadow-subtle whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 h-[46px] px-5 rounded-[12px] border-0 bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#5b94ff] dark:hover:bg-[#78a7ff] text-white text-sm font-semibold cursor-pointer transition-colors shadow-none whitespace-nowrap"
                 >
-                  <Plus size={15} strokeWidth={2.2} aria-hidden="true" />
+                  <Plus size={18} strokeWidth={2.2} aria-hidden="true" />
                   <span>{addLabel}</span>
                 </button>
               )}

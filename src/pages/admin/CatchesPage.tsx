@@ -147,17 +147,17 @@ export function CatchesPage() {
                       <a
                           href={catchesService.getTemplateUrl()}
                           download
-                          className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors no-underline whitespace-nowrap shadow-2xs"
+                          className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors no-underline whitespace-nowrap"
                       >
-                          <Download size={14} className="text-fco-blue" aria-hidden="true" />
+                          <Download size={16} className="text-[#2563eb] dark:text-[#5b94ff]" aria-hidden="true" />
                           <span>Unduh Template CSV</span>
                       </a>
                       <button
                           type="button"
                           onClick={openImportModal}
-                          className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-fco text-xs sm:text-sm font-semibold border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page text-strong transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+                          className="inline-flex items-center justify-center gap-2 h-[46px] px-4 rounded-[12px] text-sm font-semibold border border-[#d9dee8] dark:border-[#2a3753] bg-white dark:bg-[#0f1729] hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] text-[#0f172a] dark:text-[#e8edf7] transition-colors cursor-pointer whitespace-nowrap"
                       >
-                          <FileUp size={14} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                          <FileUp size={16} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                           <span>Impor File CSV</span>
                       </button>
                   </>

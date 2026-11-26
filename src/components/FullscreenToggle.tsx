@@ -37,7 +37,7 @@ export function FullscreenToggle({ compact = false }: { compact?: boolean }) {
       title={isFullscreen ? "Layar normal" : "Layar penuh"}
       className={`${
         compact ? "w-9 h-9" : "w-10 h-10"
-      } rounded-fco border border-fco-border dark:border-fco-border-dark surface-card hover:surface-page flex items-center justify-center cursor-pointer transition-colors text-soft hover:text-strong dark:text-fco-muted-dark dark:hover:text-fco-text-dark shrink-0`}
+      } rounded-xl border-0 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer transition-colors text-charcoal hover:text-ink dark:text-slate-300 dark:hover:text-white shrink-0`}
     >
       {isFullscreen ? (
         <Minimize

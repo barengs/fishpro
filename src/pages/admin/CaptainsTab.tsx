@@ -8,7 +8,7 @@ import { CaptainModal } from "../../components/modals/CaptainModal";
 import type { Captain } from "../../services/captains";
 import { useCaptainsManager } from "./hooks/useCaptainsManager";
 
-export function CaptainsTab() {
+export function CaptainsTab({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const {
     rows,
     ownersList,
@@ -102,6 +102,12 @@ export function CaptainsTab() {
   return (
     <div>
       <PageToolbar
+        title={hideHeader ? undefined : "Daftar Nahkoda"}
+        desc={
+          hideHeader
+            ? undefined
+            : "Data nahkoda resmi, surat izin kecakapan, dan penugasan armada."
+        }
         searchPlaceholder="Cari nahkoda / lisensi..."
         searchValue={search}
         onSearchChange={setSearch}

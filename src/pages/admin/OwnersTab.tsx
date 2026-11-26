@@ -15,7 +15,7 @@ import {
   type CreateOwnerPayload,
 } from "../../services/owners";
 
-export function OwnersTab() {
+export function OwnersTab({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const [rows, setRows] = useState<Owner[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -111,13 +111,13 @@ export function OwnersTab() {
       flex: 3,
       render: (r) => (
         <div className="min-w-0">
-          <div className="text-sm font-semibold truncate" title={r.full_name}>
+          <strong className="block font-semibold text-[15px] text-[#0f172a] dark:text-[#e8edf7] truncate" title={r.full_name}>
             {r.full_name}
-          </div>
-          <div className="text-xs text-soft">
+          </strong>
+          <small className="block text-[13px] text-[#64718a] dark:text-[#98a6c0] mt-0.5">
             {r.owner_type === "company" ? "Perusahaan" : "Perorangan"}
             {r.ships && r.ships.length > 0 && ` · ${r.ships.length} Kapal`}
-          </div>
+          </small>
         </div>
       ),
     },
@@ -181,6 +181,12 @@ export function OwnersTab() {
   return (
     <div>
       <PageToolbar
+        title={hideHeader ? undefined : "Pemilik Kapal"}
+        desc={
+          hideHeader
+            ? undefined
+            : "Daftar pemilik perorangan dan perusahaan pengelola armada kapal."
+        }
         searchPlaceholder="Cari pemilik kapal..."
         searchValue={search}
         onSearchChange={setSearch}

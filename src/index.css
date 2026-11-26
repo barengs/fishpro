@@ -202,3 +202,42 @@ body {
     animation: none !important;
   }
 }
+
+/* Global Page Transition Curtain (GPU Accelerated) */
+@keyframes mobileCurtain {
+  0% {
+    transform: translate3d(0, 100%, 0);
+  }
+  42%,
+  58% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.transition-curtain {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #0e1f4d;
+  pointer-events: none;
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.transition-curtain.active {
+  pointer-events: auto;
+  animation: mobileCurtain 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-curtain {
+    display: none !important;
+  }
+}

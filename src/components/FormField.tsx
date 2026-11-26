@@ -1,11 +1,14 @@
+import React from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
 interface FormFieldProps {
-  label: string;
-  htmlFor: string;
+  label?: string;
+  htmlFor?: string;
   hint?: string;
   required?: boolean;
   optional?: boolean;
+  error?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
@@ -15,12 +18,14 @@ export function FormField({
   hint,
   required,
   optional,
+  error,
+  className = "",
   children,
 }: FormFieldProps) {
   const isOptional = Boolean(optional);
 
   return (
-    <div>
+    <div className={className}>
       {label ? (
         <label
           htmlFor={htmlFor}
@@ -45,6 +50,7 @@ export function FormField({
       ) : null}
       {children}
       {hint && <span className="text-xs text-soft mt-1 block">{hint}</span>}
+      {error && <span className="text-xs text-rose-500 mt-1 block">{error}</span>}
     </div>
   );
 }
@@ -130,40 +136,40 @@ export function CrudActions({
 }) {
   return (
     <div
-      className="flex items-center gap-1.5 justify-end shrink-0"
+      className="flex items-center gap-2 justify-end shrink-0"
       onClick={(e) => e.stopPropagation()}
     >
       {onDetail && (
         <button
           type="button"
           onClick={onDetail}
-          title="Lihat Detail"
-          aria-label="Lihat Detail"
-          className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-subtle border-none"
+          title="Lihat"
+          aria-label="Lihat"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#2563eb] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Eye size={14} strokeWidth={2.2} aria-hidden="true" />
+          <Eye size={16} strokeWidth={2} aria-hidden="true" />
         </button>
       )}
       {onEdit && (
         <button
           type="button"
           onClick={onEdit}
-          title="Ubah Data"
-          aria-label="Ubah Data"
-          className="w-8 h-8 rounded-lg bg-amber-500 hover:bg-amber-600 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-subtle border-none"
+          title="Ubah"
+          aria-label="Ubah"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#f59e0b] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Pencil size={13} strokeWidth={2.2} aria-hidden="true" />
+          <Pencil size={15} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
       {onDelete && (
         <button
           type="button"
           onClick={onDelete}
-          title="Hapus Data"
-          aria-label="Hapus Data"
-          className="w-8 h-8 rounded-lg bg-rose-500 hover:bg-rose-600 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-subtle border-none"
+          title="Hapus"
+          aria-label="Hapus"
+          className="w-9 h-9 rounded-[9px] border-none bg-[#e11d48] hover:brightness-110 active:scale-95 text-white flex items-center justify-center cursor-pointer transition-all shadow-none"
         >
-          <Trash2 size={13} strokeWidth={2.2} aria-hidden="true" />
+          <Trash2 size={15} strokeWidth={2.2} aria-hidden="true" />
         </button>
       )}
     </div>

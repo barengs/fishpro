@@ -46,7 +46,7 @@ export function ShipsPage() {
       render: (r) => (
         <div>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-sm font-semibold">{r.name}</span>
+            <strong className="block font-semibold text-[15px] text-[#0f172a] dark:text-[#e8edf7]">{r.name}</strong>
             <span className="sm:hidden">
               <StatusChip
                 label={r.active ? "Aktif" : "Nonaktif"}
@@ -55,10 +55,10 @@ export function ShipsPage() {
               />
             </span>
           </div>
-          <div className="text-xs text-soft tabular-nums">
+          <small className="block text-[13px] text-[#64718a] dark:text-[#98a6c0] tabular-nums mt-0.5">
             {r.registration_number}
             {r.home_port && ` · ${r.home_port}`}
-          </div>
+          </small>
         </div>
       ),
     },

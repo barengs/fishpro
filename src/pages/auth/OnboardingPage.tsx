@@ -55,7 +55,7 @@ export function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-[#2563eb] selection:text-white"
+      className="onboarding-page min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-[#2563eb] selection:text-white"
       style={{ background: "var(--bg)", color: "var(--fg)" }}
     >
       <OnboardingHeader />

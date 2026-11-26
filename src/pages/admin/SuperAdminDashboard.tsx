@@ -6,7 +6,6 @@ import {
   Ship,
 } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
-import { RoleBadge } from "../../components/RoleBadge";
 import { PnbpChart } from "./components/PnbpChart";
 import { BlockchainCard } from "./components/BlockchainCard";
 import { CriticalQuotaTable } from "./components/CriticalQuotaTable";
@@ -98,32 +97,26 @@ export function SuperAdminDashboard() {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       {/* Header Tata Kelola */}
-      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-subtext dark:text-slate-400 mb-1">
-            <span>Tata Kelola</span>
-            <span className="text-slate-300 dark:text-slate-600">/</span>
-            <span className="text-ink dark:text-white font-semibold">Ringkasan Sistem Nasional</span>
-          </div>
-          <h1 className="m-0 text-[22px] sm:text-[26px] font-bold tracking-tight text-ink dark:text-white">
-            Tata Kelola & Regulasi Sistem
-          </h1>
-          <p className="m-0 text-[13px] text-subtext dark:text-slate-400 mt-1">
-            Pemantauan kepatuhan kuota AI, integritas audit blockchain, dan telemetri dermaga pelabuhan.
-          </p>
+      <div>
+        <div className="flex items-center gap-2 text-[13px] font-medium text-subtext dark:text-[#98a6c0] mb-1.5">
+          <span>Tata Kelola</span>
+          <span className="text-slate-300 dark:text-slate-600">/</span>
+          <span className="text-ink dark:text-[#e8edf7] font-semibold">Ringkasan Sistem Nasional</span>
         </div>
-
-        <div className="flex items-center gap-2.5">
-          <RoleBadge role="superadmin" />
-        </div>
+        <h1 className="m-0 text-[26px] sm:text-[30px] font-extrabold tracking-tight text-ink dark:text-[#e8edf7] leading-tight">
+          Tata Kelola &amp; Regulasi Sistem
+        </h1>
+        <p className="m-0 text-[13px] text-subtext dark:text-[#98a6c0] mt-1.5 max-w-2xl">
+          Pemantauan kepatuhan kuota AI, integritas audit blockchain, dan telemetri dermaga pelabuhan.
+        </p>
       </div>
 
-      {/* 4 Cards Tata Kelola */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* 4 Cards Tata Kelola - Matching Sample */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
-          label="Total Armada Nasional"
+          label="Total armada nasional"
           value={formatNumber(metrics.activeShipsCount)}
           delta={`${metrics.totalShipsCount} armada kapal terdaftar`}
           showSparkline={false}
@@ -131,47 +124,47 @@ export function SuperAdminDashboard() {
           Icon={Ship}
           loading={loading}
           href="/admin/ships"
-          linkText="Buka Daftar Armada"
+          linkText="Buka daftar armada"
         />
         <KpiCard
-          label="Penerimaan PNBP Negara"
+          label="Penerimaan PNBP negara"
           value={metrics.totalPnbpStr}
           delta="Kalkulasi resmi PP 85/2021"
           showSparkline={true}
           sparklineData={metrics.pnbpSparkline}
           trendUp={metrics.pnbpTrendUp}
-          color="rose"
+          color="teal"
           Icon={Coins}
           loading={loading}
           href="/admin/quota"
-          linkText="Kebijakan & Simulasi AI"
+          linkText="Kebijakan & simulasi AI"
         />
         <KpiCard
-          label="Audit Imutabilitas Blockchain"
+          label="Audit imutabilitas"
           value={metrics.blockchainValid ? "Terverifikasi" : "Perlu Audit"}
           delta={`${metrics.blockchainBlockCount} blok transaksi tersegel`}
           showSparkline={false}
-          color={metrics.blockchainValid ? "purple" : "rose"}
+          color="navy"
           Icon={Link2}
           loading={loading}
           href="/admin/blockchain"
-          linkText="Inspeksi Rantai Blok"
+          linkText="Inspeksi rantai blok"
         />
         <KpiCard
-          label="Perangkat IoT Timbangan"
+          label="Perangkat IoT timbangan"
           value={formatNumber(metrics.iotDevicesCount)}
           delta="Timbangan pintar aktif di pelabuhan"
           showSparkline={false}
-          color="emerald"
+          color="purple"
           Icon={Cpu}
           loading={loading}
           href="/admin/iot-devices"
-          linkText="Kelola Perangkat IoT"
+          linkText="Kelola perangkat IoT"
         />
       </div>
 
       {/* Grid Grafik PNBP & Status Blockchain */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <PnbpChart />
         </div>
@@ -181,7 +174,7 @@ export function SuperAdminDashboard() {
       </div>
 
       {/* Grid Radar Kuota Kritis & Distribusi WPP */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3">
           <CriticalQuotaTable />
         </div>

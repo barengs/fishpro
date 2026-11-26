@@ -1,4 +1,4 @@
-.scene {
+.auth-layout .scene {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -8,11 +8,11 @@
   background-color: #0e1f4d;
 }
 
-.smoke,
-.radar,
-.bird path,
-.fm,
-.sh {
+.auth-layout .scene .smoke,
+.auth-layout .scene .radar,
+.auth-layout .scene .bird path,
+.auth-layout .scene .fm,
+.auth-layout .scene .sh {
   transform-box: fill-box;
 }
 
@@ -124,77 +124,77 @@
   }
 }
 
-.w1 {
+.auth-layout .scene .w1 {
   animation: drift 22s linear infinite;
 }
 
-.w2 {
+.auth-layout .scene .w2 {
   animation: drift 14s linear infinite;
 }
 
-.w3 {
+.auth-layout .scene .w3 {
   animation: drift 9s linear infinite;
 }
 
-.w4 {
+.auth-layout .scene .w4 {
   animation: drift 6s linear infinite;
 }
 
-.ship {
+.auth-layout .scene .ship {
   transform-box: view-box;
   transform-origin: 310px 546px;
   animation: bob 5.5s ease-in-out infinite;
 }
 
-.smoke {
+.auth-layout .scene .smoke {
   animation: puff 4s ease-out infinite;
   transform-origin: center;
 }
 
-.flag {
+.auth-layout .scene .flag {
   transform-box: view-box;
   transform-origin: 335px 387px;
   animation: flag 1.6s ease-in-out infinite;
 }
 
-.radar {
+.auth-layout .scene .radar {
   transform-origin: center;
   animation: spin 3s ease-in-out infinite;
 }
 
-.bird {
+.auth-layout .scene .bird {
   animation: fly 30s linear infinite;
 }
 
-.bird path {
+.auth-layout .scene .bird path {
   animation: flap 0.9s ease-in-out infinite;
   transform-origin: center;
 }
 
-.st {
+.auth-layout .scene .st {
   animation: tw 3s ease-in-out infinite;
 }
 
-.cl {
+.auth-layout .scene .cl {
   animation: cloud 60s ease-in-out infinite alternate;
 }
 
-.lamp {
+.auth-layout .scene .lamp {
   animation: glow 2.4s ease-in-out infinite;
 }
 
-.sh {
+.auth-layout .scene .sh {
   animation: shim 3.4s ease-in-out infinite;
   transform-origin: center;
 }
 
-.fm {
+.auth-layout .scene .fm {
   animation: foam 2.2s ease-in-out infinite;
   transform-origin: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scene * {
+  .auth-layout .scene * {
     animation: none !important;
   }
 }

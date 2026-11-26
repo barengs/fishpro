@@ -1,6 +1,6 @@
 /* CSS untuk halaman Onboarding / Landing Page FishPro sesuai referensi */
 
-:root {
+.onboarding-page {
   --bg: #f6f8fc;
   --surface: #fff;
   --fg: #0f172a;
@@ -13,7 +13,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme="light"]) .onboarding-page {
     --bg: #0b1220;
     --surface: #0f1729;
     --fg: #e8edf7;
@@ -25,7 +25,8 @@
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="dark"] .onboarding-page,
+.dark .onboarding-page {
   --bg: #0b1220;
   --surface: #0f1729;
   --fg: #e8edf7;
@@ -875,11 +876,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .onboarding-page * {
     animation: none !important;
     transition: none !important;
   }
-  .rv {
+  .onboarding-page .rv {
     opacity: 1 !important;
     transform: none !important;
   }

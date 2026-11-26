@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   Anchor,
@@ -207,7 +207,7 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] dark:bg-[#0b1220] text-ink dark:text-white flex flex-row">
+    <div className="min-h-screen bg-[#F6F7F9] dark:bg-[#0A101D] text-ink dark:text-[#E8EDF7] flex flex-row">
       {/* 1. Desktop Left Sidebar */}
       <aside
         aria-label="Menu Navigasi Admin"
@@ -325,7 +325,7 @@ export function AdminLayout() {
         className="flex-1 flex flex-col min-w-0 transition-all duration-200 ease-in-out"
       >
         {/* Top Header Bar */}
-        <header className="h-16 px-4 sm:px-6 bg-white dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-slate-800 sticky top-0 z-30 flex items-center justify-between gap-3">
+        <header className="h-16 px-4 sm:px-6 bg-white/85 dark:bg-[#0f1729]/85 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1f2a42] sticky top-0 z-30 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 max-w-md">
             {/* Hamburger / Toggle Button */}
             <button
@@ -334,15 +334,15 @@ export function AdminLayout() {
               title={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-label={sidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
               aria-expanded={sidebarOpen}
-              className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
+              className="w-9 h-9 rounded-xl border-0 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-charcoal hover:text-ink dark:text-slate-300 transition-colors cursor-pointer shrink-0"
             >
-              <Menu size={16} aria-hidden="true" />
+              <Menu size={18} aria-hidden="true" />
             </button>
 
             {/* Quick Search Menu */}
             <QuickSearchMenu
               items={adminSearchItems}
-              placeholder="Search... (Ctrl+K)"
+              placeholder="Cari kapal, nahkoda, atau blok..."
             />
           </div>
 
