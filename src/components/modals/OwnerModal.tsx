@@ -91,8 +91,8 @@ function OwnerForm({
           })
         }
         options={[
-          { value: "individual", label: "Perorangan (Individual)" },
-          { value: "company", label: "Perusahaan (Company)" },
+          { value: "individual", label: "Perorangan" },
+          { value: "company", label: "Badan Usaha / Perusahaan" },
         ]}
       />
 
@@ -143,7 +143,7 @@ function OwnerForm({
       {submitting && (
         <div className="flex items-center justify-center gap-2 text-sm text-fco-blue pt-1">
           <Loader2 size={16} className="animate-spin" aria-hidden="true" />
-          <span>Menghubungi server backend...</span>
+          <span>Menyimpan data pemilik...</span>
         </div>
       )}
 

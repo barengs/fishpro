@@ -221,7 +221,7 @@ export function RegulatorLayout() {
 
   const handleLogout = async () => {
     await authService.logout();
-    toast.success("Anda telah berhasil keluar dari akun.");
+    toast.success("Anda sudah keluar dari akun.");
     navigate("/login", { replace: true });
   };
 
@@ -355,7 +355,7 @@ export function RegulatorLayout() {
             {/* Search Menu */}
             <QuickSearchMenu
               items={regulatorSearchItems}
-              placeholder="Search audit... (Ctrl+K)"
+              placeholder="Cari audit / menu... (Ctrl+K)"
             />
           </div>
 

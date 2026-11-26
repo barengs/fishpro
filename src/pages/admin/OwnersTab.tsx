@@ -210,7 +210,7 @@ export function OwnersTab({ hideHeader = false }: { hideHeader?: boolean } = {})
         rows={rows}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data pemilik terdaftar di server."
+        emptyText="Belum ada pemilik kapal yang terdaftar."
         onRowClick={openDetail}
       />
 

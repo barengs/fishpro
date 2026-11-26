@@ -43,7 +43,7 @@ export function AuthResetPasswordSection({ onNavigateTo }: AuthResetPasswordSect
             Atur ulang kata sandi
           </h1>
           <p className="lead">
-            Masukkan email, nama pengguna, atau nomor registrasi yang terdaftar. Kami akan mengirimkan tautan pemulihan ke email Anda.
+            Masukkan email, nama pengguna, atau nomor registrasi akun Anda untuk menerima tautan pemulihan.
           </p>
 
           {!lupaSent ? (
@@ -116,8 +116,8 @@ export function AuthResetPasswordSection({ onNavigateTo }: AuthResetPasswordSect
               </div>
               <h2 className="success-title">Tautan pemulihan terkirim</h2>
               <p className="success-desc">
-                Kami telah mengirimkan instruksi pengaturan ulang kata sandi untuk{" "}
-                <strong>{lupaInput}</strong>. Periksa kotak masuk atau folder spam Anda.
+                Instruksi pengaturan ulang kata sandi telah dikirim untuk{" "}
+                <strong>{lupaInput}</strong>. Cek kotak masuk atau folder spam Anda.
               </p>
               <div className="success-actions">
                 <button

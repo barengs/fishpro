@@ -204,7 +204,7 @@ export function AdminUsersTab() {
         rows={adminUsers}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada akun admin terdaftar di server."
+        emptyText="Belum ada akun admin yang terdaftar."
       />
 
       <AdminUserModal

@@ -227,7 +227,7 @@ export function ScaleReadingsTable({
         rows={readings}
         rowKey={(r) => r.id}
         loading={loading}
-        emptyText="Belum ada riwayat pembacaan sensor timbangan IoT."
+        emptyText="Belum ada riwayat penimbangan dari sensor IoT."
         onRowClick={openDetail}
       />
 

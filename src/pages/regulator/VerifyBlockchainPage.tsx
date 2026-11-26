@@ -125,8 +125,8 @@ export function VerifyBlockchainPage() {
   return (
     <div>
       <PageHeader
-        title="Verifikasi Segel Tangkapan"
-        desc="Pemeriksaan keabsahan catatan timbangan dan laporan tangkapan pelabuhan yang terkunci dalam rantai blok resmi."
+        title="Verifikasi Catatan Rantai Blok"
+        desc="Periksa keaslian data timbangan dan laporan tangkapan pelabuhan pada rantai blok resmi."
         actions={
           statusValid !== null ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
@@ -153,7 +153,7 @@ export function VerifyBlockchainPage() {
         rows={rows}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada transaksi penangkapan ikan tercatat di ledger blockchain."
+        emptyText="Belum ada catatan tangkapan di rantai blok."
       />
     </div>
   );

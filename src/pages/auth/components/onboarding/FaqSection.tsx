@@ -13,9 +13,9 @@ export function FaqSection() {
     <section className="onboarding-section" id="tanya">
       <div className="onboarding-wrap faqs-layout">
         <div>
-          <h2 className="rv">Pertanyaan yang sering muncul</h2>
+          <h2 className="rv">Pertanyaan yang sering diajukan</h2>
           <p className="lead rv" style={{ "--d": "0.08s" } as React.CSSProperties}>
-            Seputar cara kerja timbangan, kuota kapal, dan pencatatan tangkapan.
+            Seputar alur penimbangan, kuota kapal, dan pelaporan hasil tangkapan.
           </p>
         </div>
         <div id="faq">
@@ -44,8 +44,9 @@ export function FaqSection() {
             <div className="ans-grid">
               <div className="ans-inner">
                 <p>
-                  Ikan ditimbang di timbangan dermaga yang terhubung ke sistem. Berat ikan otomatis terbaca,
-                  tagihan PNBP langsung terhitung, dan sisa kuota kapal terbarui tanpa formulir kertas.
+                  Hasil tangkapan ditimbang di dermaga dengan perangkat digital yang terhubung ke FishPro.
+                  Bobot ikan langsung terbaca, tagihan PNBP ikut dihitung, dan sisa kuota kapal terbarui
+                  tanpa formulir kertas.
                 </p>
               </div>
             </div>
@@ -58,7 +59,7 @@ export function FaqSection() {
               aria-expanded={openIndex === 1}
               onClick={() => toggleFaq(1)}
             >
-              Apakah angka hasil timbangan bisa diubah setelah disimpan?
+              Apakah data timbangan bisa diubah setelah tersimpan?
               <svg
                 className="faq-chevron"
                 width="18"
@@ -76,9 +77,9 @@ export function FaqSection() {
             <div className="ans-grid">
               <div className="ans-inner">
                 <p>
-                  Tidak. Setiap catatan disegel dengan blockchain sehingga tidak bisa diubah atau dihapus
-                  diam-diam. Kalau ada koreksi, perubahannya tercatat sebagai entri baru lengkap dengan waktu dan
-                  petugasnya.
+                  Tidak. Setiap catatan yang tersimpan dilindungi blockchain agar tidak bisa diubah atau
+                  dihapus sepihak. Jika diperlukan koreksi, sistem mencatatnya sebagai entri baru lengkap
+                  dengan waktu dan petugas yang memprosesnya.
                 </p>
               </div>
             </div>
@@ -91,7 +92,7 @@ export function FaqSection() {
               aria-expanded={openIndex === 2}
               onClick={() => toggleFaq(2)}
             >
-              Bagaimana cara sistem memperkirakan kuota tangkapan?
+              Bagaimana sisa kuota tangkap kapal diperbarui?
               <svg
                 className="faq-chevron"
                 width="18"
@@ -109,8 +110,9 @@ export function FaqSection() {
             <div className="ans-grid">
               <div className="ans-inner">
                 <p>
-                  Kuota kapal dikurangi otomatis dari berat ikan yang ditimbang di dermaga. Sisa kuota bisa
-                  dilihat nahkoda, pemilik, dan pengawas setiap kali ada timbangan baru.
+                  Kuota kapal berkurang sesuai berat ikan yang masuk dari hasil penimbangan di dermaga.
+                  Sisa kuota terbaru langsung tampil untuk nahkoda, pemilik kapal, dan pengawas setiap kali
+                  bongkar muat selesai.
                 </p>
               </div>
             </div>
@@ -123,7 +125,7 @@ export function FaqSection() {
               aria-expanded={openIndex === 3}
               onClick={() => toggleFaq(3)}
             >
-              Bagaimana cara mendaftar ke sistem?
+              Bagaimana cara mendaftar akun FishPro?
               <svg
                 className="faq-chevron"
                 width="18"
@@ -141,8 +143,9 @@ export function FaqSection() {
             <div className="ans-grid">
               <div className="ans-inner">
                 <p>
-                  Pilih Daftar akun, isi nomor registrasi kapal atau data petugas, lalu tunggu verifikasi dari
-                  dinas setempat. Setelah disetujui, Anda bisa masuk ke portal. Belum punya akun?{" "}
+                  Pilih Daftar akun, lengkapi nomor registrasi kapal atau data petugas, lalu tunggu
+                  verifikasi dari dinas setempat. Begitu disetujui, akun bisa langsung dipakai. Belum
+                  terdaftar?{" "}
                   <button
                     type="button"
                     className="role-link"

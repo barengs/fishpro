@@ -136,7 +136,7 @@ export function CatchesPage() {
       <div>
           <PageToolbar
               title="Laporan Hasil Tangkapan"
-              desc="Kelola seluruh catatan hasil tangkapan kapal, rincian jenis ikan, dan verifikasi segel resmi pelabuhan."
+              desc="Kelola catatan hasil tangkapan kapal, rincian spesies, dan verifikasi penimbangan pelabuhan."
               searchPlaceholder="Filter kapal / tanggal..."
               searchValue={search}
               onSearchChange={setSearch}
@@ -172,7 +172,7 @@ export function CatchesPage() {
               rows={rows}
               rowKey={r => String(r.id)}
               loading={loading}
-              emptyText="Belum ada data laporan penangkapan ikan di server."
+              emptyText="Belum ada laporan tangkapan."
               onRowClick={openDetail}
           />
 
@@ -288,7 +288,7 @@ export function CatchesPage() {
           <CrudModal
               open={isModalOpen}
               title="Buat Laporan Tangkapan Ikan"
-              subtitle="Catat hasil tangkapan kapal, lokasi GPS, dan rincian tangkapan."
+              subtitle="Isi data tangkapan kapal, koordinat lokasi, dan rincian spesiesnya."
               onClose={closeModal}
               hideFooter
           >
@@ -298,14 +298,14 @@ export function CatchesPage() {
                   shipSelector={
                       <div className="flex flex-col gap-1.5">
                           <SelectField
-                              label="Pilih Kapal Terdaftar (Ship)"
+                              label="Pilih Kapal Terdaftar"
                               id="ct-ship"
                               required
                               searchable
                               searchPlaceholder="Cari nama kapal atau nomor registrasi..."
                               placeholder={
                                   ships.length === 0
-                                      ? "— Belum ada kapal terdaftar di database —"
+                                      ? "— Belum ada kapal terdaftar —"
                                       : "— Pilih Kapal Terdaftar —"
                               }
                               value={selectedShipReg}
@@ -315,7 +315,7 @@ export function CatchesPage() {
                                       ? [
                                             {
                                                 value: "",
-                                                label: "Belum ada kapal terdaftar di database",
+                                                label: "Belum ada kapal terdaftar",
                                                 disabled: true,
                                             },
                                         ]
@@ -329,8 +329,8 @@ export function CatchesPage() {
                               <p className="m-0 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 mt-1">
                                   <AlertCircle size={14} className="shrink-0" aria-hidden="true" />
                                   <span>
-                                      Belum ada data kapal di sistem. Silakan tambahkan data di menu{" "}
-                                      <strong>Kapal</strong> terlebih dahulu agar dapat dipilih di sini.
+                                      Belum ada kapal terdaftar. Tambahkan data kapal di menu{" "}
+                                      <strong>Kapal</strong> terlebih dahulu agar bisa dipilih di sini.
                                   </span>
                               </p>
                           )}

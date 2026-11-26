@@ -225,7 +225,7 @@ export function RolesTab() {
         rows={roles}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data peran terdaftar di server."
+        emptyText="Belum ada peran pengguna yang terdaftar."
         onRowClick={openDetail}
       />
 

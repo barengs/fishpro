@@ -303,7 +303,7 @@ export function useIotScales() {
 
       setSaveSuccess(res);
       toast.success(
-        `Tangkapan ${res.weight} kg untuk kapal ${res.ship_name} berhasil disimpan dan tersegel di blockchain!`,
+        `Tangkapan ${res.weight} kg untuk ${res.ship_name} berhasil disimpan ke rantai blok.`,
       );
       if (res.quota_warning) {
         toast.warning(res.quota_warning);

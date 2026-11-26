@@ -164,7 +164,7 @@ export function IotDeviceModal({
           ? "Ubah Perangkat Timbangan IoT"
           : "Daftarkan Timbangan Pintar IoT"
       }
-      subtitle="Integrasi timbangan digital dermaga untuk transmisi berat tangkapan otomatis."
+      subtitle="Hubungkan timbangan digital dermaga agar berat tangkapan langsung terkirim ke sistem."
       onClose={onClose}
       hideFooter
     >

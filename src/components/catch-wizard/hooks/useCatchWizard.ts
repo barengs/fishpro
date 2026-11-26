@@ -72,7 +72,7 @@ export function useCatchWizard({
       const msg =
         err instanceof Error
           ? err.message
-          : "Gagal mendeteksi lokasi. Masukkan koordinat secara manual.";
+          : "Lokasi tidak terdeteksi. Isi koordinatnya langsung di bawah.";
       setErrorMsg(msg);
     } finally {
       setIsLocating(false);

@@ -147,7 +147,7 @@ export function StaffSidebar() {
 
   const handleLogout = async () => {
     await authService.logout();
-    toast.success("Anda telah berhasil keluar dari akun.");
+    toast.success("Anda sudah keluar dari akun.");
     navigate("/login", { replace: true });
   };
 
@@ -270,7 +270,7 @@ export function StaffSidebar() {
 
             <QuickSearchMenu
               items={staffSearchItems}
-              placeholder="Search... (Ctrl+K)"
+              placeholder="Cari menu... (Ctrl+K)"
             />
           </div>
 

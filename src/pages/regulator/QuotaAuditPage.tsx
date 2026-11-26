@@ -203,7 +203,7 @@ export function QuotaAuditPage() {
         rows={ships}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data kapal terdaftar di server."
+        emptyText="Belum ada kapal yang terdaftar."
         onRowClick={openAuditDetail}
       />
 

@@ -202,7 +202,7 @@ export function AdminLayout() {
 
   const handleLogout = async () => {
     await authService.logout();
-    toast.success("Anda telah berhasil keluar dari akun.");
+    toast.success("Anda sudah keluar dari akun.");
     navigate("/login", { replace: true });
   };
 

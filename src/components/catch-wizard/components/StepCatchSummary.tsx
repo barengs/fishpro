@@ -14,10 +14,10 @@ export function StepCatchSummary({ form }: StepCatchSummaryProps) {
   return (
     <div>
       <h3 className="m-0 mb-1 text-lg font-extrabold text-strong">
-        Cek sekali lagi
+        Periksa ringkasan laporan
       </h3>
       <p className="m-0 mb-4 text-sm text-soft">
-        Laporan tercatat permanen setelah dikirim.
+        Pastikan seluruh data sudah sesuai sebelum disimpan ke sistem.
       </p>
       <dl className="m-0 p-4 rounded-xl surface-inset border text-sm flex flex-col gap-2.5">
         <div className="flex justify-between gap-3 py-1 border-b border-fco-border">

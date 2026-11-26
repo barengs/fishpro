@@ -99,7 +99,7 @@ export function useRegisterWizard() {
         setFieldErrors(errors);
         setErrorMsg(
           parsed.error.issues[0]?.message ||
-            "Harap lengkapi formulir identitas dengan benar.",
+            "Periksa kembali data identitas Anda.",
         );
         focusFirstErrorField(errors);
         return;
@@ -126,7 +126,7 @@ export function useRegisterWizard() {
         setFieldErrors(errors);
         setErrorMsg(
           parsed.error.issues[0]?.message ||
-            "Harap lengkapi nama pengguna dan kata sandi dengan benar.",
+            "Lengkapi nama pengguna dan kata sandi terlebih dulu.",
         );
         focusFirstErrorField(errors);
         return;
@@ -147,7 +147,7 @@ export function useRegisterWizard() {
   const handleSubmit = async () => {
     if (!agreeTerms) {
       setErrorMsg(
-        "Centang persetujuan syarat & ketentuan untuk menyelesaikan pendaftaran.",
+        "Centang persetujuan syarat & ketentuan sebelum mengirim pendaftaran.",
       );
       return;
     }
@@ -172,7 +172,7 @@ export function useRegisterWizard() {
 
       await authService.register(payload);
       toast.success(
-        `Pendaftaran berhasil! Selamat datang, ${fullName.trim() || username}.`,
+        `Akun berhasil dibuat. Halo, ${fullName.trim() || username}.`,
       );
 
       const targetDashboard = authService.getDashboardUrl();

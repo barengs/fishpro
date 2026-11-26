@@ -83,7 +83,7 @@ export function PnbpPredictionBars() {
         )}
       </div>
       <div className="text-[12px] text-subtext dark:text-slate-400 mb-4">
-        Proyeksi tren penerimaan armada berbasis pipeline machine learning
+        Proyeksi tren penerimaan PNBP armada per periode
       </div>
 
       {loading ? (
@@ -102,8 +102,8 @@ export function PnbpPredictionBars() {
         <div className="py-5 px-4 flex flex-col items-center justify-center text-center gap-2 border border-dashed border-[#E5E7EB] dark:border-slate-800 bg-[#F9FAFB] dark:bg-slate-800/40 rounded-xl">
           <BarChart3 size={18} className="text-subtext" />
           <p className="m-0 text-xs text-subtext dark:text-slate-400 leading-relaxed max-w-xs">
-            Belum ada proyeksi PNBP untuk armada Anda. Grafik akan terisi
-            otomatis setelah kapal melakukan penimbangan hasil tangkapan.
+            Belum ada proyeksi PNBP untuk armada Anda. Grafik akan muncul
+            setelah ada riwayat penimbangan tangkapan.
           </p>
         </div>
       ) : (

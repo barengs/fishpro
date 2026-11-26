@@ -176,7 +176,7 @@ export function BlockchainPage() {
       {/* 1. Header */}
       <PageHeader
         title="Buku Besar Blockchain"
-        desc="Riwayat pencatatan hasil tangkapan yang terkunci permanen menggunakan segel kriptografi agar bebas manipulasi."
+        desc="Riwayat catatan hasil tangkapan yang tersimpan aman di rantai blok agar datanya tetap utuh dan mudah diaudit."
         actions={
           statusValid !== null ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
@@ -216,7 +216,7 @@ export function BlockchainPage() {
           rows={transactions}
           rowKey={(r) => String(r.id)}
           loading={loading}
-          emptyText="Belum ada transaksi tangkapan di jaringan blockchain."
+          emptyText="Belum ada transaksi tangkapan di rantai blok."
           onRowClick={openTxDetail}
         />
       </section>

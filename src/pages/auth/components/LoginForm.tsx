@@ -68,9 +68,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
     try {
       const data = await authService.login(parsed.data);
 
-      toast.success(
-        `Login berhasil. Selamat datang kembali, ${data.username}!`,
-      );
+      toast.success(`Berhasil masuk. Halo, ${data.username}!`);
 
       // Navigate directly to resolved role dashboard or return URL with replace: true to clean history stack
       const targetDashboard = authService.getDashboardUrl();
@@ -83,9 +81,9 @@ export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
       const message =
         err instanceof Error
           ? err.message
-          : "Gagal masuk. Periksa kembali nama pengguna dan kata sandi.";
+          : "Gagal masuk. Periksa lagi nama pengguna dan kata sandi Anda.";
       setErrorMsg(message);
-      setFieldErrors({ username: "Nama pengguna atau kata sandi tidak cocok", password: " " });
+      setFieldErrors({ username: "Nama pengguna atau kata sandi tidak cocok.", password: " " });
       setTimeout(
         () => document.getElementById("login-identifier")?.focus(),
         50,
@@ -118,7 +116,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps = {}) {
             aria-hidden="true"
           />
           <span>
-            Sesi Anda telah berakhir demi keamanan. Silakan masuk kembali.
+            Sesi akun Anda telah berakhir. Masuk kembali untuk melanjutkan.
           </span>
         </div>
       )}

@@ -131,7 +131,7 @@ export function CaptainsTab({ hideHeader = false }: { hideHeader?: boolean } = {
         rows={rows}
         rowKey={(r) => String(r.id)}
         loading={loading}
-        emptyText="Belum ada data nahkoda terdaftar di server."
+        emptyText="Belum ada nahkoda yang terdaftar."
         onRowClick={openDetail}
       />
 

@@ -85,17 +85,17 @@ export function AuthRegisterWizardSection({
       }
     } else if (step === 2) {
       if (!regUsername.trim()) {
-        errors.regUsername = "Isi nama pengguna (username).";
+        errors.regUsername = "Buat nama pengguna terlebih dahulu.";
       } else if (/\s/.test(regUsername)) {
-        errors.regUsername = "Nama pengguna tidak boleh mengandung spasi.";
+        errors.regUsername = "Nama pengguna tidak boleh memakai spasi.";
       }
 
       if (!/^\S+@\S+\.\S+$/.test(regEmail.trim())) {
-        errors.regEmail = "Masukkan alamat email yang valid (contoh: nama@contoh.com).";
+        errors.regEmail = "Masukkan alamat email yang benar (mis. nama@contoh.com).";
       }
 
       if (!/^[0-9+\-\s]{8,16}$/.test(regPhone.trim())) {
-        errors.regPhone = "Masukkan nomor telepon yang valid (contoh: 081234567890).";
+        errors.regPhone = "Masukkan nomor telepon yang valid (mis. 081234567890).";
       }
 
       if (regPassword.length < 8) {
@@ -161,11 +161,11 @@ export function AuthRegisterWizardSection({
         address: role === "owner" && homePort.trim() ? homePort.trim() : undefined,
       });
 
-      toast.success("Pendaftaran berhasil! Silakan masuk dengan akun baru Anda.");
+      toast.success("Akun berhasil dibuat. Sekarang Anda bisa masuk.");
       onRegisterSuccess(regUsername.trim());
       onNavigateTo("/login");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Pendaftaran gagal. Silakan periksa data Anda.";
+      const msg = err instanceof Error ? err.message : "Pendaftaran gagal. Periksa lagi data yang Anda isi.";
       toast.error(msg);
     } finally {
       setRegisterLoading(false);
@@ -180,7 +180,7 @@ export function AuthRegisterWizardSection({
             Buat akun FishPro
           </h1>
           <p className="lead">
-            Lengkapi 4 langkah singkat untuk mulai mengelola kapal, timbangan, dan izin Anda.
+            Ikuti 4 langkah singkat untuk mendaftarkan akun beserta data kapal Anda.
           </p>
 
           {/* Stepper Progress Indicator */}
