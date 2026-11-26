@@ -186,7 +186,7 @@ export const iotService = {
     const token =
       localStorage.getItem("token") || localStorage.getItem("access_token");
     const res = await fetch(url, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      headers: token ? { Authorization: `Token ${token}` } : {},
     });
     if (!res.ok) {
       throw new Error(

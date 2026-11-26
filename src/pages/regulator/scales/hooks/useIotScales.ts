@@ -148,6 +148,11 @@ export function useIotScales() {
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
+        const token =
+          localStorage.getItem("token") || localStorage.getItem("auth_token");
+        if (token) {
+          ws?.send(JSON.stringify({ action: "auth", token }));
+        }
         if (!ignore) {
           wsActive = true;
           setSseConnected(true);
