@@ -75,11 +75,42 @@ const colorMap: Record<KpiColor, { bg: string; shadow: string; spark: string }> 
   },
 };
 
+const DEFAULT_SPARKLINE_PATH =
+  "M2 24 C20 22 28 8 46 12 S76 26 96 15 S140 3 178 6";
+
+function buildSparklinePath(data?: number[]): string {
+  if (!data || data.length < 2) return DEFAULT_SPARKLINE_PATH;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min;
+
+  const pts = data.map((v, idx) => {
+    const x = 2 + (idx / (data.length - 1)) * 176;
+    const y = range === 0 ? 15 : 25 - ((v - min) / range) * 20;
+    return { x, y };
+  });
+
+  let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i - 1, 0)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(i + 2, pts.length - 1)];
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d;
+}
+
 export function KpiCard({
   label,
   value = "0",
   delta,
   showSparkline = false,
+  sparklineData,
   color = "blue",
   Icon,
   loading = false,
@@ -87,6 +118,7 @@ export function KpiCard({
   linkText = "Buka detail",
 }: KpiCardProps) {
   const theme = colorMap[color] || colorMap.blue;
+  const sparklinePath = showSparkline ? buildSparklinePath(sparklineData) : "";
 
   const cardContent = (
     <>
@@ -129,7 +161,7 @@ export function KpiCard({
           <svg className="w-full h-full overflow-visible" viewBox="0 0 180 30" aria-hidden="true">
             <path
               pathLength="1"
-              d="M2 24 C20 22 28 8 46 12 S76 26 96 15 S140 3 178 6"
+              d={sparklinePath}
               fill="none"
               stroke={theme.spark}
               strokeWidth="2"

@@ -1,124 +1,225 @@
 import { useEffect, useState } from "react";
-import {
-  Coins,
-  Cpu,
-  Link2,
-  Ship,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Coins, Cpu, Fish, Link2, Ship } from "lucide-react";
 import { KpiCard } from "../../components/KpiCard";
 import { PnbpChart } from "./components/PnbpChart";
-import { BlockchainCard } from "./components/BlockchainCard";
+import { RecentCatchesCard } from "./components/RecentCatchesCard";
 import { CriticalQuotaTable } from "./components/CriticalQuotaTable";
 import { WppBarChart } from "./components/WppBarChart";
-import { shipsService, type Ship as ShipType } from "../../services/ships";
-import { pnbpService } from "../../services/pnbp";
-import { blockchainService } from "../../services/blockchain";
+import { catchesService, type FishCatch } from "../../services/catches";
+import {
+  blockchainService,
+  type BlockchainStatus,
+} from "../../services/blockchain";
 import { iotService } from "../../services/iot";
+import { shipsService } from "../../services/ships";
 import { dashboardService } from "../../services/dashboard";
-import { formatNumber, formatRupiah } from "../../utils";
+import type {
+  AdminDashboardData,
+  WppPotentialItem,
+} from "../../services/dashboard/types";
+import {
+  calculateCatchTotalVolume,
+  formatNumber,
+  formatRupiah,
+  formatWeight,
+} from "../../utils";
 
 interface SuperAdminMetrics {
-  activeShipsCount: number;
   totalShipsCount: number;
+  totalOwnersCount: number;
+  totalCatchesCount: number;
+  totalVolumeKg: number;
+  rawTotalPnbp: number;
   totalPnbpStr: string;
-  pnbpSparkline?: number[];
-  pnbpTrendUp?: boolean;
-  blockchainValid: boolean;
-  blockchainBlockCount: number;
+  pnbpSparkline: number[];
   iotDevicesCount: number;
+  activeScalesCount: number;
+  pendingReadingsCount: number;
 }
 
 export function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
+  const [hasDashboardData, setHasDashboardData] = useState(false);
   const [metrics, setMetrics] = useState<SuperAdminMetrics>({
-    activeShipsCount: 0,
     totalShipsCount: 0,
+    totalOwnersCount: 0,
+    totalCatchesCount: 0,
+    totalVolumeKg: 0,
+    rawTotalPnbp: 0,
     totalPnbpStr: "Rp 0",
-    blockchainValid: true,
-    blockchainBlockCount: 0,
+    pnbpSparkline: [],
     iotDevicesCount: 0,
+    activeScalesCount: 0,
+    pendingReadingsCount: 0,
   });
+  const [monthlySeries, setMonthlySeries] = useState<
+    AdminDashboardData["monthly_pnbp_chart"]
+  >([]);
+  const [wppDistribution, setWppDistribution] = useState<
+    AdminDashboardData["wpp_distribution"]
+  >([]);
+  const [criticalShips, setCriticalShips] = useState<
+    AdminDashboardData["critical_quota_ships"]
+  >([]);
+  const [wppPotential, setWppPotential] = useState<WppPotentialItem[]>([]);
+  const [recentCatches, setRecentCatches] = useState<FishCatch[]>([]);
+  const [chainStatus, setChainStatus] = useState<BlockchainStatus | null>(null);
 
   useEffect(() => {
+    let ignore = false;
+
     async function loadSuperStats() {
       setLoading(true);
       try {
-        const [dashData, ships, chartRes, chainStatus, iotDevices] =
-          await Promise.all([
-            dashboardService.getAdminDashboard().catch(() => null),
-            shipsService.getAll().catch(() => []),
-            pnbpService.getUnifiedChartData().catch(() => null),
-            blockchainService.getStatus().catch(() => null),
-            iotService.getDevices().catch(() => []),
-          ]);
+        const [
+          dashData,
+          potentialRes,
+          catches,
+          iotDevices,
+          pendingReadings,
+          blockchainRes,
+        ] = await Promise.all([
+          dashboardService.getAdminDashboard().catch(() => null),
+          dashboardService.getWppPotentialForecast().catch(() => null),
+          catchesService.getAll().catch(() => [] as FishCatch[]),
+          iotService.getDevices().catch(() => []),
+          iotService.getReadings(undefined, "pending").catch(() => []),
+          blockchainService.getStatus().catch(() => null),
+        ]);
 
-        const activeShips =
-          dashData?.kpi?.total_ships ??
-          ships.filter((s: ShipType) => s.active !== false).length;
-        const totalShips = ships.length || activeShips;
-        const summary = chartRes?.charts_data?.summary_stats;
+        if (ignore) return;
 
-        const totalPnbpStr = dashData?.kpi?.total_pnbp
-          ? formatRupiah(dashData.kpi.total_pnbp)
-          : formatRupiah(summary?.total_pnbp_sum);
+        const dashOk = Boolean(dashData && dashData.status === "success");
+        setHasDashboardData(dashOk);
 
-        const history = chartRes?.charts_data?.historical_pnbp?.data || [];
-        const pnbpHistory = history
-          .map((h) => Number(h.pnbp ?? h.total_pnbp ?? 0))
-          .filter((v) => !isNaN(v) && v > 0);
+        const fallbackShips = dashOk
+          ? []
+          : await shipsService.getAll().catch(() => []);
+        if (ignore) return;
 
-        const pnbpTrendUp =
-          pnbpHistory.length >= 2
-            ? pnbpHistory[pnbpHistory.length - 1] >= pnbpHistory[0]
-            : true;
+        const sortedCatches = [...catches].sort((a, b) => {
+          const tA = a.catch_date ? new Date(a.catch_date).getTime() : 0;
+          const tB = b.catch_date ? new Date(b.catch_date).getTime() : 0;
+          return tB - tA;
+        });
+
+        const totalVolumeFromCatches = calculateCatchTotalVolume(catches);
+        const totalPnbpFromCatches = catches.reduce((acc, c) => {
+          const sum = (c.catch_details || []).reduce(
+            (s, d) => s + (Number(d.pnbp) || 0),
+            0,
+          );
+          return acc + sum;
+        }, 0);
+
+        const rawTotalPnbp = dashOk
+          ? dashData!.kpi.total_pnbp
+          : totalPnbpFromCatches;
+
+        const series = dashOk ? dashData!.monthly_pnbp_chart || [] : [];
+        const pnbpSparkline = series
+          .filter((item) => !item.is_prediction)
+          .map((item) => Number(item.total_pnbp) || 0);
+
+        const activeScales = iotDevices.filter((d) => d.is_active !== false);
 
         setMetrics({
-          activeShipsCount: activeShips,
-          totalShipsCount: totalShips,
-          totalPnbpStr,
-          pnbpSparkline: pnbpHistory,
-          pnbpTrendUp,
-          blockchainValid:
-            dashData?.blockchain?.is_valid ?? chainStatus?.valid ?? true,
-          blockchainBlockCount:
-            dashData?.blockchain?.total_blocks ??
-            chainStatus?.block_count ??
-            0,
+          totalShipsCount: dashOk
+            ? dashData!.kpi.total_ships
+            : fallbackShips.length,
+          totalOwnersCount: dashOk ? dashData!.kpi.total_owners : 0,
+          totalCatchesCount: dashOk
+            ? dashData!.kpi.total_catches
+            : catches.length,
+          totalVolumeKg: dashOk
+            ? dashData!.kpi.total_volume_kg
+            : totalVolumeFromCatches,
+          rawTotalPnbp,
+          totalPnbpStr: formatRupiah(rawTotalPnbp),
+          pnbpSparkline,
           iotDevicesCount: iotDevices.length,
+          activeScalesCount: activeScales.length,
+          pendingReadingsCount: pendingReadings.length,
         });
+
+        setMonthlySeries(series);
+        setWppDistribution(dashOk ? dashData!.wpp_distribution || [] : []);
+        setCriticalShips(dashOk ? dashData!.critical_quota_ships || [] : []);
+        setWppPotential(potentialRes?.rankings || []);
+        setRecentCatches(sortedCatches.slice(0, 4));
+        setChainStatus(blockchainRes);
       } catch {
-        // Keeps safe default metrics
+        // Keeps safe default state
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     }
 
     loadSuperStats();
+    return () => {
+      ignore = true;
+    };
   }, []);
+
+  // Pass structured dashboard arrays during initial load or when backend summary succeeded;
+  // if the summary endpoint failed after loading, omit props so widgets fall back to standalone endpoints.
+  const useCentralizedSeries = loading || hasDashboardData;
 
   return (
     <div className="flex flex-col gap-6">
       {/* Header Tata Kelola */}
-      <div>
-        <div className="flex items-center gap-2 text-[13px] font-medium text-subtext dark:text-[#98a6c0] mb-1.5">
-          <span>Tata Kelola</span>
-          <span className="text-slate-300 dark:text-slate-600">/</span>
-          <span className="text-ink dark:text-[#e8edf7] font-semibold">Ringkasan Sistem Nasional</span>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-[13px] font-medium text-subtext dark:text-[#98a6c0] mb-1.5">
+            <span>Tata Kelola</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-ink dark:text-[#e8edf7] font-semibold">
+              Ringkasan Sistem Nasional
+            </span>
+          </div>
+          <h1 className="m-0 text-[26px] sm:text-[30px] font-extrabold tracking-tight text-ink dark:text-[#e8edf7] leading-tight">
+            Tata Kelola &amp; Regulasi Sistem
+          </h1>
+          <p className="m-0 text-[13px] text-subtext dark:text-[#98a6c0] mt-1.5 max-w-2xl">
+            Pemantauan armada nasional, realisasi tangkapan, penerimaan PNBP, dan telemetri timbangan pelabuhan.
+          </p>
         </div>
-        <h1 className="m-0 text-[26px] sm:text-[30px] font-extrabold tracking-tight text-ink dark:text-[#e8edf7] leading-tight">
-          Tata Kelola &amp; Regulasi Sistem
-        </h1>
-        <p className="m-0 text-[13px] text-subtext dark:text-[#98a6c0] mt-1.5 max-w-2xl">
-          Pemantauan kepatuhan kuota AI, integritas audit blockchain, dan telemetri dermaga pelabuhan.
-        </p>
+
+        {chainStatus && (
+          <Link
+            to="/admin/blockchain"
+            className="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full bg-white dark:bg-[#0f1729] border border-[#e6e9ef] dark:border-[#1f2a42] text-[12px] font-semibold text-ink dark:text-[#e8edf7] no-underline hover:bg-[#f1f4f9] dark:hover:bg-[#141d33] transition-colors shrink-0 shadow-subtle"
+          >
+            <Link2
+              size={13}
+              className="text-brand-600 dark:text-brand-400"
+              aria-hidden="true"
+            />
+            <span
+              className={`w-2 h-2 rounded-full ${
+                chainStatus.valid ? "bg-emerald-500" : "bg-amber-500"
+              }`}
+            />
+            <span>
+              Rantai blok:{" "}
+              {chainStatus.valid ? "Terverifikasi" : "Perlu audit"} (
+              {formatNumber(chainStatus.block_count)})
+            </span>
+          </Link>
+        )}
       </div>
 
-      {/* 4 Cards Tata Kelola - Matching Sample */}
+      {/* 4 Cards Tata Kelola — Selaras dengan /api/dashboard/admin/ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           label="Total armada nasional"
-          value={formatNumber(metrics.activeShipsCount)}
-          delta={`${metrics.totalShipsCount} armada kapal terdaftar`}
+          value={formatNumber(metrics.totalShipsCount)}
+          delta={
+            metrics.totalOwnersCount > 0
+              ? `${formatNumber(metrics.totalOwnersCount)} pemilik kapal terdaftar`
+              : "Armada kapal terdaftar"
+          }
           showSparkline={false}
           color="blue"
           Icon={Ship}
@@ -132,7 +233,6 @@ export function SuperAdminDashboard() {
           delta="Kalkulasi resmi PP 85/2021"
           showSparkline={true}
           sparklineData={metrics.pnbpSparkline}
-          trendUp={metrics.pnbpTrendUp}
           color="teal"
           Icon={Coins}
           loading={loading}
@@ -140,20 +240,24 @@ export function SuperAdminDashboard() {
           linkText="Kebijakan & simulasi AI"
         />
         <KpiCard
-          label="Audit imutabilitas"
-          value={metrics.blockchainValid ? "Terverifikasi" : "Perlu Audit"}
-          delta={`${metrics.blockchainBlockCount} blok transaksi tersegel`}
+          label="Total hasil tangkapan"
+          value={formatWeight(metrics.totalVolumeKg)}
+          delta={`${formatNumber(metrics.totalCatchesCount)} laporan pendaratan tercatat`}
           showSparkline={false}
           color="navy"
-          Icon={Link2}
+          Icon={Fish}
           loading={loading}
-          href="/admin/blockchain"
-          linkText="Inspeksi rantai blok"
+          href="/admin/catches"
+          linkText="Lihat laporan tangkapan"
         />
         <KpiCard
           label="Perangkat IoT timbangan"
-          value={formatNumber(metrics.iotDevicesCount)}
-          delta="Timbangan pintar aktif di pelabuhan"
+          value={formatNumber(metrics.activeScalesCount)}
+          delta={
+            metrics.pendingReadingsCount > 0
+              ? `${formatNumber(metrics.pendingReadingsCount)} antrean belum diproses`
+              : `${formatNumber(metrics.iotDevicesCount)} timbangan aktif di pelabuhan`
+          }
           showSparkline={false}
           color="purple"
           Icon={Cpu}
@@ -163,23 +267,34 @@ export function SuperAdminDashboard() {
         />
       </div>
 
-      {/* Grid Grafik PNBP & Status Blockchain */}
+      {/* Grid Grafik PNBP & Tangkapan Terbaru */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <PnbpChart />
+          <PnbpChart
+            monthlySeries={useCentralizedSeries ? monthlySeries : undefined}
+            totalPnbpOverride={hasDashboardData ? metrics.rawTotalPnbp : undefined}
+            loading={loading}
+          />
         </div>
         <div>
-          <BlockchainCard />
+          <RecentCatchesCard catches={recentCatches} loading={loading} />
         </div>
       </div>
 
       {/* Grid Radar Kuota Kritis & Distribusi WPP */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3">
-          <CriticalQuotaTable />
+          <CriticalQuotaTable
+            ships={useCentralizedSeries ? criticalShips : undefined}
+            loading={loading}
+          />
         </div>
         <div className="lg:col-span-2">
-          <WppBarChart />
+          <WppBarChart
+            distribution={useCentralizedSeries ? wppDistribution : undefined}
+            potential={wppPotential}
+            loading={loading}
+          />
         </div>
       </div>
     </div>
